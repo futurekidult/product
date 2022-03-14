@@ -1,0 +1,30 @@
+@startmindmap
+title 需求列表
+
++_ DemandList
+++_ BaseBreadcrumb
+++_ DemandAll
++++_ BasePagination
+
+@endmindmap
+
+@startmindmap
+title 创建需求
+
++_ DemandCreate
+++_ BaseBreadcrumb
+++_ DemandForm
+
+@endmindmap
+
+@startmindmap
+title 需求详情
+
++_ DemandDetail
+++_ BaseTag
+++_ ProdDescription
+++_ DemandForm
+++_ DemandReview
++++_ DemandReviewPass
+
+@endmindmap
