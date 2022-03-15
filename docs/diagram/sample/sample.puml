@@ -1,0 +1,26 @@
+@startmindmap
+title 样品列表
+
++_ SampleList
+++_ BaseBreadcrumb
+++_ SampleAll
++++_ BasePagination
+
+@endmindmap
+
+@startmindmap
+title 样品详情
+
++_ SampleDetail
+++_ SampleProcess
++++_ SampleBasic
++++_ ProofingList
+++++_ SampleForm
++++_ SampleTest
+++++_ QualityTest
++++++_ TestTemplate
+++++_ AgencyTest
++++++_ TestTemplate
+++++_ UserTest
++++++_ TestTemplate
+@endmindmap
