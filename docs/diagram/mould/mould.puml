@@ -1,0 +1,21 @@
+@startmindmap
+title 模具列表
+
++_ MouldList
+++_ BaseBreadcrumb
+++_ MouldAll
++++_  BasePagination
+
+@endmindmap
+
+@startmindmap
+title 模具详情
+
++_ MouldDetail
+++_ MouldProcess
++++_ MouldDesign
++++_ SampleMould
++++_ MouldOpen
++++_ MouldTest
+
+@endmindmap
