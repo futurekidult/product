@@ -1,20 +1,23 @@
 <template>
+  <div class="select-title">
+    <span class="line">|</span> 项目调研
+  </div>
+
   <el-tabs
     v-model="activeName"
     type="card"
-    @tab-click="handleClick"
   >
-    <el-tab-pane
-      label="市场调研"
-      name="market"
-    >
-      <market-survey />
-    </el-tab-pane>
     <el-tab-pane
       label="平台调研"
       name="platform"
     >
       <platform-survey />
+    </el-tab-pane>
+    <el-tab-pane
+      label="市场调研"
+      name="market"
+    >
+      <market-survey />
     </el-tab-pane>
     <el-tab-pane
       label="用户分析"
@@ -26,7 +29,7 @@
       label="产品方案"
       name="plan"
     >
-      <product-schema />
+      <product-plan />
     </el-tab-pane>
     <el-tab-pane
       label="风险调研"
@@ -47,7 +50,7 @@
 import MarketSurvey from './survey/market-survey.vue';
 import PlatformSurvey from './survey/platform-survey.vue';
 import UserAnalysis from './survey/user-analysis.vue';
-import ProductSchema from './survey/product-schema.vue';
+import ProductPlan from './survey/product-plan.vue';
 import RiskSurvey from './survey/risk-survey.vue';
 import UserSurvey from './survey/user-survey.vue';
 
@@ -56,13 +59,13 @@ export default {
     MarketSurvey,
     PlatformSurvey,
     UserAnalysis,
-    ProductSchema,
+    ProductPlan,
     RiskSurvey,
     UserSurvey
   },
   data() {
     return {
-      activeName: 'market'
+      activeName: 'platform'
     };
   }
 };
