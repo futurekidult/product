@@ -24,11 +24,12 @@ title 新品详情
 +++_ ProductPlan
 +++_ RiskSurvey
 +++_ UserSurvey
+++++_ SurveyForm
 ++_ ProjectSetup(立项中)
-+++_ ProjectPass
 ++_ ProductPrice(定价阶段)
 +++_ BasePagination
 ++_ ProductPatent(样品阶段)
++++_ ContractReport
 ++_ MouldMessage(定价阶段)
 +++_ BasePagination
 ++_ SampleMessage(样品阶段)
@@ -37,6 +38,10 @@ title 新品详情
 +++_ BasePagination
 ++_ ProductOrder(下单阶段)
 +++_ BasePagination
++++_ OrderDetail
+++++_ SkuName
+++++_ ContractList
+++++_ ProductionSample
 ++_ ProductPackage(包材阶段)
 +++_ BasePagination
 

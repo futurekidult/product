@@ -1,3 +1,4 @@
+/* eslint-disable vue/require-v-for-key */
 <template>
   <div class="survey-title">
     调研进度表
@@ -18,114 +19,201 @@
   </div>
 
   <el-form
+    ref="analysisForm"
     label-width="110px"
     style="width: 50%"
+    :model="analysisForm"
+    :rules="analysisRules"
   >
     <div class="form-item">
-      <el-form-item label="性别">
-        <el-select />
+      <el-form-item
+        label="性别"
+        prop="gender"
+      >
+        <el-select
+          v-model="analysisForm.gender"
+          placeholder="请选择性别"
+        />
       </el-form-item>
-      <el-form-item label="年龄">
-        <el-select />
+      <el-form-item
+        label="年龄"
+        prop="age"
+      >
+        <el-select
+          v-model="analysisForm.age"
+          placeholder="请选择年龄"
+        />
       </el-form-item>
-      <el-form-item label="职业">
-        <el-input />
+      <el-form-item
+        label="职业"
+        prop="profession"
+      >
+        <el-input
+          v-model="analysisForm.profession"
+          placeholder="请输入职业"
+          maxlength="15"
+          show-word-limit
+        />
       </el-form-item>
-      <el-form-item label="学历">
-        <el-select />
+      <el-form-item
+        label="学历"
+        prop="diploma"
+      >
+        <el-select
+          v-model="analysisForm.diploma"
+          placeholder="请选择学历"
+        />
       </el-form-item>
-      <el-form-item label="家庭年收入">
-        <el-select />
+      <el-form-item
+        label="家庭年收入"
+        prop="annualHouseholdIncome"
+      >
+        <el-select
+          v-model="analysisForm.annualHouseholdIncome"
+          placeholder="请选择家庭年收入"
+        />
       </el-form-item>
-      <el-form-item label="婚姻状况">
-        <el-select />
+      <el-form-item
+        label="婚姻状况"
+        prop="maritalStatus"
+      >
+        <el-select
+          v-model="analysisForm.maritalStatus"
+          placeholder="请选择婚姻状况"
+        />
       </el-form-item>
     </div>
-    <el-form-item style="width: 100%">
-      <el-table
-        :data="tableData.tBody"
-        border
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      >
-        <template
-          v-for="(column, i) in tableData.tHead"
-          :key="i"
-        >
-          <el-table-column
-            :prop="column.id"
-            :label="column.name"
-          >
-            <template #default="scope">
-              <el-select
-                v-if="scope.row.isSet"
-                v-model="tableData.sel['select_' + column.id]"
-                placeholder="请选择"
-                @change="selectChange($event, column)"
-              >
-                <el-option
-                  v-for="item in column.options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-              <span v-else>{{ scope.row[column.id] }}</span>
-            </template>
-          </el-table-column>
-        </template>
-        <el-table-column
-          label="操作"
-          width="100"
-        >
-          <template #default="scope">
-            <span
-              style="cursor: pointer; color: #409eff"
-              @click="rowChange(scope.row, scope.$index, false)"
-            >
-              {{ scope.row.isSet ? '保存' : '修改' }}
-            </span>
-            <span
-              v-if="!scope.row.isSet"
-              style="cursor: pointer"
-              @click="del(scope.row, scope.$index, true)"
-            >
-              删除
-            </span>
-            <span
-              v-else
-              style="cursor: pointer"
-              @click="del(scope.row, scope.$index, true)"
-            >
-              取消
-            </span>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-button
-        type="text"
-        @click="addRow"
-      >
-        + 新增行
-      </el-button>
+    <el-form-item
+      label="国家"
+      style="width: 49%"
+      prop="country"
+    >
+      <el-select
+        v-model="analysisForm.country"
+        placeholder="请选择国家"
+      />
     </el-form-item>
-    <el-form-item label="使用场景">
-      <el-input />
-      <el-button type="text">
+    <div class="form-item">
+      <el-form-item
+        label="州/大区"
+        prop="state"
+      >
+        <el-select
+          v-model="analysisForm.state"
+          placeholder="请选择州/大区"
+        >
+          <el-option
+            v-for="item in stateOptions"
+            :key="item.value"
+            :value="item.value"
+            :label="item.label"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item
+        label="城市"
+        prop="city"
+      >
+        <el-select
+          v-model="analysisForm.city"
+          placeholder="请选择城市"
+        >
+          <el-option
+            v-for="item in stateOptions"
+            :key="item.value"
+            :value="item.value"
+            :label="item.label"
+          />
+        </el-select>
+      </el-form-item>
+    </div>
+    <div
+      v-for="(column, i) in stateCity"
+      :key="i"
+      class="form-item"
+    >
+      <el-form-item>
+        <el-select
+          v-model="stateCity[i].state"
+          placeholder="请选择州/大区"
+        >
+          <el-option
+            v-for="item in stateOptions"
+            :key="item.value"
+            :value="item.value"
+            :label="item.label"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-select
+          v-model="stateCity[i].city"
+          placeholder="请选择城市"
+        >
+          <el-option
+            v-for="item in stateOptions"
+            :key="item.value"
+            :value="item.value"
+            :label="item.label"
+          />
+        </el-select>
+      </el-form-item>
+    </div>
+    <el-form-item>
+      <el-button
+        class="user-btn"
+        @click="addStateCity"
+      >
         + 新增
       </el-button>
     </el-form-item>
     <el-form-item
-      v-for="(item, i) of usageScenario"
-      :key="i"
-      label=""
+      label="使用场景"
+      prop="usageScenario"
     >
-      <el-input v-model="usageScenario[i]" />
+      <el-input
+        v-model="analysisForm.usageScenario"
+        placeholder="请输入使用场景"
+        maxlength="15"
+        show-word-limit
+      />
+    </el-form-item>
+    <el-form-item
+      v-for="i in count"
+      :key="i"
+    >
+      <el-input
+        v-model="usageScenario[i]"
+        placeholder="请输入使用场景"
+        maxlength="15"
+        show-word-limit
+      />
     </el-form-item>
     <el-form-item>
-      <el-input type="textarea" />
+      <el-button
+        class="user-btn"
+        @click="addUsageScenario"
+      >
+        + 新增
+      </el-button>
     </el-form-item>
-    <el-form-item label="上传附件">
-      <el-upload action="#">
+    <el-form-item label="备注">
+      <el-input
+        v-model="analysisForm.remark"
+        type="textarea"
+        placeholder="请输入备注"
+      />
+    </el-form-item>
+    <el-form-item
+      label="上传附件"
+      prop="attachment"
+    >
+      <el-upload
+        action="https://jsonplaceholder.typicode.com/posts/"
+        :show-file-list="false"
+        :on-success="handleFileSuccess"
+        :limit="1"
+      >
         <el-button type="primary">
           点击上传
         </el-button>
@@ -135,12 +223,27 @@
       </div>
     </el-form-item>
     <el-form-item>
-      <div class="attachment-list">
-        xx
+      <div
+        v-for="file in fileList"
+        :key="file.id"
+        class="attachment-list"
+      >
+        <div @click="previewImg(file.id)">
+          {{ file.name }}
+        </div>
+        <el-button
+          type="text"
+          @click="deleteImg(file.id)"
+        >
+          删除
+        </el-button>
       </div>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary">
+      <el-button
+        type="primary"
+        @click="submitAnalysisForm"
+      >
         提交
       </el-button>
     </el-form-item>
@@ -151,92 +254,123 @@
 export default {
   data() {
     return {
-      tableData: {
-        sel: null,
-        row: {
-          country: '',
-          state: '',
-          region: '',
-          isSet: true
-        },
-        tHead: [
+      usageScenario: [],
+      stateCity: [],
+      fileList: [],
+      analysisForm: {},
+      analysisRules: {
+        gender: [
           {
-            id: 'country',
-            name: '国家',
-            options: [
-              { label: '美国', value: '1' },
-              { label: '英国', value: '2' },
-              { label: '中国', value: '3' }
-            ]
-          },
-          {
-            id: 'state',
-            name: '州/大区',
-            options: [
-              { label: '浙江', value: '1' },
-              { label: '福建', value: '2' },
-              { label: '海南', value: '3' }
-            ]
-          },
-          {
-            id: 'region',
-            name: '城市',
-            options: [
-              { label: '宁波', value: '1' },
-              { label: '绍兴', value: '2' },
-              { label: '象山', value: '3' }
-            ]
+            required: true,
+            message: '请选择性别'
           }
         ],
-        tBody: []
+        age: [
+          {
+            required: true,
+            message: '请选择年龄'
+          }
+        ],
+        profession: [
+          {
+            required: true,
+            message: '请输入职业'
+          }
+        ],
+        diploma: [
+          {
+            required: true,
+            message: '请选择学历'
+          }
+        ],
+        annualHouseholdIncome: [
+          {
+            required: true,
+            message: '请选择家庭年收入'
+          }
+        ],
+        maritalStatus: [
+          {
+            required: true,
+            message: '请选择婚姻状况'
+          }
+        ],
+        country: [
+          {
+            required: true,
+            message: '请选择国家'
+          }
+        ],
+        state: [
+          {
+            required: true,
+            message: '请选择国家'
+          }
+        ],
+        city: [
+          {
+            required: true,
+            message: '请选择国家'
+          }
+        ],
+        usageScenario: [
+          {
+            required: true,
+            message: '请输入使用场景'
+          }
+        ],
+        attachment: [
+          {
+            required: true,
+            message: '请上传附件'
+          }
+        ]
       },
-      usageScenario: []
+      count: 0,
+      stateOptions: [
+        {
+          value: '10',
+          label: '黄金糕'
+        },
+        {
+          value: '20',
+          label: '双皮奶'
+        }
+      ]
     };
   },
   methods: {
-    addRow() {
-      for (let i of this.tableData.tBody) {
-        if (i.isSet) {
-          return this.$message.warning('请先保存当前编辑项');
+    submitAnalysisForm() {
+      this.$refs.analysisForm.validate((valid) => {
+        if (!valid) {
+          console.log('error');
         }
-      }
-      let j = JSON.parse(JSON.stringify(this.tableData.row));
-      this.tableData.tBody.push(j);
-      this.tableData.sel = JSON.parse(JSON.stringify(j));
+      });
     },
-    rowChange(row, index, cancelFlag) {
-      for (let i = 0; i < this.tableData.tBody.length; i++) {
-        let item = this.tableData.tBody[i];
-        if (item.isSet && index !== i) {
-          return this.$message.warning('请先保存当前编辑项');
-        }
-      }
-      // 取消标识
-      if (cancelFlag) {
-        this.tableData.tBody[index].isSet = !row.isSet;
-        return;
-      }
-      if (!row.isSet) {
-        this.tableData.sel = JSON.parse(JSON.stringify(row));
-        this.tableData.tBody[index].isSet = true;
-      } else {
-        //保存
-        this.tableData.tBody.splice(index, 1, this.tableData.sel);
-        this.tableData.tBody[index].isSet = false;
-      }
+    addUsageScenario() {
+      this.count++;
+      console.log(this.usageScenario);
     },
-    del(row, index) {
-      this.tableData.tBody.splice(index, 1);
+    handleFileSuccess(file, fileList) {
+      this.fileList.push({
+        id: file.id,
+        name: fileList.name
+      });
+      this.analysisForm.attachment = file.id;
     },
-    selectChange(value, colum) {
-      let option_length = colum.options.length;
-      for (let i = 0; i < option_length; i++) {
-        if (value === colum.options[i].value) {
-          this.tableData.sel[colum.id] = colum.options[i].label;
-          this.tableData.sel[`select_${colum.id}`] = value;
-          break;
-        }
-      }
+    deleteImg(id) {
+      console.log(id);
+    },
+    previewImg(id) {
+      console.log(id);
+    },
+    addStateCity() {
+      let { state } = this;
+      let { city } = this;
+      this.stateCity.push({
+        state,
+        city
+      });
     }
   }
 };

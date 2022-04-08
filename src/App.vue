@@ -62,7 +62,8 @@ body {
 }
 
 .survey-title,
-.project-title {
+.project-title,
+.order-title {
   font-size: 14px;
   margin: 15px 0;
 }
@@ -76,6 +77,13 @@ body {
 .attachment-list {
   background: #f6f6f6;
   width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.attachment-list div {
+  color: #606266;
+  cursor: pointer;
 }
 
 el-form-item--default .el-form-item__label {
@@ -95,11 +103,43 @@ el-form-item--default .el-form-item__label {
 
 .form-template {
   display: grid;
-  grid-template-columns: 41% 18% 41%;
+  grid-template-columns: 40% 20% 40%;
+  width: 100%;
+}
+
+.form-combination {
+  display: grid;
+  grid-template-columns: 33.3% 33.3% 33.3%;
   width: 100%;
 }
 
 .el-button--primary {
   width: 88px;
+}
+
+.profit-plan_title {
+  font-size: 14px;
+  margin: 15px 30px;
+}
+
+.apply-item {
+  display: flex;
+  justify-content: space-between;
+}
+
+.user-btn,
+.project-plan_btn {
+  width: 120px;
+}
+
+.collapse-item {
+  width: 94%;
+  padding: 0px 0 0 45px;
+  margin: 18px 0;
+}
+
+.table-btn {
+  display: inline-block;
+  margin: 0 5px;
 }
 </style>

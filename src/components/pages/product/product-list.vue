@@ -13,7 +13,10 @@ export default {
   },
   computed: {
     isParent() {
-      return this.$route.name !== 'product detail';
+      return (
+        this.$route.name !== 'product detail' &&
+        this.$route.name !== 'order detail'
+      );
     }
   }
 };

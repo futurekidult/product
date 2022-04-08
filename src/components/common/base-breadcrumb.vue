@@ -71,10 +71,22 @@ export default {
             });
             break;
           case 'product':
-            prefix = prefix.concat({
-              path: '/product-list',
-              meta: { title: '新品管理' }
-            });
+            if (matched.length === 4) {
+              prefix = prefix
+                .concat({
+                  path: '/product-list',
+                  meta: { title: '新品管理' }
+                })
+                .concat({
+                  path: '/product-list/1',
+                  meta: { title: '新品详情' }
+                });
+            } else {
+              prefix = prefix.concat({
+                path: '/product-list',
+                meta: { title: '新品管理' }
+              });
+            }
             break;
           default:
         }

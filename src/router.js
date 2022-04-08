@@ -15,6 +15,7 @@ import SampleList from './components/pages/sample/sample-list.vue';
 import SampleDetail from './components/pages/sample/sample-detail.vue';
 import ProductList from './components/pages/product/product-list.vue';
 import ProductDetail from './components/pages/product/product-detail.vue';
+import OrderDetail from './components/pages/product/process/order-detail.vue';
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -149,12 +150,23 @@ const router = createRouter({
           },
           children: [
             {
-              path: ':id',
+              path: ':productId',
               component: ProductDetail,
               name: 'product detail',
               meta: {
                 title: '新品详情'
               },
+              children: [
+                {
+                  path: ':orderId',
+                  component: OrderDetail,
+                  name: 'order detail',
+                  meta: {
+                    title: '下单详情'
+                  },
+                  props: true
+                }
+              ],
               props: true
             }
           ]
