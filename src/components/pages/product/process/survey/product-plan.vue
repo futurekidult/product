@@ -17,25 +17,18 @@
     :rules="productRules"
   >
     <el-form-item
-      label="使用场景"
-      prop="usageScenario"
+      v-for="(item, index) in productForm.usageScenario"
+      :key="index"
+      :label="'使用场景' + (index + 1)"
+      :prop="`usageScenario[${index}]`"
+      :rules="productRules.usageScenario"
     >
       <el-input
-        v-model="productForm.usageScenario"
+        v-model="productForm.usageScenario[index]"
         placeholder="请输入使用场景"
         maxlength="15"
         show-word-limit
-      />
-    </el-form-item>
-    <el-form-item
-      v-for="i in count"
-      :key="i"
-    >
-      <el-input
-        v-model="usageScenario[i]"
-        placeholder="请输入使用场景"
-        maxlength="15"
-        show-word-limit
+        clearable
       />
     </el-form-item>
     <el-form-item>
@@ -82,36 +75,7 @@
         placeholder="请输入产品切入点"
       />
     </el-form-item>
-    <el-collapse class="collapse-item">
-      <el-collapse-item title="竞品信息">
-        <el-table
-          border
-          :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        >
-          <el-table-column label="上传附件">
-            <el-button type="text">
-              预览
-            </el-button>
-            <span class="table-btn">|</span>
-            <el-button type="text">
-              下载
-            </el-button>
-          </el-table-column>
-          <el-table-column
-            label="竞品链接"
-            prop="link"
-          />
-          <el-table-column
-            label="竞品参数"
-            prop="param"
-          />
-          <el-table-column
-            label="对标理由"
-            prop="reason"
-          />
-        </el-table>
-      </el-collapse-item>
-    </el-collapse>
+    <competitive-table />
     <el-collapse class="collapse-item">
       <el-collapse-item title="新品信息">
         <div class="analy-form_item">
@@ -298,16 +262,20 @@
 
 <script>
 import SurveySchedule from '../../common/survey- schedule.vue';
+import CompetitiveTable from '../../common/competitive-table.vue';
 
 export default {
   components: {
-    SurveySchedule
+    SurveySchedule,
+    CompetitiveTable
   },
   data() {
     return {
       usageScenario: [],
       count: 0,
-      productForm: {},
+      productForm: {
+        usageScenario: ['']
+      },
       competitiveProductForm: {},
       productRules: {
         usageScenario: [
@@ -437,8 +405,7 @@ export default {
   },
   methods: {
     addUsageScenario() {
-      this.count++;
-      console.log(this.usageScenario);
+      this.productForm.usageScenario.length++;
     },
     handleFileSuccess(file, fileList) {
       this.fileList.push({

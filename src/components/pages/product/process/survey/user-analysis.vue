@@ -83,80 +83,34 @@
         />
       </el-form-item>
     </div>
-    <el-form-item
-      label="国家"
-      style="width: 49%"
-      prop="country"
-    >
-      <el-select
-        v-model="analysisForm.country"
-        placeholder="请选择国家"
-      />
-    </el-form-item>
-    <div class="form-item">
-      <el-form-item
-        label="州/大区"
-        prop="state"
-      >
-        <el-select
-          v-model="analysisForm.state"
-          placeholder="请选择州/大区"
-        >
-          <el-option
-            v-for="item in stateOptions"
-            :key="item.value"
-            :value="item.value"
-            :label="item.label"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item
-        label="城市"
-        prop="city"
-      >
-        <el-select
-          v-model="analysisForm.city"
-          placeholder="请选择城市"
-        >
-          <el-option
-            v-for="item in stateOptions"
-            :key="item.value"
-            :value="item.value"
-            :label="item.label"
-          />
-        </el-select>
-      </el-form-item>
-    </div>
     <div
-      v-for="(column, i) in stateCity"
-      :key="i"
-      class="form-item"
+      v-for="(item, index) in analysisForm.country"
+      :key="index"
+      style="display: flex"
     >
-      <el-form-item>
-        <el-select
-          v-model="stateCity[i].state"
-          placeholder="请选择州/大区"
-        >
-          <el-option
-            v-for="item in stateOptions"
-            :key="item.value"
-            :value="item.value"
-            :label="item.label"
-          />
-        </el-select>
+      <el-form-item
+        :label="'国家' + (index + 1)"
+        :prop="`country.${index}.country_id`"
+        :rules="analysisRules.country"
+      >
+        <el-select v-model="item.country_id" />
       </el-form-item>
-      <el-form-item>
+      <el-form-item
+        :label="'州/大区' + (index + 1)"
+        :prop="`country.${index}.region_id`"
+        :rules="analysisRules.region"
+      >
         <el-select
-          v-model="stateCity[i].city"
-          placeholder="请选择城市"
-        >
-          <el-option
-            v-for="item in stateOptions"
-            :key="item.value"
-            :value="item.value"
-            :label="item.label"
-          />
-        </el-select>
+          v-model="item.region_id"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item
+        :label="'城市' + (index + 1)"
+        :prop="`country.${index}.city_id`"
+        :rules="analysisRules.city"
+      >
+        <el-select v-model="item.city_id" />
       </el-form-item>
     </div>
     <el-form-item>
@@ -168,25 +122,18 @@
       </el-button>
     </el-form-item>
     <el-form-item
-      label="使用场景"
-      prop="usageScenario"
+      v-for="(item, index) in analysisForm.usageScenario"
+      :key="index"
+      :label="'使用场景' + (index + 1)"
+      :prop="`usageScenario[${index}]`"
+      :rules="analysisRules.usageScenario"
     >
       <el-input
-        v-model="analysisForm.usageScenario"
+        v-model="analysisForm.usageScenario[index]"
         placeholder="请输入使用场景"
         maxlength="15"
         show-word-limit
-      />
-    </el-form-item>
-    <el-form-item
-      v-for="i in count"
-      :key="i"
-    >
-      <el-input
-        v-model="usageScenario[i]"
-        placeholder="请输入使用场景"
-        maxlength="15"
-        show-word-limit
+        clearable
       />
     </el-form-item>
     <el-form-item>
@@ -254,10 +201,17 @@
 export default {
   data() {
     return {
-      usageScenario: [],
-      stateCity: [],
       fileList: [],
-      analysisForm: {},
+      countryRow: {
+        country_id: null,
+        region_id: null,
+        city_id: null
+      },
+      report: {
+        country: [{}],
+        usage_scenario: [''],
+        attachment: []
+      },
       analysisRules: {
         gender: [
           {
@@ -301,16 +255,16 @@ export default {
             message: '请选择国家'
           }
         ],
-        state: [
+        region: [
           {
             required: true,
-            message: '请选择国家'
+            message: '请选择州/大区'
           }
         ],
         city: [
           {
             required: true,
-            message: '请选择国家'
+            message: '请选择城市'
           }
         ],
         usageScenario: [
@@ -326,30 +280,33 @@ export default {
           }
         ]
       },
-      count: 0,
-      stateOptions: [
-        {
-          value: '10',
-          label: '黄金糕'
-        },
-        {
-          value: '20',
-          label: '双皮奶'
-        }
-      ]
+      count: 0
     };
+  },
+  created() {
+    this.analysisForm = this.report;
+    this.analysisForm.annualHouseholdIncome =
+      this.report.annual_household_income;
+    this.analysisForm.maritalStatus = this.report.marital_status;
+    this.analysisForm.country = this.report.country;
+    this.analysisForm.usageScenario = this.report.usage_scenario;
+    delete this.analysisForm.usage_scenario;
+    delete this.analysisForm.annual_household_income;
+    delete this.analysisForm.marital_status;
   },
   methods: {
     submitAnalysisForm() {
+      console.log(this.analysisForm);
       this.$refs.analysisForm.validate((valid) => {
         if (!valid) {
           console.log('error');
+        } else {
+          console.log(this.analysisForm);
         }
       });
     },
     addUsageScenario() {
-      this.count++;
-      console.log(this.usageScenario);
+      this.analysisForm.usageScenario.length++;
     },
     handleFileSuccess(file, fileList) {
       this.fileList.push({
@@ -365,12 +322,7 @@ export default {
       console.log(id);
     },
     addStateCity() {
-      let { state } = this;
-      let { city } = this;
-      this.stateCity.push({
-        state,
-        city
-      });
+      this.analysisForm.country.push(this.countryRow);
     }
   }
 };

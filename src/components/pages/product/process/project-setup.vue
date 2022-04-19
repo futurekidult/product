@@ -15,25 +15,40 @@
     <el-table-column label="实际完成时间" />
     <el-table-column label="评审状态" />
     <el-table-column label="状态" />
-    <el-table-column label="操作" />
+    <el-table-column label="操作">
+      <template #default="scope">
+        <div v-if="scope.row.status === '审批中'">
+          <el-button>不通过</el-button>
+          <el-button type="primary">
+            通过
+          </el-button>
+        </div>
+      </template>
+    </el-table-column>
   </el-table>
 
   <el-form
+    ref="projectForm"
     label-width="100px"
     class="project-form"
     :model="projectForm"
+    :rules="projectRules"
   >
     <el-form-item
       label="评审结果"
       style="width: 20%"
+      prop="result"
     >
-      <el-select v-model="projectForm.result">
+      <el-select
+        v-model="projectForm.result"
+        placeholder="请选择评审结果"
+      >
         <el-option
-          value="0"
+          value="1"
           label="通过"
         />
         <el-option
-          value="1"
+          value="0"
           label="不通过"
         />
       </el-select>
@@ -43,48 +58,17 @@
       v-if="flag === 'fail'"
       label="不通过原因"
       style="width: 50%"
+      prop="failReason"
     >
-      <el-input type="textarea" />
+      <el-input
+        v-model="projectForm.failReason"
+        type="textarea"
+        placeholder="请输入不通过原因"
+      />
     </el-form-item>
     <div v-if="flag === 'pass'">
-      <div class="profit-plan_title">
-        核算利润表
-      </div>
-      <el-table
-        border
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        class="profit-plan_table"
-      >
-        <el-table-column label="序号" />
-        <el-table-column label="市场" />
-        <el-table-column label="平台" />
-        <el-table-column label="是否开模" />
-        <el-table-column label="调价记录" />
-        <el-table-column label="操作" />
-      </el-table>
-
-      <el-button class="profit-plan_btn">
-        + 新增核算利润
-      </el-button>
-
-      <div class="profit-plan_title">
-        项目进度计划表
-      </div>
-      <el-table
-        border
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        class="profit-plan_table"
-      >
-        <el-table-column label="序号" />
-        <el-table-column label="阶段名称" />
-        <el-table-column label="计划完成时间" />
-        <el-table-column label="实际完成时间" />
-        <el-table-column label="状态" />
-        <el-table-column label="操作" />
-      </el-table>
-      <el-button class="profit-plan_btn">
-        设置阶段完成时间
-      </el-button>
+      <profit-calculation />
+      <process-table />
 
       <div class="profit-plan_title">
         销售计划表
@@ -92,9 +76,15 @@
 
       <el-form-item
         label="上传附件"
+        prop="attachment"
         style="margin-bottom: 18px"
       >
-        <el-upload action="#">
+        <el-upload
+          action="https://jsonplaceholder.typicode.com/posts/"
+          :show-file-list="false"
+          :on-success="handleFileSuccess"
+          :limit="1"
+        >
           <el-button type="primary">
             点击上传
           </el-button>
@@ -105,15 +95,27 @@
       </el-form-item>
       <el-form-item style="margin-bottom: 18px">
         <div
+          v-for="file in fileList"
+          :key="file.id"
           class="attachment-list"
-          style="width: 50%"
         >
-          xx
+          <div @click="previewFile(file.id)">
+            {{ file.name }}
+          </div>
+          <el-button
+            type="text"
+            @click="deleteFile(file.id)"
+          >
+            删除
+          </el-button>
         </div>
       </el-form-item>
     </div>
     <el-form-item>
-      <el-button type="primary">
+      <el-button
+        type="primary"
+        @click="submitProjectForm"
+      >
         提交
       </el-button>
     </el-form-item>
@@ -121,27 +123,93 @@
 </template>
 
 <script>
+import ProfitCalculation from '../common/profit-calculation.vue';
+import ProcessTable from '../common/process-table.vue';
+
 export default {
+  components: {
+    ProfitCalculation,
+    ProcessTable
+  },
   data() {
     return {
-      projectForm: {
-        result: ''
+      projectForm: {},
+      flag: '',
+      fileList: [],
+      passRules: {
+        result: [
+          {
+            required: true,
+            message: '请选择评审结果'
+          }
+        ],
+        attachment: [
+          {
+            required: true,
+            message: '请上传附件'
+          }
+        ]
       },
-      flag: ''
+      failRules: {
+        result: [
+          {
+            required: true,
+            message: '请选择评审结果'
+          }
+        ],
+        failReason: [
+          {
+            required: true,
+            message: '请输入不通过原因'
+          }
+        ]
+      }
     };
   },
   computed: {
     getResult() {
       return this.projectForm.result;
+    },
+    projectRules() {
+      if (this.projectForm.result === '1') {
+        return this.passRules;
+      } else {
+        return this.failRules;
+      }
     }
   },
   watch: {
     getResult(val) {
-      if (val === '0') {
+      if (val === '1') {
         this.flag = 'pass';
       } else {
         this.flag = 'fail';
       }
+    }
+  },
+  methods: {
+    handleFileSuccess(file, fileList) {
+      this.fileList.push({
+        id: file.id,
+        name: fileList.name
+      });
+      this.projectForm.attachment = file.id;
+    },
+    previewFile(id) {
+      console.log(id);
+    },
+    deleteFile(id) {
+      console.log(id);
+    },
+    submitProjectForm() {
+      this.$refs.projectForm.validate((valid) => {
+        if (!valid) {
+          console.log('error');
+        }
+      });
+    },
+    closeProjectForm() {
+      this.addVisible = false;
     }
   }
 };
@@ -150,14 +218,5 @@ export default {
 <style scoped>
 .project-form {
   margin: 20px 0;
-}
-
-.profit-plan_table {
-  margin-left: 30px;
-}
-
-.profit-plan_btn {
-  margin-left: 30px;
-  margin-top: 15px;
 }
 </style>

@@ -275,20 +275,7 @@ export default {
   data() {
     return {
       fileList: [],
-      productImage: [
-        {
-          id: 1,
-          name: '图片1.jpg'
-        },
-        {
-          id: 2,
-          name: '图片2.jpg'
-        },
-        {
-          id: 3,
-          name: '图片3.jpg'
-        }
-      ],
+      productImage: [],
       src: null,
       surveyRules: {
         productImage: [

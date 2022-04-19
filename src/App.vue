@@ -79,6 +79,7 @@ body {
   width: 100%;
   display: flex;
   justify-content: space-between;
+  padding: 0 10px;
 }
 
 .attachment-list div {
@@ -128,7 +129,8 @@ el-form-item--default .el-form-item__label {
 }
 
 .user-btn,
-.project-plan_btn {
+.project-plan_btn,
+.pre-product_btn {
   width: 120px;
 }
 
@@ -141,5 +143,47 @@ el-form-item--default .el-form-item__label {
 .table-btn {
   display: inline-block;
   margin: 0 5px;
+}
+
+.plan-btn,
+.project-btn {
+  margin: 15px 0;
+}
+
+.close-btn {
+  width: 88px;
+}
+
+.adjust-time {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.adjust-time div {
+  margin-left: 10px;
+}
+
+.adjust-result {
+  margin: 0 30px;
+}
+
+.adjust-result section {
+  margin: 10px 0;
+}
+
+.hide {
+  display: none;
+}
+
+.result-pass {
+  color: #379f0d;
+}
+
+.result-fail {
+  color: #ea1d1d;
+}
+
+.result-ing {
+  color: #f78113;
 }
 </style>
