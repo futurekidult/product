@@ -120,6 +120,13 @@
       >
         + 新增
       </el-button>
+      <el-button
+        class="user-btn"
+        type="danger"
+        @click="deleteStateCity"
+      >
+        - 删除
+      </el-button>
     </el-form-item>
     <el-form-item
       v-for="(item, index) in analysisForm.usageScenario"
@@ -142,6 +149,13 @@
         @click="addUsageScenario"
       >
         + 新增
+      </el-button>
+      <el-button
+        class="user-btn"
+        type="danger"
+        @click="deleteUsageScenario"
+      >
+        - 删除
       </el-button>
     </el-form-item>
     <el-form-item label="备注">
@@ -323,6 +337,12 @@ export default {
     },
     addStateCity() {
       this.analysisForm.country.push(this.countryRow);
+    },
+    deleteStateCity() {
+      this.analysisForm.country.pop();
+    },
+    deleteUsageScenario() {
+      this.analysisForm.usageScenario.length--;
     }
   }
 };

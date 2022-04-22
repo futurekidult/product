@@ -12,11 +12,10 @@
     border
     :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
   >
-    <el-table-column label="序号">
-      <template #default="scope">
-        {{ scope.$index + 1 }}
-      </template>
-    </el-table-column>
+    <el-table-column
+      label="序号"
+      type="index"
+    />
     <el-table-column label="申请人" />
     <el-table-column label="提交时间" />
     <el-table-column label="评审完成时间" />
@@ -48,22 +47,25 @@
     调研进度表
   </div>
 
-  <el-table
+  <el-descriptions
     border
-    :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-    :data="list"
+    direction="vertical"
+    :column="6"
   >
-    <el-table-column
+    <el-descriptions-item
       label="调研负责人"
-      prop="principal_desc"
-    />
-    <el-table-column
+      width="200px"
+    >
+      111
+    </el-descriptions-item>
+    <el-descriptions-item
       label="计划完成时间"
-      prop="estimated_finish_time"
+      width="200px"
     />
-    <el-table-column
+    <el-descriptions-item
       v-if="!timeShow"
       label="实际调研开始时间"
+      width="200px"
     >
       <el-button
         type="text"
@@ -71,26 +73,29 @@
       >
         填写时间
       </el-button>
-    </el-table-column>
-    <el-table-column
+    </el-descriptions-item>
+    <el-descriptions-item
       v-else
       label="实际调研开始时间"
-      prop="actual_start_time"
+      width="200px"
     />
-    <el-table-column
+    <el-descriptions-item
       label="实际完成时间"
-      prop="actual_finish_time"
+      width="200px"
     />
-    <el-table-column
+    <el-descriptions-item
       label="状态"
-      prop="state_desc"
+      width="200px"
     />
-    <el-table-column label="操作">
+    <el-descriptions-item
+      label="操作"
+      width="200px"
+    >
       <el-button v-if="confirmVisible">
         用户调研结果确认
       </el-button>
-    </el-table-column>
-  </el-table>
+    </el-descriptions-item>
+  </el-descriptions>
 
   <div
     class="apply-item"

@@ -7,25 +7,25 @@
     立项进度表
   </div>
 
-  <el-table
+  <el-descriptions
     border
-    :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+    direction="vertical"
+    :column="5"
   >
-    <el-table-column label="项目管理员" />
-    <el-table-column label="实际完成时间" />
-    <el-table-column label="评审状态" />
-    <el-table-column label="状态" />
-    <el-table-column label="操作">
-      <template #default="scope">
-        <div v-if="scope.row.status === '审批中'">
-          <el-button>不通过</el-button>
-          <el-button type="primary">
-            通过
-          </el-button>
-        </div>
-      </template>
-    </el-table-column>
-  </el-table>
+    <el-descriptions-item label="项目管理员" />
+    <el-descriptions-item label="实际完成时间" />
+    <el-descriptions-item label="评审状态" />
+    <el-descriptions-item label="状态" />
+    <el-descriptions-item
+      label="操作"
+      width="200px"
+    >
+      <el-button>不通过</el-button>
+      <el-button type="primary">
+        通过
+      </el-button>
+    </el-descriptions-item>
+  </el-descriptions>
 
   <el-form
     ref="projectForm"

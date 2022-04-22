@@ -120,7 +120,7 @@ el-form-item--default .el-form-item__label {
 
 .profit-plan_title {
   font-size: 14px;
-  margin: 15px 30px;
+  margin: 15px 0;
 }
 
 .apply-item {

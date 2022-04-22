@@ -19,47 +19,41 @@
     :model="skuForm"
     :rules="skuRules"
   >
-    <div class="form-item">
-      <el-form-item
-        label="平台"
-        prop="sku[0].platform"
-      >
-        <el-select
-          v-model="skuForm.sku[0].platform"
-          placeholder="请选择平台"
-        />
-      </el-form-item>
-      <el-form-item
-        label="SKU命名"
-        prop="sku[0].name"
-      >
-        <el-select
-          v-model="skuForm.sku[0].name"
-          placeholder="请输入SKU命名"
-        />
-      </el-form-item>
-    </div>
     <div
-      v-for="(column, i) in skuList"
-      :key="i"
-      class="form-item"
+      v-for="(item, index) in skuForm.sku"
+      :key="index"
+      style="display: flex"
     >
-      <el-form-item>
+      <el-form-item
+        :label="'平台' + (index + 1)"
+        :prop="`sku.${index}.platform`"
+        :rules="skuRules.platform"
+      >
         <el-select
-          v-model="skuList[i].platform"
+          v-model="skuForm.platform"
           placeholder="请选择平台"
         />
       </el-form-item>
-      <el-form-item>
-        <el-select
-          v-model="skuList[i].name"
-          placeholder="请输入SKU命名"
+      <el-form-item
+        :label="'SKU命名' + (index + 1)"
+        :prop="`sku.${index}.name`"
+        :rules="skuRules.name"
+      >
+        <el-input
+          v-model="skuForm.name"
+          placeholder="请输入SKU名"
         />
       </el-form-item>
     </div>
     <el-form-item>
       <el-button @click="addSku">
         + 新增SKU
+      </el-button>
+      <el-button
+        type="danger"
+        @click="deleteSku"
+      >
+        + 删除SKU
       </el-button>
     </el-form-item>
     <el-form-item
@@ -111,19 +105,18 @@
     SKU录入进度表
   </div>
 
-  <el-table
+  <el-descriptions
     border
-    :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+    :column="4"
+    direction="vertical"
   >
-    <el-table-column label="任务负责人" />
-    <el-table-column label="实际完成时间" />
-    <el-table-column label="状态" />
-    <el-table-column label="操作">
-      <el-button type="primary">
-        已完成SKU录入甲骨文
-      </el-button>
-    </el-table-column>
-  </el-table>
+    <el-descriptions-item label="任务负责人" />
+    <el-descriptions-item label="实际完成时间" />
+    <el-descriptions-item label="状态" />
+    <el-descriptions-item label="操作">
+      <el-button> 已完成SKU录入甲骨文 </el-button>
+    </el-descriptions-item>
+  </el-descriptions>
 </template>
 
 <script>
@@ -136,13 +129,13 @@ export default {
       },
       skuList: [],
       skuRules: {
-        'sku[0].platform': [
+        platform: [
           {
             required: true,
             message: '请选择平台'
           }
         ],
-        'sku[0].name': [
+        name: [
           {
             required: true,
             message: '请输入SKU命名'
@@ -189,12 +182,10 @@ export default {
       });
     },
     addSku() {
-      let { platform } = this;
-      let { sku } = this;
-      this.skuList.push({
-        platform,
-        sku
-      });
+      this.skuForm.sku.push({});
+    },
+    deleteSku() {
+      this.skuForm.sku.pop();
     }
   }
 };

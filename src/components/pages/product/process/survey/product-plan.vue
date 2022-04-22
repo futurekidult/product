@@ -38,6 +38,13 @@
       >
         + 新增
       </el-button>
+      <el-button
+        class="user-btn"
+        type="danger"
+        @click="deleteUsageScenario"
+      >
+        - 删除
+      </el-button>
     </el-form-item>
     <el-form-item
       label="用户痛点"
@@ -406,6 +413,9 @@ export default {
   methods: {
     addUsageScenario() {
       this.productForm.usageScenario.length++;
+    },
+    deleteUsageScenario() {
+      this.productForm.usageScenario.length--;
     },
     handleFileSuccess(file, fileList) {
       this.fileList.push({

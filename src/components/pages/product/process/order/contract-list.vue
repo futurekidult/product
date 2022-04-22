@@ -3,29 +3,31 @@
     合同确认进度表
   </div>
 
-  <el-table
+  <el-descriptions
     border
-    :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+    :column="4"
+    direction="vertical"
   >
-    <el-table-column label="任务负责人" />
-    <el-table-column label="【香港→宁波】的合同确认" />
-    <el-table-column label="实际完成时间" />
-    <el-table-column label="操作">
+    <el-descriptions-item label="任务负责人" />
+    <el-descriptions-item label="【香港→宁波】的合同确认" />
+    <el-descriptions-item label="实际完成时间" />
+    <el-descriptions-item label="操作">
       <el-button type="primary">
         已完成
       </el-button>
-    </el-table-column>
-  </el-table>
+    </el-descriptions-item>
+  </el-descriptions>
 
-  <el-table
+  <el-descriptions
     border
-    :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+    :column="6"
+    direction="vertical"
     style="margin-top: 20px"
   >
-    <el-table-column label="任务负责人" />
-    <el-table-column label="【宁波→工厂】的合同确认" />
-    <el-table-column label="实际完成时间" />
-    <el-table-column label="产品说明书">
+    <el-descriptions-item label="任务负责人" />
+    <el-descriptions-item label="【宁波→工厂】的合同确认" />
+    <el-descriptions-item label="实际完成时间" />
+    <el-descriptions-item label="产品说明书">
       <el-button type="text">
         上传
       </el-button>
@@ -41,8 +43,8 @@
       <el-button type="text">
         删除
       </el-button>
-    </el-table-column>
-    <el-table-column label="刀模附件">
+    </el-descriptions-item>
+    <el-descriptions-item label="刀模附件">
       <el-button type="text">
         上传
       </el-button>
@@ -58,11 +60,13 @@
       <el-button type="text">
         删除
       </el-button>
-    </el-table-column>
-    <el-table-column label="操作">
-      <el-button>提交</el-button>
-    </el-table-column>
-  </el-table>
+    </el-descriptions-item>
+    <el-descriptions-item label="操作">
+      <el-button type="primary">
+        提交
+      </el-button>
+    </el-descriptions-item>
+  </el-descriptions>
 </template>
 
 <script>

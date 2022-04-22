@@ -13,29 +13,19 @@
     </div>
 
     <div class="adjust-result">
-      <el-table
+      <el-descriptions
         border
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        :data="list.content"
+        :column="4"
+        direction="vertical"
       >
-        <el-table-column
-          label="平台名称"
-          prop="platform"
-        />
-        <el-table-column
-          label="申请前销售价"
-          prop="origin_selling_price"
-        />
-        <el-table-column
-          label="申请调整后销售价"
-          prop="applied_selling_price"
-        />
-        <el-table-column
+        <el-descriptions-item label="平台名称" />
+        <el-descriptions-item label="申请前销售价" />
+        <el-descriptions-item label="申请调整后销售价" />
+        <el-descriptions-item
           v-if="list.state === 30"
           label="实际调整后销售价"
-          prop="adjusted_selling_price_rmb"
         />
-      </el-table>
+      </el-descriptions>
 
       <section>申请调价原因: {{ list.reason }}</section>
       <section>申请人: {{ list.applicant }}</section>
@@ -137,7 +127,9 @@ export default {
   data() {
     return {
       visible: this.dialogVisible,
-      list: {},
+      list: {
+        state: 30
+      },
       adjustForm: {},
       adjustRules: {
         currency: [

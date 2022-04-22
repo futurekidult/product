@@ -220,6 +220,14 @@
           >
             + 新增平台
           </el-button>
+          <el-button
+            v-if="type !== 'view'"
+            style="margin: 15px"
+            type="danger"
+            @click="deleteRow"
+          >
+            - 删除平台
+          </el-button>
         </el-form-item>
         <el-divider v-if="type !== 'view'" />
       </el-scrollbar>
@@ -311,6 +319,9 @@ export default {
     },
     addRow() {
       this.profitForm.info.push({});
+    },
+    deleteRow() {
+      this.profitForm.info.pop();
     },
     submitProfitForm() {
       console.log(this.profitForm.tableData);

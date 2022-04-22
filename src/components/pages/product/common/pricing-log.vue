@@ -18,29 +18,27 @@
         </div>
 
         <div class="adjust-result">
-          <el-table
+          <el-descriptions
             border
-            :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-            :data="item.content"
+            :column="4"
+            direction="vertical"
           >
-            <el-table-column
-              label="平台名称"
-              prop="platform"
-            />
-            <el-table-column
-              label="申请前销售价"
-              prop="origin_selling_price"
-            />
-            <el-table-column
-              label="申请调整后销售价"
-              prop="applied_selling_price"
-            />
-            <el-table-column
-              v-if="item.isShow"
+            <el-descriptions-item label="平台名称">
+              {{ item.platform }}
+            </el-descriptions-item>
+            <el-descriptions-item label="申请前销售价">
+              {{ item.origin_selling_price }}
+            </el-descriptions-item>
+            <el-descriptions-item label="申请调整后销售价">
+              {{ item.applied_selling_price }}
+            </el-descriptions-item>
+            <el-descriptions-item
+              v-if="item.adjusted_selling_price_rmb === '' ? '' : 'hide'"
               label="实际调整后销售价"
-              prop="adjusted_selling_price_rmb"
-            />
-          </el-table>
+            >
+              {{ item.adjusted_selling_price_rmb }}
+            </el-descriptions-item>
+          </el-descriptions>
 
           <section>申请调价原因: {{ item.reason }}</section>
           <section>申请人: {{ item.applicant }}</section>
@@ -69,7 +67,6 @@
           <el-divider />
         </div>
       </div>
-      <el-divider />
     </el-scrollbar>
   </el-dialog>
 </template>
@@ -88,22 +85,10 @@ export default {
       list: []
     };
   },
-  created() {
-    this.getColumn();
-  },
   methods: {
     cancel() {
       this.visible = false;
       this.$emit('hide-dialog', this.visible);
-    },
-    getColumn() {
-      for (let i = 0; i < this.list.length; i++) {
-        if (this.list[i].content[0].adjusted_selling_price_rmb === 0) {
-          this.list[i].isShow = false;
-        } else {
-          this.list[i].isShow = true;
-        }
-      }
     },
     colorStage(val) {
       if (val === '待审批') {

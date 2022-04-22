@@ -16,11 +16,10 @@
     border
     :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
   >
-    <el-table-column label="序号">
-      <template #default="scope">
-        {{ scope.$index + 1 }}
-      </template>
-    </el-table-column>
+    <el-table-column
+      label="序号"
+      type="index"
+    />
     <el-table-column label="申请人" />
     <el-table-column label="提交时间" />
     <el-table-column label="评审完成时间" />
@@ -37,18 +36,19 @@
     专利排查进度表
   </div>
 
-  <el-table
+  <el-descriptions
     border
-    :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+    :column="5"
+    direction="vertical"
   >
-    <el-table-column label="专利负责人" />
-    <el-table-column label="计划完成时间" />
-    <el-table-column label="实际完成时间" />
-    <el-table-column label="状态" />
-    <el-table-column label="操作">
+    <el-descriptions-item label="专利负责人" />
+    <el-descriptions-item label="计划完成时间" />
+    <el-descriptions-item label="实际完成时间" />
+    <el-descriptions-item label="状态" />
+    <el-descriptions-item label="操作">
       <el-button>专利排查完成</el-button>
-    </el-table-column>
-  </el-table>
+    </el-descriptions-item>
+  </el-descriptions>
 
   <el-tabs
     v-model="activeName"

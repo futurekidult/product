@@ -11,11 +11,8 @@
         label="序号"
         width="80px"
         align="center"
-      >
-        <template #default="scope">
-          {{ scope.$index + 1 }}
-        </template>
-      </el-table-column>
+        type="index"
+      />
       <el-table-column
         label="阶段名称"
         prop="stage"
