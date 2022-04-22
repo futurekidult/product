@@ -63,7 +63,8 @@ body {
 
 .survey-title,
 .project-title,
-.order-title {
+.order-title,
+.proofing-title {
   font-size: 14px;
   margin: 15px 0;
 }
@@ -86,8 +87,11 @@ body {
   color: #606266;
   cursor: pointer;
 }
+.attachment-list div:hover {
+  color: #409eff;
+}
 
-el-form-item--default .el-form-item__label {
+.el-form-item--default .el-form-item__label {
   display: flex;
   align-items: center;
 }
@@ -115,7 +119,7 @@ el-form-item--default .el-form-item__label {
 }
 
 .el-button--primary {
-  width: 88px;
+  width: 100px;
 }
 
 .profit-plan_title {
@@ -123,7 +127,8 @@ el-form-item--default .el-form-item__label {
   margin: 15px 0;
 }
 
-.apply-item {
+.apply-item,
+.proofing-item {
   display: flex;
   justify-content: space-between;
 }
@@ -151,7 +156,7 @@ el-form-item--default .el-form-item__label {
 }
 
 .close-btn {
-  width: 88px;
+  width: 100px;
 }
 
 .adjust-time {
