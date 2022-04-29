@@ -8,22 +8,36 @@
       下单进度表
     </div>
 
-    <el-table
+    <el-descriptions
+      :column="6"
+      direction="vertical"
       border
-      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
     >
-      <el-table-column label="关联定价ID" />
-      <el-table-column label="最终定价" />
-      <el-table-column label="供应商ID" />
-      <el-table-column label="计划完成时间" />
-      <el-table-column label="实际完成时间" />
-      <el-table-column label="状态" />
-    </el-table>
+      <el-descriptions-item label="关联定价ID">
+        {{ progress.product_id }}
+      </el-descriptions-item>
+      <el-descriptions-item label="最终定价">
+        ￥{{ progress.final_price }}
+      </el-descriptions-item>
+      <el-descriptions-item label="供应商ID">
+        {{ progress.supplier_id }}
+      </el-descriptions-item>
+      <el-descriptions-item label="计划完成时间">
+        {{ progress.estimated_finish_time }}
+      </el-descriptions-item>
+      <el-descriptions-item label="实际完成时间">
+        {{ progress.actual_finish_time }}
+      </el-descriptions-item>
+      <el-descriptions-item label="状态">
+        {{ progress.state_desc }}
+      </el-descriptions-item>
+    </el-descriptions>
 
     <el-tabs
       v-model="activeName"
       type="card"
       class="order-tabs"
+      @tab-click="handleClick"
     >
       <el-tab-pane
         label="SKU"
@@ -39,7 +53,7 @@
       </el-tab-pane>
       <el-tab-pane
         label="大货样"
-        name="sample"
+        name="pre-production-sample"
       >
         <production-sample />
       </el-tab-pane>
@@ -63,6 +77,32 @@ export default {
     return {
       activeName: 'sku'
     };
+  },
+  computed: {
+    progress() {
+      return this.$store.state.product.order.progress;
+    }
+  },
+  methods: {
+    async getContract() {
+      await this.$store.dispatch('product/order/getContract', {
+        params: {
+          order_id: this.$route.params.orderId
+        }
+      });
+    },
+    async getPreProductSample() {
+      await this.$store.dispatch('product/order/getPreProduct', {
+        params: { order_id: this.$route.params.orderId }
+      });
+    },
+    handleClick(tab) {
+      if (tab.props.name === 'contract') {
+        this.getContract();
+      } else if (tab.props.name === 'pre-production-sample') {
+        this.getPreProductSample();
+      }
+    }
   }
 };
 </script>

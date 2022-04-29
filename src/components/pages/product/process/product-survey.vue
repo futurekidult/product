@@ -63,6 +63,7 @@ export default {
     RiskSurvey,
     UserSurvey
   },
+  props: ['id'],
   data() {
     return {
       activeName: 'platform'

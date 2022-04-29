@@ -1,11 +1,26 @@
 <template>
-  <el-table
+  <el-descriptions
     border
-    :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+    :column="4"
+    direction="vertical"
   >
-    <el-table-column label="调研负责人" />
-    <el-table-column label="计划完成时间" />
-    <el-table-column label="实际完成时间" />
-    <el-table-column label="状态" />
-  </el-table>
+    <el-descriptions-item label="调研负责人">
+      {{ getProgress.principal_desc }}
+    </el-descriptions-item>
+    <el-descriptions-item label="计划完成时间">
+      {{ getProgress.estimated_finish_time }}
+    </el-descriptions-item>
+    <el-descriptions-item label="实际完成时间">
+      {{ getProgress.actual_finish_time }}
+    </el-descriptions-item>
+    <el-descriptions-item label="状态">
+      {{ getProgress.state_desc }}
+    </el-descriptions-item>
+  </el-descriptions>
 </template>
+
+<script>
+export default {
+  props: ['getProgress']
+};
+</script>

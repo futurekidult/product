@@ -3,7 +3,7 @@
     调研进度表
   </div>
 
-  <survey-schedule />
+  <survey-schedule :get-progress="getProgress" />
 
   <div class="survey-title">
     调研报告内容
@@ -19,29 +19,29 @@
     <div class="form-item">
       <el-form-item
         label="发明专利"
-        prop="inventivePatent"
+        prop="inventive_patent"
       >
         <el-select
-          v-model="riskForm.inventivePatent"
+          v-model="riskForm.inventive_patent"
           placeholder="请选择发明专利"
         />
       </el-form-item>
       <el-form-item
         label="是否需要认证"
-        prop="needVerify"
+        prop="need_verify"
       >
         <el-select
-          v-model="riskForm.needVerify"
+          v-model="riskForm.need_verify"
           placeholder="请选择是否需要认证"
         />
       </el-form-item>
     </div>
     <el-form-item
       label="外观专利"
-      prop="designPatent"
+      prop="design_patent"
     >
       <el-input
-        v-model="riskForm.designPatent"
+        v-model="riskForm.design_patent"
         type="textarea"
         maxlength="200"
         show-word-limit
@@ -50,10 +50,10 @@
     </el-form-item>
     <el-form-item
       label="法律法规"
-      prop="legalRegulation"
+      prop="legal_regulation"
     >
       <el-input
-        v-model="riskForm.legalRegulation"
+        v-model="riskForm.legal_regulation"
         type="textarea"
         maxlength="200"
         show-word-limit
@@ -62,10 +62,10 @@
     </el-form-item>
     <el-form-item
       label="其他风险"
-      prop="otherRisk"
+      prop="other_risk"
     >
       <el-input
-        v-model="riskForm.otherRisk"
+        v-model="riskForm.other_risk"
         type="textarea"
         maxlength="200"
         show-word-limit
@@ -93,16 +93,15 @@
     </el-form-item>
     <el-form-item style="margin-bottom: 18px">
       <div
-        v-for="file in fileList"
-        :key="file.id"
+        v-if="show"
         class="attachment-list"
       >
-        <div @click="previewFile(file.id)">
-          {{ file.name }}
+        <div>
+          {{ handleAttachment(attachment.name) }}
         </div>
         <el-button
           type="text"
-          @click="deleteFile(file.id)"
+          @click="deleteFile(attachment.id)"
         >
           删除
         </el-button>
@@ -129,33 +128,33 @@ export default {
   data() {
     return {
       fileList: [],
-      riskForm: {},
+      riskForm: this.$store.state.product.survey.risk.riskForm,
       riskRules: {
-        inventivePatent: [
+        inventive_patent: [
           {
             required: true,
             message: '请选择发明专利'
           }
         ],
-        needVerify: [
+        need_verify: [
           {
             required: true,
             message: '请选择是否需要认证'
           }
         ],
-        designPatent: [
+        design_patent: [
           {
             required: true,
             message: '请输入外观专利'
           }
         ],
-        legalRegulation: [
+        legal_regulation: [
           {
             required: true,
             message: '请输入法律法规'
           }
         ],
-        otherRisk: [
+        other_risk: [
           {
             required: true,
             message: '请输入其它风险'
@@ -167,10 +166,24 @@ export default {
             message: '请上传附件'
           }
         ]
-      }
+      },
+      show: true,
+      attachment: this.$store.state.product.survey.risk.riskForm.attachment
     };
   },
+  computed: {
+    getProgress() {
+      return this.$store.state.product.survey.risk.progress;
+    }
+  },
   methods: {
+    handleAttachment(file) {
+      if (file === undefined) {
+        return '';
+      } else {
+        return file;
+      }
+    },
     submitRiskForm() {
       this.$refs.riskForm.validate((valid) => {
         if (!valid) {
@@ -184,9 +197,12 @@ export default {
         name: fileList.name
       });
       this.riskForm.attachment = file.id;
+      this.show = true;
     },
     deleteFile(id) {
       console.log(id);
+      this.attachment = {};
+      this.show = false;
     },
     previewFile(id) {
       console.log(id);

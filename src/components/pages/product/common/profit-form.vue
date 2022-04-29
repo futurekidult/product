@@ -23,10 +23,10 @@
       </el-form-item>
       <el-form-item
         label="是否开模"
-        prop="isMouldMaking"
+        prop="is_mould_making"
       >
         <el-select
-          v-model="profitForm.isMouldMaking"
+          v-model="profitForm.is_mould_making"
           placeholder="请选择是否开模"
           :disabled="isDisabled"
         />
@@ -35,12 +35,12 @@
 
       <el-scrollbar height="400px">
         <div
-          v-for="(item, index) in profitForm.info"
+          v-for="(item, index) in profitForm.list"
           :key="index"
         >
           <el-form-item
             :label="'平台' + (index + 1)"
-            :prop="`info.${index}.platform`"
+            :prop="`list.${index}.platform`"
             :rules="profitRules.platform"
           >
             <el-select
@@ -54,7 +54,7 @@
             required
           >
             <el-form-item
-              :prop="`info.${index}.currency`"
+              :prop="`list.${index}.currency`"
               :rules="profitRules.currency"
             >
               <el-select
@@ -65,153 +65,47 @@
             </el-form-item>
             <el-form-item
               style="margin-left: 6px"
-              :prop="`info.${index}.selling_price`"
-              :rules="profitRules.sellingPrice"
+              :prop="`list.${index}.selling_price`"
+              :rules="profitRules.selling_price"
             >
               <el-input
-                v-model="item.sellingPrice"
+                v-model="item.selling_price"
                 placeholder="请输入金额"
                 :disabled="isDisabled"
               />
             </el-form-item>
             <el-form-item
               style="margin-left: 6px"
-              :prop="`info.${index}.selling_price_rmb`"
+              :prop="`list.${index}.selling_price_rmb`"
             >
               <el-input
-                v-model="item.sellingPriceRmb"
+                v-model="item.selling_price_rmb"
                 :disabled="true"
               />
             </el-form-item>
           </el-form-item>
           <el-form-item
             :label="'采购参考价' + (index + 1)"
-            :prop="`info.${index}.reference_price`"
+            :prop="`list.${index}.reference_price`"
             required
           >
             <el-input
-              v-model="item.referencePrice"
+              v-model="item.reference_price"
               :disabled="true"
             />
           </el-form-item>
           <el-form-item
             :label="'运营专员' + (index + 1)"
-            :prop="`info.${index}.operations_specialist_id`"
-            :rules="profitRules.operationsSpecialistId"
+            :prop="`list.${index}.operations_specialist_id`"
+            :rules="profitRules.operations_specialist_id"
           >
             <el-select
-              v-model="profitForm.operationsSpecialistId"
+              v-model="profitForm.operations_specialist_id"
               placeholder="请选择运营专员"
               :disabled="isDisabled"
             />
           </el-form-item>
         </div>
-        <!-- <el-table
-          :data="profitForm.tableData"
-          border
-          :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        >
-          <el-table-column label="平台">
-            <template #default="scope">
-              <el-form-item
-                :prop="'tableData.' + scope.$index + '.platform'"
-                :rules="{
-                  required: true,
-                  message: '请选择平台'
-                }"
-              >
-                <el-select
-                  v-model="scope.row.platform"
-                  placeholder="请选择平台"
-                  :disabled="isDisabled"
-                />
-              </el-form-item>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="销售价"
-            required
-          >
-            <template #default="scope">
-              <el-form-item
-                :prop="'tableData.' + scope.$index + '.currency'"
-                :rules="{
-                  required: true,
-                  message: '请选择货币'
-                }"
-              >
-                <el-select
-                  v-model="scope.row.currency"
-                  placeholder="请选择货币"
-                  :disabled="isDisabled"
-                />
-              </el-form-item>
-              <el-form-item
-                :prop="'tableData.' + scope.$index + '.money'"
-                :rules="{
-                  required: true,
-                  message: '请输入金额'
-                }"
-              >
-                <el-input
-                  v-model="scope.row.money"
-                  placeholder="请输入金额"
-                  :disabled="isDisabled"
-                />
-              </el-form-item>
-              <el-form-item
-                :prop="'tableData.' + scope.$index + '.yuan'"
-                :rules="{
-                  required: true,
-                  message: '请输入人民币'
-                }"
-              >
-                <el-input
-                  v-model="scope.row.yuan"
-                  placeholder="请输入人民币"
-                  :disabled="isDisabled"
-                />
-              </el-form-item>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="采购参考价"
-            prop="referencePrice"
-          >
-            <template #default="scope">
-              <el-form-item
-                :prop="'tableData.' + scope.$index + '.referencePrice'"
-                :rules="{
-                  required: true,
-                  message: '请输入参考价'
-                }"
-              >
-                <el-input
-                  v-model="scope.row.referencePrice"
-                  placeholder="请输入参考价"
-                  :disabled="isDisabled"
-                />
-              </el-form-item>
-            </template>
-          </el-table-column>
-          <el-table-column label="运营专员">
-            <template #default="scope">
-              <el-form-item
-                :prop="'tableData.' + scope.$index + '.operationsSpecialist'"
-                :rules="{
-                  required: true,
-                  message: '请选择运营专员'
-                }"
-              >
-                <el-select
-                  v-model="scope.row.operationsSpecialist"
-                  placeholder="请选择运营专员"
-                  :disabled="isDisabled"
-                />
-              </el-form-item>
-            </template>
-          </el-table-column>
-        </el-table> -->
         <el-form-item>
           <el-button
             v-if="type !== 'view'"
@@ -254,13 +148,13 @@
 
 <script>
 export default {
-  props: ['dialogVisible', 'title', 'type'],
+  props: ['dialogVisible', 'title', 'type', 'id'],
   emits: ['hide-dialog'],
   data() {
     return {
       visible: this.dialogVisible,
       profitForm: {
-        info: [{}]
+        list: [{}]
       },
       profitRules: {
         market: [
@@ -269,7 +163,7 @@ export default {
             message: '请选择市场'
           }
         ],
-        isMouldMaking: [
+        is_mould_making: [
           {
             required: true,
             message: '请选择是否开模'
@@ -287,13 +181,13 @@ export default {
             message: '请选择货币'
           }
         ],
-        sellingPrice: [
+        selling_price: [
           {
             required: true,
             message: '请输入金额'
           }
         ],
-        operationsSpecialistId: [
+        operations_specialist_id: [
           {
             required: true,
             message: '请选择运营专员'
@@ -311,23 +205,40 @@ export default {
       }
     }
   },
-
+  mounted() {
+    this.getProfitCalculation();
+    this.profitForm = this.$store.state.product.project.profitCalculation;
+  },
   methods: {
+    async getProfitCalculation() {
+      let params = {
+        product_id: this.$route.params.product_id,
+        market: this.id
+      };
+      await this.$store.dispatch('product/project/getProfitCalculation', {
+        params
+      });
+    },
     cancel() {
       this.visible = false;
       this.$emit('hide-dialog', this.visible);
     },
     addRow() {
-      this.profitForm.info.push({});
+      this.profitForm.list.push({});
     },
     deleteRow() {
-      this.profitForm.info.pop();
+      this.profitForm.list.pop();
+    },
+    async createProfit(val) {
+      let body = val;
+      body['product_id'] = this.$route.params.paroductId;
+      await this.$store.dispatch('product/project/createProfit', body);
     },
     submitProfitForm() {
-      console.log(this.profitForm.tableData);
       this.$refs.profitForm.validate((valid) => {
-        if (!valid) {
-          console.log('error');
+        if (valid) {
+          this.createProfit(this.profitForm);
+          this.visible = false;
         }
       });
     }

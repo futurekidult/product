@@ -3,17 +3,30 @@
     调研进度表
   </div>
 
-  <el-table
+  <el-descriptions
     border
-    :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+    :column="6"
+    direction="vertical"
   >
-    <el-table-column label="负责人" />
-    <el-table-column label="是否多市场" />
-    <el-table-column label="调研市场" />
-    <el-table-column label="计划完成时间" />
-    <el-table-column label="实际完成时间" />
-    <el-table-column label="状态" />
-  </el-table>
+    <el-descriptions-item label="负责人">
+      {{ getProgress.principal_desc }}
+    </el-descriptions-item>
+    <el-descriptions-item label="是否多平台">
+      {{ getProgress.is_multi_market }}
+    </el-descriptions-item>
+    <el-descriptions-item label="调研市场">
+      {{ getProgress.market_name }}
+    </el-descriptions-item>
+    <el-descriptions-item label="计划完成时间">
+      {{ getProgress.estimated_finish_time }}
+    </el-descriptions-item>
+    <el-descriptions-item label="实际完成时间">
+      {{ getProgress.actual_finish_time }}
+    </el-descriptions-item>
+    <el-descriptions-item label="状态">
+      {{ getProgress.state_desc }}
+    </el-descriptions-item>
+  </el-descriptions>
 
   <div class="survey-title">
     调研报告内容
@@ -36,7 +49,10 @@
         :on-success="handleFileSuccess"
         :limit="1"
       >
-        <el-button type="primary">
+        <el-button
+          type="primary"
+          :disabled="isDisabled"
+        >
           点击上传
         </el-button>
       </el-upload>
@@ -46,23 +62,31 @@
     </el-form-item>
     <el-form-item>
       <div
-        v-for="file in fileList"
-        :key="file.id"
+        v-if="show"
         class="attachment-list"
       >
-        <div @click="previewFile(file.id)">
-          {{ file.name }}
+        <div>
+          {{ handleAttachment(attachment.name) }}
         </div>
         <el-button
+          v-if="!isDisabled"
           type="text"
-          @click="deleteFile(file.id)"
+          @click="deleteFile(attachment.id)"
         >
           删除
+        </el-button>
+        <el-button
+          v-else
+          type="text"
+          @click="download(attachment.id)"
+        >
+          下载附件
         </el-button>
       </div>
     </el-form-item>
     <el-form-item>
       <el-button
+        v-if="!isDisabled"
         type="primary"
         @click="submitMarketForm"
       >
@@ -85,28 +109,61 @@ export default {
           }
         ]
       },
-      fileList: []
+      show: true,
+      attachment: this.$store.state.product.survey.market.market.report
     };
+  },
+  computed: {
+    getProgress() {
+      return this.$store.state.product.survey.market.market.progress;
+    },
+    isDisabled() {
+      return this.getProgress.state === 10 ? false : true;
+    }
   },
   methods: {
     handleFileSuccess(file, fileList) {
-      this.fileList.push({
+      this.attachment = {
         id: file.id,
         name: fileList.name
-      });
+      };
       this.marketForm.attachment = file.id;
+      this.show = true;
+    },
+    async submitRequest() {
+      let params = {
+        product_id: this.$route.params.productId,
+        attchment_id: this.marketForm.attachment,
+        survey_schedule_id: this.getProgress.id
+      };
+      await this.$store.dispatch(
+        'product/survey/market/submitMarketFile',
+        params
+      );
     },
     submitMarketForm() {
       this.$refs.marketForm.validate((valid) => {
-        if (!valid) {
-          console.log('error');
+        if (valid) {
+          this.submitRequest();
         }
       });
+    },
+    handleAttachment(file) {
+      if (file === undefined) {
+        return '';
+      } else {
+        return file;
+      }
     },
     previewFile(id) {
       console.log(id);
     },
     deleteFile(id) {
+      console.log(id);
+      this.attachment = {};
+      this.show = false;
+    },
+    download(id) {
       console.log(id);
     }
   }

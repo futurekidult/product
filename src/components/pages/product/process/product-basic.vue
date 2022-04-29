@@ -4,10 +4,23 @@
     :props="defaultProps"
     @node-click="handleNodeClick"
   />
+
+  <el-form>
+    <el-form-item label="产品名称" />
+    <el-form-item label="产品图片" />
+    <el-form-item label="大品类" />
+    <el-form-item label="小品类" />
+    <el-form-item label="品牌" />
+    <el-form-item label="是否新品类" />
+    <el-form-item label="是否新产品" />
+    <el-form-item label="市场" />
+    <el-form-item label="平台" />
+  </el-form>
 </template>
 
 <script>
 export default {
+  props: ['id'],
   data() {
     return {
       list: [

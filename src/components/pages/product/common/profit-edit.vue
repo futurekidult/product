@@ -12,7 +12,7 @@
     >
       <el-scrollbar height="300px">
         <div
-          v-for="(item, index) in editForm.list"
+          v-for="(item, index) in editForm"
           :key="index"
         >
           <el-form-item
@@ -23,7 +23,7 @@
           </el-form-item>
           <el-form-item
             :label="'运营专员' + (index + 1)"
-            :prop="`list.${index}.operations_specialist_id`"
+            :prop="`${index}.operations_specialist_id`"
             :rules="[{ required: true, message: '请选择运营专员' }]"
           >
             <el-select
@@ -55,7 +55,7 @@
 
 <script>
 export default {
-  props: ['dialogVisible'],
+  props: ['dialogVisible', 'id'],
   emits: ['hide-dialog'],
   data() {
     return {
@@ -65,15 +65,42 @@ export default {
       }
     };
   },
+  computed: {
+    getSpecialist() {
+      return this.$store.state.product.project.specialist;
+    }
+  },
+  mounted() {
+    this.getOperationsSpecialist();
+    this.editForm = this.getSpecialist;
+  },
   methods: {
+    async getOperationsSpecialist() {
+      let params = {
+        product_id: this.$route.params.productId,
+        market: this.id
+      };
+      await this.$store.dispatch('product/project/getOperationsSpecialist', {
+        params
+      });
+    },
+    async updateOperationsSpecialist(val) {
+      let body = val;
+      body['product_id'] = this.$route.params.productId;
+      body['market'] = this.id;
+      await this.$store.dispatch('product/project/getOperationsSpecialist', {
+        body
+      });
+    },
     cancel() {
       this.visible = false;
       this.$emit('hide-dialog', this.visible);
     },
     submitEditForm() {
       this.$refs.editForm.validate((valid) => {
-        if (!valid) {
-          console.log('error');
+        if (valid) {
+          this.updateOperationsSpecialist(this.editForm);
+          this.visible = false;
         }
       });
     }

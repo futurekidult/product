@@ -4,6 +4,7 @@
       <el-table
         border
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+        :data="competitiveProduct"
       >
         <el-table-column label="上传附件">
           <el-button type="text">
@@ -20,7 +21,7 @@
         />
         <el-table-column
           label="竞品参数"
-          prop="param"
+          prop="parameter"
         />
         <el-table-column
           label="对标理由"
@@ -30,3 +31,9 @@
     </el-collapse-item>
   </el-collapse>
 </template>
+
+<script>
+export default {
+  props: ['competitiveProduct']
+};
+</script>

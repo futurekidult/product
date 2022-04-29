@@ -3,14 +3,21 @@
     SKU命名进度表
   </div>
 
-  <el-table
+  <el-descriptions
     border
-    :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+    :column="3"
+    direction="vertical"
   >
-    <el-table-column label="任务负责人" />
-    <el-table-column label="完成时间" />
-    <el-table-column label="状态" />
-  </el-table>
+    <el-descriptions-item label="任务负责人">
+      {{ getProgress.principal }}
+    </el-descriptions-item>
+    <el-descriptions-item label="完成时间">
+      {{ getProgress.actual_finish_time }}
+    </el-descriptions-item>
+    <el-descriptions-item label="状态">
+      {{ getProgress.state_desc }}
+    </el-descriptions-item>
+  </el-descriptions>
 
   <el-form
     ref="skuForm"
@@ -30,8 +37,9 @@
         :rules="skuRules.platform"
       >
         <el-select
-          v-model="skuForm.platform"
+          v-model="item.platform"
           placeholder="请选择平台"
+          :disabled="isDisabled"
         />
       </el-form-item>
       <el-form-item
@@ -40,17 +48,22 @@
         :rules="skuRules.name"
       >
         <el-input
-          v-model="skuForm.name"
+          v-model="item.name"
           placeholder="请输入SKU名"
+          :disabled="isDisabled"
         />
       </el-form-item>
     </div>
     <el-form-item>
-      <el-button @click="addSku">
+      <el-button
+        :disabled="isDisabled"
+        @click="addSku"
+      >
         + 新增SKU
       </el-button>
       <el-button
         type="danger"
+        :disabled="isDisabled"
         @click="deleteSku"
       >
         + 删除SKU
@@ -58,7 +71,7 @@
     </el-form-item>
     <el-form-item
       label="上传附件"
-      prop="attachment"
+      prop="project_plan_file"
     >
       <el-upload
         action="https://jsonplaceholder.typicode.com/posts/"
@@ -66,7 +79,10 @@
         :on-success="handleFileSuccess"
         :limit="1"
       >
-        <el-button type="primary">
+        <el-button
+          type="primary"
+          :disabled="isDisabled"
+        >
           点击上传
         </el-button>
       </el-upload>
@@ -74,18 +90,21 @@
         支持office文档格式以及png/jpg/jpeg等图片格式,单个文件不能超过5MB
       </div>
     </el-form-item>
-    <el-form-item>
-      <div
-        v-for="file in fileList"
-        :key="file.id"
-        class="attachment-list"
-      >
-        <div @click="previewFile(file.id)">
-          {{ file.name }}
+    <el-form-item v-if="show">
+      <div class="attachment-list">
+        <div>
+          {{ handleAttachment(skuForm.project_plan_file.name) }}
         </div>
         <el-button
+          v-if="isDisabled"
           type="text"
-          @click="deleteFile(file.id)"
+        >
+          下载附件
+        </el-button>
+        <el-button
+          v-else
+          type="text"
+          @click="deleteFile(skuForm.project_plan_file.id)"
         >
           删除
         </el-button>
@@ -93,6 +112,7 @@
     </el-form-item>
     <el-form-item>
       <el-button
+        v-if="!isDisabled"
         type="primary"
         @click="submitSkuForm"
       >
@@ -110,11 +130,22 @@
     :column="4"
     direction="vertical"
   >
-    <el-descriptions-item label="任务负责人" />
-    <el-descriptions-item label="实际完成时间" />
-    <el-descriptions-item label="状态" />
+    <el-descriptions-item label="任务负责人">
+      {{ skuEntry.principal }}
+    </el-descriptions-item>
+    <el-descriptions-item label="实际完成时间">
+      {{ skuEntry.actual_finish_time }}
+    </el-descriptions-item>
+    <el-descriptions-item label="状态">
+      {{ skuEntry.state_desc }}
+    </el-descriptions-item>
     <el-descriptions-item label="操作">
-      <el-button> 已完成SKU录入甲骨文 </el-button>
+      <el-button
+        :disabled="skuEntry.state === 10 ? false : true"
+        @click="completeEntry"
+      >
+        已完成SKU录入甲骨文
+      </el-button>
     </el-descriptions-item>
   </el-descriptions>
 </template>
@@ -124,10 +155,6 @@ export default {
   data() {
     return {
       fileList: [],
-      skuForm: {
-        sku: [{}]
-      },
-      skuList: [],
       skuRules: {
         platform: [
           {
@@ -141,44 +168,73 @@ export default {
             message: '请输入SKU命名'
           }
         ],
-        attachment: [
+        project_plan_file: [
           {
             required: true,
             message: '请上传附件'
           }
         ]
-      }
+      },
+      show: true
     };
   },
-  created() {
-    for (let i = 1; i < this.skuForm.sku.length; i++) {
-      this.skuList.push(this.skuForm.sku[i]);
+  computed: {
+    getProgress() {
+      return this.$store.state.product.order.sku.sku_name_schedule;
+    },
+    skuForm() {
+      return this.$store.state.product.order.sku.sku_info;
+    },
+    skuEntry() {
+      return this.$store.state.product.order.sku.sku_entry_schedule;
+    },
+    isDisabled() {
+      return this.getProgress.state === 40 ? true : false;
+    },
+    getSkuId() {
+      return this.$store.state.product.order.sku.id;
     }
   },
   methods: {
     handleFileSuccess(file, fileList) {
-      this.fileList.push({
+      this.skuForm.project_plan_file = {
         id: file.id,
         name: fileList.name
-      });
-      this.skuForm.attachment = file.id;
+      };
     },
     previewFile(id) {
       console.log(id);
     },
     deleteFile(id) {
       console.log(id);
+      this.skuForm.project_plan_file = {};
+      this.show = false;
+    },
+    handleAttachment(file) {
+      if (file === undefined) {
+        return '';
+      } else {
+        return file;
+      }
+    },
+    async getSkuForm() {
+      await this.$store.dispatch('product/order/getSkuForm');
     },
     submitSkuForm() {
       this.$refs.skuForm.validate((valid) => {
-        if (!valid) {
-          console.log('error');
-        } else {
-          this.skuList.forEach((item) => {
-            this.skuForm.sku.push(item);
-          });
-          console.log(this.skuForm);
+        if (valid) {
+          let { id } = this.skuForm.project_plan_file;
+          this.skuForm.project_plan_file = id;
+          this.getSkuForm();
         }
+      });
+    },
+    async completeEntry() {
+      await this.$store.dispatch('product/order/completeSkuEntry', {
+        id: this.getSkuId
+      });
+      await this.$store.dispatch('product/order/getSkuForm', {
+        order_id: this.$route.params.orderId
       });
     },
     addSku() {

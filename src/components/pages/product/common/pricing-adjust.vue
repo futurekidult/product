@@ -122,7 +122,7 @@ export default {
   components: {
     Clock
   },
-  props: ['dialogVisible', 'title', 'type'],
+  props: ['dialogVisible', 'title', 'type', 'id'],
   emits: ['hide-dialog'],
   data() {
     return {

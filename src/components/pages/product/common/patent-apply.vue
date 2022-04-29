@@ -14,11 +14,11 @@
     >
       <el-form-item
         label="专利类型"
-        prop="patentType"
+        prop="patent_types"
       >
-        <el-checkbox-group v-model="patentForm.patentType">
+        <el-checkbox-group v-model="patentForm.patent_types">
           <el-checkbox
-            v-for="(item, i) in patentType"
+            v-for="(item, i) in getTypes"
             :key="i"
             :label="item.key"
             :disabled="isDisabled"
@@ -29,31 +29,31 @@
       </el-form-item>
       <el-form-item
         label="产品中文名"
-        prop="productCName"
+        prop="product_name_cn"
       >
         <el-input
-          v-model="patentForm.productCName"
+          v-model="patentForm.product_name_cn"
           placeholder="请输入产品中文名"
-          :disabled="isDisabled"
+          disabled
         />
       </el-form-item>
       <el-form-item
         label="产品英文名"
-        prop="productEName"
+        prop="product_name_en"
       >
         <el-input
-          v-model="patentForm.productEName"
+          v-model="patentForm.product_name_en"
           placeholder="请输入产品英文名"
           :disabled="isDisabled"
         />
       </el-form-item>
       <el-form-item
         label="国家/地区"
-        prop="country"
+        prop="coutries"
       >
-        <el-checkbox-group v-model="patentForm.country">
+        <el-checkbox-group v-model="patentForm.coutries">
           <el-checkbox
-            v-for="(item, i) in countries"
+            v-for="(item, i) in getCountries"
             :key="i"
             :label="item.key"
             :disabled="isDisabled"
@@ -64,25 +64,31 @@
       </el-form-item>
       <el-form-item
         label="产品销售链接"
-        prop="saleLink"
+        prop="sale_link"
       >
         <el-input
-          v-model="patentForm.saleLink"
+          v-model="patentForm.sale_link"
           type="textarea"
           :disabled="isDisabled"
         />
       </el-form-item>
-      <competitive-table />
+      <competitive-table :competitive-product="competitiveProduct" />
       <el-divider />
 
       <el-form-item
-        v-if="type === 'review'"
+        v-if="type !== 'apply'"
         label="评审结果"
-        prop="result"
+        prop="review_result"
       >
-        <el-select />
+        <el-select
+          v-model="patentForm.review_result"
+          placeholder="请选择评审结果"
+        />
       </el-form-item>
-      <div style="text-align: right">
+      <div
+        v-if="type !== 'view'"
+        style="text-align: right"
+      >
         <el-button
           class="close-btn"
           @click="cancel"
@@ -107,74 +113,39 @@ export default {
   components: {
     CompetitiveTable
   },
-  props: ['dialogVisible', 'formTitle', 'type'],
+  props: ['dialogVisible', 'formTitle', 'type', 'form', 'id'],
   emits: ['hide-dialog'],
   data() {
     return {
-      patentType: [
-        {
-          key: 10,
-          value: '外观专利'
-        },
-        {
-          key: 20,
-          value: '发明专利'
-        },
-        {
-          key: 30,
-          value: '实用新型'
-        }
-      ],
-      countries: [
-        {
-          key: 10,
-          value: '美国'
-        },
-        {
-          key: 20,
-          value: '英国'
-        },
-        {
-          key: 30,
-          value: '欧盟'
-        },
-        {
-          key: 40,
-          value: '日本'
-        },
-        {
-          key: 50,
-          value: '中国'
-        }
-      ],
+      countries: this.$store.state.product.patent.enum.countries,
       visible: this.dialogVisible,
-      patentForm: {},
+      patentForm: this.form,
       patentRules: {
-        patentType: [
+        patent_types: [
           {
             required: true,
             message: '请选择专利类型'
           }
         ],
-        productCName: [
+        product_name_cn: [
           {
             required: true,
             message: '请输入产品中文名'
           }
         ],
-        productEName: [
+        product_name_en: [
           {
             required: true,
             message: '请输入产品英文名'
           }
         ],
-        country: [
+        coutries: [
           {
             required: true,
             message: '请选择国家/地区'
           }
         ],
-        saleLink: [
+        sale_link: [
           {
             required: true,
             message: '请输入产品销售链接'
@@ -182,13 +153,16 @@ export default {
         ]
       },
       reviewRules: {
-        result: [
+        review_result: [
           {
             required: true,
             message: '请选择评审结果'
           }
         ]
-      }
+      },
+      competitiveProduct:
+        this.$store.state.product.patent.patent.competitive_product
+          .CompetitiveTable
     };
   },
   computed: {
@@ -200,23 +174,54 @@ export default {
       }
     },
     isDisabled() {
-      if (this.type === 'review') {
+      if (this.type === 'review' || this.type === 'view') {
         return true;
       } else {
         return false;
       }
+    },
+    getTypes() {
+      return this.$store.state.product.patent.enum.type;
+    },
+    getCountries() {
+      return this.$store.state.product.patent.enum.countries;
     }
   },
   methods: {
+    async getPatent() {
+      let params = {
+        product_id: this.$route.params.productId
+      };
+      await this.$store.dispatch('product/patent/getPatent', { params });
+    },
     cancel() {
       this.visible = false;
       this.$emit('hide-dialog', this.visible);
     },
+    async patentApply(params) {
+      let body = params;
+      body['product_id'] = 1;
+      body['applicant_id'] = 1;
+      await this.$store.dispatch('product/patent/patentApply', body);
+    },
+    async patentReview(val) {
+      let body = {
+        product_id: this.$route.params.productId,
+        patent_apply_id: this.id,
+        review_result: val
+      };
+      await this.$store.dispatch('product/patent/patentReview', body);
+    },
     submitPatentApply() {
-      console.log(this.patentForm.patentType, this.patentForm.country);
       this.$refs.patentForm.validate((valid) => {
-        if (!valid) {
-          console.log('error');
+        if (valid) {
+          if (this.type === 'apply') {
+            this.patentApply(this.patentForm);
+          } else {
+            this.patentReview(this.patentForm.review_result);
+          }
+          this.getPatent();
+          this.visible = false;
         }
       });
     }

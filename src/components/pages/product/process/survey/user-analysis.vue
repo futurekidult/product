@@ -1,18 +1,9 @@
-/* eslint-disable vue/require-v-for-key */
 <template>
   <div class="survey-title">
     调研进度表
   </div>
 
-  <el-table
-    border
-    :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-  >
-    <el-table-column label="调研负责人" />
-    <el-table-column label="计划完成时间" />
-    <el-table-column label="实际完成时间" />
-    <el-table-column label="状态" />
-  </el-table>
+  <survey-schedule :get-progress="getProgress" />
 
   <div class="survey-title">
     调研报告内容
@@ -66,19 +57,19 @@
       </el-form-item>
       <el-form-item
         label="家庭年收入"
-        prop="annualHouseholdIncome"
+        prop="annual_household_income"
       >
         <el-select
-          v-model="analysisForm.annualHouseholdIncome"
+          v-model="analysisForm.annual_household_income"
           placeholder="请选择家庭年收入"
         />
       </el-form-item>
       <el-form-item
         label="婚姻状况"
-        prop="maritalStatus"
+        prop="marital_status"
       >
         <el-select
-          v-model="analysisForm.maritalStatus"
+          v-model="analysisForm.marital_status"
           placeholder="请选择婚姻状况"
         />
       </el-form-item>
@@ -129,14 +120,14 @@
       </el-button>
     </el-form-item>
     <el-form-item
-      v-for="(item, index) in analysisForm.usageScenario"
+      v-for="(item, index) in analysisForm.usage_scenario"
       :key="index"
       :label="'使用场景' + (index + 1)"
-      :prop="`usageScenario[${index}]`"
-      :rules="analysisRules.usageScenario"
+      :prop="`usage_scenario[${index}]`"
+      :rules="analysisRules.usage_scenario"
     >
       <el-input
-        v-model="analysisForm.usageScenario[index]"
+        v-model="analysisForm.usage_scenario[index]"
         placeholder="请输入使用场景"
         maxlength="15"
         show-word-limit
@@ -161,6 +152,7 @@
     <el-form-item label="备注">
       <el-input
         v-model="analysisForm.remark"
+        :rows="6"
         type="textarea"
         placeholder="请输入备注"
       />
@@ -185,16 +177,15 @@
     </el-form-item>
     <el-form-item>
       <div
-        v-for="file in fileList"
-        :key="file.id"
+        v-if="show"
         class="attachment-list"
       >
-        <div @click="previewImg(file.id)">
-          {{ file.name }}
+        <div>
+          {{ handleAttachment(attachment.name) }}
         </div>
         <el-button
           type="text"
-          @click="deleteImg(file.id)"
+          @click="deleteFile(attachment.id)"
         >
           删除
         </el-button>
@@ -212,7 +203,12 @@
 </template>
 
 <script>
+import SurveySchedule from '../../common/survey- schedule.vue';
+
 export default {
+  components: {
+    SurveySchedule
+  },
   data() {
     return {
       fileList: [],
@@ -221,11 +217,7 @@ export default {
         region_id: null,
         city_id: null
       },
-      report: {
-        country: [{}],
-        usage_scenario: [''],
-        attachment: []
-      },
+      analysisForm: this.$store.state.product.survey.userAnalysis.analysisForm,
       analysisRules: {
         gender: [
           {
@@ -251,13 +243,13 @@ export default {
             message: '请选择学历'
           }
         ],
-        annualHouseholdIncome: [
+        annual_household_income: [
           {
             required: true,
             message: '请选择家庭年收入'
           }
         ],
-        maritalStatus: [
+        marital_status: [
           {
             required: true,
             message: '请选择婚姻状况'
@@ -281,7 +273,7 @@ export default {
             message: '请选择城市'
           }
         ],
-        usageScenario: [
+        usage_scenario: [
           {
             required: true,
             message: '请输入使用场景'
@@ -294,45 +286,49 @@ export default {
           }
         ]
       },
-      count: 0
+      count: 0,
+      show: true,
+      attachment:
+        this.$store.state.product.survey.userAnalysis.analysisForm.attachment
     };
   },
-  created() {
-    this.analysisForm = this.report;
-    this.analysisForm.annualHouseholdIncome =
-      this.report.annual_household_income;
-    this.analysisForm.maritalStatus = this.report.marital_status;
-    this.analysisForm.country = this.report.country;
-    this.analysisForm.usageScenario = this.report.usage_scenario;
-    delete this.analysisForm.usage_scenario;
-    delete this.analysisForm.annual_household_income;
-    delete this.analysisForm.marital_status;
+  computed: {
+    getProgress() {
+      return this.$store.state.product.survey.userAnalysis.progress;
+    }
   },
   methods: {
+    handleAttachment(file) {
+      if (file === undefined) {
+        return '';
+      } else {
+        return file;
+      }
+    },
     submitAnalysisForm() {
-      console.log(this.analysisForm);
       this.$refs.analysisForm.validate((valid) => {
-        if (!valid) {
-          console.log('error');
-        } else {
+        if (valid) {
           console.log(this.analysisForm);
         }
       });
     },
     addUsageScenario() {
-      this.analysisForm.usageScenario.length++;
+      this.analysisForm.usage_scenario.length++;
     },
     handleFileSuccess(file, fileList) {
-      this.fileList.push({
+      this.attachment = {
         id: file.id,
         name: fileList.name
-      });
+      };
       this.analysisForm.attachment = file.id;
+      this.show = true;
     },
-    deleteImg(id) {
+    deleteFile(id) {
       console.log(id);
+      this.attachment = {};
+      this.show = false;
     },
-    previewImg(id) {
+    previewFile(id) {
       console.log(id);
     },
     addStateCity() {
@@ -342,7 +338,7 @@ export default {
       this.analysisForm.country.pop();
     },
     deleteUsageScenario() {
-      this.analysisForm.usageScenario.length--;
+      this.analysisForm.usage_scenario.length--;
     }
   }
 };

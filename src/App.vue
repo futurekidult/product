@@ -99,7 +99,7 @@ body {
 .form-item {
   display: grid;
   grid-template-columns: 49% 49%;
-  gap: 15px;
+  gap: 5px;
 }
 
 .el-select {
@@ -190,5 +190,23 @@ body {
 
 .result-ing {
   color: #f78113;
+}
+
+.result-content {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.fail-btn {
+  text-align: right;
+}
+
+.pass-btn {
+  text-align: center;
+}
+
+.pass-btn button,
+.fail-btn button {
+  width: 100px;
 }
 </style>

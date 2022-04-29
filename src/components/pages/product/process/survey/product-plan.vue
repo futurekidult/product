@@ -3,7 +3,7 @@
     调研进度表
   </div>
 
-  <survey-schedule />
+  <survey-schedule :get-progress="getProgress" />
 
   <div class="survey-title">
     调研报告内容
@@ -17,14 +17,14 @@
     :rules="productRules"
   >
     <el-form-item
-      v-for="(item, index) in productForm.usageScenario"
+      v-for="(item, index) in productForm.usage_scenario"
       :key="index"
       :label="'使用场景' + (index + 1)"
-      :prop="`usageScenario[${index}]`"
-      :rules="productRules.usageScenario"
+      :prop="`usage_scenario[${index}]`"
+      :rules="productRules.usage_scenario"
     >
       <el-input
-        v-model="productForm.usageScenario[index]"
+        v-model="productForm.usage_scenario[index]"
         placeholder="请输入使用场景"
         maxlength="15"
         show-word-limit
@@ -48,10 +48,10 @@
     </el-form-item>
     <el-form-item
       label="用户痛点"
-      prop="userPainspot"
+      prop="pain_spot"
     >
       <el-input
-        v-model="productForm.userPainspot"
+        v-model="productForm.pain_spot"
         type="textarea"
         maxlength="200"
         show-word-limit
@@ -60,10 +60,10 @@
     </el-form-item>
     <el-form-item
       label="用户需求分析"
-      prop="demandAnalysis"
+      prop="user_demand_analysis"
     >
       <el-input
-        v-model="productForm.demandAnalysis"
+        v-model="productForm.user_demand_analysis"
         type="textarea"
         maxlength="200"
         show-word-limit
@@ -72,17 +72,17 @@
     </el-form-item>
     <el-form-item
       label="产品切入点"
-      prop="productPointcut"
+      prop="pointcut"
     >
       <el-input
-        v-model="productForm.productPointcut"
+        v-model="productForm.pointcut"
         type="textarea"
         maxlength="200"
         show-word-limit
         placeholder="请输入产品切入点"
       />
     </el-form-item>
-    <competitive-table />
+    <competitive-table :competitive-product="competitiveProduct" />
     <el-collapse class="collapse-item">
       <el-collapse-item title="新品信息">
         <div class="analy-form_item">
@@ -91,23 +91,23 @@
             required
           >
             <div style="display: flex">
-              <el-form-item prop="innerLength">
+              <el-form-item prop="inner_box_dimension_l">
                 <el-input
-                  v-model="productForm.innerLength"
+                  v-model="productForm.inner_box_dimension_l"
                   class="analy-form_mar"
                   placeholder="长度"
                 />
               </el-form-item>
-              <el-form-item prop="innerWidth">
+              <el-form-item prop="inner_box_dimension_w">
                 <el-input
-                  v-model="productForm.innerWidth"
+                  v-model="productForm.inner_box_dimension_w"
                   class="analy-form_mar"
                   placeholder="宽度"
                 />
               </el-form-item>
-              <el-form-item prop="innerHeight">
+              <el-form-item prop="inner_box_dimension_h">
                 <el-input
-                  v-model="productForm.innerHeight"
+                  v-model="productForm.inner_box_dimension_h"
                   placeholder="高度"
                 />
               </el-form-item>
@@ -118,23 +118,23 @@
             required
           >
             <div style="display: flex">
-              <el-form-item prop="outerLength">
+              <el-form-item prop="outer_box_dimension_l">
                 <el-input
-                  v-model="productForm.outerLength"
+                  v-model="productForm.outer_box_dimension_l"
                   class="analy-form_mar"
                   placeholder="长度"
                 />
               </el-form-item>
-              <el-form-item prop="outerWidth">
+              <el-form-item prop="outer_box_dimension_w">
                 <el-input
-                  v-model="productForm.outerWidth"
+                  v-model="productForm.outer_box_dimension_w"
                   class="analy-form_mar"
                   placeholder="宽度"
                 />
               </el-form-item>
-              <el-form-item prop="outerHeight">
+              <el-form-item prop="outer_box_dimension_h">
                 <el-input
-                  v-model="productForm.outerHeight"
+                  v-model="productForm.outer_box_dimension_h"
                   placeholder="高度"
                 />
               </el-form-item>
@@ -143,20 +143,20 @@
           <el-form-item
             label="内箱重量/kg"
             style="margin-bottom: 18px"
-            prop="innerboxWeight"
+            prop="inner_box_weight"
           >
             <el-input
-              v-model="productForm.innerboxWeight"
+              v-model="productForm.inner_box_weight"
               placeholder="请输入内箱重量"
             />
           </el-form-item>
           <el-form-item
             label="外箱重量/kg"
             style="margin-bottom: 18px"
-            prop="outerboxWeight"
+            prop="outer_box_weight"
           >
             <el-input
-              v-model="productForm.outerboxWeight"
+              v-model="productForm.outer_box_weight"
               placeholder="请输入外箱重量"
             />
           </el-form-item>
@@ -167,23 +167,23 @@
           required
         >
           <div style="display: flex">
-            <el-form-item prop="headCurrency">
+            <el-form-item prop="head_cost_currency">
               <el-select
-                v-model="productForm.headCurrency"
+                v-model="productForm.head_cost_currency"
                 class="analy-form_mar"
                 placeholder="请选择货币"
               />
             </el-form-item>
-            <el-form-item prop="headMoney">
+            <el-form-item prop="head_cost">
               <el-input
-                v-model="productForm.headMoney"
+                v-model="productForm.head_cost"
                 class="analy-form_mar"
                 placeholder="请输入金额"
               />
             </el-form-item>
-            <el-form-item prop="headYuan">
+            <el-form-item prop="head_cost_rmb">
               <el-input
-                v-model="productForm.headYuan"
+                v-model="productForm.head_cost_rmb"
                 disabled
                 placeholder="请输入人民币"
               />
@@ -193,26 +193,26 @@
         <el-form-item
           label="尾程费用"
           style="margin-bottom: 18px"
-          prop="tailCost"
+          required
         >
           <div style="display: flex">
-            <el-form-item prop="tailCurrency">
+            <el-form-item prop="tail_cost_currency">
               <el-select
-                v-model="productForm.tailCurrency"
+                v-model="productForm.tail_cost_currency"
                 class="analy-form_mar"
                 placeholder="请选择货币"
               />
             </el-form-item>
-            <el-form-item prop="tailMoney">
+            <el-form-item prop="tail_cost">
               <el-input
-                v-model="productForm.tailMoney"
+                v-model="productForm.tail_cost"
                 class="analy-form_mar"
                 placeholder="请输入金额"
               />
             </el-form-item>
-            <el-form-item prop="tailYuan">
+            <el-form-item prop="tail_cost_rmb">
               <el-input
-                v-model="productForm.tailYuan"
+                v-model="productForm.tail_cost_rmb"
                 disabled
                 placeholder="请输入人民币"
               />
@@ -241,16 +241,15 @@
     </el-form-item>
     <el-form-item>
       <div
-        v-for="file in fileList"
-        :key="file.id"
+        v-if="show"
         class="attachment-list"
       >
-        <div @click="previewFile(file.id)">
-          {{ file.name }}
+        <div>
+          {{ handleAttachment(attachment.name) }}
         </div>
         <el-button
           type="text"
-          @click="deleteFile(file.id)"
+          @click="deleteFile(attachment.id)"
         >
           删除
         </el-button>
@@ -280,120 +279,113 @@ export default {
     return {
       usageScenario: [],
       count: 0,
-      productForm: {
-        usageScenario: ['']
-      },
-      competitiveProductForm: {},
+      productForm: this.$store.state.product.survey.plan.planForm,
+      competitiveProduct:
+        this.$store.state.product.survey.plan.planForm.competitive_product,
       productRules: {
-        usageScenario: [
+        usage_scenario: [
           {
             required: true,
             message: '请输入使用场景'
           }
         ],
-        userPainspot: [
+        pain_spot: [
           {
             required: true,
             message: '请输入用户痛点'
           }
         ],
-        demandAnalysis: [
+        user_demand_analysis: [
           {
             required: true,
             message: '请输入用户需求分析'
           }
         ],
-        productPointcut: [
+        pointcut: [
           {
             required: true,
             message: '请输入产品切入点'
           }
         ],
-        innerLength: [
+        inner_box_dimension_l: [
           {
             required: true,
             message: '请输入长度'
           }
         ],
-        innerWidth: [
+        inner_box_dimension_w: [
           {
             required: true,
             message: '请输入宽度'
           }
         ],
-        innerHeight: [
+        inner_box_dimension_h: [
           {
             required: true,
             message: '请输入高度'
           }
         ],
-        outerLength: [
+        outer_box_dimension_l: [
           {
             required: true,
             message: '请输入长度'
           }
         ],
-        outerWidth: [
+        outer_box_dimension_w: [
           {
             required: true,
             message: '请输入宽度'
           }
         ],
-        outerHeight: [
+        outer_box_dimension_h: [
           {
             required: true,
             message: '请输入高度'
           }
         ],
-        outerboxDimension: [
-          {
-            required: true,
-            message: '请输入外箱尺寸'
-          }
-        ],
-        innerboxWeight: [
+        inner_box_weight: [
           {
             required: true,
             message: '请输入内箱重量'
           }
         ],
-        outerboxWeight: [
+        outer_box_weight: [
           {
             required: true,
             message: '请输入外箱重量'
           }
         ],
-        headCurrency: [
+        head_cost_currency: [
           {
             required: true,
             message: '请选择货币'
           }
         ],
-        headMoney: [
+        head_cost: [
           {
             required: true,
             message: '请输入金额'
           }
         ],
-        headYuan: [
+        head_cost_rmb: [
           {
             required: true,
             message: '请输入人民币'
           }
         ],
-        tailCurrency: [
+        tail_cost_currency: [
           {
             required: true,
             message: '请选择货币'
           }
         ],
-        tailMoney: [
+        tail_cost: [
           {
             required: true,
             message: '请输入金额'
           }
         ],
-        tailYuan: [
+        tail_cost_rmb: [
           {
             required: true,
             message: '请输入人民币'
@@ -406,34 +398,49 @@ export default {
           }
         ]
       },
-      competitiveProductRules: {},
-      fileList: []
+      attachment: this.$store.state.product.survey.plan.planForm.attachment,
+      show: true
     };
   },
+  computed: {
+    getProgress() {
+      return this.$store.state.product.survey.plan.progress;
+    }
+  },
   methods: {
+    handleAttachment(file) {
+      if (file === undefined) {
+        return '';
+      } else {
+        return file;
+      }
+    },
     addUsageScenario() {
-      this.productForm.usageScenario.length++;
+      this.productForm.usage_scenario.length++;
     },
     deleteUsageScenario() {
-      this.productForm.usageScenario.length--;
+      this.productForm.usage_scenario.length--;
     },
     handleFileSuccess(file, fileList) {
-      this.fileList.push({
+      this.attachment = {
         id: file.id,
         name: fileList.name
-      });
+      };
       this.productForm.attachment = file.id;
+      this.show = true;
     },
     deleteFile(id) {
       console.log(id);
+      this.attachment = {};
+      this.show = false;
     },
     previewFile(id) {
       console.log(id);
     },
     submitProductForm() {
       this.$refs.productForm.validate((valid) => {
-        if (!valid) {
-          console.log('error');
+        if (valid) {
+          console.log(this.productForm);
         }
       });
     }

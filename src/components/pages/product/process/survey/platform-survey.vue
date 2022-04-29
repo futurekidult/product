@@ -9,17 +9,30 @@
     调研进度表
   </div>
 
-  <el-table
+  <el-descriptions
     border
-    :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+    :column="6"
+    direction="vertical"
   >
-    <el-table-column label="负责人" />
-    <el-table-column label="是否多平台" />
-    <el-table-column label="调研平台" />
-    <el-table-column label="计划完成时间" />
-    <el-table-column label="实际完成时间" />
-    <el-table-column label="状态" />
-  </el-table>
+    <el-descriptions-item label="负责人">
+      {{ getProgress.principal_desc }}
+    </el-descriptions-item>
+    <el-descriptions-item label="是否多平台">
+      {{ getProgress.is_multi_platform }}
+    </el-descriptions-item>
+    <el-descriptions-item label="调研平台">
+      {{ getProgress.platform_desc }}
+    </el-descriptions-item>
+    <el-descriptions-item label="计划完成时间">
+      {{ getProgress.estimated_finish_time }}
+    </el-descriptions-item>
+    <el-descriptions-item label="实际完成时间">
+      {{ getProgress.actual_finish_time }}
+    </el-descriptions-item>
+    <el-descriptions-item label="状态">
+      {{ getProgress.state_desc }}
+    </el-descriptions-item>
+  </el-descriptions>
 
   <div class="survey-title">
     调研报告内容
@@ -34,7 +47,7 @@
   >
     <el-form-item
       label="产品图片"
-      prop="productImage"
+      prop="images"
     >
       <el-upload
         action="https://jsonplaceholder.typicode.com/posts/"
@@ -52,7 +65,7 @@
     </el-form-item>
     <el-form-item>
       <div
-        v-for="img in productImage"
+        v-for="img in productImages"
         :key="img.id"
         class="attachment-list"
       >
@@ -69,10 +82,10 @@
     </el-form-item>
     <el-form-item
       label="产品链接"
-      prop="productLink"
+      prop="product_link"
     >
       <el-input
-        v-model="surveyForm.productLink"
+        v-model="surveyForm.product_link"
         type="textarea"
         maxlength="200"
         show-word-limit
@@ -81,10 +94,10 @@
     </el-form-item>
     <el-form-item
       label="规格参数"
-      prop="specificationParameter"
+      prop="specification_parameter"
     >
       <el-input
-        v-model="surveyForm.specificationParameter"
+        v-model="surveyForm.specification_parameter"
         type="textarea"
         maxlength="200"
         show-word-limit
@@ -93,10 +106,10 @@
     </el-form-item>
     <el-form-item
       label="产品功能"
-      prop="productFeature"
+      prop="product_function"
     >
       <el-input
-        v-model="surveyForm.productFeature"
+        v-model="surveyForm.product_function"
         type="textarea"
         maxlength="200"
         show-word-limit
@@ -105,10 +118,10 @@
     </el-form-item>
     <el-form-item
       label="需求分析"
-      prop="demandAnalysis"
+      prop="demand_analysis"
     >
       <el-input
-        v-model="surveyForm.demandAnalysis"
+        v-model="surveyForm.demand_analysis"
         type="textarea"
         maxlength="200"
         show-word-limit
@@ -118,94 +131,96 @@
     <div class="form-item">
       <el-form-item
         label="年度销售额（万）"
-        prop="annualSales"
+        prop="annual_sales"
       >
         <el-input
-          v-model="surveyForm.annualSales"
+          v-model="surveyForm.annual_sales"
           placeholder="请输入年度销售额"
         />
       </el-form-item>
       <el-form-item
         label="最近3年年销售额同比增长率"
-        prop="growthRate"
+        prop="growth_rate"
       >
         <el-input
-          v-model="surveyForm.growthRate"
+          v-model="surveyForm.growth_rate"
           placeholder="请输入同比增长率"
         />
       </el-form-item>
     </div>
-    <el-form-item
-      label="淡旺季系数"
-      prop="peakSeason"
-    >
-      <div class="form-template">
+    <div class="form-item">
+      <el-form-item
+        label="淡旺季系数"
+        prop="peak_season_start"
+      >
         <el-select
-          v-model="surveyForm.startPeakSeason"
+          v-model="surveyForm.peak_season_start"
           placeholder="请选择淡旺季系数"
         />
-        <div style="text-align: center">
-          至
-        </div>
+      </el-form-item>
+      <el-form-item
+        label="至"
+        prop="peak_season_end"
+      >
         <el-select
-          v-model="surveyForm.endPeakSeason"
+          v-model="surveyForm.peak_season_end"
           placeholder="请选择淡旺季系数"
         />
-      </div>
-    </el-form-item>
+      </el-form-item>
+    </div>
     <div class="form-item">
       <el-form-item
         label="竞争度/垄断性"
-        prop="monopoly"
+        prop="competitive_degree"
       >
         <el-select
-          v-model="surveyForm.monopoly"
+          v-model="surveyForm.competitive_degree"
           placeholder="请选择竞争度/垄断性"
         />
       </el-form-item>
       <el-form-item
         label="类目是否跳水"
-        prop="isNosediveCategory"
+        prop="is_nosedive_category"
       >
         <el-select
-          v-model="surveyForm.isNosediveCategory"
+          v-model="surveyForm.is_nosedive_category"
           placeholder="请选择类目是否跳水"
         />
       </el-form-item>
       <el-form-item
         label="精准价位段"
-        prop="precisePriceRange"
+        prop="precise_price_range"
       >
         <el-select
-          v-model="surveyForm.precisePriceRange"
-          placeholder="请选择精准度家段
+          v-model="surveyForm.precise_price_range"
+          placeholder="请选择精准价位段
         "
         />
       </el-form-item>
       <el-form-item
         label="流量丰富度"
-        prop="trafficRichness"
+        prop="flow_richness"
       >
         <el-select
-          v-model="surveyForm.trafficRichness"
+          v-model="surveyForm.flow_richness"
           placeholder="请选择流量丰富度"
         />
       </el-form-item>
       <el-form-item
         label="关键词是否跳水"
-        prop="isNosediveKeyword"
+        prop="is_nosedive_keyword"
       >
         <el-select
-          v-model="surveyForm.isNosediveKeyword"
+          v-model="surveyForm.is_nosedive_keyword"
           placeholder="请选择关键词是否跳水"
         />
       </el-form-item>
       <el-form-item
         label="关键词竞价"
-        prop="keywordBiddingDegree"
+        prop="keyword_bidding_degree"
       >
         <el-select
-          v-model="surveyForm.keywordBiddingDegree"
+          v-model="surveyForm.keyword_bidding_degree"
           placeholder="请选择关键词竞价"
         />
       </el-form-item>
@@ -213,10 +228,10 @@
     <el-form-item
       label="竞品是否对标"
       style="width: 49%"
-      prop="isBenchmarking"
+      prop="is_benchmarking"
     >
       <el-select
-        v-model="surveyForm.isBenchmarking"
+        v-model="surveyForm.is_benchmarking"
         placeholder="请选择竞品是否对标"
       />
     </el-form-item>
@@ -240,16 +255,15 @@
     </el-form-item>
     <el-form-item>
       <div
-        v-for="file in fileList"
-        :key="file.id"
+        v-if="show"
         class="attachment-list"
       >
-        <div @click="previewFile(file.id)">
-          {{ file.name }}
+        <div>
+          {{ handleAttachment(attachment.name) }}
         </div>
         <el-button
           type="text"
-          @click="deleteFile(file.id)"
+          @click="deleteFile(attachment.id)"
         >
           删除
         </el-button>
@@ -268,101 +282,110 @@
 
 <script>
 import BaseDialog from '../../../../common/base-dialog.vue';
+
 export default {
   components: {
     BaseDialog
   },
   data() {
     return {
-      fileList: [],
-      productImage: [],
-      src: null,
+      attachment:
+        this.$store.state.product.survey.platform.platformForm.attachment,
+      productImages:
+        this.$store.state.product.survey.platform.platformForm.images,
+      src: '',
       surveyRules: {
-        productImage: [
+        images: [
           {
             required: true,
             message: '请上传图片'
           }
         ],
-        productLink: [
+        product_link: [
           {
             required: true,
             message: '请输入产品链接'
           }
         ],
-        specificationParameter: [
+        specification_parameter: [
           {
             required: true,
             message: '请输入规格参数'
           }
         ],
-        productFeature: [
+        product_function: [
           {
             required: true,
             message: '请输入产品功能'
           }
         ],
-        demandAnalysis: [
+        demand_analysis: [
           {
             required: true,
             message: '请输入需求分析'
           }
         ],
-        annualSales: [
+        annual_sales: [
           {
             required: true,
             message: '请输入年度销售额'
           }
         ],
-        growthRate: [
+        growth_rate: [
           {
             required: true,
             message: '请输入同比增长率'
           }
         ],
-        peakSeason: [
+        peak_season_start: [
           {
             required: true,
             message: '请选择淡旺季系数'
           }
         ],
-        monopoly: [
+        peak_season_end: [
+          {
+            required: true,
+            message: '请选择淡旺季系数'
+          }
+        ],
+        competitive_degree: [
           {
             required: true,
             message: '请选择竞争度/垄断性'
           }
         ],
-        isNosediveCategory: [
+        is_nosedive_category: [
           {
             required: true,
             message: '请选择类目是否跳水'
           }
         ],
-        precisePriceRange: [
+        precise_price_range: [
           {
             required: true,
             message: '请选择精准价位段'
           }
         ],
-        trafficRichness: [
+        flow_richness: [
           {
             required: true,
             message: '请选择流量丰富度'
           }
         ],
-        isNosediveKeyword: [
+        is_nosedive_keyword: [
           {
             required: true,
             message: '请选择关键词是否跳水'
           }
         ],
-        keywordBiddingDegree: [
+        keyword_bidding_degree: [
           {
             required: true,
             message: '请选择关键词竞价'
           }
         ],
-        isBenchmarking: [
+        is_benchmarking: [
           {
             required: true,
             message: '请选择竞品是否对标'
@@ -375,22 +398,39 @@ export default {
           }
         ]
       },
-      surveyForm: {}
+      surveyForm: this.$store.state.product.survey.platform.platformForm,
+      show: true
     };
   },
+  computed: {
+    getProgress() {
+      return this.$store.state.product.survey.platform.progress;
+    },
+    getAttachment() {
+      return this.$store.state.product.survey.platform.platformForm.attachment;
+    }
+  },
   methods: {
+    handleAttachment(file) {
+      if (file === undefined) {
+        return '';
+      } else {
+        return file;
+      }
+    },
     handleImgSuccess(file, fileList) {
-      this.productImage.push({
+      this.productImages.push({
         id: file.id,
         name: fileList.name
       });
     },
     handleFileSuccess(file, fileList) {
-      this.fileList.push({
+      this.attachment = {
         id: file.id,
         name: fileList.name
-      });
+      };
       this.surveyForm.attachment = file.id;
+      this.show = true;
     },
     previewImg(id) {
       console.log(id);
@@ -398,7 +438,12 @@ export default {
         'https://img0.baidu.com/it/u=2775655496,2255017447&fm=253&fmt=auto&app=120&f=JPEG?w=1422&h=800';
     },
     deleteImg(id) {
-      console.log(id);
+      this.productImages.splice(
+        this.productImages.findIndex((e) => {
+          return e.id === id;
+        }),
+        1
+      );
     },
     previewFile(id) {
       console.log(id);
@@ -407,16 +452,21 @@ export default {
     },
     deleteFile(id) {
       console.log(id);
+      this.attachment = {};
+      this.show = false;
     },
     handleClose() {
       this.src = null;
     },
     submitSurveyForm() {
-      this.surveyForm.productImage = this.productImage;
-      console.log(this.surveyForm);
       this.$refs.surveyForm.validate((valid) => {
-        if (!valid) {
-          console.log('error');
+        if (valid) {
+          let images = [];
+          for (const item of this.surveyForm.images) {
+            let { id } = item;
+            images.push(id);
+          }
+          this.surveyForm.images = images;
         }
       });
     }
