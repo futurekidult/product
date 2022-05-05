@@ -56,14 +56,23 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      orderList: []
+    };
   },
-  computed: {
-    orderList() {
-      return this.$store.state.product.order.orderList;
-    }
+  computed: {},
+  mounted() {
+    this.getOrder();
   },
   methods: {
+    async getOrder() {
+      await this.$store.dispatch('product/order/getOrderList', {
+        params: {
+          product_id: +this.$route.params.productId
+        }
+      });
+      this.orderList = this.$store.state.product.order.orderList;
+    },
     async getSkuForm() {
       await this.$store.dispatch('product/order/getSkuForm');
     },

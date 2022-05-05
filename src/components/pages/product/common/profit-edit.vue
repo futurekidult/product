@@ -66,13 +66,12 @@ export default {
     };
   },
   computed: {
-    getSpecialist() {
-      return this.$store.state.product.project.specialist;
-    }
+    // getSpecialist() {
+    //   return this.$store.state.product.project.specialist;
+    // }
   },
   mounted() {
     this.getOperationsSpecialist();
-    this.editForm = this.getSpecialist;
   },
   methods: {
     async getOperationsSpecialist() {
@@ -83,6 +82,7 @@ export default {
       await this.$store.dispatch('product/project/getOperationsSpecialist', {
         params
       });
+      this.editForm = this.$store.state.product.project.specialist;
     },
     async updateOperationsSpecialist(val) {
       let body = val;
@@ -91,6 +91,7 @@ export default {
       await this.$store.dispatch('product/project/getOperationsSpecialist', {
         body
       });
+      this.visible = false;
     },
     cancel() {
       this.visible = false;
@@ -100,7 +101,6 @@ export default {
       this.$refs.editForm.validate((valid) => {
         if (valid) {
           this.updateOperationsSpecialist(this.editForm);
-          this.visible = false;
         }
       });
     }

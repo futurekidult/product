@@ -9,22 +9,22 @@
     direction="vertical"
   >
     <el-descriptions-item label="负责人">
-      {{ getProgress.principal_desc }}
+      {{ progress.principal_desc }}
     </el-descriptions-item>
     <el-descriptions-item label="是否多平台">
-      {{ getProgress.is_multi_market }}
+      {{ progress.is_multi_market }}
     </el-descriptions-item>
     <el-descriptions-item label="调研市场">
-      {{ getProgress.market_name }}
+      {{ progress.market_name }}
     </el-descriptions-item>
     <el-descriptions-item label="计划完成时间">
-      {{ getProgress.estimated_finish_time }}
+      {{ progress.estimated_finish_time }}
     </el-descriptions-item>
     <el-descriptions-item label="实际完成时间">
-      {{ getProgress.actual_finish_time }}
+      {{ progress.actual_finish_time }}
     </el-descriptions-item>
     <el-descriptions-item label="状态">
-      {{ getProgress.state_desc }}
+      {{ progress.state_desc }}
     </el-descriptions-item>
   </el-descriptions>
 
@@ -44,7 +44,7 @@
       prop="attachment"
     >
       <el-upload
-        action="https://jsonplaceholder.typicode.com/posts/"
+        action=""
         :show-file-list="false"
         :on-success="handleFileSuccess"
         :limit="1"
@@ -110,18 +110,24 @@ export default {
         ]
       },
       show: true,
-      attachment: this.$store.state.product.survey.market.market.report
+      attachment: {},
+      progress: {}
     };
   },
   computed: {
-    getProgress() {
-      return this.$store.state.product.survey.market.market.progress;
-    },
     isDisabled() {
-      return this.getProgress.state === 10 ? false : true;
+      return this.progress.state === 10 ? false : true;
     }
   },
+  mounted() {
+    this.getMarket();
+  },
   methods: {
+    async getMarket() {
+      await this.$store.dispatch('product/survey/market/getMarketData');
+      this.progress = this.$store.state.product.survey.market.market.progress;
+      this.attachment = this.$store.state.product.survey.market.market.report;
+    },
     handleFileSuccess(file, fileList) {
       this.attachment = {
         id: file.id,
@@ -132,9 +138,9 @@ export default {
     },
     async submitRequest() {
       let params = {
-        product_id: this.$route.params.productId,
+        product_id: +this.$route.params.productId,
         attchment_id: this.marketForm.attachment,
-        survey_schedule_id: this.getProgress.id
+        survey_schedule_id: this.progress.id
       };
       await this.$store.dispatch(
         'product/survey/market/submitMarketFile',
@@ -145,6 +151,7 @@ export default {
       this.$refs.marketForm.validate((valid) => {
         if (valid) {
           this.submitRequest();
+          this.getMarket();
         }
       });
     },

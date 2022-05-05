@@ -7,7 +7,7 @@
   >
     <el-scrollbar height="400px">
       <div
-        v-for="(item, index) in list"
+        v-for="(item, index) in getList"
         :key="index"
       >
         <div class="adjust-time">
@@ -58,7 +58,7 @@
             调价状态:
             <span
               :class="colorStage(item.adjust_state)"
-            >{{ item.adjust_state }}
+            >{{ item.adjust_state_desc }}
             </span>
           </section>
           <section :class="isNull(item.adjust_approve_time)">
@@ -77,12 +77,11 @@ export default {
   components: {
     Clock
   },
-  props: ['dialogVisible'],
+  props: ['dialogVisible', 'getList'],
   emits: ['hide-dialog'],
   data() {
     return {
-      visible: this.dialogVisible,
-      list: []
+      visible: this.dialogVisible
     };
   },
   methods: {
@@ -108,13 +107,6 @@ export default {
       if (val === null || val === 0) {
         return 'hide';
       }
-    },
-    submitPrice() {
-      this.$refs.adjustForm.validate((valid) => {
-        if (!valid) {
-          console.log('error');
-        }
-      });
     }
   }
 };

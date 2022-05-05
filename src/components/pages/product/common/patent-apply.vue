@@ -113,7 +113,14 @@ export default {
   components: {
     CompetitiveTable
   },
-  props: ['dialogVisible', 'formTitle', 'type', 'form', 'id'],
+  props: [
+    'dialogVisible',
+    'formTitle',
+    'type',
+    'form',
+    'id',
+    'competitiveProduct'
+  ],
   emits: ['hide-dialog'],
   data() {
     return {
@@ -159,10 +166,7 @@ export default {
             message: '请选择评审结果'
           }
         ]
-      },
-      competitiveProduct:
-        this.$store.state.product.patent.patent.competitive_product
-          .CompetitiveTable
+      }
     };
   },
   computed: {
@@ -206,7 +210,7 @@ export default {
     },
     async patentReview(val) {
       let body = {
-        product_id: this.$route.params.productId,
+        product_id: +this.$route.params.productId,
         patent_apply_id: this.id,
         review_result: val
       };

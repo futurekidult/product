@@ -60,11 +60,11 @@
             label="项目调研"
             name="survey"
           >
-            <product-survey :id="id" />
+            <product-survey />
           </el-tab-pane>
           <el-tab-pane
             label="项目立项"
-            name="plan"
+            name="project"
           >
             <project-setup />
           </el-tab-pane>
@@ -148,7 +148,8 @@ export default {
     return {
       status: 2,
       activeName: 'basic',
-      id: 0
+      id: 0,
+      market: {}
     };
   },
   computed: {
@@ -158,122 +159,57 @@ export default {
   },
   created() {
     this.id = this.$route.params.productId;
-    this.getPlatformProcess();
-    this.getPlatformForm();
-    this.getMarketProcess();
-    this.getAnalysisProcess();
-    this.getPlanData();
-    this.getRiskData();
-    this.getUserSurveyData();
-    this.getPatent();
-    this.getPatentProgress();
-    this.getPatentContract();
-    this.getPatentReport();
-    this.getSkuForm();
-    this.getOrderProgress();
-    this.getContract();
-    this.getProject();
-    this.getProfit();
-    this.getSchedule();
+    console.log('detail');
+    // this.getUserSurveyData();
+    // this.getSkuForm();
+    // this.getOrderProgress();
+    // this.getContract();
   },
   methods: {
-    async getPlatformProcess() {
-      await this.$store.dispatch('product/survey/platform/getProcessData');
-    },
-    async getPlatformForm() {
-      await this.$store.dispatch('product/survey/platform/getPlatformData');
-    },
-    async getMarketProcess() {
-      await this.$store.dispatch('product/survey/market/getMarketData');
-    },
-    async getAnalysisProcess() {
-      await this.$store.dispatch('product/survey/userAnalysis/getAnalysisData');
-    },
-    async getPlanData() {
-      await this.$store.dispatch('product/survey/plan/getPlanData');
-    },
-    async getRiskData() {
-      await this.$store.dispatch('product/survey/risk/getRiskData');
-    },
-    async getUserSurveyData() {
-      await this.$store.dispatch('product/survey/user/getUserSurveyData');
-    },
-    async getPatent() {
-      let params = {
-        product_id: this.$route.params.productId
-      };
-      await this.$store.dispatch('product/patent/getPatent', { params });
-    },
-    async getPatentProgress() {
-      let params = {
-        product_id: this.$route.params.productId
-      };
-      await this.$store.dispatch('product/patent/getProgress', { params });
-    },
-    async getPatentContract() {
-      let params = {
-        product_id: this.$route.params.productId
-      };
-      await this.$store.dispatch('product/patent/getContract', { params });
-    },
-    async getPatentReport() {
-      let params = {
-        product_id: this.$route.params.productId
-      };
-      await this.$store.dispatch('product/patent/getReport', { params });
-    },
-    async getOrder() {
-      let params = {
-        product_id: this.$route.params.productId,
-        page_size: 10,
-        current_page: 1
-      };
-      await this.$store.dispatch('product/order/getOrderList', { params });
-    },
-    async getOrderProgress() {
-      await this.$store.dispatch('product/order/getProgress', {
-        params: { id: this.$route.params.productId }
-      });
-    },
-    async getSkuForm() {
-      await this.$store.dispatch('product/order/getSkuForm');
-    },
-    async getContract() {
-      await this.$store.dispatch('product/order/getContract', {
-        params: {
-          order_id: this.$route.params.orderId
-        }
-      });
-    },
-    async getProject() {
-      await this.$store.dispatch('product/project/getProject', {
-        params: { product_id: this.$route.params.productId }
-      });
-    },
-    async getProfit() {
-      await this.$store.dispatch('product/project/getProfit', {
-        params: { product_id: this.$route.params.productId }
-      });
-    },
-    async getSchedule() {
-      await this.$store.dispatch('product/project/getSchedule', {
-        params: { product_id: this.$route.params.productId }
-      });
-    },
+    // async getUserSurveyData() {
+    //   await this.$store.dispatch('product/survey/user/getUserSurveyData');
+    // },
+    // async getOrder() {
+    //   let params = {
+    //     product_id: this.$route.params.productId,
+    //     page_size: 10,
+    //     current_page: 1
+    //   };
+    //   await this.$store.dispatch('product/order/getOrderList', { params });
+    // },
+    // async getOrderProgress() {
+    //   await this.$store.dispatch('product/order/getProgress', {
+    //     params: { id: this.$route.params.productId }
+    //   });
+    // },
+    // async getSkuForm() {
+    //   await this.$store.dispatch('product/order/getSkuForm');
+    // },
+    // async getContract() {
+    //   await this.$store.dispatch('product/order/getContract', {
+    //     params: {
+    //       order_id: this.$route.params.orderId
+    //     }
+    //   });
+    // },
     handleClick(tab) {
       switch (tab.props.name) {
-        case 'order':
-          this.getOrder();
-          break;
-        case 'patent':
-          this.getPatent();
-          this.getPatentProgress();
-          this.getPatentContract();
-          this.getPatentReport();
-          break;
-        case 'project':
-          this.getProject();
-          break;
+        // case 'order':
+        //   this.getOrder();
+        //   break;
+        // case 'patent':
+        //   this.getPatent();
+        //   this.getPatentProgress();
+        //   this.getPatentContract();
+        //   this.getPatentReport();
+        //   break;
+        // case 'project':
+        //   this.getProject();
+        //   break;
+        // case 'survey':
+        //   this.getMarketProcess();
+        //   this.market = this.$store.state.product.survey.market.market;
+        //   break;
         default:
       }
     }

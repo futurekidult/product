@@ -67,20 +67,20 @@ export default {
     async upload(val, url) {
       let type = val;
       let params = {
-        product_id: this.$route.params.productId,
+        product_id: +this.$route.params.productId,
         [type]: this.id
       };
       await this.$store.dispatch(`product/patent/upload${url}`, params);
     },
     async getPatentContract() {
       let params = {
-        product_id: this.$route.params.productId
+        product_id: +this.$route.params.productId
       };
       await this.$store.dispatch('product/patent/getContract', { params });
     },
     async getPatentReport() {
       let params = {
-        product_id: this.$route.params.productId
+        product_id: +this.$route.params.productId
       };
       await this.$store.dispatch('product/patent/getReport', { params });
     },

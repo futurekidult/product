@@ -3,7 +3,7 @@
     调研进度表
   </div>
 
-  <survey-schedule :get-progress="getProgress" />
+  <survey-schedule :get-progress="progress" />
 
   <div class="survey-title">
     调研报告内容
@@ -24,6 +24,7 @@
         <el-select
           v-model="analysisForm.gender"
           placeholder="请选择性别"
+          :disabled="isDisabled"
         />
       </el-form-item>
       <el-form-item
@@ -33,6 +34,7 @@
         <el-select
           v-model="analysisForm.age"
           placeholder="请选择年龄"
+          :disabled="isDisabled"
         />
       </el-form-item>
       <el-form-item
@@ -44,6 +46,7 @@
           placeholder="请输入职业"
           maxlength="15"
           show-word-limit
+          :disabled="isDisabled"
         />
       </el-form-item>
       <el-form-item
@@ -53,6 +56,7 @@
         <el-select
           v-model="analysisForm.diploma"
           placeholder="请选择学历"
+          :disabled="isDisabled"
         />
       </el-form-item>
       <el-form-item
@@ -62,6 +66,7 @@
         <el-select
           v-model="analysisForm.annual_household_income"
           placeholder="请选择家庭年收入"
+          :disabled="isDisabled"
         />
       </el-form-item>
       <el-form-item
@@ -71,6 +76,7 @@
         <el-select
           v-model="analysisForm.marital_status"
           placeholder="请选择婚姻状况"
+          :disabled="isDisabled"
         />
       </el-form-item>
     </div>
@@ -84,7 +90,10 @@
         :prop="`country.${index}.country_id`"
         :rules="analysisRules.country"
       >
-        <el-select v-model="item.country_id" />
+        <el-select
+          v-model="item.country_id"
+          :disabled="isDisabled"
+        />
       </el-form-item>
       <el-form-item
         :label="'州/大区' + (index + 1)"
@@ -94,6 +103,7 @@
         <el-select
           v-model="item.region_id"
           clearable
+          :disabled="isDisabled"
         />
       </el-form-item>
       <el-form-item
@@ -101,12 +111,16 @@
         :prop="`country.${index}.city_id`"
         :rules="analysisRules.city"
       >
-        <el-select v-model="item.city_id" />
+        <el-select
+          v-model="item.city_id"
+          :disabled="isDisabled"
+        />
       </el-form-item>
     </div>
     <el-form-item>
       <el-button
         class="user-btn"
+        :disabled="isDisabled"
         @click="addStateCity"
       >
         + 新增
@@ -114,6 +128,7 @@
       <el-button
         class="user-btn"
         type="danger"
+        :disabled="isDisabled"
         @click="deleteStateCity"
       >
         - 删除
@@ -132,11 +147,13 @@
         maxlength="15"
         show-word-limit
         clearable
+        :disabled="isDisabled"
       />
     </el-form-item>
     <el-form-item>
       <el-button
         class="user-btn"
+        :disabled="isDisabled"
         @click="addUsageScenario"
       >
         + 新增
@@ -144,6 +161,7 @@
       <el-button
         class="user-btn"
         type="danger"
+        :disabled="isDisabled"
         @click="deleteUsageScenario"
       >
         - 删除
@@ -155,6 +173,7 @@
         :rows="6"
         type="textarea"
         placeholder="请输入备注"
+        :disabled="isDisabled"
       />
     </el-form-item>
     <el-form-item
@@ -167,7 +186,10 @@
         :on-success="handleFileSuccess"
         :limit="1"
       >
-        <el-button type="primary">
+        <el-button
+          type="primary"
+          :disabled="isDisabled"
+        >
           点击上传
         </el-button>
       </el-upload>
@@ -184,15 +206,23 @@
           {{ handleAttachment(attachment.name) }}
         </div>
         <el-button
+          v-if="!isDisabled"
           type="text"
           @click="deleteFile(attachment.id)"
         >
           删除
         </el-button>
+        <el-button
+          v-else
+          type="text"
+        >
+          下载
+        </el-button>
       </div>
     </el-form-item>
     <el-form-item>
       <el-button
+        v-if="!isDisabled"
         type="primary"
         @click="submitAnalysisForm"
       >
@@ -217,7 +247,7 @@ export default {
         region_id: null,
         city_id: null
       },
-      analysisForm: this.$store.state.product.survey.userAnalysis.analysisForm,
+      analysisForm: {},
       analysisRules: {
         gender: [
           {
@@ -288,16 +318,38 @@ export default {
       },
       count: 0,
       show: true,
-      attachment:
-        this.$store.state.product.survey.userAnalysis.analysisForm.attachment
+      attachment: {},
+      progress: {},
+      id: 0
     };
   },
   computed: {
-    getProgress() {
-      return this.$store.state.product.survey.userAnalysis.progress;
+    isDisabled() {
+      return this.progress.state === 10 ? false : true;
     }
   },
+  mounted() {
+    this.getAnalysis();
+  },
   methods: {
+    async getAnalysis() {
+      await this.$store.dispatch('product/survey/userAnalysis/getAnalysisData');
+      this.progress = this.$store.state.product.survey.userAnalysis.progress;
+      this.analysisForm =
+        this.$store.state.product.survey.userAnalysis.analysisForm;
+      this.attachment = this.analysisForm.attachment;
+      this.id = this.progress.id;
+    },
+    async updateAnalysis(val) {
+      let body = val;
+      body['survey_schedule_id'] = this.id;
+      body['product_id'] = +this.$route.params.productId;
+      body['attachment'] = this.attachment.id;
+      await this.$store.dispatch(
+        'product/survey/userAnalysis/submitAnalysis',
+        body
+      );
+    },
     handleAttachment(file) {
       if (file === undefined) {
         return '';
@@ -308,7 +360,8 @@ export default {
     submitAnalysisForm() {
       this.$refs.analysisForm.validate((valid) => {
         if (valid) {
-          console.log(this.analysisForm);
+          this.updateAnalysis(this.analysisForm);
+          this.getAnalysis();
         }
       });
     },

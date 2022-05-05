@@ -236,6 +236,7 @@
 
 <script>
 export default {
+  props: ['getSchedule'],
   data() {
     return {
       editStageVisible: false,
@@ -302,9 +303,6 @@ export default {
     };
   },
   computed: {
-    getSchedule() {
-      return this.$store.state.product.project.schedule;
-    },
     isDisabled() {
       return this.getSchedule.review_state === 10 ? true : false;
     },

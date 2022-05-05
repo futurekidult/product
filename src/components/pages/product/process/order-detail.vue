@@ -37,15 +37,17 @@
       v-model="activeName"
       type="card"
       class="order-tabs"
-      @tab-click="handleClick"
     >
       <el-tab-pane
         label="SKU"
         name="sku"
       >
-        <sku-name />
+        <sku-name
+          :schedule="schedule"
+          :sku="sku"
+        />
       </el-tab-pane>
-      <el-tab-pane
+      <!--  <el-tab-pane
         label="合同"
         name="contract"
       >
@@ -56,34 +58,58 @@
         name="pre-production-sample"
       >
         <production-sample />
-      </el-tab-pane>
+      </el-tab-pane>-->
     </el-tabs>
   </div>
 </template>
 
 <script>
 import SkuName from './order/sku-name.vue';
-import ContractList from './order/contract-list.vue';
-import ProductionSample from './order/pre-production-sample.vue';
+// import ContractList from './order/contract-list.vue';
+// import ProductionSample from './order/pre-production-sample.vue';
 
 export default {
   components: {
-    SkuName,
-    ContractList,
-    ProductionSample
+    SkuName
+    // ContractList,
+    // ProductionSample
   },
   props: ['orderId'],
   data() {
     return {
-      activeName: 'sku'
+      activeName: 'sku',
+      progress: {},
+      schedule: {},
+      sku: {}
     };
   },
   computed: {
-    progress() {
-      return this.$store.state.product.order.progress;
-    }
+    // progress() {
+    //   return this.$store.state.product.order.progress;
+    // }
+  },
+  mounted() {
+    this.getProgress();
+    this.getSku();
   },
   methods: {
+    async getProgress() {
+      await this.$store.dispatch('product/order/getProgress', {
+        params: {
+          id: this.orderId
+        }
+      });
+      this.progress = this.$store.state.product.order.progress;
+    },
+    async getSku() {
+      await this.$store.dispatch('product/order/getSkuForm', {
+        params: {
+          order_id: this.orderId
+        }
+      });
+      this.schedule = this.$store.state.product.order.sku.sku_name_schedule;
+      this.sku = this.$store.state.product.order.sku.sku_info;
+    },
     async getContract() {
       await this.$store.dispatch('product/order/getContract', {
         params: {

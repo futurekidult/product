@@ -108,14 +108,16 @@
 
   <pricing-adjust
     v-if="adjustPriceVisible"
-    :id="marketId"
+    :id="priceAdjustmentApplyId"
     :dialog-visible="adjustPriceVisible"
+    :adjust-msg="adjustment"
     @hide-dialog="closeAdjustPrice"
   />
 
   <pricing-log
     v-if="getPricingVisible"
     :dialog-visible="getPricingVisible"
+    :get-list="adjustmentList"
     @hide-dialog="closePricingList"
   />
 </template>
@@ -133,6 +135,7 @@ export default {
     PricingLog,
     ProfitEdit
   },
+  props: ['getProfit'],
   data() {
     return {
       addProfitVisible: false,
@@ -140,18 +143,33 @@ export default {
       editProfitVisible: false,
       adjustPriceVisible: false,
       getPricingVisible: false,
-      marketId: 0
+      marketId: 0,
+      adjustment: {},
+      adjustmentList: [],
+      priceAdjustmentApplyId: 0
     };
   },
   computed: {
-    getProfit() {
-      return this.$store.state.product.project.profit;
-    },
     isShow() {
       return this.getProfit.review_state === 10 ? true : false;
     }
   },
   methods: {
+    async getAdjustment() {
+      let params = {
+        product_id: this.$route.params.productId,
+        market: this.marketId
+      };
+      await this.$store.dispatch('product/project/getAdjustment', { params });
+      this.adjustment = this.$store.state.product.project.adjustment;
+      this.priceAdjustmentApplyId = this.adjustment.price_adjustment_apply_id;
+      this.adjustPriceVisible = true;
+    },
+    async getAdjustmentList() {
+      await this.$store.dispatch('product/project/getAdjustmentList');
+      this.adjustmentList = this.$store.state.product.project.adjustmentList;
+      this.getPricingVisible = true;
+    },
     addProfitCalculation() {
       this.addProfitVisible = true;
     },
@@ -170,14 +188,14 @@ export default {
       this.marketId = id;
     },
     showAdjustPrice(id) {
-      this.adjustPriceVisible = true;
       this.marketId = id;
+      this.getAdjustment();
     },
     closeAdjustPrice() {
       this.adjustPriceVisible = false;
     },
     showPricingList() {
-      this.getPricingVisible = true;
+      this.getAdjustmentList();
     },
     closePricingList() {
       this.getPricingVisible = false;
@@ -185,15 +203,15 @@ export default {
     closeEditProfit() {
       this.editProfitVisible = false;
     },
-    async deleteItem(id) {
+    async deleteItem(val) {
+      await this.$store.dispatch('product/project/deleteProfitItem', val);
+    },
+    deleteProfitItem(id) {
       let body = {
-        prroduct_id: this.$route.params.productId,
+        prroduct_id: +this.$route.params.productId,
         market: id
       };
-      await this.$store.dispatch('product/project/deleteProfitItem', body);
-    },
-    deleteProfitItem(val) {
-      this.deleteItem(val);
+      this.deleteItem(body);
     }
   }
 };

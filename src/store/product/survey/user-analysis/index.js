@@ -1,3 +1,6 @@
+import axios from '../../../../utils/axios.js';
+import { ElMessage } from 'element-plus';
+
 export default {
   namespaced: true,
   state() {
@@ -15,47 +18,24 @@ export default {
     }
   },
   actions: {
-    getAnalysisData(context) {
-      let data = {
-        progress: {
-          id: 1,
-          principal_id: 1,
-          principal_desc: '张三',
-          state: 1,
-          state_desc: '待完成',
-          estimated_finish_time: 1649658153,
-          actual_finish_time: 1649658153
-        },
-        report: {
-          gender: 1,
-          age: 1,
-          profession: '职业',
-          diploma: 1,
-          annual_household_income: 1,
-          marital_status: 1,
-          country: [
-            {
-              country_id: 1,
-              region_id: 1,
-              city_id: 1
-            },
-            {
-              country_id: 1,
-              region_id: 1,
-              city_id: 1
-            }
-          ],
-          usage_scenario: ['场景1', '场景2'],
-          remark: '备注',
-          attachment: {
-            id: 1,
-            type: 1,
-            name: '附件.doc'
-          }
+    async getAnalysisData(context, payload) {
+      await axios.get('/survey/user-analysis/detail', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setProgressData', res.data.progress);
+          context.commit('setFormData', res.data.report);
+        } else {
+          ElMessage.error(res.message);
         }
-      };
-      context.commit('setProgressData', data.progress);
-      context.commit('setFormData', data.report);
+      });
+    },
+    async submitAnalysis(_, payload) {
+      await axios.post('/survey/user-analysis/create', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
     }
   }
 };

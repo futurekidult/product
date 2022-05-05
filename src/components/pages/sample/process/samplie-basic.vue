@@ -91,23 +91,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.result-content {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.fail-btn {
-  text-align: right;
-}
-
-.pass-btn {
-  text-align: center;
-}
-
-.pass-btn button,
-.fail-btn button {
-  width: 100px;
-}
-</style>

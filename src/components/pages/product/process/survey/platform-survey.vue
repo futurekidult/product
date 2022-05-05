@@ -15,22 +15,22 @@
     direction="vertical"
   >
     <el-descriptions-item label="负责人">
-      {{ getProgress.principal_desc }}
+      {{ progress.principal_desc }}
     </el-descriptions-item>
     <el-descriptions-item label="是否多平台">
-      {{ getProgress.is_multi_platform }}
+      {{ progress.is_multi_platform }}
     </el-descriptions-item>
     <el-descriptions-item label="调研平台">
-      {{ getProgress.platform_desc }}
+      {{ progress.platform_desc }}
     </el-descriptions-item>
     <el-descriptions-item label="计划完成时间">
-      {{ getProgress.estimated_finish_time }}
+      {{ progress.estimated_finish_time }}
     </el-descriptions-item>
     <el-descriptions-item label="实际完成时间">
-      {{ getProgress.actual_finish_time }}
+      {{ progress.actual_finish_time }}
     </el-descriptions-item>
     <el-descriptions-item label="状态">
-      {{ getProgress.state_desc }}
+      {{ progress.state_desc }}
     </el-descriptions-item>
   </el-descriptions>
 
@@ -55,7 +55,10 @@
         :on-success="handleImgSuccess"
         :limit="9"
       >
-        <el-button type="primary">
+        <el-button
+          type="primary"
+          :disabled="isDisabled"
+        >
           点击上传
         </el-button>
       </el-upload>
@@ -73,10 +76,17 @@
           {{ img.name }}
         </div>
         <el-button
+          v-if="!isDisabled"
           type="text"
           @click="deleteImg(img.id)"
         >
           删除
+        </el-button>
+        <el-button
+          v-else
+          type="text"
+        >
+          下载
         </el-button>
       </div>
     </el-form-item>
@@ -90,6 +100,7 @@
         maxlength="200"
         show-word-limit
         placeholder="请输入内容"
+        :disabled="isDisabled"
       />
     </el-form-item>
     <el-form-item
@@ -102,6 +113,7 @@
         maxlength="200"
         show-word-limit
         placeholder="请输入内容"
+        :disabled="isDisabled"
       />
     </el-form-item>
     <el-form-item
@@ -114,6 +126,7 @@
         maxlength="200"
         show-word-limit
         placeholder="请输入内容"
+        :disabled="isDisabled"
       />
     </el-form-item>
     <el-form-item
@@ -126,6 +139,7 @@
         maxlength="200"
         show-word-limit
         placeholder="请输入内容"
+        :disabled="isDisabled"
       />
     </el-form-item>
     <div class="form-item">
@@ -136,6 +150,7 @@
         <el-input
           v-model="surveyForm.annual_sales"
           placeholder="请输入年度销售额"
+          :disabled="isDisabled"
         />
       </el-form-item>
       <el-form-item
@@ -145,6 +160,7 @@
         <el-input
           v-model="surveyForm.growth_rate"
           placeholder="请输入同比增长率"
+          :disabled="isDisabled"
         />
       </el-form-item>
     </div>
@@ -156,6 +172,7 @@
         <el-select
           v-model="surveyForm.peak_season_start"
           placeholder="请选择淡旺季系数"
+          :disabled="isDisabled"
         />
       </el-form-item>
       <el-form-item
@@ -165,6 +182,7 @@
         <el-select
           v-model="surveyForm.peak_season_end"
           placeholder="请选择淡旺季系数"
+          :disabled="isDisabled"
         />
       </el-form-item>
     </div>
@@ -176,6 +194,7 @@
         <el-select
           v-model="surveyForm.competitive_degree"
           placeholder="请选择竞争度/垄断性"
+          :disabled="isDisabled"
         />
       </el-form-item>
       <el-form-item
@@ -185,6 +204,7 @@
         <el-select
           v-model="surveyForm.is_nosedive_category"
           placeholder="请选择类目是否跳水"
+          :disabled="isDisabled"
         />
       </el-form-item>
       <el-form-item
@@ -195,6 +215,7 @@
           v-model="surveyForm.precise_price_range"
           placeholder="请选择精准价位段
         "
+          :disabled="isDisabled"
         />
       </el-form-item>
       <el-form-item
@@ -204,6 +225,7 @@
         <el-select
           v-model="surveyForm.flow_richness"
           placeholder="请选择流量丰富度"
+          :disabled="isDisabled"
         />
       </el-form-item>
       <el-form-item
@@ -213,6 +235,7 @@
         <el-select
           v-model="surveyForm.is_nosedive_keyword"
           placeholder="请选择关键词是否跳水"
+          :disabled="isDisabled"
         />
       </el-form-item>
       <el-form-item
@@ -222,6 +245,7 @@
         <el-select
           v-model="surveyForm.keyword_bidding_degree"
           placeholder="请选择关键词竞价"
+          :disabled="isDisabled"
         />
       </el-form-item>
     </div>
@@ -233,6 +257,7 @@
       <el-select
         v-model="surveyForm.is_benchmarking"
         placeholder="请选择竞品是否对标"
+        :disabled="isDisabled"
       />
     </el-form-item>
     <el-form-item
@@ -245,7 +270,10 @@
         :on-success="handleFileSuccess"
         :limit="1"
       >
-        <el-button type="primary">
+        <el-button
+          type="primary"
+          :disabled="isDisabled"
+        >
           点击上传
         </el-button>
       </el-upload>
@@ -262,14 +290,21 @@
           {{ handleAttachment(attachment.name) }}
         </div>
         <el-button
+          v-if="!isDisabled"
           type="text"
           @click="deleteFile(attachment.id)"
         >
           删除
         </el-button>
+        <el-button
+          v-else
+          type="text"
+        >
+          下载
+        </el-button>
       </div>
     </el-form-item>
-    <el-form-item>
+    <el-form-item v-if="!isDisabled">
       <el-button
         type="primary"
         @click="submitSurveyForm"
@@ -289,10 +324,9 @@ export default {
   },
   data() {
     return {
-      attachment:
-        this.$store.state.product.survey.platform.platformForm.attachment,
-      productImages:
-        this.$store.state.product.survey.platform.platformForm.images,
+      progress: {},
+      attachment: {},
+      productImages: [],
       src: '',
       surveyRules: {
         images: [
@@ -398,19 +432,38 @@ export default {
           }
         ]
       },
-      surveyForm: this.$store.state.product.survey.platform.platformForm,
-      show: true
+      surveyForm: {},
+      show: true,
+      id: 0
     };
   },
   computed: {
-    getProgress() {
-      return this.$store.state.product.survey.platform.progress;
-    },
-    getAttachment() {
-      return this.$store.state.product.survey.platform.platformForm.attachment;
+    isDisabled() {
+      return this.progress.state === 10 ? false : true;
     }
   },
+  mounted() {
+    this.getPlatform();
+  },
   methods: {
+    async getPlatform() {
+      await this.$store.dispatch('product/survey/platform/getPlatformData');
+      this.progress = this.$store.state.product.survey.platform.progress;
+      this.surveyForm = this.$store.state.product.survey.platform.platformForm;
+      this.productImages = this.surveyForm.images;
+      this.attachment = this.surveyForm.attachment;
+      this.id = this.progress.id;
+    },
+    async updatePlatform(val) {
+      let body = val;
+      body['attachment'] = this.attachment.id;
+      body['survey_schedule_id'] = this.id;
+      body['product_id'] = +this.$route.params.productId;
+      await this.$store.dispatch(
+        'product/survey/platform/submitPlatform',
+        body
+      );
+    },
     handleAttachment(file) {
       if (file === undefined) {
         return '';
@@ -467,6 +520,8 @@ export default {
             images.push(id);
           }
           this.surveyForm.images = images;
+          this.updatePlatform(this.surveyForm);
+          this.getPlatform();
         }
       });
     }

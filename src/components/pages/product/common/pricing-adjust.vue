@@ -9,7 +9,7 @@
       <el-icon :size="19">
         <clock />
       </el-icon>
-      <div>申请提交时间: {{ list.submit_time }}</div>
+      <div>申请提交时间: {{ adjustMsg.submit_time }}</div>
     </div>
 
     <div class="adjust-result">
@@ -18,39 +18,45 @@
         :column="4"
         direction="vertical"
       >
-        <el-descriptions-item label="平台名称" />
-        <el-descriptions-item label="申请前销售价" />
-        <el-descriptions-item label="申请调整后销售价" />
+        <el-descriptions-item label="平台名称">
+          {{ adjustMsg.platform }}
+        </el-descriptions-item>
+        <el-descriptions-item label="申请前销售价">
+          {{ adjustMsg.origin_selling_price }}
+        </el-descriptions-item>
+        <el-descriptions-item label="申请调整后销售价">
+          {{ adjustMsg.applied_selling_price }}
+        </el-descriptions-item>
         <el-descriptions-item
-          v-if="list.state === 30"
+          v-if="adjustMsg.state === 30"
           label="实际调整后销售价"
-        />
+        >
+          {{ adjustMsg.adjusted_selling_price_rmb }}
+        </el-descriptions-item>
       </el-descriptions>
 
-      <section>申请调价原因: {{ list.reason }}</section>
-      <section>申请人: {{ list.applicant }}</section>
-      <section v-if="list.state !== 10">
+      <section>申请调价原因: {{ adjustMsg.reason }}</section>
+      <section>申请人: {{ adjustMsg.applicant }}</section>
+      <section v-if="adjustMsg.state !== 10">
         调价申请审批:
-        <span :class="colorApprove(list.apply_approve_result)">
-          {{ list.apply_approve_result }}</span>
+        <span :class="colorApprove(adjustMsg.apply_approve_result)">
+          {{ adjustMsg.apply_approve_result }}</span>
       </section>
-      <section v-if="list.state !== 10">
-        审批完成时间: {{ list.apply_approve_time }}
+      <section v-if="adjustMsg.state !== 10">
+        审批完成时间: {{ adjustMsg.apply_approve_time }}
       </section>
-      <section v-if="list.state === 30">
-        调价人: {{ list.operator }}
+      <section v-if="adjustMsg.state === 30">
+        调价人: {{ adjustMsg.operator }}
       </section>
-      <section v-if="list.state === 30">
+      <section v-if="adjustMsg.state === 30">
         调价状态:
-        <span :class="colorApprove(list.adjust_state)">{{
-          list.adjust_state
-        }}</span>
+        <span>{{ adjustMsg.adjust_state_desc }}</span>
       </section>
       <el-divider />
     </div>
 
     <el-form
-      v-if="list.state !== 10"
+      v-if="adjustMsg.state !== 10"
       ref="adjustForm"
       :model="adjustForm"
       :rules="adjustRules"
@@ -66,20 +72,20 @@
               v-model="adjustForm.currency"
               class="analy-form_mar"
               placeholder="请选择货币"
-              :disabled="list.state === 30 ? true : false"
+              :disabled="adjustMsg.state === 30 ? true : false"
             />
           </el-form-item>
-          <el-form-item prop="money">
+          <el-form-item prop="adjusted_selling_price">
             <el-input
-              v-model="adjustForm.money"
+              v-model="adjustForm.adjusted_selling_price"
               class="analy-form_mar"
               placeholder="请输入金额"
-              :disabled="list.state === 30 ? true : false"
+              :disabled="adjustMsg.state === 30 ? true : false"
             />
           </el-form-item>
           <el-form-item>
             <el-input
-              v-model="adjustForm.yuan"
+              v-model="adjustForm.adjusted_selling_price_rmb"
               disabled
             />
           </el-form-item>
@@ -87,7 +93,7 @@
       </el-form-item>
       <el-divider />
       <div
-        v-if="list.state === 20"
+        v-if="adjustMsg.state === 20"
         style="text-align: right"
       >
         <el-button
@@ -100,15 +106,19 @@
     </el-form>
 
     <div
-      v-if="list.state !== 20"
+      v-if="adjustMsg.state !== 20"
       style="text-align: right"
     >
-      <el-button class="close-btn">
+      <el-button
+        class="close-btn"
+        @click="failApproval"
+      >
         不通过
       </el-button>
       <el-button
         type="primary"
         style="background: #379f0d; border: 1px solid #379f0d"
+        @click="passApproval"
       >
         通过
       </el-button>
@@ -122,15 +132,12 @@ export default {
   components: {
     Clock
   },
-  props: ['dialogVisible', 'title', 'type', 'id'],
+  props: ['dialogVisible', 'title', 'type', 'id', 'adjustMsg'],
   emits: ['hide-dialog'],
   data() {
     return {
       visible: this.dialogVisible,
-      list: {
-        state: 30
-      },
-      adjustForm: {},
+      adjustForm: this.adjustMsg.adjustment,
       adjustRules: {
         currency: [
           {
@@ -138,7 +145,7 @@ export default {
             message: '请选择货币'
           }
         ],
-        money: [
+        adjusted_selling_price: [
           {
             required: true,
             message: '请输入金额'
@@ -148,6 +155,44 @@ export default {
     };
   },
   methods: {
+    async applyPricing(val) {
+      await this.$store.dispatch('product/project/applyPricing', val);
+      this.visible = false;
+    },
+    async approvalPricing(val) {
+      await this.$store.dispatch('product/project/approvalPricing', val);
+      this.visible = false;
+    },
+    async submitAdjust(val) {
+      await this.$store.dispatch(
+        'product/project/submitPricingAdjustment',
+        val
+      );
+      this.visible = false;
+    },
+    passApproval() {
+      let body = {
+        price_adjustment_apply_id: this.id,
+        approval_result: 1
+      };
+      if (this.adjustMsg.state === 10) {
+        this.applyPricing(body);
+      } else if (this.adjustMsg.state === 30) {
+        this.approvalPricing(body);
+      }
+    },
+    failApproval() {
+      let body = {
+        price_adjustment_apply_id: this.id,
+        approval_result: 0
+      };
+      if (this.adjustMsg.state === 10) {
+        this.applyPricing(body);
+      } else if (this.adjustMsg.state === 30) {
+        this.approvalPricing(body);
+      }
+      this.visible = false;
+    },
     cancel() {
       this.visible = false;
       this.$emit('hide-dialog', this.visible);
@@ -160,7 +205,7 @@ export default {
       }
     },
     colorApprove(val) {
-      if (val === '不通过') {
+      if (val === 0) {
         return 'result-fail';
       } else {
         return 'result-pass';
@@ -173,8 +218,14 @@ export default {
     },
     submitPrice() {
       this.$refs.adjustForm.validate((valid) => {
-        if (!valid) {
-          console.log('error');
+        if (valid) {
+          let body = {
+            price_adjustment_apply_id: this.id,
+            adjusted_selling_price: this.adjustForm.adjusted_selling_price,
+            adjusted_selling_price_rmb:
+              this.adjustForm.adjusted_selling_price_rmb
+          };
+          this.submitAdjust(body);
         }
       });
     }

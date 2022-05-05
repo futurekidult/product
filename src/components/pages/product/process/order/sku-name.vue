@@ -9,13 +9,13 @@
     direction="vertical"
   >
     <el-descriptions-item label="任务负责人">
-      {{ getProgress.principal }}
+      {{ schedule.principal }}
     </el-descriptions-item>
     <el-descriptions-item label="完成时间">
-      {{ getProgress.actual_finish_time }}
+      {{ schedule.actual_finish_time }}
     </el-descriptions-item>
     <el-descriptions-item label="状态">
-      {{ getProgress.state_desc }}
+      {{ schedule.state_desc }}
     </el-descriptions-item>
   </el-descriptions>
 
@@ -90,7 +90,7 @@
         支持office文档格式以及png/jpg/jpeg等图片格式,单个文件不能超过5MB
       </div>
     </el-form-item>
-    <el-form-item v-if="show">
+    <!-- <el-form-item v-if="show">
       <div class="attachment-list">
         <div>
           {{ handleAttachment(skuForm.project_plan_file.name) }}
@@ -99,7 +99,7 @@
           v-if="isDisabled"
           type="text"
         >
-          下载附件
+          下载
         </el-button>
         <el-button
           v-else
@@ -109,7 +109,7 @@
           删除
         </el-button>
       </div>
-    </el-form-item>
+    </el-form-item> -->
     <el-form-item>
       <el-button
         v-if="!isDisabled"
@@ -125,7 +125,7 @@
     SKU录入进度表
   </div>
 
-  <el-descriptions
+  <!-- <el-descriptions
     border
     :column="4"
     direction="vertical"
@@ -147,11 +147,12 @@
         已完成SKU录入甲骨文
       </el-button>
     </el-descriptions-item>
-  </el-descriptions>
+  </el-descriptions> -->
 </template>
 
 <script>
 export default {
+  props: ['schedule', 'sku'],
   data() {
     return {
       fileList: [],
@@ -175,25 +176,26 @@ export default {
           }
         ]
       },
-      show: true
+      show: true,
+      skuForm: this.sku
     };
   },
   computed: {
-    getProgress() {
-      return this.$store.state.product.order.sku.sku_name_schedule;
-    },
-    skuForm() {
-      return this.$store.state.product.order.sku.sku_info;
-    },
-    skuEntry() {
-      return this.$store.state.product.order.sku.sku_entry_schedule;
-    },
+    //   getProgress() {
+    //     return this.sku.sku_name_schedule;
+    //   },
+    //   skuForm() {
+    //     return this.sku.sku_info;
+    //   },
+    //   skuEntry() {
+    //     return this.sku.sku_entry_schedule;
+    //   },
     isDisabled() {
-      return this.getProgress.state === 40 ? true : false;
-    },
-    getSkuId() {
-      return this.$store.state.product.order.sku.id;
+      return this.schedule.state === 40 ? true : false;
     }
+    //   getSkuId() {
+    //     return this.sku.id;
+    //   }
   },
   methods: {
     handleFileSuccess(file, fileList) {

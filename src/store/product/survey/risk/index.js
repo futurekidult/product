@@ -1,3 +1,6 @@
+import axios from '../../../../utils/axios.js';
+import { ElMessage } from 'element-plus';
+
 export default {
   namespaced: true,
   state() {
@@ -15,32 +18,24 @@ export default {
     }
   },
   actions: {
-    getRiskData(context) {
-      let data = {
-        progress: {
-          id: 1,
-          principal_id: 1,
-          principal_desc: '张三',
-          state: 1,
-          state_desc: '待完成',
-          estimated_finish_time: 1649658153,
-          actual_finish_time: 1649658153
-        },
-        report: {
-          inventive_patent: 1,
-          need_verify: 1,
-          design_patent: '外观专利',
-          legal_regulation: '法律法规',
-          other_risk: '其他风险',
-          attachment: {
-            id: 1,
-            type: 1,
-            name: '附件.doc'
-          }
+    async getRiskData(context, payload) {
+      await axios.get('/survey/risk/detail', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setProgressData', res.data.progress);
+          context.commit('setPlanformData', res.data.report);
+        } else {
+          ElMessage.error(res.message);
         }
-      };
-      context.commit('setProgressData', data.progress);
-      context.commit('setPlanformData', data.report);
+      });
+    },
+    async submitRisk(_, payload) {
+      await axios.post('/survey/risk/create', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
     }
   }
 };

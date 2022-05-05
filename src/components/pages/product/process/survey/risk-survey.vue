@@ -3,7 +3,7 @@
     调研进度表
   </div>
 
-  <survey-schedule :get-progress="getProgress" />
+  <survey-schedule :get-progress="progress" />
 
   <div class="survey-title">
     调研报告内容
@@ -24,6 +24,7 @@
         <el-select
           v-model="riskForm.inventive_patent"
           placeholder="请选择发明专利"
+          :disabled="isDisabled"
         />
       </el-form-item>
       <el-form-item
@@ -33,6 +34,7 @@
         <el-select
           v-model="riskForm.need_verify"
           placeholder="请选择是否需要认证"
+          :disabled="isDisabled"
         />
       </el-form-item>
     </div>
@@ -46,6 +48,7 @@
         maxlength="200"
         show-word-limit
         placeholder="请输入外观专利"
+        :disabled="isDisabled"
       />
     </el-form-item>
     <el-form-item
@@ -58,6 +61,7 @@
         maxlength="200"
         show-word-limit
         placeholder="请输入法律法规"
+        :disabled="isDisabled"
       />
     </el-form-item>
     <el-form-item
@@ -70,6 +74,7 @@
         maxlength="200"
         show-word-limit
         placeholder="请输入其它风险"
+        :disabled="isDisabled"
       />
     </el-form-item>
     <el-form-item
@@ -83,7 +88,10 @@
         :on-success="handleFileSuccess"
         :limit="1"
       >
-        <el-button type="primary">
+        <el-button
+          type="primary"
+          :disabled="isDisabled"
+        >
           点击上传
         </el-button>
       </el-upload>
@@ -100,15 +108,23 @@
           {{ handleAttachment(attachment.name) }}
         </div>
         <el-button
+          v-if="!isDisabled"
           type="text"
           @click="deleteFile(attachment.id)"
         >
           删除
         </el-button>
+        <el-button
+          v-else
+          type="text"
+        >
+          下载
+        </el-button>
       </div>
     </el-form-item>
     <el-form-item>
       <el-button
+        v-if="!isDisabled"
         type="primary"
         @click="submitRiskForm"
       >
@@ -128,7 +144,7 @@ export default {
   data() {
     return {
       fileList: [],
-      riskForm: this.$store.state.product.survey.risk.riskForm,
+      riskForm: {},
       riskRules: {
         inventive_patent: [
           {
@@ -168,15 +184,34 @@ export default {
         ]
       },
       show: true,
-      attachment: this.$store.state.product.survey.risk.riskForm.attachment
+      attachment: {},
+      id: 0,
+      progress: {}
     };
   },
   computed: {
-    getProgress() {
-      return this.$store.state.product.survey.risk.progress;
+    isDisabled() {
+      return this.progress.state === 10 ? false : true;
     }
   },
+  mounted() {
+    this.getRisk();
+  },
   methods: {
+    async getRisk() {
+      await this.$store.dispatch('product/survey/risk/getRiskData');
+      this.progress = this.$store.state.product.survey.risk.progress;
+      this.riskForm = this.$store.state.product.survey.risk.riskForm;
+      this.attachment = this.riskForm.attachment;
+      this.id = this.progress.id;
+    },
+    async updateRisk(val) {
+      let body = val;
+      body['survey_schedule_id'] = this.id;
+      body['product_id'] = +this.$route.params.productId;
+      body['attachment'] = this.attachment.id;
+      await this.$store.dispatch('product/survey/risk/submitRisk', body);
+    },
     handleAttachment(file) {
       if (file === undefined) {
         return '';
@@ -186,8 +221,9 @@ export default {
     },
     submitRiskForm() {
       this.$refs.riskForm.validate((valid) => {
-        if (!valid) {
-          console.log('error');
+        if (valid) {
+          this.updateRisk(this.riskForm);
+          this.getRisk();
         }
       });
     },

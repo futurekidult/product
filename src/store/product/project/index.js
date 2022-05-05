@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../../../utils/axios.js';
 import { ElMessage } from 'element-plus';
 
 export default {
@@ -10,7 +10,8 @@ export default {
       schedule: {},
       specialist: [],
       profitCalculation: {},
-      adjustment: {}
+      adjustment: {},
+      adjustmentList: []
     };
   },
   mutations: {
@@ -29,125 +30,42 @@ export default {
     setProfitCalculation(state, payload) {
       state.profitCalculation = payload;
     },
-    serAdjustment(state, payload) {
+    setAdjustment(state, payload) {
       state.adjustment = payload;
+    },
+    setAdjustmentList(state, payload) {
+      state.adjustmentList = payload;
     }
   },
   actions: {
-    getProject(context) {
-      let data = {
-        schedule: {
-          project_administrator: '小刘',
-          actual_finish_time: 0,
-          review_state: 10,
-          review_state_desc: '待评审',
-          state: 40,
-          state_desc: '待完成'
-        },
-        form: {
-          review_result: 1,
-          unapproved_reason: 'xxxxxxx',
-          sale_plan: {
-            id: 2,
-            name: '销售计划表.doc',
-            type: 1
-          }
+    async getProject(context, payload) {
+      await axios.get('/project/get', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setProject', res.data);
+        } else {
+          ElMessage.error(res.message);
         }
-      };
-      context.commit('setProject', data);
+      });
     },
-    getProfit(context) {
-      let data = {
-        review_state: 40,
-        review_state_desc: '待评审',
-        list: [
-          {
-            market: 1,
-            market_desc: '美国',
-            platform: 'Amazon、Wayfair',
-            is_mould_making: '是'
-          },
-          {
-            market: 2,
-            market_desc: '英国',
-            platform: 'Amazon',
-            is_mould_making: '是'
+    async getProfit(context, payload) {
+      await axios
+        .get('/project/profit-calculation/list', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            context.commit('setProfit', res.data);
+          } else {
+            ElMessage.error(res.message);
           }
-        ]
-      };
-      context.commit('setProfit', data);
+        });
     },
-    getSchedule(context) {
-      let data = {
-        review_state: 10,
-        review_state_desc: '待评审',
-        list: [
-          {
-            id: 2,
-            stage: 10,
-            stage_desc: '定价阶段',
-            estimated_finish_time: 1634856400,
-            actual_finish_time: 1635856400,
-            state: 30,
-            state_desc: '逾期完成'
-          },
-          {
-            id: 3,
-            stage: 20,
-            stage_desc: '专利阶段',
-            estimated_finish_time: 1634856400,
-            actual_finish_time: 1633856400,
-            state: 20,
-            state_desc: '正常完成'
-          },
-          {
-            id: 4,
-            stage: 30,
-            stage_desc: '样品阶段',
-            estimated_finish_time: 1634856400,
-            actual_finish_time: 1635856400,
-            state: 30,
-            state_desc: '逾期完成'
-          },
-          {
-            id: 5,
-            stage: 40,
-            stage_desc: '下单阶段',
-            estimated_finish_time: 1634856400,
-            actual_finish_time: 1634856400,
-            state: 20,
-            state_desc: '正常完成'
-          },
-          {
-            id: 6,
-            stage: 50,
-            stage_desc: '包材阶段',
-            estimated_finish_time: 1634856400,
-            actual_finish_time: 1635856400,
-            state: 30,
-            state_desc: '逾期完成'
-          },
-          {
-            id: 7,
-            stage: 60,
-            stage_desc: '出货时间',
-            estimated_finish_time: 1634856400,
-            actual_finish_time: 1635856400,
-            state: 0,
-            state_desc: ''
-          },
-          {
-            id: 8,
-            stage: 70,
-            stage_desc: '开卖时间',
-            estimated_finish_time: 1634856400,
-            actual_finish_time: 0,
-            state: 0,
-            state_desc: ''
-          }
-        ]
-      };
-      context.commit('setSchedule', data);
+    async getSchedule(context, payload) {
+      await axios.get('/project/schedule/list', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setSchedule', res.data);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
     },
     async updateEstimatedTime(_, payload) {
       await axios
@@ -191,20 +109,16 @@ export default {
           }
         });
     },
-    async getOperationsSpecialist(context) {
-      let data = [
-        {
-          platform: 10,
-          platform_desc: 'Amazon',
-          operations_specialist_id: 13
-        },
-        {
-          platform: 20,
-          platform_desc: 'Wayfair',
-          operations_specialist_id: 15
-        }
-      ];
-      context.commit('setSpecialist', data);
+    async getOperationsSpecialist(context, payload) {
+      await axios
+        .get('/project/operations-specialist/get', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            context.commit('setSpecialist', res.data.list);
+          } else {
+            ElMessage.error(res.message);
+          }
+        });
     },
     async updateOperationsSpecialist(_, payload) {
       await axios
@@ -217,54 +131,74 @@ export default {
           }
         });
     },
-    async getProfitCalculation(context) {
-      let data = {
-        market: 1,
-        is_mould_making: 1,
-        list: [
-          {
-            id: 1,
-            platform: 2,
-            currency: 2,
-            selling_price: '33.99',
-            selling_price_rmb: '199.99',
-            reference_price: '99.99',
-            operations_specialist_id: 14
-          },
-          {
-            id: 2,
-            platform: 3,
-            currency: 2,
-            selling_price: '36.99',
-            selling_price_rmb: '209.99',
-            reference_price: '109.99',
-            operations_specialist_id: 13
+    async getProfitCalculation(context, payload) {
+      await axios
+        .get('/project/profit-calculation/get', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            context.commit('setProfitCalculation', res.data);
+          } else {
+            ElMessage.error(res.message);
           }
-        ]
-      };
-      context.commit('setProfitCalculation', data);
+        });
     },
-    async getAdjustment(context) {
-      let data = {
-        price_adjustment_apply_id: 2,
-        state: 30,
-        state_desc: '调价审批中',
-        platform: 'Amazon',
-        origin_selling_price: '199.99',
-        applied_selling_price: '204.63',
-        adjusted_selling_price_rmb: '205.02',
-        reason: 'xxxxxxx',
-        applicant: '张三',
-        submit_time: 1645039900,
-        apply_approve_result: '通过',
-        apply_approve_time: 1650039900,
-        operator: '李四',
-        adjust_state: 10,
-        adjust_state_desc: '待审批',
-        currency: 20,
-        adjusted_selling_price: '36.99'
-      };
-      context.commit('serAdjustment', data);
+    async getAdjustment(context, payload) {
+      await axios.get('/adjustment/get', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setAdjustment', res.data);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async getAdjustmentList(context, payload) {
+      await axios.get('/pricing/adjustment/list', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setAdjustmentList', res.data.list);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async applyPricing(_, payload) {
+      await axios
+        .post('/pricing/adjust-application/approve', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(res.message);
+          } else {
+            ElMessage.error(res.message);
+          }
+        });
+    },
+    async approvalPricing(_, payload) {
+      await axios.post('/pricing/adjustment/approve', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async submitPricingAdjustment(_, payload) {
+      await axios.post('/pricing/adjust', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async deleteProfitItem(_, payload) {
+      await axios
+        .post('/project/profit-calculation/delete', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(res.message);
+          } else {
+            ElMessage.error(res.message);
+          }
+        });
     }
   }
 };

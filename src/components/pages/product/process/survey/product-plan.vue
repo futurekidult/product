@@ -3,7 +3,7 @@
     调研进度表
   </div>
 
-  <survey-schedule :get-progress="getProgress" />
+  <survey-schedule :get-progress="progress" />
 
   <div class="survey-title">
     调研报告内容
@@ -29,11 +29,13 @@
         maxlength="15"
         show-word-limit
         clearable
+        :disabled="isDisabled"
       />
     </el-form-item>
     <el-form-item>
       <el-button
         class="project-plan_btn"
+        :disabled="isDisabled"
         @click="addUsageScenario"
       >
         + 新增
@@ -41,6 +43,7 @@
       <el-button
         class="user-btn"
         type="danger"
+        :disabled="isDisabled"
         @click="deleteUsageScenario"
       >
         - 删除
@@ -56,6 +59,7 @@
         maxlength="200"
         show-word-limit
         placeholder="请输入用户痛点"
+        :disabled="isDisabled"
       />
     </el-form-item>
     <el-form-item
@@ -68,6 +72,7 @@
         maxlength="200"
         show-word-limit
         placeholder="请输入用户需求分析"
+        :disabled="isDisabled"
       />
     </el-form-item>
     <el-form-item
@@ -80,6 +85,7 @@
         maxlength="200"
         show-word-limit
         placeholder="请输入产品切入点"
+        :disabled="isDisabled"
       />
     </el-form-item>
     <competitive-table :competitive-product="competitiveProduct" />
@@ -96,6 +102,7 @@
                   v-model="productForm.inner_box_dimension_l"
                   class="analy-form_mar"
                   placeholder="长度"
+                  :disabled="isDisabled"
                 />
               </el-form-item>
               <el-form-item prop="inner_box_dimension_w">
@@ -103,12 +110,14 @@
                   v-model="productForm.inner_box_dimension_w"
                   class="analy-form_mar"
                   placeholder="宽度"
+                  :disabled="isDisabled"
                 />
               </el-form-item>
               <el-form-item prop="inner_box_dimension_h">
                 <el-input
                   v-model="productForm.inner_box_dimension_h"
                   placeholder="高度"
+                  :disabled="isDisabled"
                 />
               </el-form-item>
             </div>
@@ -123,6 +132,7 @@
                   v-model="productForm.outer_box_dimension_l"
                   class="analy-form_mar"
                   placeholder="长度"
+                  :disabled="isDisabled"
                 />
               </el-form-item>
               <el-form-item prop="outer_box_dimension_w">
@@ -130,12 +140,14 @@
                   v-model="productForm.outer_box_dimension_w"
                   class="analy-form_mar"
                   placeholder="宽度"
+                  :disabled="isDisabled"
                 />
               </el-form-item>
               <el-form-item prop="outer_box_dimension_h">
                 <el-input
                   v-model="productForm.outer_box_dimension_h"
                   placeholder="高度"
+                  :disabled="isDisabled"
                 />
               </el-form-item>
             </div>
@@ -148,6 +160,7 @@
             <el-input
               v-model="productForm.inner_box_weight"
               placeholder="请输入内箱重量"
+              :disabled="isDisabled"
             />
           </el-form-item>
           <el-form-item
@@ -158,6 +171,7 @@
             <el-input
               v-model="productForm.outer_box_weight"
               placeholder="请输入外箱重量"
+              :disabled="isDisabled"
             />
           </el-form-item>
         </div>
@@ -172,6 +186,7 @@
                 v-model="productForm.head_cost_currency"
                 class="analy-form_mar"
                 placeholder="请选择货币"
+                :disabled="isDisabled"
               />
             </el-form-item>
             <el-form-item prop="head_cost">
@@ -201,6 +216,7 @@
                 v-model="productForm.tail_cost_currency"
                 class="analy-form_mar"
                 placeholder="请选择货币"
+                :disabled="isDisabled"
               />
             </el-form-item>
             <el-form-item prop="tail_cost">
@@ -208,6 +224,7 @@
                 v-model="productForm.tail_cost"
                 class="analy-form_mar"
                 placeholder="请输入金额"
+                :disabled="isDisabled"
               />
             </el-form-item>
             <el-form-item prop="tail_cost_rmb">
@@ -231,7 +248,10 @@
         :on-success="handleFileSuccess"
         :limit="1"
       >
-        <el-button type="primary">
+        <el-button
+          type="primary"
+          :disabled="isDisabled"
+        >
           点击上传
         </el-button>
       </el-upload>
@@ -248,10 +268,17 @@
           {{ handleAttachment(attachment.name) }}
         </div>
         <el-button
+          v-if="!isDisabled"
           type="text"
           @click="deleteFile(attachment.id)"
         >
           删除
+        </el-button>
+        <el-button
+          v-else
+          type="text"
+        >
+          下载
         </el-button>
       </div>
     </el-form-item>
@@ -277,11 +304,8 @@ export default {
   },
   data() {
     return {
-      usageScenario: [],
-      count: 0,
-      productForm: this.$store.state.product.survey.plan.planForm,
-      competitiveProduct:
-        this.$store.state.product.survey.plan.planForm.competitive_product,
+      productForm: {},
+      competitiveProduct: [],
       productRules: {
         usage_scenario: [
           {
@@ -398,16 +422,36 @@ export default {
           }
         ]
       },
-      attachment: this.$store.state.product.survey.plan.planForm.attachment,
-      show: true
+      attachment: {},
+      progress: {},
+      show: true,
+      id: 0
     };
   },
   computed: {
-    getProgress() {
-      return this.$store.state.product.survey.plan.progress;
+    isDisabled() {
+      return this.progress.state === 10 ? false : true;
     }
   },
+  mounted() {
+    this.getPlan();
+  },
   methods: {
+    async getPlan() {
+      await this.$store.dispatch('product/survey/plan/getPlanData');
+      this.progress = this.$store.state.product.survey.plan.progress;
+      this.productForm = this.$store.state.product.survey.plan.planForm;
+      this.attachment = this.productForm.attachment;
+      this.id = this.progress.id;
+      this.competitiveProduct = this.productForm.competitive_product;
+    },
+    async updatePlan(val) {
+      let body = val;
+      body['survey_schedule_id'] = this.id;
+      body['product_id'] = +this.$route.params.productId;
+      body['attachment'] = this.attachment.id;
+      await this.$store.dispatch('product/survey/plan/submitPlan', body);
+    },
     handleAttachment(file) {
       if (file === undefined) {
         return '';
@@ -440,7 +484,8 @@ export default {
     submitProductForm() {
       this.$refs.productForm.validate((valid) => {
         if (valid) {
-          console.log(this.productForm);
+          this.updatePlan(this.productForm);
+          this.getPlan();
         }
       });
     }

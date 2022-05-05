@@ -13,23 +13,23 @@
     :column="5"
   >
     <el-descriptions-item label="项目管理员">
-      {{ getProgress.project_administrator }}
+      {{ progress.project_administrator }}
     </el-descriptions-item>
     <el-descriptions-item label="实际完成时间">
-      {{ getProgress.actual_finish_time }}
+      {{ progress.actual_finish_time }}
     </el-descriptions-item>
     <el-descriptions-item label="评审状态">
-      {{ getProgress.review_state_desc }}
+      {{ progress.review_state_desc }}
     </el-descriptions-item>
     <el-descriptions-item label="状态">
-      {{ getProgress.state_desc }}
+      {{ progress.state_desc }}
     </el-descriptions-item>
     <el-descriptions-item
       label="操作"
       width="200px"
     >
-      <div v-if="getProgress.state !== 10">
-        <el-button :class="getProgress.state === 40 ? 'hide' : ''">
+      <div v-if="progress.state !== 10">
+        <el-button :class="progress.state === 40 ? 'hide' : ''">
           不通过
         </el-button>
         <el-button
@@ -80,8 +80,8 @@
       />
     </el-form-item>
     <div v-if="projectForm.review_result === 1">
-      <profit-calculation />
-      <process-table />
+      <profit-calculation :get-profit="profit" />
+      <process-table :get-schedule="schedule" />
 
       <div class="profit-plan_title">
         销售计划表
@@ -110,14 +110,17 @@
         </div>
       </el-form-item>
       <el-form-item style="margin-bottom: 18px; width: 50%">
-        <div class="attachment-list">
-          <div @click="previewFile(file.id)">
-            {{ projectForm.sale_plan.name }}
+        <div
+          v-if="show"
+          class="attachment-list"
+        >
+          <div @click="previewFile(attachment.id)">
+            {{ attachment.name }}
           </div>
           <el-button
             v-if="!isDisabled"
             type="text"
-            @click="deleteFile(file.id)"
+            @click="deleteFile(attachment.id)"
           >
             删除
           </el-button>
@@ -125,7 +128,7 @@
             v-else
             type="text"
           >
-            下载附件
+            下载
           </el-button>
         </div>
       </el-form-item>
@@ -191,7 +194,12 @@ export default {
           value: 0,
           label: '不通过'
         }
-      ]
+      ],
+      progress: {},
+      attachment: {},
+      show: true,
+      profit: {},
+      schedule: {}
     };
   },
   computed: {
@@ -202,33 +210,51 @@ export default {
         return this.failRules;
       }
     },
-    getProject() {
-      return this.$store.state.product.project.project;
-    },
-    getProgress() {
-      return this.getProject.schedule;
-    },
     isDisabled() {
-      return this.getProgress.state === 40 ? true : false;
+      return this.progress.state === 10 ? false : true;
     }
   },
   mounted() {
-    this.projectForm = this.getProject.form;
-    this.attachment = this.projectForm.sale_plan;
+    this.getProject();
+    this.getProfit();
+    this.getSchedule();
   },
   methods: {
+    async getProject() {
+      await this.$store.dispatch('product/project/getProject', {
+        params: { product_id: this.$route.params.productId }
+      });
+      this.progress = this.$store.state.product.project.project.schedule;
+      this.projectForm = this.$store.state.product.project.project.form;
+      this.attachment = this.projectForm.sale_plan;
+    },
+    async getProfit() {
+      await this.$store.dispatch('product/project/getProfit', {
+        params: { product_id: this.$route.params.productId }
+      });
+      this.profit = this.$store.state.product.project.profit;
+    },
+    async getSchedule() {
+      await this.$store.dispatch('product/project/getSchedule', {
+        params: { product_id: this.$route.params.productId }
+      });
+      this.schedule = this.$store.state.product.project.schedule;
+    },
     handleFileSuccess(file, fileList) {
-      this.fileList.push({
+      this.attachment = {
         id: file.id,
         name: fileList.name
-      });
+      };
       this.projectForm.attachment = file.id;
+      this.show = true;
     },
     previewFile(id) {
       console.log(id);
     },
     deleteFile(id) {
       console.log(id);
+      this.attachment = {};
+      this.show = false;
     },
     submitProjectForm() {
       this.$refs.projectForm.validate((valid) => {

@@ -14,26 +14,14 @@ export default {
     }
   },
   actions: {
-    getMarketData(context) {
-      let data = {
-        progress: {
-          id: 1,
-          principal_id: 1,
-          principal_desc: '张三',
-          is_multi_market: '是',
-          market_name: '市场名称',
-          state: 10,
-          state_desc: '待完成',
-          estimated_finish_time: 1649658153,
-          actual_finish_time: 1649658153
-        },
-        report: {
-          id: 1,
-          type: 1,
-          name: '报告名称'
+    async getMarketData(context, payload) {
+      await axios.get('/survey/market/detail', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setMarketData', res.data);
+        } else {
+          ElMessage.error(res.message);
         }
-      };
-      context.commit('setMarketData', data);
+      });
     },
     async submitMarketFile(_, payload) {
       await axios.post('/survey/market/create', payload).then((res) => {
@@ -43,6 +31,11 @@ export default {
           ElMessage.error(res.message);
         }
       });
+    }
+  },
+  getters: {
+    getMarketList(state) {
+      return state.market;
     }
   }
 };

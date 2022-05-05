@@ -207,7 +207,6 @@ export default {
   },
   mounted() {
     this.getProfitCalculation();
-    this.profitForm = this.$store.state.product.project.profitCalculation;
   },
   methods: {
     async getProfitCalculation() {
@@ -218,6 +217,9 @@ export default {
       await this.$store.dispatch('product/project/getProfitCalculation', {
         params
       });
+      if (this.type === 'view') {
+        this.profitForm = this.$store.state.product.project.profitCalculation;
+      }
     },
     cancel() {
       this.visible = false;
