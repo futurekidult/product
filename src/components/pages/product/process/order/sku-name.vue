@@ -90,10 +90,10 @@
         支持office文档格式以及png/jpg/jpeg等图片格式,单个文件不能超过5MB
       </div>
     </el-form-item>
-    <!-- <el-form-item v-if="show">
+    <el-form-item v-if="show">
       <div class="attachment-list">
         <div>
-          {{ handleAttachment(skuForm.project_plan_file.name) }}
+          {{ handleAttachment(attachment.name) }}
         </div>
         <el-button
           v-if="isDisabled"
@@ -104,12 +104,12 @@
         <el-button
           v-else
           type="text"
-          @click="deleteFile(skuForm.project_plan_file.id)"
+          @click="deleteFile(attachment.id)"
         >
           删除
         </el-button>
       </div>
-    </el-form-item> -->
+    </el-form-item>
     <el-form-item>
       <el-button
         v-if="!isDisabled"
@@ -125,37 +125,35 @@
     SKU录入进度表
   </div>
 
-  <!-- <el-descriptions
+  <el-descriptions
     border
     :column="4"
     direction="vertical"
   >
     <el-descriptions-item label="任务负责人">
-      {{ skuEntry.principal }}
+      {{ skuEntrySchedule.principal }}
     </el-descriptions-item>
     <el-descriptions-item label="实际完成时间">
-      {{ skuEntry.actual_finish_time }}
+      {{ skuEntrySchedule.actual_finish_time }}
     </el-descriptions-item>
     <el-descriptions-item label="状态">
-      {{ skuEntry.state_desc }}
+      {{ skuEntrySchedule.state_desc }}
     </el-descriptions-item>
     <el-descriptions-item label="操作">
       <el-button
-        :disabled="skuEntry.state === 10 ? false : true"
+        :disabled="skuEntrySchedule.state === 10 ? false : true"
         @click="completeEntry"
       >
         已完成SKU录入甲骨文
       </el-button>
     </el-descriptions-item>
-  </el-descriptions> -->
+  </el-descriptions>
 </template>
 
 <script>
 export default {
-  props: ['schedule', 'sku'],
   data() {
     return {
-      fileList: [],
       skuRules: {
         platform: [
           {
@@ -177,29 +175,45 @@ export default {
         ]
       },
       show: true,
-      skuForm: this.sku
+      skuForm: {},
+      attachment: {},
+      skuEntrySchedule: {},
+      schedule: {},
+      skuId: 0
     };
   },
   computed: {
-    //   getProgress() {
-    //     return this.sku.sku_name_schedule;
-    //   },
-    //   skuForm() {
-    //     return this.sku.sku_info;
-    //   },
-    //   skuEntry() {
-    //     return this.sku.sku_entry_schedule;
-    //   },
     isDisabled() {
       return this.schedule.state === 40 ? true : false;
     }
-    //   getSkuId() {
-    //     return this.sku.id;
-    //   }
+  },
+  mounted() {
+    this.getSku();
   },
   methods: {
+    async getSku() {
+      await this.$store.dispatch('product/order/getSkuForm', {
+        params: {
+          order_id: this.orderId
+        }
+      });
+      this.skuForm = this.$store.state.product.order.sku.sku_info;
+      this.skuId = this.$store.state.product.order.sku.id;
+      this.attachment = this.skuForm.project_plan_file;
+      this.skuEntrySchedule =
+        this.$store.state.product.order.sku.sku_entry_schedule;
+      this.schedule = this.$store.state.product.order.sku.sku_name_schedule;
+    },
+    async updateSkuname(val) {
+      let body = {};
+      body['sku_info'] = {};
+      body['sku_info']['sku'] = val.sku;
+      body['id'] = this.skuId;
+      body['sku_info']['project_plan_file'] = this.attachment.id;
+      await this.$store.dispatch('product/order/submitSkuname', body);
+    },
     handleFileSuccess(file, fileList) {
-      this.skuForm.project_plan_file = {
+      this.attachment = {
         id: file.id,
         name: fileList.name
       };
@@ -209,7 +223,7 @@ export default {
     },
     deleteFile(id) {
       console.log(id);
-      this.skuForm.project_plan_file = {};
+      this.attachment = {};
       this.show = false;
     },
     handleAttachment(file) {
@@ -225,9 +239,8 @@ export default {
     submitSkuForm() {
       this.$refs.skuForm.validate((valid) => {
         if (valid) {
-          let { id } = this.skuForm.project_plan_file;
-          this.skuForm.project_plan_file = id;
-          this.getSkuForm();
+          this.updateSkuname(this.skuForm);
+          this.getSku();
         }
       });
     },
@@ -235,9 +248,7 @@ export default {
       await this.$store.dispatch('product/order/completeSkuEntry', {
         id: this.getSkuId
       });
-      await this.$store.dispatch('product/order/getSkuForm', {
-        order_id: this.$route.params.orderId
-      });
+      this.getSku();
     },
     addSku() {
       this.skuForm.sku.push({});

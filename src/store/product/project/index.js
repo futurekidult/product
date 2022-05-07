@@ -39,7 +39,7 @@ export default {
   },
   actions: {
     async getProject(context, payload) {
-      await axios.get('/project/get', payload).then((res) => {
+      await axios.get('/project/detail/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setProject', res.data);
         } else {
@@ -143,7 +143,7 @@ export default {
         });
     },
     async getAdjustment(context, payload) {
-      await axios.get('/adjustment/get', payload).then((res) => {
+      await axios.get('/pricing/adjustment/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setAdjustment', res.data);
         } else {

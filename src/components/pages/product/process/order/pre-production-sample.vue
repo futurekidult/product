@@ -222,15 +222,23 @@ export default {
           }
         ]
       },
-      id: 0
+      id: 0,
+      preProductSample: {}
     };
   },
-  computed: {
-    preProductSample() {
-      return this.$store.state.product.order.preProductSample;
-    }
+  computed: {},
+  mounted() {
+    this.getPreProductSample();
   },
   methods: {
+    async getPreProductSample() {
+      await this.$store.dispatch('product/order/getPreProduct', {
+        params: {
+          order_id: this.$route.params.orderId
+        }
+      });
+      this.preProductSample = this.$store.state.product.order.preProductSample;
+    },
     showFollowupSheet() {
       this.followupSheetDialog = true;
     },
@@ -243,6 +251,7 @@ export default {
         'product/order/followupSheet',
         this.followupForm
       );
+      this.followupSheetDialog = true;
     },
     async submitReceipt() {
       this.courierNumberForm['id'] = this.preProductSample.id;
@@ -250,11 +259,13 @@ export default {
         'product/order/receiptSheet',
         this.courierNumberForm
       );
+      this.courierNumberDialog = false;
     },
     submitFollowupForm() {
       this.$refs.followupForm.validate((valid) => {
         if (valid) {
           this.submitSheet();
+          this.getPreProductSample();
         }
       });
     },
@@ -268,6 +279,7 @@ export default {
       this.$refs.courierNumberForm.validate((valid) => {
         if (valid) {
           this.submitReceipt();
+          this.getPreProductSample();
         }
       });
     },
@@ -280,6 +292,7 @@ export default {
         id: this.id
       });
       this.confirmVisible = false;
+      this.getPreProductSample();
     },
     closeConfirm() {
       this.confirmVisible = false;

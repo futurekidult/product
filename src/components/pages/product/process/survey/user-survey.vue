@@ -19,6 +19,7 @@
     <el-table-column
       label="序号"
       type="index"
+      width="60px"
     />
     <el-table-column
       label="申请人"
@@ -41,21 +42,22 @@
         <el-button
           v-if="scope.row.state === 10"
           type="text"
-          @click="showReviewForm"
+          @click="showReviewForm(scope.row.id)"
         >
           用户调研需求评审
         </el-button>
         <el-button
           v-else
           type="text"
-          @click="showReviewForm"
+          @click="showViewReviewForm(scope.row.id)"
         >
           查看用户调研需求
         </el-button>
       </template>
     </el-table-column>
   </el-table>
-  <div v-if="buttonState.apply === 0">
+
+  <div>
     <div class="survey-title">
       调研进度表
     </div>
@@ -69,16 +71,16 @@
         label="调研负责人"
         width="200px"
       >
-        {{ getProgress.principal_desc }}
+        {{ progress.principal_desc }}
       </el-descriptions-item>
       <el-descriptions-item
         label="计划完成时间"
         width="200px"
       >
-        {{ getProgress.estimated_finish_time }}
+        {{ progress.estimated_finish_time }}
       </el-descriptions-item>
       <el-descriptions-item
-        v-if="!timeShow"
+        v-if="progress.actual_start_time === 0"
         label="实际调研开始时间"
         width="200px"
       >
@@ -94,25 +96,28 @@
         label="实际调研开始时间"
         width="200px"
       >
-        {{ getProgress.actual_start_time }}
+        {{ progress.actual_start_time }}
       </el-descriptions-item>
       <el-descriptions-item
         label="实际完成时间"
         width="200px"
       >
-        {{ getProgress.actual_finish_time }}
+        {{ progress.actual_finish_time }}
       </el-descriptions-item>
       <el-descriptions-item
         label="状态"
         width="200px"
       >
-        {{ getProgress.state_desc }}
+        {{ progress.state_desc }}
       </el-descriptions-item>
       <el-descriptions-item
         label="操作"
         width="200px"
       >
-        <el-button v-if="confirmVisible">
+        <el-button
+          v-if="buttonState.review_pass === 0"
+          @click="confirmUserSurvey(progress.id)"
+        >
           用户调研结果确认
         </el-button>
       </el-descriptions-item>
@@ -138,7 +143,7 @@
           style="margin-left: 12px"
         >
           <el-button
-            v-if="buttonState.review === 0"
+            v-if="buttonState.review_no_pass === 1"
             class="close-btn"
             @click="approvalFail"
           >
@@ -147,7 +152,7 @@
           <el-button
             type="primary"
             style="background: #379f0d; border: 1px solid #379f0d"
-            :disabled="buttonState.review === 1 ? true : false"
+            :disabled="buttonState.review_pass === 0 ? true : false"
             @click="approvalPass"
           >
             通过
@@ -168,7 +173,7 @@
       <el-table-column label="事项">
         <template #default="scope">
           <el-select
-            v-if="show"
+            v-if="buttonState.plan === 1"
             v-model="scope.row.proceeding"
           />
           <span v-else>{{ scope.row.proceeding }}</span>
@@ -180,7 +185,7 @@
       >
         <template #default="scope">
           <el-select
-            v-if="show"
+            v-if="buttonState.plan === 1"
             v-model="scope.row.detail"
           />
           <span v-else>{{ scope.row.detail }}</span>
@@ -189,7 +194,7 @@
       <el-table-column label="执行人">
         <template #default="scope">
           <el-select
-            v-if="show"
+            v-if="buttonState.plan === 1"
             v-model="scope.row.operator_desc"
           />
           <span v-else>{{ scope.row.operator_desc }}</span>
@@ -201,7 +206,7 @@
       >
         <template #default="scope">
           <el-date-picker
-            v-if="show"
+            v-if="buttonState.plan === 1"
             v-model="scope.row.estimated_finish_time"
             type="datetime"
             placeholder="请选择时间"
@@ -222,8 +227,7 @@
         <template #default="scope">
           <div
             v-if="
-              scope.row.has_approval_process === '是' ||
-                scope.row.proceeding === 1
+              scope.row.has_approval_process === 1 || scope.row.proceeding === 1
             "
           >
             <div v-if="!scope.row.attachment">
@@ -260,30 +264,32 @@
       </el-table-column>
       <el-table-column
         label="是否审批环节"
-        prop="has_approval_process"
+        prop="has_approval_process_desc"
       />
       <el-table-column
         label="操作"
         width="200px"
       >
         <template #default="scope">
-          <div v-if="scope.row.has_approval_process === '是'">
+          <div v-if="scope.row.has_approval_process === 1">
             <el-button
-              v-if="scope.row.state === 1"
+              v-if="scope.row.state === 10"
               type="text"
+              @click="approvalItemFail(scope.row.id)"
             >
               不通过
             </el-button>
             <el-button
               type="text"
-              :disabled="scope.row.state !== 1 ? true : false"
+              :disabled="scope.row.state !== 10 ? true : false"
+              @click="approvalItemPass(scope.row.id)"
             >
               通过
             </el-button>
           </div>
           <div v-else>
             <el-button
-              v-if="buttonState.plan === 1 && buttonState.review === 0"
+              v-if="buttonState.plan === 1"
               type="text"
               @click="deletePlanItem(scope.$index + 1)"
             >
@@ -292,19 +298,18 @@
             <el-button
               v-if="
                 buttonState.plan === 0 &&
-                  buttonState.review === 1 &&
-                  scope.row.state === 1
+                  buttonState.review_pass === 0 &&
+                  scope.row.state === 10
               "
               type="text"
-              @click="editOperator(scope.$index + 1)"
+              @click="editOperator(scope.row.id)"
             >
               编辑
             </el-button>
             <el-button
-              v-if="buttonState.review === 1"
               type="text"
-              :disabled="scope.row.state !== 1 ? true : false"
-              @click="finishItem(scope.$index + 1)"
+              :disabled="scope.row.state !== 10 ? true : false"
+              @click="finishItem(scope.row.id)"
             >
               完成
             </el-button>
@@ -322,6 +327,7 @@
   </div>
   <survey-form
     v-if="isVisible"
+    :id="surveyScheduleId"
     :dialog-visible="isVisible"
     form-title="用户调研申请"
     type="apply"
@@ -330,10 +336,19 @@
 
   <survey-form
     v-if="isReviewVisible"
+    :id="applyId"
     :dialog-visible="isReviewVisible"
     form-title="用户调研需求评审"
     type="review"
     @hide-dialog="closeReviewForm"
+  />
+
+  <survey-form
+    v-if="isViewReviewVisible"
+    :dialog-visible="isViewReviewVisible"
+    form-title="查看用户调研需求"
+    type="view"
+    @hide-dialog="closeViewReviewForm"
   />
 
   <el-dialog
@@ -411,6 +426,7 @@
 
 <script>
 import SurveyForm from '../../common/survey-form.vue';
+
 export default {
   components: {
     SurveyForm
@@ -419,10 +435,10 @@ export default {
     return {
       isVisible: false,
       isReviewVisible: false,
-      buttonState: this.$store.state.product.survey.user.buttonState,
-      planList: this.$store.state.product.survey.user.planList,
-      show: true,
-      confirmVisible: false,
+      isViewReviewVisible: false,
+      buttonState: {},
+      planList: [],
+      progress: {},
       row: {
         proceeding: '',
         detail: '',
@@ -433,7 +449,6 @@ export default {
       },
       editForm: {},
       operatorVisible: false,
-      timeShow: false,
       editRules: {
         operator: [
           {
@@ -445,22 +460,95 @@ export default {
       setTimeVisible: false,
       list: [],
       timeForm: {},
-      surveyApply: this.$store.state.product.survey.user.surveyApply
+      surveyApply: [],
+      surveyScheduleId: 0,
+      applyId: 0,
+      planId: 0
     };
   },
-  computed: {
-    getProgress() {
-      return this.$store.state.product.survey.user.progress;
-    }
-  },
-  created() {
-    this.isEdit();
+  computed: {},
+  mounted() {
+    this.getUserSurvey();
   },
   methods: {
-    isEdit() {
-      if (this.buttonState.plan === 0 && this.buttonState.review === 1) {
-        this.show = false;
-      }
+    async getUserSurvey() {
+      await this.$store.dispatch('product/survey/user/getUserSurveyData');
+      this.buttonState = this.$store.state.product.survey.user.buttonState;
+      this.surveyApply = this.$store.state.product.survey.user.surveyApply;
+      this.progress = this.$store.state.product.survey.user.progress;
+      this.surveyScheduleId = this.progress.id;
+      this.planList = this.$store.state.product.survey.user.planList;
+    },
+    async submitUserSurveyPlan(val) {
+      let body = {};
+      body['product_id'] = +this.$route.params.productId;
+      body['plan'] = val;
+      body['survey_schedule_id'] = this.surveyScheduleId;
+      await this.$store.dispatch(
+        'product/survey/user/submitUserSurveyPlan',
+        body
+      );
+    },
+    async addActualStarttime(val) {
+      let body = {
+        actual_start_time: val
+      };
+      body['product_id'] = +this.$route.params.productId;
+      body['survey_schedule_id'] = this.surveyScheduleId;
+      await this.$store.dispatch(
+        'product/survey/user/addActualStarttime',
+        body
+      );
+      this.setTimeVisible = false;
+    },
+    async approvalUserSurveyPlan(val) {
+      let body = {
+        approval_result: val
+      };
+      body['product_id'] = +this.$route.params.productId;
+      body['survey_schedule_id'] = this.surveyScheduleId;
+      await this.$store.dispatch(
+        'product/survey/user/approvalUserSurveyPlan',
+        body
+      );
+    },
+    async UpdatePlanOperator(val) {
+      let body = {
+        plan_id: val,
+        user_id: this.editForm.operator
+      };
+      await this.$store.dispatch(
+        'product/survey/user/UpdatePlanOperator',
+        body
+      );
+      this.operatorVisible = false;
+    },
+    async getUserSurveyResult(val) {
+      let body = {
+        product_id: +this.$route.params.productId,
+        survey_schedule_id: val
+      };
+      await this.$store.dispatch('product/survey/user/confirmUserSurvey', body);
+    },
+    async finishSurveyItem(val) {
+      let body = {
+        product_id: +this.$route.params.productId,
+        plan_id: val
+      };
+      await this.$store.dispatch(
+        'product/survey/user/finishChildSurveyPlan',
+        body
+      );
+    },
+    async approvalSurveyItm(val, result) {
+      let body = {
+        plan_id: val,
+        result
+      };
+      await this.$store.dispatch(
+        'product/survey/user/approvalChildSurveyPlan',
+        body
+      );
     },
     showApplyForm() {
       this.isVisible = true;
@@ -468,64 +556,80 @@ export default {
     closeApplyForm() {
       this.isVisible = false;
     },
-    showReviewForm() {
+    showReviewForm(id) {
       this.isReviewVisible = true;
+      this.applyId = id;
     },
     closeReviewForm() {
       this.isReviewVisible = false;
     },
+    showViewReviewForm() {
+      this.isViewReviewVisible = true;
+    },
+    closeViewReviewForm() {
+      this.isViewReviewVisible = false;
+    },
     addSurveyPlan() {
       this.planList.push(this.row);
-      this.show = true;
     },
     deletePlanItem(id) {
       this.tableData.splice(id - 1, 1);
     },
     editOperator(id) {
       this.operatorVisible = true;
-      console.log(id);
+      this.planId = id;
     },
     closeEdit() {
       this.operatorVisible = false;
     },
     submitEdit() {
       this.$refs.operatorForm.validate((valid) => {
-        if (!valid) {
-          console.log('error');
+        if (valid) {
+          this.UpdatePlanOperator(this.planId);
+          this.getUserSurvey();
         }
       });
     },
     finishItem(id) {
-      console.log(id);
+      this.finishSurveyItem(id);
+      this.getUserSurvey();
     },
     submitPlan() {
-      this.show = false;
-      this.buttonState.plan = 0;
+      this.submitUserSurveyPlan(this.planList);
+      this.getUserSurvey();
     },
     approvalFail() {
-      this.show = true;
-      this.buttonState.plan = 1;
+      this.approvalUserSurveyPlan(0);
+      this.getUserSurvey();
     },
     approvalPass() {
-      this.show = false;
-      this.buttonState.review = 1;
-      this.confirmVisible = true;
+      this.approvalUserSurveyPlan(1);
+      this.getUserSurvey();
     },
     showSetTime() {
       this.setTimeVisible = true;
     },
     submitTimeForm() {
       this.$refs.timeForm.validate((valid) => {
-        if (!valid) {
-          console.log('error');
-        } else {
-          this.timeShow = true;
-          this.setTimeVisible = false;
+        if (valid) {
+          this.addActualStarttime(this.timeForm.actualStartTime);
         }
       });
     },
     closeTimeForm() {
       this.setTimeVisible = false;
+    },
+    confirmUserSurvey(id) {
+      this.getUserSurveyResult(id);
+      this.getUserSurvey();
+    },
+    approvalItemPass(id) {
+      this.approvalSurveyItm(id, 1);
+      this.getUserSurvey();
+    },
+    approvalItemFail(id) {
+      this.approvalSurveyItm(id, 0);
+      this.getUserSurvey();
     }
   }
 };

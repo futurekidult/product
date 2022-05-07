@@ -37,6 +37,103 @@ export default {
           ElMessage.error(res.message);
         }
       });
+    },
+    async createUserSurveyApply(_, payload) {
+      await axios.post('/survey/user-survey/apply', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async ReviewUserSurveyApply(_, payload) {
+      await axios
+        .post('/survey/user-survey/apply/review', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(res.message);
+          } else {
+            ElMessage.error(res.message);
+          }
+        });
+    },
+    async submitUserSurveyPlan(_, payload) {
+      await axios
+        .post('/survey/user-survey/plan/create', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(res.message);
+          } else {
+            ElMessage.error(res.message);
+          }
+        });
+    },
+    async addActualStarttime(_, payload) {
+      await axios
+        .post('/survey/user-survey/start-time/add', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(res.message);
+          } else {
+            ElMessage.error(res.message);
+          }
+        });
+    },
+    async approvalUserSurveyPlan(_, payload) {
+      await axios
+        .post('/survey/user-survey/plan/approval', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(res.message);
+          } else {
+            ElMessage.error(res.message);
+          }
+        });
+    },
+    async UpdatePlanOperator(_, payload) {
+      await axios
+        .post('/survey/user-survey/plan-operator/update', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(res.message);
+          } else {
+            ElMessage.error(res.message);
+          }
+        });
+    },
+    async confirmUserSurvey(_, payload) {
+      await axios
+        .post('/survey/user-survey/plan/finish', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(res.message);
+          } else {
+            ElMessage.error(res.message);
+          }
+        });
+    },
+    async finishChildSurveyPlan(_, payload) {
+      await axios
+        .post('/survey/user-survey/child-plan/finish', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(res.message);
+          } else {
+            ElMessage.error(res.message);
+          }
+        });
+    },
+    async approvalChildSurveyPlan(_, payload) {
+      await axios
+        .post('/survey/user-survey/child-plan/approval', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(res.message);
+          } else {
+            ElMessage.error(res.message);
+          }
+        });
     }
   }
 };

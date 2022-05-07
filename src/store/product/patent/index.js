@@ -44,7 +44,7 @@ export default {
       });
     },
     async getPatent(context, payload) {
-      await axios.get('/patent/list', payload).then((res) => {
+      await axios.get('/patent/application/list', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setPatent', res.data);
         } else {
@@ -80,7 +80,7 @@ export default {
       });
     },
     async patentApply(_, payload) {
-      await axios.post('/patent/apply', payload).then((res) => {
+      await axios.post('/patent/application/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         } else {
@@ -98,7 +98,7 @@ export default {
       });
     },
     async patentReview(_, payload) {
-      await axios.post('patent/review', payload).then((res) => {
+      await axios.post('patent/application/review', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         } else {
@@ -107,7 +107,7 @@ export default {
       });
     },
     async confirmPatent(_, payload) {
-      await axios.post('/patent/confirm', payload).then((res) => {
+      await axios.post('/patent/application/confirm', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         } else {

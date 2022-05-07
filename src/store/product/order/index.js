@@ -143,6 +143,15 @@ export default {
           ElMessage.error(res.message);
         }
       });
+    },
+    async submitSkuname(_, payload) {
+      await axios.post('/order/sku/name/', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
     }
   }
 };

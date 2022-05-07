@@ -14,20 +14,20 @@
     >
       <el-form-item
         label="产品链接"
-        prop="productLink"
+        prop="product_link"
       >
         <el-input
-          v-model="userSurveyForm.link"
+          v-model="userSurveyForm.product_link"
           placeholder="请输入产品链接"
           :disabled="isDisabled"
         />
       </el-form-item>
       <el-form-item
         label="具体需求"
-        prop="concreteDemand"
+        prop="concrete_demand"
       >
         <el-input
-          v-model="userSurveyForm.concreteDemand"
+          v-model="userSurveyForm.concrete_demand"
           type="textarea"
           placeholder="请输入具体需求"
           :disabled="isDisabled"
@@ -35,10 +35,10 @@
       </el-form-item>
       <el-form-item
         label="期望结果"
-        prop="expectedResult"
+        prop="expected_result"
       >
         <el-input
-          v-model="userSurveyForm.expectedResult"
+          v-model="userSurveyForm.expected_result"
           type="textarea"
           placeholder="请输入期望结果"
           :disabled="isDisabled"
@@ -46,10 +46,10 @@
       </el-form-item>
       <el-form-item
         label="期望完成时间"
-        prop="expectedFinishTime"
+        prop="expected_finish_time"
       >
         <el-date-picker
-          v-model="userSurveyForm.expectedFinishTime"
+          v-model="userSurveyForm.expected_finish_time"
           type="datetime"
           placeholder="请选择时间"
           :disabled="isDisabled"
@@ -57,16 +57,19 @@
       </el-form-item>
       <el-divider />
       <el-form-item
-        v-if="type === 'review'"
+        v-if="type !== 'apply'"
         label="评审结果"
-        prop="reviewResult"
+        prop="result"
       >
         <el-select
-          v-model="userSurveyForm.reviewResult"
+          v-model="userSurveyForm.result"
           placeholder="请选择评审结果"
         />
       </el-form-item>
-      <div style="text-align: right">
+      <div
+        v-if="type !== 'view'"
+        style="text-align: right"
+      >
         <el-button
           class="close-btn"
           @click="cancel"
@@ -86,32 +89,32 @@
 
 <script>
 export default {
-  props: ['dialogVisible', 'formTitle', 'type'],
+  props: ['dialogVisible', 'formTitle', 'type', 'id'],
   emits: ['hide-dialog'],
   data() {
     return {
       visible: this.dialogVisible,
       userSurveyForm: {},
       applyRules: {
-        productLink: [
+        product_link: [
           {
             required: true,
             message: '请输入产品链接'
           }
         ],
-        concreteDemand: [
+        concrete_demand: [
           {
             required: true,
             message: '请输入具体需求'
           }
         ],
-        expectedResult: [
+        expected_result: [
           {
             required: true,
             message: '请输入期望结果'
           }
         ],
-        expectedFinishTime: [
+        expected_finish_time: [
           {
             required: true,
             message: '请选择期望完成时间'
@@ -119,7 +122,7 @@ export default {
         ]
       },
       reviewRules: {
-        reviewResult: [
+        result: [
           {
             required: true,
             message: '请选择评审结果'
@@ -145,14 +148,43 @@ export default {
     }
   },
   methods: {
+    async getUserSurvey() {
+      await this.$store.dispatch('product/survey/user/getUserSurveyData');
+    },
+    async createApply(val) {
+      let body = val;
+      body['product_id'] = +this.$route.params.productId;
+      body['survey_schedule_id'] = this.id;
+      await this.$store.dispatch(
+        'product/survey/user/createUserSurveyApply',
+        body
+      );
+      this.visible = false;
+    },
+    async applyReview(val) {
+      let body = {
+        result: val
+      };
+      body['apply_id'] = this.id;
+      await this.$store.dispatch(
+        'product/survey/user/createUserSurveyApply',
+        body
+      );
+      this.visible = false;
+    },
     cancel() {
       this.visible = false;
       this.$emit('hide-dialog', this.visible);
     },
     submitSurveyForm() {
       this.$refs.userSurveyForm.validate((valid) => {
-        if (!valid) {
-          console.log('error');
+        if (valid) {
+          if (this.type === 'apply') {
+            this.createApply(this.userSurveyForm);
+          } else {
+            this.applyReview(this.userSurveyForm.result);
+          }
+          this.getUserSurvey();
         }
       });
     }

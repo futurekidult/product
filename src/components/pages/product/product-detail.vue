@@ -40,10 +40,7 @@
       </div>
 
       <div class="border">
-        <el-tabs
-          v-model="activeName"
-          @tab-click="handleClick"
-        >
+        <el-tabs v-model="activeName">
           <el-tab-pane
             label="基本信息"
             name="basic"
@@ -159,60 +156,7 @@ export default {
   },
   created() {
     this.id = this.$route.params.productId;
-    console.log('detail');
-    // this.getUserSurveyData();
-    // this.getSkuForm();
-    // this.getOrderProgress();
-    // this.getContract();
   },
-  methods: {
-    // async getUserSurveyData() {
-    //   await this.$store.dispatch('product/survey/user/getUserSurveyData');
-    // },
-    // async getOrder() {
-    //   let params = {
-    //     product_id: this.$route.params.productId,
-    //     page_size: 10,
-    //     current_page: 1
-    //   };
-    //   await this.$store.dispatch('product/order/getOrderList', { params });
-    // },
-    // async getOrderProgress() {
-    //   await this.$store.dispatch('product/order/getProgress', {
-    //     params: { id: this.$route.params.productId }
-    //   });
-    // },
-    // async getSkuForm() {
-    //   await this.$store.dispatch('product/order/getSkuForm');
-    // },
-    // async getContract() {
-    //   await this.$store.dispatch('product/order/getContract', {
-    //     params: {
-    //       order_id: this.$route.params.orderId
-    //     }
-    //   });
-    // },
-    handleClick(tab) {
-      switch (tab.props.name) {
-        // case 'order':
-        //   this.getOrder();
-        //   break;
-        // case 'patent':
-        //   this.getPatent();
-        //   this.getPatentProgress();
-        //   this.getPatentContract();
-        //   this.getPatentReport();
-        //   break;
-        // case 'project':
-        //   this.getProject();
-        //   break;
-        // case 'survey':
-        //   this.getMarketProcess();
-        //   this.market = this.$store.state.product.survey.market.market;
-        //   break;
-        default:
-      }
-    }
-  }
+  methods: {}
 };
 </script>

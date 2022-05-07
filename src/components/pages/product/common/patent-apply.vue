@@ -205,13 +205,11 @@ export default {
     async patentApply(params) {
       let body = params;
       body['product_id'] = 1;
-      body['applicant_id'] = 1;
       await this.$store.dispatch('product/patent/patentApply', body);
     },
     async patentReview(val) {
       let body = {
-        product_id: +this.$route.params.productId,
-        patent_apply_id: this.id,
+        id: this.id,
         review_result: val
       };
       await this.$store.dispatch('product/patent/patentReview', body);

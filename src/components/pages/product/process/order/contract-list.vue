@@ -92,25 +92,35 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      contract: {},
+      exportContract: {},
+      purchaseContract: {}
+    };
   },
-  computed: {
-    exportContract() {
-      return this.$store.state.product.order.contract.export_contract;
-    },
-    purchaseContract() {
-      return this.$store.state.product.order.contract.purchase_contract;
-    }
+  computed: {},
+  mounted() {
+    this.getContract();
   },
   methods: {
+    async getContract() {
+      await this.$store.dispatch('product/order/getContract', {
+        params: {
+          order_id: this.$route.params.orderId
+        }
+      });
+      this.contract = this.$store.state.product.order.contract;
+      this.exportContract = this.contract.export_contract;
+      this.purchaseContract = this.contract.purchase_contract;
+    },
     async confirmExportContract(id) {
       await this.$store.dispatch('product/order/confirmExportContract', {
         id
       });
-      await this.$store.dispatch('product/order/getContract');
+      this.getContract();
     },
     async confirmPurchaseContract(id) {
-      await this.$store.dispatch('product/order/confirmExportContract', {
+      await this.$store.dispatch('product/order/confirmPurchaseContract', {
         id,
         product_manual_file: 12,
         diecuts_file: 10
