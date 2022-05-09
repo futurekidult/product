@@ -98,7 +98,7 @@ export default {
       });
     },
     async patentReview(_, payload) {
-      await axios.post('patent/application/review', payload).then((res) => {
+      await axios.post('/patent/application/review', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         } else {

@@ -42,7 +42,7 @@
       border
       empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      :data="getProduct"
+      :data="productList"
     >
       <el-table-column
         label="产品ID"
@@ -183,15 +183,11 @@ export default {
       },
       imgList: [],
       images: [],
-      productId: 0
+      productId: 0,
+      productList: []
     };
   },
-  computed: {
-    getProduct() {
-      return this.$store.getters['product/getProductList'];
-    }
-  },
-  created() {
+  mounted() {
     this.getProductList();
   },
   methods: {
@@ -207,7 +203,7 @@ export default {
           id
         }
       });
-      this.editForm = this.$store.getters['product/getSingleDetailMsg'];
+      this.editForm = this.$store.state.product.singleProductDetail;
       this.imgList = this.editForm.images;
       for (const item of this.editForm.images) {
         let { id } = item;
@@ -223,6 +219,7 @@ export default {
         page_size: 10
       };
       await this.$store.dispatch('product/getProductList', { params });
+      this.productList = this.$store.state.product.productList;
     },
     async updateProductMsg() {
       await this.$store.dispatch('product/updateSingleProductMsg', {

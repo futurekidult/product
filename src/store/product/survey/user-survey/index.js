@@ -8,7 +8,8 @@ export default {
       buttonState: {},
       progress: {},
       surveyApply: [],
-      planList: []
+      planList: [],
+      userSurveyDetail: {}
     };
   },
   mutations: {
@@ -23,6 +24,9 @@ export default {
     },
     setPlanList(state, payload) {
       state.planList = payload;
+    },
+    setUserSurveyDetail(state, payload) {
+      state.userSurveyDetail = payload;
     }
   },
   actions: {
@@ -134,6 +138,33 @@ export default {
             ElMessage.error(res.message);
           }
         });
+    },
+    async viewUserSurveyDetail(context, payload) {
+      await axios.get('/survey/user-survey/apply/get', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setUserSurveyDetail', res.data);
+        }
+      });
+    },
+    async updateUserSurveyPlan(_, payload) {
+      await axios
+        .post('/survey/user-survey/plan/update', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(res.message);
+          } else {
+            ElMessage.error(res.message);
+          }
+        });
+    },
+    async addUserSurveyPlan(_, payload) {
+      await axios.post('/survey/user-survey/plan/add', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
     }
   }
 };

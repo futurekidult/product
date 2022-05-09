@@ -10,6 +10,7 @@
       </div>
       <el-button
         type="primary"
+        :disabled="JSON.stringify(progress) === '{}' ? false : true"
         @click="showProofingCreate"
       >
         提交打样单
@@ -17,42 +18,43 @@
     </div>
 
     <el-descriptions
+      v-loading="$store.state.sample.proofingLoading"
       border
       :column="5"
       direction="vertical"
     >
       <el-descriptions-item label="创建人">
-        {{ list.creator }}
+        {{ progress.creator }}
       </el-descriptions-item>
       <el-descriptions-item label="提交时间">
-        {{ list.submit_time }}
+        {{ progress.submit_time }}
       </el-descriptions-item>
       <el-descriptions-item label="实际完成时间">
-        {{ list.actual_finish_time }}
+        {{ progress.actual_finish_time }}
       </el-descriptions-item>
       <el-descriptions-item label="状态">
-        <span :class="colorState">{{ list.state_desc }}</span>
+        <span :class="colorState">{{ progress.state_desc }}</span>
       </el-descriptions-item>
       <el-descriptions-item
         label="操作"
         width="200px"
       >
         <el-button
-          v-if="list.state === 20"
+          v-if="progress.state === 20"
           type="text"
           @click="showProofingApproval"
         >
           打样单审批
         </el-button>
         <el-button
-          v-if="list.state === 30"
+          v-if="progress.state === 30"
           type="text"
           @click="showProofingEdit"
         >
           重新编辑
         </el-button>
         <el-button
-          v-if="list.state === 40"
+          v-if="progress.state === 40"
           type="text"
           @click="showProofingView"
         >
@@ -64,6 +66,7 @@
 
   <sample-form
     v-if="proofingVisible"
+    :id="sampleId"
     :dialog-visible="proofingVisible"
     title="提交打样单"
     type="create"
@@ -75,6 +78,7 @@
     :dialog-visible="proofingApprovalVisible"
     title="打样单审批"
     type="approval"
+    :form="approvalForm"
     @hide-dialog="closeProofingApproval"
   />
 
@@ -83,6 +87,7 @@
     :dialog-visible="proofingEditVisible"
     title="重新编辑"
     type="edit"
+    :form="editForm"
     @hide-dialog="closeProofingEdit"
   />
 
@@ -91,6 +96,7 @@
     :dialog-visible="proofingViewVisible"
     title="查看"
     type="view"
+    :form="reviewForm"
     @hide-dialog="closeProofingView"
   />
 </template>
@@ -108,29 +114,47 @@ export default {
       proofingApprovalVisible: false,
       proofingEditVisible: false,
       proofingViewVisible: false,
-      list: {
-        sample_id: 1,
-        id: 1,
-        creator: '小王',
-        submit_time: 1649656670,
-        actual_finish_time: 1649656670,
-        state: 30,
-        state_desc: '已完成'
-      }
+      progress: {},
+      sampleId: 1,
+      viewForm: {},
+      approvalForm: {},
+      editForm: {}
     };
   },
   computed: {
     colorState() {
-      if (this.list.state === 20) {
+      if (this.progress.state === 20) {
         return 'result-ing';
-      } else if (this.list.state === 30) {
+      } else if (this.progress.state === 30) {
         return 'result-fail';
       } else {
         return 'result-pass';
       }
     }
   },
+  mounted() {
+    this.getProofingProgress();
+    this.getProofingSheet();
+  },
   methods: {
+    async getProofingProgress() {
+      await this.$store.dispatch('sample/getProofingProgress', {
+        params: {
+          sample_id: this.sampleId
+        }
+      });
+      this.progress = this.$store.state.sample.proofingProgress;
+    },
+    async getProofingSheet() {
+      await this.$store.dispatch('sample/getProofingSheet', {
+        params: {
+          id: this.sampleId
+        }
+      });
+      this.reviewForm = this.$store.state.sample.proofingSheet;
+      this.approvalForm = this.$store.state.sample.proofingSheet;
+      this.editForm = this.$store.state.sample.proofingSheet;
+    },
     showProofingCreate() {
       this.proofingVisible = true;
     },

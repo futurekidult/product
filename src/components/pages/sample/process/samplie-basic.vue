@@ -1,26 +1,44 @@
 <template>
-  <el-descriptions
-    border
-    :column="9"
-    direction="vertical"
-  >
-    <el-descriptions-item label="采购负责人" />
-    <el-descriptions-item label="关联ID" />
-    <el-descriptions-item label="计划完成时间" />
-    <el-descriptions-item label="实际完成时间" />
-    <el-descriptions-item label="状态" />
-    <el-descriptions-item label="测试结果" />
-    <el-descriptions-item label="不通过原因" />
-    <el-descriptions-item label="测试结果提交人" />
-    <el-descriptions-item label="操作">
-      <el-button
-        type="text"
-        @click="confirmResult"
-      >
-        样品测试结果确认
-      </el-button>
-    </el-descriptions-item>
-  </el-descriptions>
+  <div v-loading="$store.state.sample.basicLoading">
+    <el-descriptions
+      border
+      :column="9"
+      direction="vertical"
+    >
+      <el-descriptions-item label="采购负责人">
+        {{ sampleDetail.purchase_principal }}
+      </el-descriptions-item>
+      <el-descriptions-item label="关联ID">
+        {{ sampleDetail.pricing_id }}
+      </el-descriptions-item>
+      <el-descriptions-item label="计划完成时间">
+        {{ sampleDetail.estimated_finish_time }}
+      </el-descriptions-item>
+      <el-descriptions-item label="实际完成时间">
+        {{ sampleDetail.actual_finish_time }}
+      </el-descriptions-item>
+      <el-descriptions-item label="状态">
+        {{ sampleDetail.state_desc }}
+      </el-descriptions-item>
+      <el-descriptions-item label="测试结果">
+        {{ sampleDetail.test_result_desc }}
+      </el-descriptions-item>
+      <el-descriptions-item label="不通过原因">
+        {{ sampleDetail.unapproved_reason_text }}
+      </el-descriptions-item>
+      <el-descriptions-item label="测试结果提交人">
+        {{ sampleDetail.submitter }}
+      </el-descriptions-item>
+      <el-descriptions-item label="操作">
+        <el-button
+          type="text"
+          @click="confirmResult"
+        >
+          样品测试结果确认
+        </el-button>
+      </el-descriptions-item>
+    </el-descriptions>
+  </div>
 
   <el-dialog
     v-model="confirmVisible"
@@ -28,13 +46,13 @@
     width="20%"
   >
     <div
-      v-if="testResult === 1"
+      v-if="sampleDetail.test_result === 1"
       class="result-content"
     >
       是否确定提交样品测试结果
     </div>
     <el-form
-      v-if="testResult === 0"
+      v-if="sampleDetail.test_result === 0"
       ref="resultForm"
       :model="resultForm"
     >
@@ -46,12 +64,19 @@
         <el-select
           v-model="resultForm.result"
           placeholder="请选择样品结果"
-        />
+        >
+          <el-option
+            v-for="item in resultOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
       </el-form-item>
       <el-divider />
     </el-form>
 
-    <div :class="testResult === 1 ? 'pass-btn' : 'fail-btn'">
+    <div :class="sampleDetail.test_result === 1 ? 'pass-btn' : 'fail-btn'">
       <el-button @click="closeConfirmResult">
         取消
       </el-button>
@@ -71,10 +96,40 @@ export default {
     return {
       confirmVisible: false,
       resultForm: {},
-      testResult: 0
+      sampleDetail: {},
+      sampleId: 1,
+      resultOptions: [
+        {
+          label: '已终止-重新打样',
+          value: 2
+        },
+        {
+          label: '已终止-样品终止',
+          value: 3
+        }
+      ]
     };
   },
+  mounted() {
+    this.getSampleDetail();
+  },
   methods: {
+    async getSampleDetail() {
+      await this.$store.dispatch('sample/getSampleDetail', {
+        params: {
+          id: this.sampleId
+        }
+      });
+      this.sampleDetail = this.$store.state.sample.sampleDetail;
+    },
+    async confirmTestResult(val) {
+      let body = {
+        id: this.sampleId,
+        result: val
+      };
+      await this.$store.dispatch('sample/confirmTestResult', body);
+      this.confirmVisible = false;
+    },
     confirmResult() {
       this.confirmVisible = true;
     },
@@ -82,11 +137,16 @@ export default {
       this.confirmVisible = false;
     },
     submitTestResult() {
-      this.$refs.resultForm.validate((valid) => {
-        if (!valid) {
-          console.log('error');
-        }
-      });
+      if (this.sampleDetail.test_result === 1) {
+        this.confirmTestResult(1);
+      } else {
+        this.$refs.resultForm.validate((valid) => {
+          if (valid) {
+            this.confirmTestResult(this.resultForm.result);
+          }
+        });
+      }
+      this.getSampleDetail();
     }
   }
 };

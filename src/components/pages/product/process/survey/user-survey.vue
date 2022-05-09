@@ -324,6 +324,13 @@
     >
       + 新增调研计划
     </el-button>
+    <el-button
+      v-if="buttonState.review_pass === 0"
+      style="margin: 15px 0"
+      @click="addSurveyPlanItem"
+    >
+      + 提交
+    </el-button>
   </div>
   <survey-form
     v-if="isVisible"
@@ -463,7 +470,9 @@ export default {
       surveyApply: [],
       surveyScheduleId: 0,
       applyId: 0,
-      planId: 0
+      planId: 0,
+      addItem: [],
+      length: 0
     };
   },
   computed: {},
@@ -478,6 +487,7 @@ export default {
       this.progress = this.$store.state.product.survey.user.progress;
       this.surveyScheduleId = this.progress.id;
       this.planList = this.$store.state.product.survey.user.planList;
+      this.length = this.$store.state.product.survey.user.planList.length;
     },
     async submitUserSurveyPlan(val) {
       let body = {};
@@ -550,6 +560,25 @@ export default {
         body
       );
     },
+    async updateUserSurveyPlan(val) {
+      let body = {
+        product_id: +this.$route.params.productId,
+        survey_schedule_id: this.surveyScheduleId,
+        plan: val
+      };
+      await this.$store.dispatch(
+        'product/survey/user/updateUserSurveyPlan',
+        body
+      );
+    },
+    async addUserSurveyPlan(val) {
+      let body = {
+        product_id: +this.$route.params.productId,
+        survey_schedule_id: this.surveyScheduleId,
+        plan: val
+      };
+      await this.$store.dispatch('product/survey/user/addUserSurveyPlan', body);
+    },
     showApplyForm() {
       this.isVisible = true;
     },
@@ -595,7 +624,21 @@ export default {
       this.getUserSurvey();
     },
     submitPlan() {
-      this.submitUserSurveyPlan(this.planList);
+      if (
+        this.buttonState.plan === 1 &&
+        this.buttonState.review_no_pass === 1
+      ) {
+        this.submitUserSurveyPlan(this.planList);
+      } else if (this.buttonState.review_no_pass === 0) {
+        this.updateUserSurveyPlan(this.planList);
+      }
+      this.getUserSurvey();
+    },
+    addSurveyPlanItem() {
+      for (let i = this.length; i < this.planList.length; i++) {
+        this.addItem.push(this.planList[i]);
+      }
+      this.addUserSurveyPlan(this.addItem);
       this.getUserSurvey();
     },
     approvalFail() {

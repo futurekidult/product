@@ -147,6 +147,11 @@ export default {
       }
     }
   },
+  mounted() {
+    if (this.type !== 'apply') {
+      this.getUserSurveyDetail();
+    }
+  },
   methods: {
     async getUserSurvey() {
       await this.$store.dispatch('product/survey/user/getUserSurveyData');
@@ -171,6 +176,17 @@ export default {
         body
       );
       this.visible = false;
+    },
+    async getUserSurveyDetail() {
+      let params = {
+        id: +this.$route.params.productId
+      };
+      await this.$store.dispatch(
+        'product/survey/user/viewUserSurveyDetail',
+        params
+      );
+      this.userSurveyForm =
+        this.$store.state.product.survey.user.userSurveyDetail;
     },
     cancel() {
       this.visible = false;

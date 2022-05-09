@@ -42,7 +42,7 @@
         />
       </el-form-item>
       <el-form-item label="售卖国整数与测试报告">
-        <el-select
+        <el-input
           v-model="applyForm.certificate_and_report"
           placeholder="请选择"
           :disabled="disabled"
@@ -56,7 +56,14 @@
           v-model="applyForm.is_pre_production"
           placeholder="请选择"
           :disabled="disabled"
-        />
+        >
+          <el-option
+            v-for="item in hasOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item
         label="是否含规格说明书"
@@ -66,7 +73,14 @@
           v-model="applyForm.has_manual"
           placeholder="请选择"
           :disabled="disabled"
-        />
+        >
+          <el-option
+            v-for="item in hasOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item
         label="期望完成日期"
@@ -78,8 +92,9 @@
           :disabled="disabled"
         />
       </el-form-item>
-      <el-divider />
+      <el-divider v-if="type !== 'apply'" />
       <el-form-item
+        v-if="type !== 'review'"
         label="评审结果"
         prop="review_result"
       >
@@ -89,17 +104,15 @@
           placeholder="请选择评审结果"
         >
           <el-option
-            label="不通过"
-            value="0"
-          />
-          <el-option
-            label="通过"
-            value="1"
+            v-for="item in reviewOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
           />
         </el-select>
       </el-form-item>
       <el-form-item
-        v-if="flag"
+        v-if="applyForm.review_result === 1"
         label="选择品质专员"
         prop="quality_specialist_id"
       >
@@ -110,14 +123,20 @@
         />
       </el-form-item>
       <el-divider />
-      <div style="text-align: right">
+      <div
+        v-if="type !== 'view'"
+        style="text-align: right"
+      >
         <el-button
           class="close-btn"
           @click="cancel"
         >
           取消
         </el-button>
-        <el-button type="primary">
+        <el-button
+          type="primary"
+          @click="submitSampleTest"
+        >
           提交
         </el-button>
       </div>
@@ -127,7 +146,7 @@
 
 <script>
 export default {
-  props: ['dialogVisible', 'title', 'type'],
+  props: ['dialogVisible', 'title', 'type', 'id'],
   emits: ['hide-dialog'],
   data() {
     return {
@@ -173,8 +192,28 @@ export default {
           }
         ]
       },
-      flag: false,
-      disabled: null
+      disabled: null,
+      hasOptions: [
+        {
+          label: '是',
+          value: 1
+        },
+        {
+          label: '否',
+          value: 0
+        }
+      ],
+      reviewOptions: [
+        {
+          label: '通过',
+          value: 1
+        },
+        {
+          label: '不通过',
+          value: 0
+        }
+      ],
+      loading: true
     };
   },
   computed: {
@@ -186,27 +225,51 @@ export default {
       } else {
         return '';
       }
-    },
-    getReviewResult() {
-      return this.applyForm.review_result;
     }
   },
-  watch: {
-    getReviewResult(val) {
-      if (val === '1') {
-        this.flag = true;
-      } else {
-        this.flag = false;
-      }
-    }
-  },
-  created() {
+  mounted() {
     this.isDisabled();
-    if (this.type === 'view') {
-      this.flag = true;
-    }
+    this.getMsg();
+    this.isLoading();
   },
   methods: {
+    getMsg() {
+      if (this.type === 'apply') {
+        this.getSampleMarketList();
+      } else {
+        this.getSampleTestApply();
+      }
+    },
+    async getSampleMarketList() {
+      await this.$store.dispatch('sample/getSampleMarketList', {
+        params: {
+          sample_id: this.id
+        }
+      });
+      this.applyForm.sample_model =
+        this.$store.state.sample.sampleMarketList.sample_model;
+      this.applyForm.market = this.$store.state.sample.sampleMarketList.market;
+    },
+    async createTestApply(val) {
+      let body = val;
+      body['sample_id'] = this.id;
+      await this.$store.dispatch('sample/createTestApply', body);
+      this.visible = false;
+    },
+    async getSampleTestApply() {
+      await this.$store.dispatch('sample/getSampleTestApply', {
+        params: {
+          id: this.id
+        }
+      });
+      this.applyForm = this.$store.state.sample.sampleTestApply;
+    },
+    async reviewTestApply(val) {
+      let body = val;
+      body['id'] = this.id;
+      await this.$store.dispatch('sample/reviewTestApply', body);
+      this.applyForm = this.$store.state.sample.sampleTestApply;
+    },
     cancel() {
       this.visible = false;
       this.$emit('hide-dialog', this.visible);
@@ -217,6 +280,28 @@ export default {
       } else {
         this.disabled = true;
       }
+    },
+    isLoading() {
+      if (this.type === 'apply') {
+        this.loading = this.$store.state.sample.applyLoading;
+      } else if (this.type === 'review') {
+        this.loading = this.$store.state.sample.reviewLoading;
+      }
+    },
+    submitSampleTest() {
+      this.$refs.applyForm.validate((valid) => {
+        if (valid) {
+          if (this.type === 'apply') {
+            this.applyForm.total = +this.applyForm.total;
+            this.createTestApply(this.applyForm);
+          } else {
+            this.reviewTestApply({
+              review_result: this.applyForm.review_result,
+              quality_specialist_id: this.applyForm.quality_specialist_id
+            });
+          }
+        }
+      });
     }
   }
 };

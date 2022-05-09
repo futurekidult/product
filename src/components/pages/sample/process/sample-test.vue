@@ -1,5 +1,8 @@
 <template>
-  <div class="border">
+  <div
+    v-loading="$store.state.sample.testLoading"
+    class="border"
+  >
     <div class="select-title">
       <span class="line">|</span> 测试申请
     </div>
@@ -10,6 +13,7 @@
       </div>
       <el-button
         type="primary"
+        :disabled="buttonState === 0 ? true : false"
         @click="showApplyForm"
       >
         申请样品测试
@@ -19,7 +23,7 @@
       border
       empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      :data="list"
+      :data="applyList"
     >
       <el-table-column
         label="序号"
@@ -48,14 +52,14 @@
             v-if="scope.row.review_state === 10"
             type="primary"
             style="width: 150px"
-            @click="showReviewForm"
+            @click="showReviewForm(scope.row.id)"
           >
             样品测试申请单评审
           </el-button>
           <el-button
             v-if="scope.row.review_state === 30"
             type="text"
-            @click="showEditForm"
+            @click="showEditForm(scope.row.id)"
           >
             编辑
           </el-button>
@@ -66,7 +70,7 @@
           <el-button
             v-if="scope.row.review_state !== 10"
             type="text"
-            @click="showResultForm"
+            @click="showResultForm(scope.row.id)"
           >
             查看
           </el-button>
@@ -106,6 +110,7 @@
 
   <test-form
     v-if="testApplyVisible"
+    :id="sampleId"
     :dialog-visible="testApplyVisible"
     title=" 申请样品测试"
     type="apply"
@@ -114,16 +119,18 @@
 
   <test-form
     v-if="applyReviewVisible"
+    :id="testId"
     :dialog-visible="applyReviewVisible"
-    title=" 申请样品测试"
+    title=" 申请样品测试评审"
     type="review"
     @hide-dialog="closeReviewForm"
   />
 
   <test-form
     v-if="resultVisible"
+    :id="testId"
     :dialog-visible="resultVisible"
-    title=" 查看"
+    title="查看"
     type="view"
     @hide-dialog="closeResultForm"
   />
@@ -156,7 +163,10 @@
         >
           取消
         </el-button>
-        <el-button type="primary">
+        <el-button
+          type="primary"
+          @click="submitQualitySpecialist"
+        >
           提交
         </el-button>
       </div>
@@ -184,62 +194,71 @@ export default {
       applyReviewVisible: false,
       resultVisible: false,
       editSpecialistVisible: false,
-      list: [
-        {
-          sample_id: 1,
-          id: 1,
-          creator: '小刘',
-          submit_time: 1649656670,
-          review_finish_time: 1649656670,
-          review_state: 10,
-          review_state_desc: '待评审'
-        },
-        {
-          sample_id: 1,
-          id: 2,
-          creator: '小刘',
-          submit_time: 1649656670,
-          review_finish_time: 1649656670,
-          review_state: 20,
-          review_state_desc: '评审不通过'
-        },
-        {
-          sample_id: 1,
-          id: 2,
-          creator: '小刘',
-          submit_time: 1649656670,
-          review_finish_time: 1649656670,
-          review_state: 30,
-          review_state_desc: '评审通过'
-        }
-      ],
-      editForm: {}
+      editForm: {},
+      sampleId: 1,
+      applyList: [],
+      buttonState: 1,
+      testId: 0
     };
   },
+  mounted() {
+    this.getProgress();
+  },
   methods: {
+    async getProgress() {
+      await this.$store.dispatch('sample/getTestProgress', {
+        params: {
+          sample_id: this.sampleId
+        }
+      });
+      this.applyList = this.$store.state.sample.testProgress.list;
+      this.buttonState = this.$store.state.sample.testProgress.button_state;
+    },
+    async getQualitySpecialist(id) {
+      await this.$store.dispatch('sample/getQualitySpecialist', {
+        params: {
+          id
+        }
+      });
+      this.editForm.quality_specialist_id =
+        this.$store.state.sample.qualitySpecialist.quality_specialist_id;
+    },
+    async updateQualitySpecialist(val) {
+      let body = val;
+      body['id'] = this.testId;
+      await this.$store.dispatch('sample/updateQualitySpecialist', body);
+      this.editSpecialistVisible = false;
+    },
     showApplyForm() {
       this.testApplyVisible = true;
     },
     closeApplyForm() {
       this.testApplyVisible = false;
     },
-    showReviewForm() {
+    showReviewForm(id) {
       this.applyReviewVisible = true;
+      this.testId = id;
     },
     closeReviewForm() {
       this.applyReviewVisible = false;
     },
-    showResultForm() {
+    showResultForm(id) {
+      this.testId = id;
       this.resultVisible = true;
     },
     closeResultForm() {
       this.resultVisible = false;
     },
-    showEditForm() {
+    showEditForm(id) {
       this.editSpecialistVisible = true;
+      this.testId = id;
+      this.getQualitySpecialist(id);
     },
     closeEditForm() {
       this.editSpecialistVisible = false;
+    },
+    submitQualitySpecialist() {
+      this.updateQualitySpecialist(this.editForm);
     }
   }
 };

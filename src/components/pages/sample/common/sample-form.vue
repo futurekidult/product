@@ -39,7 +39,14 @@
           v-model="proofingForm.has_verify"
           placeholder="请选择"
           :disabled="disabled"
-        />
+        >
+          <el-option
+            v-for="item in hasVerifyOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item
         label="需求日期"
@@ -80,11 +87,15 @@
         </div>
       </el-form-item>
       <el-form-item>
-        <div class="attachment-list">
-          <div />
+        <div
+          v-if="show"
+          class="attachment-list"
+        >
+          <div>{{ attachment.name }}</div>
           <el-button
-            v-if="type !== 'approval'"
+            v-if="type === 'create' || type === 'edit'"
             type="text"
+            @click="deleteFile(attachment.id)"
           >
             删除
           </el-button>
@@ -92,14 +103,14 @@
             v-else
             type="text"
           >
-            下载附件
+            下载
           </el-button>
         </div>
       </el-form-item>
       <el-divider />
       <div v-if="type !== 'view'">
         <div
-          v-if="type !== 'approval'"
+          v-if="type === 'create' || type === 'edit'"
           style="text-align: right"
         >
           <el-button
@@ -108,7 +119,10 @@
           >
             取消
           </el-button>
-          <el-button type="primary">
+          <el-button
+            type="primary"
+            @click="submitProofingSheet"
+          >
             提交
           </el-button>
         </div>
@@ -116,12 +130,16 @@
           v-else
           style="text-align: right"
         >
-          <el-button class="close-btn">
+          <el-button
+            class="close-btn"
+            @click="submitProofingSheetApproval(0)"
+          >
             不通过
           </el-button>
           <el-button
             type="primary"
             style="background: #379f0d; border: 1px solid #379f0d"
+            @click="submitProofingSheetApproval(1)"
           >
             通过
           </el-button>
@@ -133,12 +151,12 @@
 
 <script>
 export default {
-  props: ['dialogVisible', 'title', 'type'],
+  props: ['dialogVisible', 'title', 'type', 'id', 'form'],
   emits: ['hide-dialog'],
   data() {
     return {
       visible: this.dialogVisible,
-      fileList: [],
+      attachment: {},
       proofingForm: {},
       proofingRules: {
         sample_model: [
@@ -166,18 +184,53 @@ export default {
           }
         ]
       },
-      disabled: null
+      hasVerifyOptions: [
+        {
+          label: '有',
+          value: 1
+        },
+        {
+          label: '无',
+          value: 0
+        }
+      ],
+      disabled: null,
+      show: true
     };
   },
-  created() {
+  mounted() {
     this.isDisabled();
+    this.getForm();
   },
   methods: {
+    async createProofingSheet(val) {
+      let body = val;
+      body['sample_id'] = this.id;
+      await this.$store.dispatch('sample/createProofingSheet', body);
+      this.visible = false;
+    },
+    async approvalProofingSheet(body) {
+      await this.$store.sdispatch('sample/approvalProofingSheet', body);
+      this.visible = false;
+    },
+    async updateProofingSheet(val) {
+      let body = val;
+
+      await this.$store.dispatch('sample/updateProofingSheet', body);
+    },
+    getForm() {
+      if (this.type !== 'create') {
+        this.proofingForm = this.form;
+        this.attachment = this.proofingForm.proofing_sheet_file;
+      }
+    },
     handleFileSuccess(file, fileList) {
-      this.fileList.push({
+      this.attachment = {
         id: file.id,
         name: fileList.name
-      });
+      };
+      this.proofingForm.proofing_sheet_file = this.attachment.id;
+      this.show = true;
     },
     cancel() {
       this.visible = false;
@@ -190,6 +243,29 @@ export default {
       if (this.type === 'approval' || this.type === 'view') {
         this.disabled = true;
       }
+    },
+    submitProofingSheet() {
+      this.$refs.proofingForm.validate((valid) => {
+        if (valid) {
+          this.proofingForm.has_verify = +this.proofingForm.has_verify;
+          if (this.type === 'create') {
+            this.createProofingSheet(this.proofingForm);
+          } else {
+            this.updateProofingSheet(this.proofingForm);
+          }
+        }
+      });
+    },
+    deleteFile(id) {
+      console.log(id);
+      this.attachment = {};
+      this.show = false;
+    },
+    submitProofingSheetApproval(val) {
+      this.approvalProofingSheet({
+        id: this.proofingForm.id,
+        approval_result: val
+      });
     }
   }
 };

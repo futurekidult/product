@@ -61,16 +61,5 @@ export default {
         }
       });
     }
-  },
-  getters: {
-    getProductList(state) {
-      return state.productList;
-    },
-    getLength(state) {
-      return state.total;
-    },
-    getSingleDetailMsg(state) {
-      return state.singleProductDetail;
-    }
   }
 };

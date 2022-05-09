@@ -18,7 +18,7 @@
       >
         <el-checkbox-group v-model="patentForm.patent_types">
           <el-checkbox
-            v-for="(item, i) in getTypes"
+            v-for="(item, i) in patentType"
             :key="i"
             :label="item.key"
             :disabled="isDisabled"
@@ -49,11 +49,11 @@
       </el-form-item>
       <el-form-item
         label="国家/地区"
-        prop="coutries"
+        prop="countries"
       >
-        <el-checkbox-group v-model="patentForm.coutries">
+        <el-checkbox-group v-model="patentForm.countries">
           <el-checkbox
-            v-for="(item, i) in getCountries"
+            v-for="(item, i) in countries"
             :key="i"
             :label="item.key"
             :disabled="isDisabled"
@@ -124,11 +124,12 @@ export default {
   emits: ['hide-dialog'],
   data() {
     return {
-      countries: this.$store.state.product.patent.enum.countries,
+      countries: [],
+      patentType: [],
       visible: this.dialogVisible,
       patentForm: this.form,
       patentRules: {
-        patent_types: [
+        patepatentTt_types: [
           {
             required: true,
             message: '请选择专利类型'
@@ -146,7 +147,7 @@ export default {
             message: '请输入产品英文名'
           }
         ],
-        coutries: [
+        countries: [
           {
             required: true,
             message: '请选择国家/地区'
@@ -183,15 +184,17 @@ export default {
       } else {
         return false;
       }
-    },
-    getTypes() {
-      return this.$store.state.product.patent.enum.type;
-    },
-    getCountries() {
-      return this.$store.state.product.patent.enum.countries;
     }
   },
+  mounted() {
+    this.getEnum();
+  },
   methods: {
+    async getEnum() {
+      await this.$store.dispatch('product/patent/getEnum');
+      this.countries = this.$store.state.product.patent.enum.countries;
+      this.patentType = this.$store.state.product.patent.enum.type;
+    },
     async getPatent() {
       let params = {
         product_id: this.$route.params.productId
