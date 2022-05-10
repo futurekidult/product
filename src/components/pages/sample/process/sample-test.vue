@@ -1,5 +1,5 @@
 <template>
-  <div
+  <!-- <div
     v-loading="$store.state.sample.testLoading"
     class="border"
   >
@@ -77,7 +77,7 @@
         </template>
       </el-table-column>
     </el-table>
-  </div>
+  </div> -->
 
   <div class="border">
     <div class="select-title">
@@ -87,17 +87,17 @@
       v-model="activeName"
       type="card"
     >
-      <el-tab-pane
+      <!-- <el-tab-pane
         label="品质测试"
         name="quality"
       >
-        <quality-test>'</quality-test>
-      </el-tab-pane>
+        <quality-test :id="sampleId" />
+      </el-tab-pane> -->
       <el-tab-pane
         label="机构测试"
         name="agency"
       >
-        <agency-test />
+        <agency-test :id="sampleId" />
       </el-tab-pane>
       <el-tab-pane
         label="用户测试"
@@ -157,10 +157,7 @@
       </el-form-item>
       <el-divider />
       <div style="text-align: right">
-        <el-button
-          class="close-btn"
-          @click="clos"
-        >
+        <el-button class="close-btn">
           取消
         </el-button>
         <el-button
@@ -175,14 +172,14 @@
 </template>
 
 <script>
-import QualityTest from './test/quality-test.vue';
+// import QualityTest from './test/quality-test.vue';
 import AgencyTest from './test/agency-test.vue';
 import UserTest from './test/user-test.vue';
 import TestForm from '../common/test-form.vue';
 
 export default {
   components: {
-    QualityTest,
+    // QualityTest,
     AgencyTest,
     UserTest,
     TestForm
@@ -202,7 +199,7 @@ export default {
     };
   },
   mounted() {
-    this.getProgress();
+    // this.getProgress();
   },
   methods: {
     async getProgress() {

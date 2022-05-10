@@ -111,7 +111,7 @@ export default {
     };
   },
   mounted() {
-    this.getSampleDetail();
+    // this.getSampleDetail();
   },
   methods: {
     async getSampleDetail() {

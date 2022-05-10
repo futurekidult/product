@@ -1,7 +1,13 @@
 import axios from '../../utils/axios.js';
 import { ElMessage } from 'element-plus';
+import QualityTest from './quality-test/index.js';
+import AgencyTest from './agency-test/index.js';
 
 export default {
+  modules: {
+    quality: QualityTest,
+    agency: AgencyTest
+  },
   namespaced: true,
   state() {
     return {
@@ -181,6 +187,15 @@ export default {
             ElMessage.error(res.message);
           }
         });
+    },
+    async recordTestProblem(_, payload) {
+      await axios.post('/sample/test/problem/record/', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success('记录的问题可在产品详情页查看');
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
     }
   }
 };

@@ -133,8 +133,8 @@ export default {
     }
   },
   mounted() {
-    this.getProofingProgress();
-    this.getProofingSheet();
+    // this.getProofingProgress();
+    // this.getProofingSheet();
   },
   methods: {
     async getProofingProgress() {
