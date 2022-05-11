@@ -64,7 +64,8 @@ body {
 .survey-title,
 .project-title,
 .order-title,
-.proofing-title {
+.proofing-title,
+.test-title {
   font-size: 14px;
   margin: 15px 0;
 }
@@ -128,7 +129,8 @@ body {
 }
 
 .apply-item,
-.proofing-item {
+.proofing-item,
+.test-item {
   display: flex;
   justify-content: space-between;
 }
@@ -207,6 +209,10 @@ body {
 
 .pass-btn button,
 .fail-btn button {
+  width: 100px;
+}
+
+.reset-btn {
   width: 100px;
 }
 </style>

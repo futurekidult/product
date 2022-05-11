@@ -106,7 +106,7 @@ export default {
   methods: {
     async getTestQuestion() {
       let params = {
-        sample_id: 1,
+        sample_id: +this.$route.params.id,
         current_page: 1,
         page_size: 10
       };
@@ -120,6 +120,11 @@ export default {
           params
         });
         this.questionList = this.$store.state.sample.agency.testQuestion.list;
+      } else {
+        await this.$store.dispatch('sample/user/getTestQuestion', {
+          params
+        });
+        this.questionList = this.$store.state.sample.user.testQuestion.list;
       }
     },
     async recordTestProblem(id) {

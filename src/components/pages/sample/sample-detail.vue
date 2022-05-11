@@ -1,7 +1,7 @@
 <template>
   <div class="border">
     <el-descriptions
-      title="一款非常有潜力的太阳能灯新品"
+      :title="sampleBase.product_name"
       :column="4"
     >
       <el-descriptions-item>
@@ -13,10 +13,10 @@
         </el-button>
       </el-descriptions-item>
       <el-descriptions-item label="采购负责人">
-        张三
+        {{ sampleBase.purchase_principal }}
       </el-descriptions-item>
       <el-descriptions-item label="采购员">
-        李四
+        {{ sampleBase.purchase_specialist }}
       </el-descriptions-item>
       <el-descriptions-item>
         <template #label>
@@ -41,6 +41,24 @@ export default {
   components: {
     SampleProcess
   },
-  props: ['id']
+  props: ['id'],
+  data() {
+    return {
+      sampleBase: {}
+    };
+  },
+  mounted() {
+    this.getSampleBase();
+  },
+  methods: {
+    async getSampleBase() {
+      await this.$store.dispatch('sample/getSampleBase', {
+        params: {
+          id: +this.$route.params.id
+        }
+      });
+      this.sampleBase = this.$store.state.sample.sampleBase;
+    }
+  }
 };
 </script>

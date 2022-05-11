@@ -97,7 +97,6 @@ export default {
       confirmVisible: false,
       resultForm: {},
       sampleDetail: {},
-      sampleId: 1,
       resultOptions: [
         {
           label: '已终止-重新打样',
@@ -111,20 +110,20 @@ export default {
     };
   },
   mounted() {
-    // this.getSampleDetail();
+    this.getSampleDetail();
   },
   methods: {
     async getSampleDetail() {
       await this.$store.dispatch('sample/getSampleDetail', {
         params: {
-          id: this.sampleId
+          id: +this.$route.params.id
         }
       });
       this.sampleDetail = this.$store.state.sample.sampleDetail;
     },
     async confirmTestResult(val) {
       let body = {
-        id: this.sampleId,
+        id: +this.$route.params.id,
         result: val
       };
       await this.$store.dispatch('sample/confirmTestResult', body);

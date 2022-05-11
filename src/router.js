@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import Manage from './components/layout/manage.vue';
 import WorkBench from './components/pages/workbench/workbench-list.vue';
 import DemandList from './components/pages/demand/demand-list.vue';
@@ -16,9 +16,10 @@ import SampleDetail from './components/pages/sample/sample-detail.vue';
 import ProductList from './components/pages/product/product-list.vue';
 import ProductDetail from './components/pages/product/product-detail.vue';
 import OrderDetail from './components/pages/product/process/order-detail.vue';
+import NotFound from './components/pages/not-found.vue';
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes: [
     {
       path: '/',
@@ -172,6 +173,10 @@ const router = createRouter({
           ]
         }
       ]
+    },
+    {
+      path: '/:notFound(.*)',
+      component: NotFound
     }
   ]
 });

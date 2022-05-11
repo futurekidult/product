@@ -82,6 +82,8 @@ export default {
         await this.$store.dispatch('sample/quality/updateTestQuestion', body);
       } else if (this.type === 'agency') {
         await this.$store.dispatch('sample/agency/updateTestQuestion', body);
+      } else {
+        await this.$store.dispatch('sample/user/updateTestQuestion', body);
       }
       this.visible = false;
       this.getList();

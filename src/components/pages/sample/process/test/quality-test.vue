@@ -41,7 +41,7 @@
   </el-descriptions>
 
   <div class="test-title">
-    测试问题表
+    测试结果问题表
   </div>
   <test-questions
     type="quality"
@@ -107,6 +107,7 @@
   <el-dialog
     v-model="failFormVisible"
     title="不通过"
+    width="20%"
   >
     <el-form
       ref="reasonForm"
@@ -146,7 +147,6 @@ export default {
   components: {
     TestQuestions
   },
-  props: ['id'],
   data() {
     return {
       progress: {},
@@ -165,7 +165,7 @@ export default {
     async getQualityDetail() {
       await this.$store.dispatch('sample/quality/getQualityDetail', {
         params: {
-          sample_id: this.id
+          sample_id: +this.$route.params.id
         }
       });
       this.progress =
@@ -180,14 +180,17 @@ export default {
     },
     async confirmTestResult(val) {
       let body = val;
-      body['sample_id'] = this.id;
+      body['sample_id'] = +this.$route.params.id;
       body['test_apply_id'] = this.testApplyId;
       await this.$store.dispatch('sample/quality/confirmTestResult', body);
+      if (val.test_result === 0) {
+        this.failFormVisible = false;
+      }
     },
     async submitTestResult(val) {
       let body = {
         test_result_file: val,
-        sample_id: this.id,
+        sample_id: +this.$route.params.id,
         test_apply_id: this.testApplyId
       };
       await this.$store.dispatch('sample/quality/submitTestResult', body);

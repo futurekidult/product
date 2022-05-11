@@ -2,15 +2,18 @@ import axios from '../../utils/axios.js';
 import { ElMessage } from 'element-plus';
 import QualityTest from './quality-test/index.js';
 import AgencyTest from './agency-test/index.js';
+import UserTest from './user-test/index.js';
 
 export default {
   modules: {
     quality: QualityTest,
-    agency: AgencyTest
+    agency: AgencyTest,
+    user: UserTest
   },
   namespaced: true,
   state() {
     return {
+      sampleList: [],
       sampleDetail: {},
       basicLoading: true,
       proofingLoading: true,
@@ -22,10 +25,14 @@ export default {
       applyLoading: true,
       sampleTestApply: {},
       reviewLoading: true,
-      qualitySpecialist: {}
+      qualitySpecialist: {},
+      sampleBase: {}
     };
   },
   mutations: {
+    setSampleList(state, payload) {
+      state.sampleList = payload;
+    },
     setSampleDetail(state, payload) {
       state.sampleDetail = payload;
     },
@@ -46,9 +53,30 @@ export default {
     },
     setQualitySpecialist(state, payload) {
       state.qualitySpecialist = payload;
+    },
+    setSampleBase(state, payload) {
+      state.sampleBase = payload;
     }
   },
   actions: {
+    async getSampleList(context, payload) {
+      await axios.get('/sample/all/list/', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setSampleList', res.data.list);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async getSampleBase(context, payload) {
+      await axios.get('/sample/base/get/', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setSampleBase', res.data);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
     async getSampleDetail(context, payload) {
       await axios.get('/sample/detail/get/', payload).then((res) => {
         if (res.code === 200) {

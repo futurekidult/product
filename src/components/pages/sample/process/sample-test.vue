@@ -1,5 +1,5 @@
 <template>
-  <!-- <div
+  <div
     v-loading="$store.state.sample.testLoading"
     class="border"
   >
@@ -77,7 +77,7 @@
         </template>
       </el-table-column>
     </el-table>
-  </div> -->
+  </div>
 
   <div class="border">
     <div class="select-title">
@@ -87,17 +87,17 @@
       v-model="activeName"
       type="card"
     >
-      <!-- <el-tab-pane
+      <el-tab-pane
         label="品质测试"
         name="quality"
       >
-        <quality-test :id="sampleId" />
-      </el-tab-pane> -->
+        <quality-test />
+      </el-tab-pane>
       <el-tab-pane
         label="机构测试"
         name="agency"
       >
-        <agency-test :id="sampleId" />
+        <agency-test />
       </el-tab-pane>
       <el-tab-pane
         label="用户测试"
@@ -110,7 +110,6 @@
 
   <test-form
     v-if="testApplyVisible"
-    :id="sampleId"
     :dialog-visible="testApplyVisible"
     title=" 申请样品测试"
     type="apply"
@@ -172,14 +171,14 @@
 </template>
 
 <script>
-// import QualityTest from './test/quality-test.vue';
+import QualityTest from './test/quality-test.vue';
 import AgencyTest from './test/agency-test.vue';
 import UserTest from './test/user-test.vue';
 import TestForm from '../common/test-form.vue';
 
 export default {
   components: {
-    // QualityTest,
+    QualityTest,
     AgencyTest,
     UserTest,
     TestForm
@@ -192,20 +191,19 @@ export default {
       resultVisible: false,
       editSpecialistVisible: false,
       editForm: {},
-      sampleId: 1,
       applyList: [],
       buttonState: 1,
       testId: 0
     };
   },
   mounted() {
-    // this.getProgress();
+    this.getProgress();
   },
   methods: {
     async getProgress() {
       await this.$store.dispatch('sample/getTestProgress', {
         params: {
-          sample_id: this.sampleId
+          sample_id: +this.$route.params.id
         }
       });
       this.applyList = this.$store.state.sample.testProgress.list;

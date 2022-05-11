@@ -66,7 +66,6 @@
 
   <sample-form
     v-if="proofingVisible"
-    :id="sampleId"
     :dialog-visible="proofingVisible"
     title="提交打样单"
     type="create"
@@ -115,7 +114,6 @@ export default {
       proofingEditVisible: false,
       proofingViewVisible: false,
       progress: {},
-      sampleId: 1,
       viewForm: {},
       approvalForm: {},
       editForm: {}
@@ -140,7 +138,7 @@ export default {
     async getProofingProgress() {
       await this.$store.dispatch('sample/getProofingProgress', {
         params: {
-          sample_id: this.sampleId
+          sample_id: +this.$route.params.id
         }
       });
       this.progress = this.$store.state.sample.proofingProgress;
@@ -148,7 +146,7 @@ export default {
     async getProofingSheet() {
       await this.$store.dispatch('sample/getProofingSheet', {
         params: {
-          id: this.sampleId
+          id: +this.$route.params.id
         }
       });
       this.reviewForm = this.$store.state.sample.proofingSheet;

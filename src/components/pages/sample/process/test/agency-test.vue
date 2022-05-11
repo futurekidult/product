@@ -76,7 +76,7 @@
       </el-descriptions>
 
       <div class="test-title">
-        测试问题表
+        测试结果问题表
       </div>
       <test-questions
         type="agency"
@@ -142,7 +142,7 @@
       <el-dialog
         v-model="failFormVisible"
         title="不通过"
-        width="30%"
+        width="20%"
       >
         <el-form
           ref="reasonForm"
@@ -182,7 +182,6 @@ export default {
   components: {
     TestQuestions
   },
-  props: ['id'],
   data() {
     return {
       agencyForm: {},
@@ -218,7 +217,7 @@ export default {
     async getAgencyTest() {
       await this.$store.dispatch('sample/agency/getAgencyTest', {
         params: {
-          sample_id: this.id
+          sample_id: +this.$route.params.id
         }
       });
       this.progress = this.$store.state.sample.agency.agencyTest.test_schedule;
@@ -234,7 +233,7 @@ export default {
     },
     async confirmTestResult(val) {
       let body = val;
-      body['sample_id'] = this.id;
+      body['sample_id'] = +this.$route.params.id;
       body['test_apply_id'] = this.testApplyId;
       await this.$store.dispatch('sample/agency/confirmTestResult', body);
       if (val.test_result === 0) {
@@ -248,7 +247,7 @@ export default {
     async submitTestResult(val) {
       let body = {
         test_result_file: val,
-        sample_id: this.id,
+        sample_id: +this.$route.params.id,
         test_apply_id: this.testApplyId
       };
       await this.$store.dispatch('sample/agency/submitTestResult', body);

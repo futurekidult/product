@@ -151,7 +151,7 @@
 
 <script>
 export default {
-  props: ['dialogVisible', 'title', 'type', 'id', 'form'],
+  props: ['dialogVisible', 'title', 'type', 'form'],
   emits: ['hide-dialog'],
   data() {
     return {
@@ -205,7 +205,7 @@ export default {
   methods: {
     async createProofingSheet(val) {
       let body = val;
-      body['sample_id'] = this.id;
+      body['sample_id'] = +this.$route.params.id;
       await this.$store.dispatch('sample/createProofingSheet', body);
       this.visible = false;
     },
@@ -215,7 +215,6 @@ export default {
     },
     async updateProofingSheet(val) {
       let body = val;
-
       await this.$store.dispatch('sample/updateProofingSheet', body);
     },
     getForm() {

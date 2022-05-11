@@ -243,7 +243,7 @@ export default {
     async getSampleMarketList() {
       await this.$store.dispatch('sample/getSampleMarketList', {
         params: {
-          sample_id: this.id
+          sample_id: +this.$route.params.id
         }
       });
       this.applyForm.sample_model =
@@ -252,7 +252,7 @@ export default {
     },
     async createTestApply(val) {
       let body = val;
-      body['sample_id'] = this.id;
+      body['sample_id'] = +this.$route.params.id;
       await this.$store.dispatch('sample/createTestApply', body);
       this.visible = false;
     },
@@ -266,7 +266,7 @@ export default {
     },
     async reviewTestApply(val) {
       let body = val;
-      body['id'] = this.id;
+      body.id = this.id;
       await this.$store.dispatch('sample/reviewTestApply', body);
       this.applyForm = this.$store.state.sample.sampleTestApply;
     },
