@@ -68,6 +68,7 @@ export default {
     return {
       activeName: 'market'
     };
-  }
+  },
+  methods: {}
 };
 </script>

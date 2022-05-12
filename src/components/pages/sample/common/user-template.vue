@@ -45,7 +45,7 @@
       <el-button type="text">
         下载
       </el-button>
-      <span class="table-line">|</span>
+      <span class="table-btn">|</span>
       <el-button type="text">
         预览
       </el-button>

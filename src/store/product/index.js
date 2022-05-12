@@ -18,18 +18,42 @@ export default {
       productList: [],
       total: 0,
       singleProductDetail: {},
-      productId: 0
+      systemParameter: {},
+      productBase: {},
+      projectMember: [],
+      pricingList: [],
+      mouldList: [],
+      sampleList: [],
+      questionList: []
     };
   },
   mutations: {
     setProduct(state, payload) {
       state.productList = payload;
     },
+    setProductBase(state, payload) {
+      state.productBase = payload;
+    },
     setLength(state, payload) {
       state.total = payload;
     },
     setSingleProductDetail(state, payload) {
       state.singleProductDetail = payload;
+    },
+    setProjectMember(state, payload) {
+      state.projectMember = payload;
+    },
+    setPricingList(state, payload) {
+      state.pricingList = payload;
+    },
+    setMouldList(state, payload) {
+      state.mouldList = payload;
+    },
+    setSampleList(state, payload) {
+      state.sampleList = payload;
+    },
+    setQuestionList(state, payload) {
+      state.questionList = payload;
     }
   },
   actions: {
@@ -38,6 +62,15 @@ export default {
         if (res.code === 200) {
           context.commit('setProduct', res.data.list);
           context.commit('setLength', res.data.total);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async getProductBase(context, payload) {
+      await axios.get('/product/base/get', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setProductBase', res.data);
         } else {
           ElMessage.error(res.message);
         }
@@ -58,6 +91,109 @@ export default {
           ElMessage.success(res.msg);
         } else {
           ElMessage.error(res.msg);
+        }
+      });
+    },
+    async getProjectMember(context, payload) {
+      await axios.get('/product/member/list', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setProjectMember', res.data.list);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async createProjectMember(_, payload) {
+      await axios.post('/product/member/create', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async updateProjectMember(_, payload) {
+      await axios.post('/product/member/update', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async deleteProjectMember(_, payload) {
+      await axios.post('/product/member/delete', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async getPricingList(context, payload) {
+      await axios.get('/pricing/all/list', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setPricingList', res.data.list);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async getMouldList(context, payload) {
+      await axios.get('/product/mould/list/', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setMouldList', res.data.list);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async createMould(_, payload) {
+      await axios
+        .post('/product/mould/relation/create/', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(res.message);
+          } else {
+            ElMessage.error(res.message);
+          }
+        });
+    },
+    async deleteMould(_, payload) {
+      await axios
+        .post('/product/mould/relation/delete/', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(res.message);
+          } else {
+            ElMessage.error(res.message);
+          }
+        });
+    },
+    async getSampleList(context, payload) {
+      await axios.get('/sample/part/list/', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setSampleList', res.data.list);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async getQuestionList(context, payload) {
+      await axios.get('/test-problem/list/', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setQuestionList', res.data.list);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async questionResult(_, payload) {
+      await axios.post('/test-problem/result/', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.message);
         }
       });
     }

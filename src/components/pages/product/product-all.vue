@@ -188,7 +188,7 @@ export default {
     };
   },
   mounted() {
-    this.getProductList();
+    // this.getProductList();
   },
   methods: {
     toDetail(id) {

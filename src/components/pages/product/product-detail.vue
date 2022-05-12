@@ -7,16 +7,11 @@
           mode="warning"
           type="tag"
         >
-          <span v-if="status === 1">调研中</span>
-          <span v-if="status === 2">立项中</span>
-          <span v-if="status === 3">定价阶段</span>
-          <span v-if="status === 4">样品阶段</span>
-          <span v-if="status === 5">下单阶段</span>
-          <span v-if="status === 6">包材阶段</span>
+          <span>{{ productBase.state_desc }}</span>
         </base-tag>
 
         <el-descriptions
-          title="一款非常有潜力的太阳能灯"
+          :title="productBase.name"
           :column="4"
         >
           <el-descriptions-item>
@@ -28,13 +23,13 @@
             </el-button>
           </el-descriptions-item>
           <el-descriptions-item label="产品定位">
-            老品类新产品
+            {{ productBase.positioning_desc }}
           </el-descriptions-item>
           <el-descriptions-item label="项目经理">
-            张三
+            {{ productBase.manager_desc }}
           </el-descriptions-item>
           <el-descriptions-item label="项目管理员">
-            李四
+            {{ productBase.administrator_desc }}
           </el-descriptions-item>
         </el-descriptions>
       </div>
@@ -45,7 +40,7 @@
             label="基本信息"
             name="basic"
           >
-            <product-basic :id="id" />
+            <product-basic />
           </el-tab-pane>
           <el-tab-pane
             label="项目成员"
@@ -60,12 +55,14 @@
             <product-survey />
           </el-tab-pane>
           <el-tab-pane
+            v-if="productBase.state >= 20"
             label="项目立项"
             name="project"
           >
             <project-setup />
           </el-tab-pane>
           <el-tab-pane
+            v-if="productBase.state >= 40"
             label="定价信息"
             name="price"
           >
@@ -78,18 +75,21 @@
             <product-patent />
           </el-tab-pane>
           <el-tab-pane
+            v-if="productBase.state >= 40"
             label="模具信息"
             name="mould"
           >
             <mould-message />
           </el-tab-pane>
           <el-tab-pane
+            v-if="productBase.state >= 40"
             label="样品信息"
             name="sample"
           >
             <sample-message />
           </el-tab-pane>
           <el-tab-pane
+            v-if="productBase.state >= 40"
             label="测试问题"
             name="test"
           >
@@ -146,7 +146,7 @@ export default {
       status: 2,
       activeName: 'basic',
       id: 0,
-      market: {}
+      productBase: {}
     };
   },
   computed: {
@@ -154,9 +154,18 @@ export default {
       return this.$route.name !== 'order detail';
     }
   },
-  created() {
-    this.id = this.$route.params.productId;
+  mounted() {
+    this.getProductBase();
   },
-  methods: {}
+  methods: {
+    async getProductBase() {
+      await this.$store.dispatch('product/getProductBase', {
+        params: {
+          id: +this.$route.params.productId
+        }
+      });
+      this.productBase = this.$store.state.product.productBase;
+    }
+  }
 };
 </script>
