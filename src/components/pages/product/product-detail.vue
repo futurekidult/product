@@ -11,6 +11,7 @@
         </base-tag>
 
         <el-descriptions
+          v-loading="$store.state.product.baseLoading"
           :title="productBase.name"
           :column="4"
         >
@@ -35,7 +36,10 @@
       </div>
 
       <div class="border">
-        <el-tabs v-model="activeName">
+        <el-tabs
+          v-model="activeName"
+          v-loading="$store.state.product.detailLoading"
+        >
           <el-tab-pane
             label="基本信息"
             name="basic"
@@ -96,12 +100,14 @@
             <question-all />
           </el-tab-pane>
           <el-tab-pane
+            v-if="productBase.state >= 40"
             label="下单信息"
             name="order"
           >
             <product-order />
           </el-tab-pane>
           <el-tab-pane
+            v-if="productBase.state >= 40"
             label="包材设计"
             name="package"
           >

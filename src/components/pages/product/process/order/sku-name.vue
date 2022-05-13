@@ -141,7 +141,7 @@
     </el-descriptions-item>
     <el-descriptions-item label="操作">
       <el-button
-        :disabled="skuEntrySchedule.state === 10 ? false : true"
+        :disabled="skuEntrySchedule.state !== 10 "
         @click="completeEntry"
       >
         已完成SKU录入甲骨文

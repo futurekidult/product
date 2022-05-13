@@ -10,7 +10,7 @@
       </div>
       <el-button
         type="primary"
-        :disabled="JSON.stringify(progress) === '{}' ? false : true"
+        :disabled="JSON.stringify(progress) !== '{}'"
         @click="showProofingCreate"
       >
         提交打样单
@@ -18,7 +18,6 @@
     </div>
 
     <el-descriptions
-      v-loading="$store.state.sample.proofingLoading"
       border
       :column="5"
       direction="vertical"
@@ -131,8 +130,8 @@ export default {
     }
   },
   mounted() {
-    // this.getProofingProgress();
-    // this.getProofingSheet();
+    this.getProofingProgress();
+    this.getProofingSheet();
   },
   methods: {
     async getProofingProgress() {

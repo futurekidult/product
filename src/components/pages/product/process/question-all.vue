@@ -7,7 +7,7 @@
     border
     empty-text="无数据"
     :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-    :data="getQuestionList"
+    :data="questionList"
   >
     <el-table-column
       label="序号"
@@ -24,7 +24,7 @@
     />
     <el-table-column
       label="问题名称"
-      props="name"
+      prop="name"
     />
     <el-table-column label="后果描述">
       <template #default="scope">
@@ -38,23 +38,23 @@
     </el-table-column>
     <el-table-column
       label="记录时间"
-      props="record_time"
+      prop="record_time"
     />
     <el-table-column
       label="问题来源"
-      props="source"
+      prop="source"
     />
     <el-table-column
       label="采购员"
-      props="purchase_specialist"
+      prop="purchase_specialist"
     />
     <el-table-column
       label="解決时间"
-      props="resolve_time"
+      prop="resolve_time"
     />
     <el-table-column
       label="状态"
-      props="state_desc"
+      prop="state_desc"
     />
     <el-table-column label="原因">
       <template #default="scope">
@@ -66,19 +66,25 @@
         </el-button>
       </template>
     </el-table-column>
-    <el-table-column label="操作">
+    <el-table-column
+      label="操作"
+      width="300px"
+    >
       <template #default="scope">
         <el-button @click="showIgnoreForm(scope.row.id)">
           可忽略
         </el-button>
-        <el-button @click="showResolveDialog(scope.row.id)">
+        <el-button
+          type="success"
+          @click="showResolveDialog(scope.row.id)"
+        >
           已解决
         </el-button>
       </template>
     </el-table-column>
   </el-table>
 
-  <base-pagination :length="questionList" />
+  <base-pagination :length="questionList.length" />
 
   <reason-form
     v-if="ignoreFormVisible"
@@ -86,6 +92,7 @@
     :dialog-visible="ignoreFormVisible"
     title="忽略原因"
     type="ignore"
+    :submit-form="submitQuestionResult"
     @hide-dialog="closeIgnoreForm"
   />
   <reason-form
@@ -108,13 +115,22 @@
   <el-dialog
     v-model="resolveDialog"
     title="提示"
+    width="20%"
   >
     <div class="result-content">
       是否确定提交样品测试结果
     </div>
     <div style="text-align: center">
-      <el-button> 取消 </el-button>
-      <el-button type="primary">
+      <el-button
+        class="close-btn"
+        @click="closeResolveDialog"
+      >
+        取消
+      </el-button>
+      <el-button
+        type="primary"
+        @click="submitResult"
+      >
         确定
       </el-button>
     </div>
@@ -154,6 +170,17 @@ export default {
       await this.$store.dispatch('product/getQuestionList', { params });
       this.questionList = this.$store.state.product.questionList;
     },
+    async submitQuestionResult(id, val, reason = '') {
+      let body = {
+        problem_id: id,
+        result: val
+      };
+      if (val === 0) {
+        body['ignore_reason_text'] = reason;
+      }
+      await this.$store.dispatch('product/submitQuestionResult', body);
+      this.getQuestionList();
+    },
     showIgnoreForm(id) {
       this.ignoreFormVisible = true;
       this.questionId = id;
@@ -178,6 +205,13 @@ export default {
     showResolveDialog(id) {
       this.resolveDialog = true;
       this.resolveId = id;
+    },
+    closeResolveDialog() {
+      this.resolveDialog = false;
+    },
+    submitResult() {
+      this.submitQuestionResult(this.resolveId, 1);
+      this.resolveDialog = false;
     }
   }
 };

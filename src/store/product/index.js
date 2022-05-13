@@ -24,7 +24,13 @@ export default {
       pricingList: [],
       mouldList: [],
       sampleList: [],
-      questionList: []
+      questionList: [],
+      content: {},
+      packageList: [],
+      productDetail: {},
+      baseLoading: true,
+      detailLoading: true,
+      memberLoading: true
     };
   },
   mutations: {
@@ -54,6 +60,15 @@ export default {
     },
     setQuestionList(state, payload) {
       state.questionList = payload;
+    },
+    setContent(state, payload) {
+      state.content = payload;
+    },
+    setPackageList(state, payload) {
+      state.packageList = payload;
+    },
+    setProductDetail(state, payload) {
+      state.productDetail = payload;
     }
   },
   actions: {
@@ -71,6 +86,17 @@ export default {
       await axios.get('/product/base/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setProductBase', res.data);
+          context.state.baseLoading = false;
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async getProductDetail(context, payload) {
+      await axios.get('/product/detail/get', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setProductDetail', res.data);
+          context.state.detailLoading = false;
         } else {
           ElMessage.error(res.message);
         }
@@ -98,6 +124,7 @@ export default {
       await axios.get('/product/member/list', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setProjectMember', res.data.list);
+          context.state.memberLoading = false;
         } else {
           ElMessage.error(res.message);
         }
@@ -188,8 +215,44 @@ export default {
         }
       });
     },
-    async questionResult(_, payload) {
+    async submitQuestionResult(_, payload) {
       await axios.post('/test-problem/result/', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async getContent(context, payload) {
+      await axios.get('/reason/text/get', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setContent', res.data);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async getPackageList(context, payload) {
+      await axios.get('/package/part/list/', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setPackageList', res.data.list);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async confirmPackageResult(_, payload) {
+      await axios.post('/package/result/confirm/', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async createPackageResult(_, payload) {
+      await axios.post('/package/result/create/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         } else {

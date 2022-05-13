@@ -109,6 +109,17 @@ export default {
           }
         });
     },
+    async updateProfit(_, payload) {
+      await axios
+        .post('/project/profit-calculation/update', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(res.message);
+          } else {
+            ElMessage.error(res.message);
+          }
+        });
+    },
     async getOperationsSpecialist(context, payload) {
       await axios
         .get('/project/operations-specialist/get', payload)

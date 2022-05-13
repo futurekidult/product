@@ -47,28 +47,29 @@
       <el-table-column label="操作">
         <template #default="scope">
           <el-button
+            type="text"
+            @click="showEditProfit(scope.row.market)"
+          >
+            编辑
+          </el-button>
+          <span class="table-btn">|</span>
+          <el-button
             v-if="isShow"
             type="text"
             @click="deleteProfitItem(scope.row.market)"
           >
             删除
           </el-button>
-          <div v-else>
-            <el-button
-              type="text"
-              @click="showEditProfit(scope.row.market)"
-            >
-              编辑
-            </el-button>
-            <span class="table-btn">|</span>
-
-            <el-button
-              type="text"
-              @click="showViewProfit(scope.row.market)"
-            >
-              查看
-            </el-button>
-          </div>
+          <span
+            v-if="isShow"
+            class="table-btn"
+          >|</span>
+          <el-button
+            type="text"
+            @click="showViewProfit(scope.row.market)"
+          >
+            查看
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -97,6 +98,15 @@
     type="view"
     title="查看核算利润"
     @hide-dialog="closeViewProfitForm"
+  />
+
+  <profit-form
+    v-if="editFormVisible"
+    :id="marketId"
+    :dialog-visible="editFormVisible"
+    type="edit"
+    title="编辑核算利润"
+    @hide-dialog="closeEditForm"
   />
 
   <profit-edit
@@ -143,6 +153,7 @@ export default {
       editProfitVisible: false,
       adjustPriceVisible: false,
       getPricingVisible: false,
+      editFormVisible: false,
       marketId: 0,
       adjustment: {},
       adjustmentList: [],
@@ -184,7 +195,11 @@ export default {
       this.viewProfitVisible = false;
     },
     showEditProfit(id) {
-      this.editProfitVisible = true;
+      if (this.getProfit.review_state === 10) {
+        this.editFormVisible = true;
+      } else {
+        this.editProfitVisible = true;
+      }
       this.marketId = id;
     },
     showAdjustPrice(id) {
@@ -202,6 +217,9 @@ export default {
     },
     closeEditProfit() {
       this.editProfitVisible = false;
+    },
+    closeEditForm() {
+      this.editFormVisible = false;
     },
     async deleteItem(val) {
       await this.$store.dispatch('product/project/deleteProfitItem', val);

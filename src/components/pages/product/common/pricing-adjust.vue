@@ -72,7 +72,7 @@
               v-model="adjustForm.currency"
               class="analy-form_mar"
               placeholder="请选择货币"
-              :disabled="adjustMsg.state === 30 ? true : false"
+              :disabled="adjustMsg.state === 30"
             />
           </el-form-item>
           <el-form-item prop="adjusted_selling_price">
@@ -80,7 +80,7 @@
               v-model="adjustForm.adjusted_selling_price"
               class="analy-form_mar"
               placeholder="请输入金额"
-              :disabled="adjustMsg.state === 30 ? true : false"
+              :disabled="adjustMsg.state === 30"
             />
           </el-form-item>
           <el-form-item>

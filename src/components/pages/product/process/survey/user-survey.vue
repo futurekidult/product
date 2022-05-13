@@ -4,7 +4,7 @@
       调研申请表
     </div>
     <el-button
-      :disabled="buttonState.apply === 1 ? false : true"
+      :disabled="buttonState.apply !== 1"
       @click="showApplyForm"
     >
       用户调研申请
@@ -132,7 +132,7 @@
       </div>
       <div style="display: flex; align-items: center">
         <el-button
-          :disabled="buttonState.plan === 0 ? true : false"
+          :disabled="buttonState.plan === 0"
           type="primary"
           @click="submitPlan"
         >
@@ -152,7 +152,7 @@
           <el-button
             type="primary"
             style="background: #379f0d; border: 1px solid #379f0d"
-            :disabled="buttonState.review_pass === 0 ? true : false"
+            :disabled="buttonState.review_pass === 0"
             @click="approvalPass"
           >
             通过
@@ -281,7 +281,7 @@
             </el-button>
             <el-button
               type="text"
-              :disabled="scope.row.state !== 10 ? true : false"
+              :disabled="scope.row.state !== 10"
               @click="approvalItemPass(scope.row.id)"
             >
               通过
@@ -308,7 +308,7 @@
             </el-button>
             <el-button
               type="text"
-              :disabled="scope.row.state !== 10 ? true : false"
+              :disabled="scope.row.state !== 10"
               @click="finishItem(scope.row.id)"
             >
               完成
@@ -319,7 +319,7 @@
     </el-table>
     <el-button
       style="margin: 15px 0"
-      :disabled="buttonState.plan === 0 ? true : false"
+      :disabled="buttonState.plan === 0"
       @click="addSurveyPlan"
     >
       + 新增调研计划

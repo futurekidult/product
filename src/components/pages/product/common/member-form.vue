@@ -27,7 +27,7 @@
         <el-select
           v-model="memberForm.role_id"
           placeholder="请输入成员角色"
-          :disabled="type === 'edit' ? true : false"
+          :disabled="type === 'edit'"
         />
       </el-form-item>
       <el-divider />

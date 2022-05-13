@@ -11,6 +11,7 @@ body {
 .el-main {
   position: relative;
   background: rgba(240, 246, 247, 1);
+  height: 100vh;
 }
 
 .border {
@@ -130,14 +131,16 @@ body {
 
 .apply-item,
 .proofing-item,
-.test-item {
+.test-item,
+.member-item {
   display: flex;
   justify-content: space-between;
 }
 
 .user-btn,
 .project-plan_btn,
-.pre-product_btn {
+.pre-product_btn,
+.member-btn {
   width: 120px;
 }
 

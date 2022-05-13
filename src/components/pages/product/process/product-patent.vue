@@ -8,7 +8,7 @@
       专利排查申请表
     </div>
     <el-button
-      :disabled="button_state === 0 ? true : false"
+      :disabled="button_state === 0"
       @click="showPatentForm"
     >
       专利排查申请
@@ -65,7 +65,7 @@
     </el-table-column>
   </el-table>
 
-  <div v-if="JSON.stringify(progress) === '{}' ? false : true">
+  <div v-if="JSON.stringify(progress) !== '{}'">
     <div class="project-title">
       专利排查进度表
     </div>
@@ -89,7 +89,7 @@
       </el-descriptions-item>
       <el-descriptions-item label="操作">
         <el-button
-          :disabled="progress.state === 10 ? false : true"
+          :disabled="progress.state !== 10"
           @click="confirmPatent"
         >
           专利排查完成

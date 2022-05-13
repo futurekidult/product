@@ -100,7 +100,7 @@
       >
         <el-select
           v-model="applyForm.review_result"
-          :disabled="type === 'view' ? true : false"
+          :disabled="type === 'view' "
           placeholder="请选择评审结果"
         >
           <el-option
@@ -119,7 +119,7 @@
         <el-select
           v-model="applyForm.quality_specialist_id"
           placeholder="请选择品质专员"
-          :disabled="type === 'view' ? true : false"
+          :disabled="type === 'view' "
         />
       </el-form-item>
       <el-divider />

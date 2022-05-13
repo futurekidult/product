@@ -23,7 +23,7 @@
         >
           <el-button
             type="primary"
-            :disabled="type === 'create' ? false : true"
+            :disabled="type !== 'create' "
           >
             点击上传
           </el-button>

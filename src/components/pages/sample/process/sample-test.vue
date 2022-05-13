@@ -13,7 +13,7 @@
       </div>
       <el-button
         type="primary"
-        :disabled="buttonState === 0 ? true : false"
+        :disabled="buttonState === 0 "
         @click="showApplyForm"
       >
         申请样品测试

@@ -45,8 +45,8 @@
     </el-descriptions-item>
     <el-descriptions-item label="操作">
       <el-button
-        v-if="JSON.stringify(data) === '{}' ? false : true"
-        :disabled="data.state === 10 ? false : true"
+        v-if="JSON.stringify(data) !== '{}'"
+        :disabled="data.state !== 10"
         @click="uploadAttachment"
       >
         完成

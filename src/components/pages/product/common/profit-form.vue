@@ -2,7 +2,7 @@
   <el-dialog
     v-model="visible"
     width="40%"
-    title="新增核算利润"
+    :title="title"
     @close="cancel"
   >
     <el-form
@@ -80,7 +80,7 @@
             >
               <el-input
                 v-model="item.selling_price_rmb"
-                :disabled="true"
+                disabled
               />
             </el-form-item>
           </el-form-item>
@@ -91,7 +91,7 @@
           >
             <el-input
               v-model="item.reference_price"
-              :disabled="true"
+              disabled
             />
           </el-form-item>
           <el-form-item
@@ -217,7 +217,7 @@ export default {
       await this.$store.dispatch('product/project/getProfitCalculation', {
         params
       });
-      if (this.type === 'view') {
+      if (this.type !== 'add') {
         this.profitForm = this.$store.state.product.project.profitCalculation;
       }
     },
@@ -235,12 +235,22 @@ export default {
       let body = val;
       body['product_id'] = this.$route.params.paroductId;
       await this.$store.dispatch('product/project/createProfit', body);
+      this.visible = false;
+    },
+    async updateProfit(val) {
+      let body = val;
+      body['product_id'] = this.$route.params.paroductId;
+      await this.$store.dispatch('product/project/updateProfit', body);
+      this.visible = false;
     },
     submitProfitForm() {
       this.$refs.profitForm.validate((valid) => {
         if (valid) {
-          this.createProfit(this.profitForm);
-          this.visible = false;
+          if (this.type === 'add') {
+            this.createProfit(this.profitForm);
+          } else {
+            this.updateProfit(this.profitForm);
+          }
         }
       });
     }

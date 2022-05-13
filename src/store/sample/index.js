@@ -16,7 +16,6 @@ export default {
       sampleList: [],
       sampleDetail: {},
       basicLoading: true,
-      proofingLoading: true,
       proofingProgress: {},
       proofingSheet: {},
       testLoading: true,
@@ -102,7 +101,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             context.commit('setProofingProgress', res.data);
-            context.state.proofingLoading = false;
           } else {
             ElMessage.error(res.message);
           }

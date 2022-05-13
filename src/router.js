@@ -94,15 +94,18 @@ const router = createRouter({
           component: PriceList,
           meta: {
             title: '定价列表'
-          }
-        },
-        {
-          path: '/quotation-list',
-          component: QuotationList,
-          name: 'quotation',
-          meta: {
-            title: '报价列表'
-          }
+          },
+          children: [
+            {
+              path: ':id',
+              component: QuotationList,
+              name: 'quotation',
+              meta: {
+                title: '报价列表'
+              },
+              props: true
+            }
+          ]
         },
         {
           path: '/mould-list',

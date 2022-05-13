@@ -53,7 +53,7 @@
 
   <el-button
     style="margin: 15px 0"
-    :disabled="state === 1 ? true : false"
+    :disabled="state === 1 "
     @click="showAddQuestions"
   >
     + 新增测试问题

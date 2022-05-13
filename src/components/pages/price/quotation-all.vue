@@ -1,5 +1,7 @@
 <template>
-  <quotation-description />
+  <div class="border">
+    <quotation-description />
+  </div>
 </template>
 
 <script>

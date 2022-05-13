@@ -56,14 +56,14 @@
     >
       <template #default="scope">
         <el-button
-          :disabled="scope.row.is_delivered_desc === '是' ? true : false"
+          :disabled="scope.row.is_delivered_desc === '是' "
           @click="deliverSample(scope.row.user_test_apply_id)"
         >
           样品已寄送
         </el-button>
         <el-button
           :disabled="
-            JSON.stringify(scope.row.test_result_file) === '{}' ? false : true
+            JSON.stringify(scope.row.test_result_file) !== '{}' 
           "
           @click="showResultForm(scope.row.user_test_apply_id)"
         >

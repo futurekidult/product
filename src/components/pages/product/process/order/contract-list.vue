@@ -20,7 +20,7 @@
     <el-descriptions-item label="操作">
       <el-button
         type="primary"
-        :disabled="exportContract.state === 10 ? false : true"
+        :disabled="exportContract.state !== 10"
         @click="confirmExportContract(exportContract.id)"
       >
         已完成
@@ -80,7 +80,7 @@
     <el-descriptions-item label="操作">
       <el-button
         type="primary"
-        :disabled="purchaseContract.state === 10 ? false : true"
+        :disabled="purchaseContract.state !== 10"
         @click="confirmPurchaseContract"
       >
         提交

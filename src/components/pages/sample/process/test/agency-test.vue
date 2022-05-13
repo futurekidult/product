@@ -12,7 +12,7 @@
       <el-select
         v-model="agencyForm.isAgency"
         placeholder="请选择"
-        :disabled="agencyValue !== -1 ? true : false"
+        :disabled="agencyValue !== -1 "
       >
         <el-option
           v-for="item in isAgencyOptions"
@@ -67,7 +67,7 @@
           </el-button>
           <el-button
             type="primary"
-            :disabled="progress.state === 10 ? false : true"
+            :disabled="progress.state !== 10 "
             @click="confirmResult"
           >
             测试通过
@@ -103,7 +103,7 @@
           >
             <el-button
               type="primary"
-              :disabled="submitState === 1 ? true : false"
+              :disabled="submitState === 1 "
             >
               点击上传
             </el-button>

@@ -32,7 +32,7 @@
       </el-button>
       <el-button
         type="primary"
-        :disabled="progress.state === 10 ? false : true"
+        :disabled="progress.state !== 10 "
         @click="confirmResult"
       >
         测试通过
@@ -68,7 +68,7 @@
       >
         <el-button
           type="primary"
-          :disabled="submitState === 1 ? true : false"
+          :disabled="submitState === 1 "
         >
           点击上传
         </el-button>

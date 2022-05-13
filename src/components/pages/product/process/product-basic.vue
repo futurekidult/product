@@ -5,53 +5,111 @@
     @node-click="handleNodeClick"
   />
 
-  <el-form>
+  <el-form
+    :model="productForm"
+    label-width="100px"
+    style="width: 50%"
+  >
     <el-form-item label="产品名称">
-      <el-input />
+      <el-input
+        v-model="productForm.name"
+        disabled
+      />
     </el-form-item>
-    <el-form-item label="产品图片" />
+    <el-form-item label="产品图片">
+      <el-upload
+        action=""
+        :show-file-list="false"
+      >
+        <el-button
+          type="primary"
+          disabled
+        >
+          点击上传
+        </el-button>
+      </el-upload>
+      <div class="attachment">
+        请上传png/jpg/jpeg等图片格式,单个文件不能超过5MB
+      </div>
+    </el-form-item>
+    <el-form-item style="margin-bottom: 18px">
+      <div
+        v-for="(item, i) in attachment"
+        :key="i"
+        class="attachment-list"
+      >
+        <div>
+          {{ item.name }}
+        </div>
+        <el-button type="text">
+          下载
+        </el-button>
+      </div>
+    </el-form-item>
     <el-form-item label="大品类">
-      <el-input />
+      <el-input
+        v-model="productForm.big_category_desc"
+        disabled
+      />
     </el-form-item>
     <el-form-item label="小品类">
-      <el-input />
+      <el-input
+        v-model="productForm.small_category_desc"
+        disabled
+      />
     </el-form-item>
     <el-form-item label="品牌">
-      <el-input />
+      <el-input
+        v-model="productForm.brand"
+        disabled
+      />
     </el-form-item>
     <el-form-item label="是否新品类">
-      <el-radio label="1">
-        是
-      </el-radio>
-      <el-radio label="0">
-        否
+      <el-radio
+        v-for="item in options"
+        :key="item.value"
+        v-model="productForm.is_new_category"
+        :label="item.value"
+        disabled
+      >
+        {{ item.label }}
       </el-radio>
     </el-form-item>
     <el-form-item label="是否新产品">
-      <el-radio label="1">
-        是
-      </el-radio>
-      <el-radio label="0">
-        否
+      <el-radio
+        v-for="item in options"
+        :key="item.value"
+        v-model="productForm.is_new_product"
+        :label="item.value"
+        disabled
+      >
+        {{ item.label }}
       </el-radio>
     </el-form-item>
     <div
-      v-for="(item, index) in market"
+      v-for="(item, index) in productForm.market"
       :key="index"
     >
-      <el-form-item label="市场">
-        <el-input />
+      <el-form-item :label="'市场' + (index + 1)">
+        <el-input
+          v-model="item.id"
+          disabled
+        />
       </el-form-item>
-      <el-form-item label="平台">
-        <!-- <el-checkbox-group>
+      <el-form-item
+        v-model="item.id"
+        :label="'平台' + (index + 1)"
+      >
+        <el-checkbox-group v-model="item.platform">
           <el-checkbox
-            v-for="(item, i) in "
+            v-for="(content, i) in platform"
             :key="i"
-            :label="item.key"
+            :label="content.key"
+            disabled
           >
-            {{ item.value }}
+            {{ content.value }}
           </el-checkbox>
-        </el-checkbox-group> -->
+        </el-checkbox-group>
       </el-form-item>
     </div>
   </el-form>
@@ -185,10 +243,73 @@ export default {
           }
         ]
       },
-      market: {}
+      market: [
+        {
+          key: 1,
+          value: '美国'
+        },
+        {
+          key: 2,
+          value: '英国'
+        },
+        {
+          key: 3,
+          value: '欧盟'
+        },
+        {
+          key: 4,
+          value: '日本'
+        }
+      ],
+      platform: [
+        {
+          key: 1,
+          value: 'Amazon'
+        },
+        {
+          key: 2,
+          value: 'Lowe\'s'
+        },
+        {
+          key: 3,
+          value: 'Wayfair'
+        },
+        {
+          key: 4,
+          value: 'Walmart'
+        },
+        {
+          key: 5,
+          value: 'Homedepot'
+        }
+      ],
+      productForm: {},
+      options: [
+        {
+          label: '是',
+          value: 1
+        },
+        {
+          label: '否',
+          value: 0
+        }
+      ],
+      attachment: []
     };
   },
+  mounted() {
+    this.getProductDetail();
+  },
   methods: {
+    async getProductDetail() {
+      await this.$store.dispatch('product/getProductDetail', {
+        params: {
+          id: +this.$route.params.productId
+        }
+      });
+      this.productForm = this.$store.state.product.productDetail;
+      this.attachment = this.productForm.images;
+    },
     handleNodeClick(data) {
       console.log(data);
     },
