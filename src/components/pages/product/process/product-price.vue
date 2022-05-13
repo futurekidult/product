@@ -41,10 +41,13 @@
       label="关联样品流程数"
       prop="related_sample_count"
     />
-    <el-table-column
-      label="状态"
-      prop="state_desc"
-    />
+    <el-table-column label="状态">
+      <template #default="scope">
+        <div :class="changeColor(scope.row.state)">
+          {{ scope.row.state_desc }}
+        </div>
+      </template>
+    </el-table-column>
     <el-table-column label="操作">
       <template #default="scope">
         <el-button
@@ -57,11 +60,15 @@
     </el-table-column>
   </el-table>
 
-  <base-pagination :length="pricingList.length" />
+  <base-pagination
+    :length="pricingList.length"
+    :get-list="getPricingList"
+  />
 </template>
 
 <script>
 export default {
+  props: ['changeColor'],
   data() {
     return {
       pricingList: []
@@ -71,10 +78,10 @@ export default {
     this.getPricingList();
   },
   methods: {
-    async getPricingList() {
+    async getPricingList(currentPage = 1, pageSize = 10) {
       let params = {
-        current_page: 1,
-        page_size: 10,
+        current_page: currentPage,
+        page_size: pageSize,
         product_id: +this.$route.params.productId
       };
       await this.$store.dispatch('product/getPricingList', { params });

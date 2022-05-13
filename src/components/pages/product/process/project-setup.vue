@@ -19,10 +19,14 @@
       {{ progress.actual_finish_time }}
     </el-descriptions-item>
     <el-descriptions-item label="评审状态">
-      {{ progress.review_state_desc }}
+      <div :class="changeCellColor(progress.review_state)">
+        {{ progress.review_state_desc }}
+      </div>
     </el-descriptions-item>
     <el-descriptions-item label="状态">
-      {{ progress.state_desc }}
+      <div :class="changeColor(progress.state)">
+        {{ progress.state_desc }}
+      </div>
     </el-descriptions-item>
     <el-descriptions-item
       label="操作"
@@ -81,7 +85,10 @@
     </el-form-item>
     <div v-if="projectForm.review_result === 1">
       <profit-calculation :get-profit="profit" />
-      <process-table :get-schedule="schedule" />
+      <process-table
+        :get-schedule="schedule"
+        :change-color="changeCellColor"
+      />
 
       <div class="profit-plan_title">
         销售计划表
@@ -265,6 +272,24 @@ export default {
     },
     closeProjectForm() {
       this.addVisible = false;
+    },
+    changeCellColor(val) {
+      if (val === 10) {
+        return 'result-ing';
+      } else if (val === 20) {
+        return 'result-pass';
+      } else {
+        return 'result-fail';
+      }
+    },
+    changeColor(val) {
+      if (val === 10 || val === 20) {
+        return 'result-ing';
+      } else if (val === 40) {
+        return 'result-pass';
+      } else {
+        return 'result-fail';
+      }
     }
   }
 };

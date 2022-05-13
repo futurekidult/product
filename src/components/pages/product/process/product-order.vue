@@ -38,10 +38,13 @@
         label="大货样套数"
         prop="pre_production_sample_quantity"
       />
-      <el-table-column
-        label="状态"
-        prop="state_desc"
-      />
+      <el-table-column label="状态">
+        <template #default="scope">
+          <div :class="changeCellColor(scope.row.state)">
+            {{ scope.row.state_desc }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
           <el-button @click="toDetail(scope.row.id)">
@@ -65,10 +68,12 @@ export default {
     this.getOrder();
   },
   methods: {
-    async getOrder() {
+    async getOrder(currentPage = 1, pageSize = 10) {
       await this.$store.dispatch('product/order/getOrderList', {
         params: {
-          product_id: +this.$route.params.productId
+          product_id: +this.$route.params.productId,
+          current_page: currentPage,
+          page_size: pageSize
         }
       });
       this.orderList = this.$store.state.product.order.orderList;
@@ -85,6 +90,13 @@ export default {
       this.$router.push(`/product-list/${this.$route.params.productId}/${id}`);
       this.getOrderProgress();
       this.getSkuForm();
+    },
+    changeCellColor(val) {
+      if (val <= 30) {
+        return 'result-ing';
+      } else {
+        return 'result-pass';
+      }
     }
   }
 };

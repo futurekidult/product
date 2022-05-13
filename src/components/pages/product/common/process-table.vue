@@ -26,10 +26,13 @@
         label="实际完成时间"
         prop="actual_finish_time"
       />
-      <el-table-column
-        label="状态"
-        prop="state_desc"
-      />
+      <el-table-column label="状态">
+        <template #default="scope">
+          <div :class="changeColor(scope.row.state)">
+            {{ scope.row.state_desc }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
           <el-button
@@ -236,7 +239,7 @@
 
 <script>
 export default {
-  props: ['getSchedule'],
+  props: ['getSchedule', 'changeColor'],
   data() {
     return {
       editStageVisible: false,

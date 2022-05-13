@@ -49,10 +49,13 @@
       label="实际完成时间"
       prop="actual_finish_time"
     />
-    <el-table-column
-      label="状态"
-      prop="state_desc"
-    />
+    <el-table-column label="状态">
+      <template #default="scope">
+        <div :class="changeCellColor(scope.row.state)">
+          {{ scope.row.state_desc }}
+        </div>
+      </template>
+    </el-table-column>
     <el-table-column label="操作">
       <template #default="scope">
         <el-button
@@ -79,17 +82,26 @@ export default {
     this.getSampleList();
   },
   methods: {
-    async getSampleList() {
+    async getSampleList(currentPage = 1, pageSize = 10) {
       let params = {
         product_id: +this.$route.params.productId,
-        current_page: 1,
-        page_size: 10
+        current_page: currentPage,
+        page_size: pageSize
       };
       await this.$store.dispatch('product/getSampleList', { params });
       this.sampleList = this.$store.state.product.sampleList;
     },
     toDetail(id) {
       this.$router.push(`/sample-list/${id}`);
+    },
+    changeCellColor(val) {
+      if (val <= 20) {
+        return 'result-ing';
+      } else if (val === 30) {
+        return 'result-pass';
+      } else {
+        return 'result-fail';
+      }
     }
   }
 };

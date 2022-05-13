@@ -14,13 +14,26 @@
       {{ getProgress.actual_finish_time }}
     </el-descriptions-item>
     <el-descriptions-item label="状态">
-      {{ getProgress.state_desc }}
+      <div :class="changeColor(getProgress.state)">
+        {{ getProgress.state_desc }}
+      </div>
     </el-descriptions-item>
   </el-descriptions>
 </template>
 
 <script>
 export default {
-  props: ['getProgress']
+  props: ['getProgress'],
+  methods: {
+    changeColor(val) {
+      if (val === 10 || val === 20) {
+        return 'result-ing';
+      } else if (val === 40) {
+        return 'result-pass';
+      } else {
+        return 'result-fail';
+      }
+    }
+  }
 };
 </script>

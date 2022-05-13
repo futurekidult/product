@@ -70,7 +70,7 @@
             label="定价信息"
             name="price"
           >
-            <product-price />
+            <product-price :change-color="changeCellColor" />
           </el-tab-pane>
           <el-tab-pane
             label="专利排查"
@@ -111,7 +111,7 @@
             label="包材设计"
             name="package"
           >
-            <product-package />
+            <product-package :change-color="changeCellColor" />
           </el-tab-pane>
         </el-tabs>
       </div>
@@ -171,6 +171,13 @@ export default {
         }
       });
       this.productBase = this.$store.state.product.productBase;
+    },
+    changeCellColor(val) {
+      if (val <= 20) {
+        return 'result-ing';
+      } else {
+        return 'result-pass';
+      }
     }
   }
 };

@@ -127,10 +127,10 @@ export default {
     this.getMouldList();
   },
   methods: {
-    async getMouldList() {
+    async getMouldList(currentPage = 1, pageSize = 10) {
       let params = {
-        page_size: 10,
-        current_page: 1,
+        page_size: pageSize,
+        current_page: currentPage,
         product_id: +this.$route.params.productId
       };
       await this.$store.dispatch('product/getMouldList', { params });

@@ -24,7 +24,9 @@
       {{ progress.actual_finish_time }}
     </el-descriptions-item>
     <el-descriptions-item label="状态">
-      {{ progress.state_desc }}
+      <div :class="changeColor(progress.state)">
+        {{ progress.state_desc }}
+      </div>
     </el-descriptions-item>
   </el-descriptions>
 
@@ -98,6 +100,7 @@
 
 <script>
 export default {
+  props: ['changeColor'],
   data() {
     return {
       marketForm: {},
@@ -168,6 +171,7 @@ export default {
     deleteFile(id) {
       console.log(id);
       this.attachment = {};
+      this.marketForm.attachment = {};
       this.show = false;
     },
     download(id) {

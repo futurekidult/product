@@ -11,13 +11,13 @@
       label="平台调研"
       name="platform"
     >
-      <platform-survey />
+      <platform-survey :change-color="changeColor" />
     </el-tab-pane>
     <el-tab-pane
       label="市场调研"
       name="market"
     >
-      <market-survey />
+      <market-survey :change-color="changeColor" />
     </el-tab-pane>
     <el-tab-pane
       label="用户分析"
@@ -41,7 +41,7 @@
       label="用户调研"
       name="user"
     >
-      <user-survey />
+      <user-survey :change-color="changeColor" />
     </el-tab-pane>
   </el-tabs>
 </template>
@@ -69,6 +69,16 @@ export default {
       activeName: 'market'
     };
   },
-  methods: {}
+  methods: {
+    changeColor(val) {
+      if (val === 10 || val === 20) {
+        return 'result-ing';
+      } else if (val === 40) {
+        return 'result-pass';
+      } else {
+        return 'result-fail';
+      }
+    }
+  }
 };
 </script>

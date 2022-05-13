@@ -36,7 +36,13 @@
     <el-table-column
       label="评审状态"
       prop="state_desc"
-    />
+    >
+      <template #default="scope">
+        <div :class="changeCellColor(scope.row.state)">
+          {{ scope.row.state_desc }}
+        </div>
+      </template>
+    </el-table-column>
     <el-table-column label="操作">
       <template #default="scope">
         <el-button
@@ -108,7 +114,9 @@
         label="状态"
         width="200px"
       >
-        {{ progress.state_desc }}
+        <div :class="changeColor(progress.state)">
+          {{ progress.state_desc }}
+        </div>
       </el-descriptions-item>
       <el-descriptions-item
         label="操作"
@@ -219,10 +227,13 @@
         width="250px"
         prop="actual_finish_time"
       />
-      <el-table-column
-        label="状态"
-        prop="state_desc"
-      />
+      <el-table-column label="状态">
+        <template #default="scope">
+          <div :class="changeCellColor(scope.row.state)">
+            {{ scope.row.state_desc }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="结果附件">
         <template #default="scope">
           <div
@@ -438,6 +449,7 @@ export default {
   components: {
     SurveyForm
   },
+  props: ['changeColor'],
   data() {
     return {
       isVisible: false,
@@ -673,6 +685,15 @@ export default {
     approvalItemFail(id) {
       this.approvalSurveyItm(id, 0);
       this.getUserSurvey();
+    },
+    changeCellColor(val) {
+      if (val === 10) {
+        return 'result-ing';
+      } else if (val === 20) {
+        return 'result-pass';
+      } else {
+        return 'result-fail';
+      }
     }
   }
 };

@@ -52,10 +52,13 @@
       label="解決时间"
       prop="resolve_time"
     />
-    <el-table-column
-      label="状态"
-      prop="state_desc"
-    />
+    <el-table-column label="状态">
+      <template #default="scope">
+        <div :class="changeCellColor(scope.row.state)">
+          {{ scope.row.state_desc }}
+        </div>
+      </template>
+    </el-table-column>
     <el-table-column label="原因">
       <template #default="scope">
         <el-button
@@ -161,11 +164,11 @@ export default {
     this.getQuestionList();
   },
   methods: {
-    async getQuestionList() {
+    async getQuestionList(currentPage = 1, pageSize = 10) {
       let params = {
         product_id: +this.$route.params.productId,
-        current_page: 1,
-        page_size: 10
+        current_page: currentPage,
+        page_size: pageSize
       };
       await this.$store.dispatch('product/getQuestionList', { params });
       this.questionList = this.$store.state.product.questionList;
@@ -212,6 +215,15 @@ export default {
     submitResult() {
       this.submitQuestionResult(this.resolveId, 1);
       this.resolveDialog = false;
+    },
+    changeCellColor(val) {
+      if (val === 10) {
+        return 'result-ing';
+      } else if (val === 20) {
+        return 'result-pass';
+      } else {
+        return 'result-ignore';
+      }
     }
   }
 };

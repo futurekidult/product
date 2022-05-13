@@ -30,6 +30,10 @@ body {
   margin: 40px 0;
 }
 
+.result-ignore {
+  color: #999999;
+}
+
 .progress-title {
   font-weight: bold;
   margin-bottom: 20px;

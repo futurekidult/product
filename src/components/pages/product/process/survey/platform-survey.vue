@@ -30,7 +30,9 @@
       {{ progress.actual_finish_time }}
     </el-descriptions-item>
     <el-descriptions-item label="状态">
-      {{ progress.state_desc }}
+      <div :class="changeColor(progress.state)">
+        {{ progress.state_desc }}
+      </div>
     </el-descriptions-item>
   </el-descriptions>
 
@@ -322,6 +324,7 @@ export default {
   components: {
     BaseDialog
   },
+  props: ['changeColor'],
   data() {
     return {
       progress: {},

@@ -35,10 +35,13 @@
       prop="result_path"
       show-overflow-tooltip
     />
-    <el-table-column
-      label="状态"
-      prop="state_desc"
-    />
+    <el-table-column label="状态">
+      <template #default="scope">
+        <div :class="changeColor(scope.row.state)">
+          {{ scope.row.state_desc }}
+        </div>
+      </template>
+    </el-table-column>
     <el-table-column
       label="操作"
       width="300px"
@@ -104,6 +107,7 @@
 
 <script>
 export default {
+  props: ['changeColor'],
   data() {
     return {
       packageList: [],
@@ -116,11 +120,11 @@ export default {
     this.getPackageList();
   },
   methods: {
-    async getPackageList() {
+    async getPackageList(currentPage = 1, pageSize = 10) {
       let params = {
         product_id: +this.$route.params.productId,
-        current_page: 1,
-        page_size: 10
+        current_page: currentPage,
+        page_size: pageSize
       };
       await this.$store.dispatch('product/getPackageList', { params });
       this.packageList = this.$store.state.product.packageList;
