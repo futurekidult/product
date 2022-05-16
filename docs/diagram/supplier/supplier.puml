@@ -1,0 +1,31 @@
+@startmindmap
+title 供应商列表
+
++_ SupplierList
+++_ BaseBreadcrumb
+++_ SupplierAll
++++_ BasePagination
++++_ BlackList
+++++_ BasePagination
+
+@endmindmap
+
+@startmindmap
+title 创建供应商
+
++_ SupplierCreate
+++_ SupplierForm
+++_ BaseBreadcrumb
+
+@endmindmap
+
+
+@startmindmap
+title 供应商详情
+
++_ SupplierDetail
+++_ BaseTag
+++_ SupplierForm
+++_ CompanyDescription
+
+@endmindmap
