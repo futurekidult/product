@@ -50,6 +50,7 @@
 </template>
 
 <script>
+import { formatterTime } from '../../../utils';
 import MouldProcess from './process/mould-process.vue';
 
 export default {
@@ -80,10 +81,18 @@ export default {
       });
       this.mould = this.$store.state.mould.mould;
       this.progress = this.mould.mould_schedule;
+      this.progress.estimated_finish_time = formatterTime(
+        this.progress.estimated_finish_time
+      );
+      this.progress.actual_finish_time = formatterTime(
+        this.progress.actual_finish_time
+      );
     },
     changeColor(val) {
       if (val === 40) {
         return 'result-pass';
+      } else if (val === 30) {
+        return 'result-fail';
       } else {
         return 'result-ing';
       }

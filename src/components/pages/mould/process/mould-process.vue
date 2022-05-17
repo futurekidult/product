@@ -36,13 +36,18 @@
           :change-color="changeColor"
           :progress="makingMould"
           :is-undefined="isUndefined"
+          :get-list="getMakingMould"
         />
       </el-tab-pane>
       <el-tab-pane
         label="试模"
         name="test"
       >
-        <mould-test />
+        <mould-test
+          :change-color="changeColor"
+          :progress="testingMould"
+          :is-undefined="isUndefined"
+        />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -69,7 +74,8 @@ export default {
       designProgress: {},
       prototypeProgress: {},
       attachment: [],
-      makingMould: {}
+      makingMould: {},
+      testingMould: {}
     };
   },
   mounted() {
@@ -103,6 +109,20 @@ export default {
       this.makingMould.actual_finish_time = formatterTime(
         this.makingMould.actual_finish_time
       );
+      this.makingMould.estimated_finish_time = formatterTime(
+        this.makingMould.estimated_finish_time
+      );
+    },
+    async getTestingMould() {
+      await this.$store.dispatch('mould/getTestingMould', {
+        params: {
+          mould_id: +this.$route.params.id
+        }
+      });
+      this.testingMould = this.$store.state.mould.testingMouldProgress;
+      this.testingMould.actual_finish_time = formatterTime(
+        this.testingMould.actual_finish_time
+      );
     },
     handleClick(tab) {
       if (tab.props.name === 'design') {
@@ -114,6 +134,9 @@ export default {
       } else if (tab.props.name === 'open') {
         this.$store.commit('mould/setMakingMouldLoading', true);
         this.getMakingMould();
+      } else {
+        this.$store.commit('mould/setTestingMouldLoading', true);
+        this.getTestingMould();
       }
     },
     isUndefined(val) {

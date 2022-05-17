@@ -13,7 +13,9 @@ export default {
       protoytpeLoading: true,
       prototypeProgress: {},
       makingMouldProgress: {},
-      makingMouldLoading: true
+      makingMouldLoading: true,
+      testingMouldProgress: {},
+      testingMouldLoading: true
     };
   },
   mutations: {
@@ -40,6 +42,12 @@ export default {
     },
     setMakingMouldLoading(state, payload) {
       state.makingMouldLoading = payload;
+    },
+    setTestingMould(state, payload) {
+      state.testingMouldProgress = payload;
+    },
+    setTestingMouldLoading(state, payload) {
+      state.testingMouldLoading = payload;
     }
   },
   actions: {
@@ -130,6 +138,52 @@ export default {
     },
     async createMakingMould(_, payload) {
       await axios.post('/mould/making/create/', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async updateMakingMould(_, payload) {
+      await axios.post('/mould/making/update/', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async approvalMakingMould(_, payload) {
+      await axios.post('/mould/making/approval/', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async getTestingMould(context, payload) {
+      await axios.get('/mould/testing/get/', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setTestingMould', res.data);
+          context.commit('setTestingMouldLoading', false);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async approvalTestingMould(_, payload) {
+      await axios.post('/mould/testing/approval/', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async confirmTestingMould(_, payload) {
+      await axios.post('/mould/testing/confirm/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         } else {

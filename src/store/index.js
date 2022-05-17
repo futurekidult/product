@@ -5,6 +5,7 @@ import ProductList from './product';
 import SampleList from './sample';
 import axios from '../utils/axios.js';
 import { ElMessage } from 'element-plus';
+import MouldList from './mould';
 
 let dataCache = new Map();
 const store = createStore({
@@ -12,7 +13,8 @@ const store = createStore({
     workbench: WorkBench,
     demand: DemandList,
     product: ProductList,
-    sample: SampleList
+    sample: SampleList,
+    mould: MouldList
   },
   state() {
     return {

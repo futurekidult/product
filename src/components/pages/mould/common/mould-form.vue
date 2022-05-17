@@ -74,7 +74,7 @@
 import { timestamp } from '../../../../utils/index';
 
 export default {
-  props: ['dialogVisible', 'title', 'type'],
+  props: ['dialogVisible', 'title', 'type', 'editForm', 'getList'],
   emits: ['hide-dialog'],
   data() {
     return {
@@ -102,12 +102,23 @@ export default {
       visible: this.dialogVisible
     };
   },
+  mounted() {
+    if (this.type === 'edit') {
+      this.form = this.editForm;
+    }
+  },
   methods: {
     async createMakingMould(val) {
       let body = val;
       body['mould_id'] = +this.$route.params.id;
       await this.$store.dispatch('mould/createMakingMould', body);
       this.visible = false;
+      this.getList();
+    },
+    async updateMakingMould(body) {
+      await this.$store.dispatch('mould/updateMakingMould', body);
+      this.visible = false;
+      this.getList();
     },
     cancel() {
       this.visible = false;
@@ -120,7 +131,11 @@ export default {
             this.form.estimated_finish_time
           );
           this.form.cost = +this.form.cost;
-          this.createMakingMould(this.form);
+          if (this.type === 'create') {
+            this.createMakingMould(this.form);
+          } else {
+            this.updateMakingMould(this.form);
+          }
         }
       });
     }
