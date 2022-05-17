@@ -25,10 +25,18 @@
       </el-form-item>
       <div style="float: right">
         <el-form-item>
-          <el-button type="primary">
+          <el-button
+            type="primary"
+            @click="getMouldList"
+          >
             查询
           </el-button>
-          <el-button> 重置 </el-button>
+          <el-button
+            class="close-btn"
+            @click="resetForm"
+          >
+            重置
+          </el-button>
         </el-form-item>
       </div>
     </el-form>
@@ -187,10 +195,9 @@ export default {
   },
   methods: {
     async getMouldList(currentPage = 1, pageSize = 10) {
-      let params = {
-        current_page: currentPage,
-        page_size: pageSize
-      };
+      let params = this.chooseForm;
+      params['current_page'] = currentPage;
+      params['page_size'] = pageSize;
       await this.$store.dispatch('mould/getMouldList', { params });
       this.mouldList = this.$store.state.mould.mouldList;
       this.mouldList.map((item) => {
@@ -219,6 +226,9 @@ export default {
     },
     closeMouldForm() {
       this.mouldFormVisible = false;
+    },
+    resetForm() {
+      this.chooseForm = {};
     },
     submitMouldForm() {
       this.$refs.mouldForm.validate((valid) => {

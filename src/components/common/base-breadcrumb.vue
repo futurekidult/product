@@ -52,7 +52,6 @@ export default {
             });
             break;
           case 'price':
-          case 'quotation':
             prefix = prefix.concat({
               path: '/price-list',
               meta: { title: '定价管理' }
