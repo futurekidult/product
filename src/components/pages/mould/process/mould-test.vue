@@ -13,10 +13,10 @@
       border
     >
       <el-descriptions-item label="任务负责人">
-        {{ isUndefined(progress.principal) }}
+        {{ progress.principal }}
       </el-descriptions-item>
       <el-descriptions-item label="实际完成时间">
-        {{ isUndefined(progress.actual_finish_time) }}
+        {{ progress.actual_finish_time }}
       </el-descriptions-item>
       <el-descriptions-item label="状态">
         <div
@@ -24,7 +24,7 @@
             changeColor(progress.state !== undefined ? progress.state : '')
           "
         >
-          {{ isUndefined(progress.state_desc) }}
+          {{ progress.state_desc }}
         </div>
       </el-descriptions-item>
       <el-descriptions-item label="操作">
@@ -59,7 +59,7 @@
 <script>
 export default {
   inject: ['getMould'],
-  props: ['changeColor', 'isUndefined', 'progress'],
+  props: ['changeColor', 'progress'],
   methods: {
     async approvalTestingMould(id, result) {
       let body = {

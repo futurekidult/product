@@ -12,7 +12,6 @@
         <mould-design
           :change-color="changeColor"
           :progress="designProgress"
-          :is-undefined="isUndefined"
           :get-list="getProductDesign"
         />
       </el-tab-pane>
@@ -23,7 +22,6 @@
         <sample-mould
           :change-color="changeColor"
           :progress="prototypeProgress"
-          :is-undefined="isUndefined"
           :get-list="getPrototype"
           :attachment="attachment"
         />
@@ -35,7 +33,6 @@
         <mould-open
           :change-color="changeColor"
           :progress="makingMould"
-          :is-undefined="isUndefined"
           :get-list="getMakingMould"
         />
       </el-tab-pane>
@@ -46,7 +43,6 @@
         <mould-test
           :change-color="changeColor"
           :progress="testingMould"
-          :is-undefined="isUndefined"
         />
       </el-tab-pane>
     </el-tabs>
@@ -137,11 +133,6 @@ export default {
       } else {
         this.$store.commit('mould/setTestingMouldLoading', true);
         this.getTestingMould();
-      }
-    },
-    isUndefined(val) {
-      if (val !== undefined) {
-        return val;
       }
     }
   }

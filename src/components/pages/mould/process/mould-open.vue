@@ -20,22 +20,22 @@
       direction="vertical"
     >
       <el-descriptions-item label="任务负责人">
-        {{ isUndefined(progress.principal) }}
+        {{ progress.principal }}
       </el-descriptions-item>
       <el-descriptions-item label="开模费用">
-        {{ isUndefined(progress.cost) }}
+        {{ progress.cost }}
       </el-descriptions-item>
       <el-descriptions-item label="说明">
-        {{ isUndefined(progress.illustration_text) }}
+        {{ progress.illustration_text }}
       </el-descriptions-item>
       <el-descriptions-item label="计划完成时间">
-        {{ isUndefined(progress.estimated_finish_time) }}
+        {{ progress.estimated_finish_time }}
       </el-descriptions-item>
       <el-descriptions-item label="开模工厂">
-        {{ isUndefined(progress.mould_factory) }}
+        {{ progress.mould_factory }}
       </el-descriptions-item>
       <el-descriptions-item label="实际完成时间">
-        {{ isUndefined(progress.actual_finish_time) }}
+        {{ progress.actual_finish_time }}
       </el-descriptions-item>
       <el-descriptions-item label="状态">
         <div
@@ -43,7 +43,7 @@
             changeColor(progress.state !== undefined ? progress.state : '')
           "
         >
-          {{ isUndefined(progress.state_desc) }}
+          {{ progress.state_desc }}
         </div>
       </el-descriptions-item>
       <el-descriptions-item label="操作">
@@ -112,7 +112,7 @@ export default {
     MouldForm
   },
   inject: ['getMould'],
-  props: ['progress', 'isUndefined', 'changeColor', 'getList'],
+  props: ['progress', 'changeColor', 'getList'],
   data() {
     return {
       applyFormVisible: false,

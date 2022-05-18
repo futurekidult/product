@@ -12,25 +12,21 @@
       direction="vertical"
     >
       <el-descriptions-item label="任务负责人">
-        {{ isUndefined(progress.principal) }}
+        {{ progress.principal }}
       </el-descriptions-item>
       <el-descriptions-item label="实际完成时间">
-        {{ isUndefined(progress.actual_finish_time) }}
+        {{ progress.actual_finish_time }}
       </el-descriptions-item>
       <el-descriptions-item label="结果附件">
-        {{ isUndefined(progress.product_design_path) }}
+        {{ progress.product_design_path }}
       </el-descriptions-item>
       <el-descriptions-item label="状态">
-        <div
-          :class="
-            changeColor(progress.state !== undefined ? progress.state : '')
-          "
-        >
-          {{ isUndefined(progress.state_desc) }}
+        <div :class="changeColor(progress.state)">
+          {{ progress.state_desc }}
         </div>
       </el-descriptions-item>
       <el-descriptions-item label="操作">
-        <el-button @click="showdesignForm">
+        <el-button @click="showDesignForm">
           上传设计图
         </el-button>
       </el-descriptions-item>
@@ -85,7 +81,7 @@
 
 <script>
 export default {
-  props: ['changeColor', 'progress', 'isUndefined', 'getList'],
+  props: ['changeColor', 'progress', 'getList'],
   data() {
     return {
       designFormVisible: false,
@@ -100,7 +96,7 @@ export default {
       this.designFormVisible = false;
       this.getList();
     },
-    showdesignForm() {
+    showDesignForm() {
       this.designFormVisible = true;
     },
     closedesignForm() {

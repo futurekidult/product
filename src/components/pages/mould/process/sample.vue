@@ -13,10 +13,10 @@
       direction="vertical"
     >
       <el-descriptions-item label="任务负责人">
-        {{ isUndefined(progress.principal) }}
+        {{ progress.principal }}
       </el-descriptions-item>
       <el-descriptions-item label="实际完成时间">
-        {{ isUndefined(progress.actual_finish_time) }}
+        {{ progress.actual_finish_time }}
       </el-descriptions-item>
       <el-descriptions-item label="状态">
         <div
@@ -24,7 +24,7 @@
             changeColor(progress.state !== undefined ? progress.state : '')
           "
         >
-          {{ isUndefined(progress.state_desc) }}
+          {{ progress.state_desc }}
         </div>
       </el-descriptions-item>
       <el-descriptions-item label="操作">
@@ -75,14 +75,14 @@
           支持office文档格式,文档不超过5MB
         </div>
       </el-form-item>
-      <el-form-item v-if="progress.prototype_file === [] ? false : true">
+      <el-form-item v-if="progress.prototype_file !== []">
         <div
           v-for="(item, index) in attachment"
           :key="index"
           class="attachment-list"
         >
           <div>
-            {{ isUndefined(item.name) }}
+            {{ item.name }}
           </div>
           <el-button
             v-if="!isDisabled"
@@ -115,7 +115,7 @@
 <script>
 export default {
   inject: ['getMould'],
-  props: ['changeColor', 'progress', 'isUndefined', 'getList', 'attachment'],
+  props: ['changeColor', 'progress', 'getList', 'attachment'],
   data() {
     return {
       prototypeForm: {}

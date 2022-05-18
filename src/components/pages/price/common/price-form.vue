@@ -449,7 +449,8 @@ export default {
     async getHighReason(val) {
       let params = {
         quote: val,
-        pricing_id: this.id
+        pricing_id: this.id,
+        currency: this.quotationForm.quote_currency
       };
       await this.$store.dispatch('price/getHighReason', {
         params
