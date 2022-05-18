@@ -99,7 +99,7 @@ const router = createRouter({
             {
               path: ':id',
               component: QuotationList,
-              name: 'quotation',
+              name: 'price detail',
               meta: {
                 title: '报价列表'
               },

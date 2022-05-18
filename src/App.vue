@@ -26,17 +26,17 @@ body {
   float: right;
 }
 
+.el-input-group__append,
+.el-input-group__prepend {
+  padding: 0 10px !important;
+}
+
 .progress-table {
-  margin: 40px 0;
+  margin: 0 0 20px 0;
 }
 
 .result-ignore {
   color: #999999;
-}
-
-.progress-title {
-  font-weight: bold;
-  margin-bottom: 20px;
 }
 
 .select-title {
@@ -70,7 +70,11 @@ body {
 .project-title,
 .order-title,
 .proofing-title,
-.test-title {
+.test-title,
+.design-title,
+.prototype-title,
+.test-title,
+.open-title {
   font-size: 14px;
   margin: 15px 0;
 }
@@ -124,7 +128,8 @@ body {
   width: 100%;
 }
 
-.el-button--primary {
+.el-button--primary,
+.el-button--success {
   width: 100px;
 }
 
@@ -136,7 +141,9 @@ body {
 .apply-item,
 .proofing-item,
 .test-item,
-.member-item {
+.member-item,
+.open-mould_item,
+.quotation-item {
   display: flex;
   justify-content: space-between;
 }
@@ -221,5 +228,9 @@ body {
 
 .reset-btn {
   width: 100px;
+}
+
+.form-desc {
+  font-size: 10px;
 }
 </style>

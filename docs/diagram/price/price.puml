@@ -5,6 +5,7 @@ title 定价列表
 ++_ BaseBreadcrumb
 ++_ BasePagination
 ++_ PriceForm
+++_ ProceAll
 
 @endmindmap
 
@@ -12,10 +13,9 @@ title 定价列表
 title 报价列表
 
 +_ QuotationList
-++_ BaseBreadcrumb
-++_ QuotationAll
-+++_ QuotationDescription
-+++_ BasePagination
-+++_ PriceForm
+++_ BasePagination
+++_PurchaseForm
+++ViewForm
+++_ PriceForm
 
 @endmindmap
