@@ -14,30 +14,35 @@
         <el-input
           v-model="userForm.username"
           placeholder="请输入用户姓名"
+          disabled
         />
       </el-form-item>
       <el-form-item label="用户地址">
         <el-input
           v-model="userForm.address"
           placeholder="请输入用户地址"
+          disabled
         />
       </el-form-item>
       <el-form-item label="邮编">
         <el-input
           v-model="userForm.postcode"
           placeholder="请输入邮编"
+          disabled
         />
       </el-form-item>
       <el-form-item label="联系方式">
         <el-input
           v-model="userForm.tel"
           placeholder="请输入联系方式"
+          disabled
         />
       </el-form-item>
       <el-form-item label="邮箱">
         <el-input
           v-model="userForm.email"
           placeholder="请输入邮箱"
+          disabled
         />
       </el-form-item>
       <el-form-item />

@@ -94,13 +94,13 @@
       </el-form-item>
       <el-divider v-if="type !== 'apply'" />
       <el-form-item
-        v-if="type !== 'review'"
+        v-if="type !== 'apply'"
         label="评审结果"
         prop="review_result"
       >
         <el-select
           v-model="applyForm.review_result"
-          :disabled="type === 'view' "
+          :disabled="type === 'view'"
           placeholder="请选择评审结果"
         >
           <el-option
@@ -108,6 +108,7 @@
             :key="item.value"
             :label="item.label"
             :value="item.value"
+            :disabled="item.disabled"
           />
         </el-select>
       </el-form-item>
@@ -119,7 +120,7 @@
         <el-select
           v-model="applyForm.quality_specialist_id"
           placeholder="请选择品质专员"
-          :disabled="type === 'view' "
+          :disabled="type === 'view'"
         />
       </el-form-item>
       <el-divider />
@@ -145,7 +146,9 @@
 </template>
 
 <script>
+import { timestamp } from '../../../../utils';
 export default {
+  inject: ['getTest'],
   props: ['dialogVisible', 'title', 'type', 'id'],
   emits: ['hide-dialog'],
   data() {
@@ -205,6 +208,11 @@ export default {
       ],
       reviewOptions: [
         {
+          label: '请选择',
+          value: -1,
+          disabled: true
+        },
+        {
           label: '通过',
           value: 1
         },
@@ -213,7 +221,8 @@ export default {
           value: 0
         }
       ],
-      loading: true
+      loading: true,
+      reviewValue: 0
     };
   },
   computed: {
@@ -223,7 +232,7 @@ export default {
       } else if (this.type === 'review') {
         return this.reviewRules;
       } else {
-        return '';
+        return {};
       }
     }
   },
@@ -263,12 +272,15 @@ export default {
         }
       });
       this.applyForm = this.$store.state.sample.sampleTestApply;
+      if (!this.applyForm.quality_specialist_id) {
+        this.applyForm.quality_specialist_id = '';
+      }
     },
     async reviewTestApply(val) {
       let body = val;
       body.id = this.id;
       await this.$store.dispatch('sample/reviewTestApply', body);
-      this.applyForm = this.$store.state.sample.sampleTestApply;
+      this.getTest();
     },
     cancel() {
       this.visible = false;
@@ -293,6 +305,9 @@ export default {
         if (valid) {
           if (this.type === 'apply') {
             this.applyForm.total = +this.applyForm.total;
+            this.applyForm.expected_finish_time = timestamp(
+              this.applyForm.expected_finish_time
+            );
             this.createTestApply(this.applyForm);
           } else {
             this.reviewTestApply({

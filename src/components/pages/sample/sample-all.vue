@@ -88,14 +88,23 @@
         label="采购员"
         prop="purchase_specialist"
       />
-      <el-table-column
-        label="状态"
-        prop="state_desc"
-      />
+      <el-table-column label="状态">
+        <template #default="scope">
+          <div :class="changeCellColor(scop.row.state)">
+            {{ scope.row.state_desc }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column
         label="测试结果"
         prop="test_result"
-      />
+      >
+        <template #default="scope">
+          <div :class="changeCellColor(scop.row.test_result)">
+            {{ scope.row.test_result }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
           <el-button
@@ -122,10 +131,10 @@ export default {
     this.getSampleList();
   },
   methods: {
-    async getSampleList() {
+    async getSampleList(currentPage = 1, pageSize = 10) {
       let params = this.chooseForm;
-      params['current_page'] = 1;
-      params['page_size'] = 10;
+      params['current_page'] = currentPage;
+      params['page_size'] = pageSize;
       await this.$store.dispatch('sample/getSampleList', { params });
       this.sampleList = this.$store.state.sample.sampleList;
     },
@@ -137,6 +146,15 @@ export default {
     },
     toDetail(id) {
       this.$router.push(`/sample-list/${id}`);
+    },
+    changeCellColor(val) {
+      if (val === 30 || val === 1) {
+        return 'result-pass';
+      } else if (val === 20 || val === 10) {
+        return 'result-ing';
+      } else {
+        return 'result-ignore';
+      }
     }
   }
 };

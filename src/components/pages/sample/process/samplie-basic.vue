@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="$store.state.sample.basicLoading">
+  <div v-loading="$store.state.sample.baseLoading">
     <el-descriptions
       border
       :column="9"
@@ -18,10 +18,14 @@
         {{ sampleDetail.actual_finish_time }}
       </el-descriptions-item>
       <el-descriptions-item label="状态">
-        {{ sampleDetail.state_desc }}
+        <div :class="changeColor(sampleDetail.state)">
+          {{ sampleDetail.state_desc }}
+        </div>
       </el-descriptions-item>
       <el-descriptions-item label="测试结果">
-        {{ sampleDetail.test_result_desc }}
+        <div :class="changeColor(sampleDetail.test_result)">
+          {{ sampleDetail.test_result_desc }}
+        </div>
       </el-descriptions-item>
       <el-descriptions-item label="不通过原因">
         {{ sampleDetail.unapproved_reason_text }}
@@ -92,11 +96,11 @@
 
 <script>
 export default {
+  props: ['sampleDetail', 'getList', 'changeColor'],
   data() {
     return {
       confirmVisible: false,
       resultForm: {},
-      sampleDetail: {},
       resultOptions: [
         {
           label: '已终止-重新打样',
@@ -109,18 +113,7 @@ export default {
       ]
     };
   },
-  mounted() {
-    this.getSampleDetail();
-  },
   methods: {
-    async getSampleDetail() {
-      await this.$store.dispatch('sample/getSampleDetail', {
-        params: {
-          id: +this.$route.params.id
-        }
-      });
-      this.sampleDetail = this.$store.state.sample.sampleDetail;
-    },
     async confirmTestResult(val) {
       let body = {
         id: +this.$route.params.id,
@@ -128,6 +121,7 @@ export default {
       };
       await this.$store.dispatch('sample/confirmTestResult', body);
       this.confirmVisible = false;
+      this.getList();
     },
     confirmResult() {
       this.confirmVisible = true;
@@ -145,7 +139,6 @@ export default {
           }
         });
       }
-      this.getSampleDetail();
     }
   }
 };

@@ -121,7 +121,7 @@
           prop="user_requirement_file"
         >
           <el-upload
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action=""
             :show-file-list="false"
             :on-success="handleRequirementFileSuccess"
             :limit="1"
@@ -143,7 +143,10 @@
             class="attachment-list"
           >
             <div>{{ requiredAttachment.name }}</div>
-            <el-button type="text">
+            <el-button
+              v-if="type === 'apply'"
+              type="text"
+            >
               删除
             </el-button>
             <el-button type="text">
@@ -184,6 +187,7 @@
 </template>
 
 <script>
+import { timestamp } from '../../../../utils';
 export default {
   props: ['dialogVisible', 'title', 'type', 'id'],
   emits: ['hide-dialog'],
@@ -302,7 +306,10 @@ export default {
       this.demandForm = this.$store.state.sample.user.applyDetail;
       this.attachment = this.demandForm.demand_list_file;
       this.show = true;
-      this.demandForm.user_survey_specialist_id = 10;
+      if (!this.demandForm.user_survey_specialist_id) {
+        this.demandForm.user_survey_specialist_id = '';
+      }
+      // this.demandForm.user_survey_specialist_id = 10;
       this.loading = this.$store.state.sample.user.reviewLoading;
     },
     async viewUserTestApply() {
@@ -344,6 +351,9 @@ export default {
             this.demandForm.user_experience_duration =
               +this.demandForm.user_experience_duration;
             this.createTestApply(this.demandForm);
+            this.demandForm.estimated_finish_time = timestamp(
+              this.demandForm.estimated_finish_time
+            );
           } else {
             this.reviewTestApply({
               review_result: this.demandForm.review_result,

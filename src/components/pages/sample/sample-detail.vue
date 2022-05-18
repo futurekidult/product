@@ -1,36 +1,39 @@
 <template>
-  <div class="border">
-    <el-descriptions
-      :title="sampleBase.product_name"
-      :column="4"
-    >
-      <el-descriptions-item>
-        <template #label>
-          关联产品
-        </template>
-        <el-button type="text">
-          查看
-        </el-button>
-      </el-descriptions-item>
-      <el-descriptions-item label="采购负责人">
-        {{ sampleBase.purchase_principal }}
-      </el-descriptions-item>
-      <el-descriptions-item label="采购员">
-        {{ sampleBase.purchase_specialist }}
-      </el-descriptions-item>
-      <el-descriptions-item>
-        <template #label>
-          供应商
-        </template>
-        <el-button type="text">
-          查看
-        </el-button>
-      </el-descriptions-item>
-    </el-descriptions>
-  </div>
+  <div v-loading="$store.state.sample.detailLoading">
+    <div class="border">
+      <el-descriptions
+        :title="sampleBase.product_name"
+        :column="4"
+        style="width: 80%"
+      >
+        <el-descriptions-item>
+          <template #label>
+            关联产品:
+          </template>
+          <el-button type="text">
+            查看
+          </el-button>
+        </el-descriptions-item>
+        <el-descriptions-item label="采购负责人:">
+          {{ sampleBase.purchase_principal }}
+        </el-descriptions-item>
+        <el-descriptions-item label="采购员:">
+          {{ sampleBase.purchase_specialist }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            供应商:
+          </template>
+          <el-button type="text">
+            查看
+          </el-button>
+        </el-descriptions-item>
+      </el-descriptions>
+    </div>
 
-  <div class="border">
-    <sample-process />
+    <div class="border">
+      <sample-process />
+    </div>
   </div>
 </template>
 
