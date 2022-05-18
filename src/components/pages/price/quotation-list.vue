@@ -129,7 +129,7 @@
                 <el-button
                   type="primary"
                   @click="
-                    submitQuotation(scope.row.id, scope.row.quote_amount_rmb)
+                    showQuotation(scope.row.id, scope.row.quote_amount_rmb)
                   "
                 >
                   提交报价
@@ -358,11 +358,17 @@
     <div class="form-desc">
       存在低于该报价的平台对应采购目标，确认提交该报价吗
     </div>
-    <div style="text-align: center">
-      <el-button class="close-btn">
+    <div style="text-align: center; margin: 40px 0 0 0">
+      <el-button
+        class="close-btn"
+        @click="closeLowForm"
+      >
         取消
       </el-button>
-      <el-button type="primary">
+      <el-button
+        type="primary"
+        @click="submitQuotation"
+      >
         确定
       </el-button>
     </div>
@@ -374,11 +380,15 @@
     width="20%"
   >
     <div class="form-desc">
-      存在低于该报价的平台对应采购目标，确认提交该报价吗
+      该报价高于所有平台对应采购目标价，请申请调价后再提交
     </div>
-    <div style="text-align: center">
-      <el-button>取消</el-button>
-      <el-button>确定</el-button>
+    <div style="text-align: center; margin: 40px 0 0 0">
+      <el-button
+        type="primary"
+        @click="closeHighForm"
+      >
+        好的
+      </el-button>
     </div>
   </el-dialog>
 </template>
@@ -419,13 +429,13 @@ export default {
       referenceList: [],
       targetList: [],
       lowVisible: false,
-      highVisible: false
+      highVisible: false,
+      submitId: 0
     };
   },
   mounted() {
     this.getQuotationList();
     this.getReferencePrice();
-    this.getTargetPrice();
   },
   methods: {
     async getQuotationList(currentPage = 1, pageSize = 10) {
@@ -437,6 +447,7 @@ export default {
       await this.$store.dispatch('price/getQuotationList', { params });
       this.quotationList = this.$store.state.price.quotationList;
       this.priceId = this.quotationList.pricing_id;
+      this.market = this.quotationList.market;
     },
     async getReferencePrice() {
       let params = {
@@ -446,13 +457,32 @@ export default {
       await this.$store.dispatch('price/getReferencePrice', { params });
       this.referenceList = this.$store.state.price.referencePrice;
     },
-    async getTargetPrice() {
+    async getTargetPrice(id, val) {
+      let price = val;
       await this.$store.dispatch('price/getTargetPrice', {
         params: {
-          quote_id: this.quotationId
+          quote_id: id
         }
       });
       this.targetList = this.$store.state.price.targetPrice;
+      let low = this.referenceList.some((item) => {
+        return +item.reference_price > +price;
+      });
+      if (low) {
+        this.lowVisible = true;
+      }
+      let high = this.targetList.every((item) => {
+        return +item.target_price < +price;
+      });
+      if (high) {
+        this.highVisible = true;
+      }
+      let equal = this.targetList.every((item) => {
+        return +item.target_price === +price;
+      });
+      if (equal) {
+        this.submitQuotation();
+      }
     },
     changeCellColor(val) {
       if (val === 20 || val === 30) {
@@ -572,18 +602,22 @@ export default {
     closeViewQuotationForm() {
       this.viewQuotationFormVisible = false;
     },
-    submitQuotation(id, price) {
-      console.log(id, price);
-      // this.referenceList.filter((item) => {
-      //   if (item.reference_price < price) {
-      //     this.lowVisible = true;
-      //   }
-      // });
-      // this.targetList.every((item) => {
-      //   if (item.target_price > price) {
-      //     this.highVisible = true;
-      //   }
-      // });
+    showQuotation(id, price) {
+      this.submitId = id;
+      this.getTargetPrice(id, price);
+    },
+    async submitQuotation() {
+      await this.$store.dispatch('price/submitQuotation', {
+        id: this.submitId
+      });
+      this.lowVisible = false;
+      this.getQuotationList();
+    },
+    closeLowForm() {
+      this.lowVisible = false;
+    },
+    closeHighForm() {
+      this.highVisible = false;
     }
   }
 };

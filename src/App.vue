@@ -26,6 +26,11 @@ body {
   float: right;
 }
 
+.el-input-group__append,
+.el-input-group__prepend {
+  padding: 0 10px !important;
+}
+
 .progress-table {
   margin: 0 0 20px 0;
 }
@@ -137,7 +142,8 @@ body {
 .proofing-item,
 .test-item,
 .member-item,
-.open-mould_item {
+.open-mould_item,
+.quotation-item {
   display: flex;
   justify-content: space-between;
 }
@@ -222,5 +228,9 @@ body {
 
 .reset-btn {
   width: 100px;
+}
+
+.form-desc {
+  font-size: 10px;
 }
 </style>

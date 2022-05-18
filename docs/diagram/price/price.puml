@@ -14,6 +14,8 @@ title 报价列表
 
 +_ QuotationList
 ++_ BasePagination
-+++_ PriceForm
+++_PurchaseForm
+++ViewForm
+++_ PriceForm
 
 @endmindmap

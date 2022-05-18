@@ -17,5 +17,6 @@ export default {
 .tag {
   position: absolute;
   left: 275px;
+  border-radius: 10px;
 }
 </style>

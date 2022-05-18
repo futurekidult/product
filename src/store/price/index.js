@@ -168,6 +168,15 @@ export default {
           ElMessage.error(res.message);
         }
       });
+    },
+    async submitQuotation(_, payload) {
+      await axios.post('/pricing/quote/submit', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
     }
   }
 };

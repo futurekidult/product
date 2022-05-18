@@ -18,10 +18,13 @@
         <el-select
           v-model="quotationForm.supplier_id"
           placeholder="请选择供应商"
+          filterable
+          remote
+          :remote-method="remoteMethod"
           @change="getAddReason"
         >
           <el-option
-            v-for="(item, index) in supplierList"
+            v-for="(item, index) in options"
             :key="index"
             :label="item.name"
             :value="item.id"
@@ -271,7 +274,7 @@
           <div>{{ attachment.name }}</div>
           <el-button
             type="text"
-            @click="deleteFile(attchment.id)"
+            @click="deleteFile(attachment.id)"
           >
             删除
           </el-button>
@@ -299,7 +302,7 @@
 import { timestamp } from '../../../../utils/index.js';
 
 export default {
-  props: ['dialogVisible', 'title', 'id'],
+  props: ['dialogVisible', 'title', 'id', 'getList'],
   emits: ['hide-dialog'],
   data() {
     return {
@@ -421,18 +424,11 @@ export default {
           }
         ]
       },
-      supplierList: [
-        {
-          id: 1,
-          name: 'xxx有限公司1'
-        },
-        {
-          id: 2,
-          name: 'xxx有限公司2'
-        }
-      ],
+      supplierList: [],
+      options: [],
       hasAdd: 0,
-      isHigh: 0
+      isHigh: 0,
+      attachment: {}
     };
   },
   methods: {
@@ -490,6 +486,23 @@ export default {
       this.attachment = {};
       this.quotationForm.quotation_file = null;
       this.show = false;
+    },
+    async getSupplier() {
+      let params = {
+        current_page: 1,
+        page_size: 10,
+        state: 30
+      };
+      await this.$store.dispatch('supplier/getSupplierList', { params });
+      this.supplierList = this.$store.state.supplier.supplierList;
+    },
+    remoteMethod(query) {
+      if (query) {
+        this.getSupplier();
+        this.options = this.supplierList.filter((item) => {
+          return item.name.indexOf(query) > -1;
+        });
+      }
     }
   }
 };

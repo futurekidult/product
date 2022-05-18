@@ -6,6 +6,8 @@ import SampleList from './sample';
 import axios from '../utils/axios.js';
 import { ElMessage } from 'element-plus';
 import MouldList from './mould';
+import PriceList from './price';
+import SupplierList from './supplier';
 
 let dataCache = new Map();
 const store = createStore({
@@ -14,7 +16,9 @@ const store = createStore({
     demand: DemandList,
     product: ProductList,
     sample: SampleList,
-    mould: MouldList
+    mould: MouldList,
+    price: PriceList,
+    supplier: SupplierList
   },
   state() {
     return {
