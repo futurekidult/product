@@ -11,11 +11,6 @@ export default {
   components: {
     DemandAll
   },
-  provide() {
-    return {
-      getList: this.getTable
-    };
-  },
   data() {
     return {
       activeName: 'demand list'
@@ -24,14 +19,6 @@ export default {
   computed: {
     isParent() {
       return this.$route.name !== 'demand detail';
-    }
-  },
-  created() {
-    this.getTable();
-  },
-  methods: {
-    async getTable() {
-      await this.$store.dispatch('demand/getData');
     }
   }
 };
