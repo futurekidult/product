@@ -151,6 +151,7 @@
 
 <script>
 export default {
+  inject: ['getProofing'],
   props: ['dialogVisible', 'title', 'type', 'form'],
   emits: ['hide-dialog'],
   data() {
@@ -201,6 +202,9 @@ export default {
   mounted() {
     this.isDisabled();
     this.getForm();
+    if (this.type === 'create') {
+      this.show = false;
+    }
   },
   methods: {
     async createProofingSheet(val) {
@@ -208,14 +212,17 @@ export default {
       body['sample_id'] = +this.$route.params.id;
       await this.$store.dispatch('sample/createProofingSheet', body);
       this.visible = false;
+      this.getProofing();
     },
     async approvalProofingSheet(body) {
-      await this.$store.sdispatch('sample/approvalProofingSheet', body);
+      await this.$store.dispatch('sample/approvalProofingSheet', body);
       this.visible = false;
+      this.getProofing();
     },
     async updateProofingSheet(val) {
       let body = val;
       await this.$store.dispatch('sample/updateProofingSheet', body);
+      this.getProofing();
     },
     getForm() {
       if (this.type !== 'create') {

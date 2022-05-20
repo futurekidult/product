@@ -1,5 +1,8 @@
 <template>
-  <div class="border">
+  <div
+    v-loading="$store.state.sample.proofingLoading"
+    class="border"
+  >
     <div class="select-title">
       <span class="line">|</span> 打样信息
     </div>
@@ -32,7 +35,9 @@
         {{ progress.actual_finish_time }}
       </el-descriptions-item>
       <el-descriptions-item label="状态">
-        <span :class="colorState">{{ progress.state_desc }}</span>
+        <div :class="changeColor(progress.state)">
+          {{ progress.state_desc }}
+        </div>
       </el-descriptions-item>
       <el-descriptions-item
         label="操作"
@@ -106,42 +111,22 @@ export default {
   components: {
     SampleForm
   },
+  props: ['progress'],
   data() {
     return {
       proofingVisible: false,
       proofingApprovalVisible: false,
       proofingEditVisible: false,
       proofingViewVisible: false,
-      progress: {},
       viewForm: {},
       approvalForm: {},
       editForm: {}
     };
   },
-  computed: {
-    colorState() {
-      if (this.progress.state === 20) {
-        return 'result-ing';
-      } else if (this.progress.state === 30) {
-        return 'result-fail';
-      } else {
-        return 'result-pass';
-      }
-    }
-  },
   mounted() {
-    this.getProofingProgress();
     this.getProofingSheet();
   },
   methods: {
-    async getProofingProgress() {
-      await this.$store.dispatch('sample/getProofingProgress', {
-        params: {
-          sample_id: +this.$route.params.id
-        }
-      });
-      this.progress = this.$store.state.sample.proofingProgress;
-    },
     async getProofingSheet() {
       await this.$store.dispatch('sample/getProofingSheet', {
         params: {
@@ -175,6 +160,15 @@ export default {
     },
     closeProofingView() {
       this.proofingViewVisible = false;
+    },
+    changeColor(val) {
+      if (val <= 20) {
+        return 'result-ing';
+      } else if (val === 40) {
+        return 'result-pass';
+      } else {
+        return 'result-fail';
+      }
     }
   }
 };

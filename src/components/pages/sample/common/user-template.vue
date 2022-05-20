@@ -17,14 +17,17 @@
     <el-table-column
       label="创建时间"
       prop="create_time"
+      width="200px"
     />
     <el-table-column
       label="寄样完成时间"
       prop="delivery_time"
+      width="200px"
     />
     <el-table-column
       label="结果上传时间"
       prop="upload_time"
+      width="200px"
     />
     <el-table-column
       label="用户姓名"
@@ -34,10 +37,13 @@
       label="是否已寄样"
       prop="is_delivered_desc"
     />
-    <el-table-column
-      label="测试状态"
-      prop="state_desc"
-    />
+    <el-table-column label="测试状态">
+      <template #default="scope">
+        <div :class="changeCellColor(scope.row.state)">
+          {{ scope.row.state_desc }}
+        </div>
+      </template>
+    </el-table-column>
     <el-table-column
       label="测试结果文件"
       prop="test_result_file"
@@ -52,19 +58,17 @@
     </el-table-column>
     <el-table-column
       label="操作"
-      width="400px"
+      width="350px"
     >
       <template #default="scope">
         <el-button
-          :disabled="scope.row.is_delivered_desc === '是' "
+          :disabled="scope.row.is_delivered_desc === '是'"
           @click="deliverSample(scope.row.user_test_apply_id)"
         >
           样品已寄送
         </el-button>
         <el-button
-          :disabled="
-            JSON.stringify(scope.row.test_result_file) !== '{}' 
-          "
+          :disabled="JSON.stringify(scope.row.test_result_file) !== '{}'"
           @click="showResultForm(scope.row.user_test_apply_id)"
         >
           {{
@@ -112,6 +116,7 @@
 import UserForm from './user-form.vue';
 import SampleResult from './sample-result.vue';
 import ViewUser from './view-user.vue';
+import { formatterTime } from '../../../../utils';
 
 export default {
   components: {
@@ -142,6 +147,11 @@ export default {
         }
       });
       this.userList = this.$store.state.sample.user.userList;
+      this.userList.forEach((item) => {
+        item.create_time = formatterTime(item.create_time);
+        item.delivery_time = formatterTime(item.delivery_time);
+        item.upload_time = formatterTime(item.upload_time);
+      });
     },
     async deliverSample(val) {
       let body = {
@@ -170,6 +180,13 @@ export default {
     },
     closeViewUserForm() {
       this.viewUserVisible = false;
+    },
+    changeCellColor(val) {
+      if (val === 30) {
+        return 'result-pass';
+      } else {
+        return 'result-ing';
+      }
     }
   }
 };

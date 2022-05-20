@@ -16,14 +16,14 @@
         prop="user_template_file"
       >
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action=""
           :show-file-list="false"
           :on-success="handleFileSuccess"
           :limit="1"
         >
           <el-button
             type="primary"
-            :disabled="type !== 'create' "
+            :disabled="type !== 'create'"
           >
             点击上传
           </el-button>
@@ -77,6 +77,7 @@
 
 <script>
 export default {
+  inject: ['getUser'],
   props: ['id', 'dialogVisible', 'type', 'title'],
   emits: ['hide-dialog'],
   data() {
@@ -118,6 +119,7 @@ export default {
       };
       await this.$store.dispatch('sample/user/createTemplate', body);
       this.visible = false;
+      this.getUser();
     },
     cancel() {
       this.visible = false;
@@ -138,7 +140,6 @@ export default {
       this.show = false;
     },
     submitTemplateForm() {
-      console.log(this.templateForm);
       this.$refs.templateForm.validate((valid) => {
         if (valid) {
           this.createTemplate(this.templateForm);

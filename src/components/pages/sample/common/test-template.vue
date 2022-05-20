@@ -53,7 +53,7 @@
 
   <el-button
     style="margin: 15px 0"
-    :disabled="state === 1 "
+    :disabled="state === 1"
     @click="showAddQuestions"
   >
     + 新增测试问题
@@ -84,6 +84,7 @@
 <script>
 import QuestionForm from './question-form.vue';
 import QuestionEdit from './question-edit.vue';
+import { formatterTime } from '../../../../utils';
 
 export default {
   components: {
@@ -126,6 +127,9 @@ export default {
         });
         this.questionList = this.$store.state.sample.user.testQuestion.list;
       }
+      this.questionList.forEach((item) => {
+        item.create_time = formatterTime(item.create_time);
+      });
     },
     async recordTestProblem(id) {
       let body = {
