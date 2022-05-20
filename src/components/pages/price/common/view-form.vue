@@ -128,7 +128,7 @@
           style="margin-bottom: 18px"
         >
           <el-input
-            v-model="quotationForm.inner_weight"
+            v-model="quotationForm.inner_box_weight"
             disabled
           />
         </el-form-item>
@@ -137,7 +137,7 @@
           style="margin-bottom: 18px"
         >
           <el-input
-            v-model="quotationForm.outer_weight"
+            v-model="quotationForm.outer_box_weight"
             disabled
           />
         </el-form-item>

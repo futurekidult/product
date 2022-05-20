@@ -158,7 +158,7 @@ export default {
       });
     },
     async getPricingList(context, payload) {
-      await axios.get('/pricing/all/list', payload).then((res) => {
+      await axios.get('/pricing/product/list', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setPricingList', res.data.list);
         } else {

@@ -101,11 +101,6 @@ body {
   color: #409eff;
 }
 
-.el-form-item--default .el-form-item__label {
-  display: flex;
-  align-items: center;
-}
-
 .form-item {
   display: grid;
   grid-template-columns: 49% 49%;
@@ -171,7 +166,8 @@ body {
   margin: 15px 0;
 }
 
-.close-btn {
+.close-btn,
+.draft-btn {
   width: 100px;
 }
 

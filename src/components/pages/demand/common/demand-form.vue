@@ -71,7 +71,15 @@
           v-model="demandForm.big_category"
           placeholder="请选择大品类"
           :disabled="isDisabled"
-        />
+        >
+          <el-option
+            v-for="item in bigCategoryList"
+            :key="item.id"
+            v-loading="$store.state.demand.optionLoading"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item
         label="小品类"
@@ -81,7 +89,14 @@
           v-model="demandForm.small_category"
           placeholder="请选择小品类"
           :disabled="isDisabled"
-        />
+        >
+          <el-option
+            v-for="item in smallCategoryList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
     </div>
     <el-form-item
@@ -96,7 +111,7 @@
     </el-form-item>
     <el-scrollbar height="400px">
       <div
-        v-for="(item, index) in demandForm.competitive_product"
+        v-for="(item, index) in attachment"
         :key="index"
       >
         <el-form-item
@@ -106,6 +121,10 @@
           <el-upload
             action="https://jsonplaceholder.typicode.com/posts/"
             :show-file-list="false"
+            :on-success="
+              (file, fileList) =>
+                handleCProductImageSuccess(file, fileList, index)
+            "
             :limit="9"
           >
             <el-button
@@ -204,7 +223,10 @@
       />
     </el-form-item>
     <div class="demand-form_item">
-      <el-form-item label="产品尺寸/cm">
+      <el-form-item
+        label="产品尺寸/cm"
+        :required="isRequired"
+      >
         <div style="display: flex">
           <el-form-item prop="product_dimension_l">
             <el-input
@@ -231,7 +253,10 @@
           </el-form-item>
         </div>
       </el-form-item>
-      <el-form-item label="包装尺寸/cm">
+      <el-form-item
+        label="包装尺寸/cm"
+        :required="isRequired"
+      >
         <div style="display: flex">
           <el-form-item prop="packing_dimension_l">
             <el-input
@@ -281,6 +306,7 @@
       <el-form-item
         label="销售价格"
         style="margin-bottom: 18px"
+        :required="isRequired"
       >
         <div style="display: flex">
           <el-form-item prop="selling_price_currency">
@@ -299,9 +325,9 @@
               :disabled="isDisabled"
             />
           </el-form-item>
-          <el-form-item prop="selling_price_rmb">
+          <el-form-item prop="purchase_price_rmb">
             <el-input
-              v-model="demandForm.selling_price_rmb"
+              v-model="demandForm.purchase_price_rmb"
               disabled
             >
               <template #prepend>
@@ -314,6 +340,7 @@
       <el-form-item
         label="采购价格"
         style="margin-bottom: 18px"
+        :required="isRequired"
       >
         <div style="display: flex">
           <el-form-item prop="purchase_price_currency">
@@ -426,7 +453,11 @@ export default {
   data() {
     return {
       demandForm: {
-        competitive_product: [{}]
+        competitive_product: [
+          {
+            images: []
+          }
+        ]
       },
       commonRules: {
         big_category: [
@@ -448,7 +479,6 @@ export default {
           }
         ]
       },
-      demandRules: {},
       imagesList: [],
       department: {},
       operationDepartment: {
@@ -487,6 +517,18 @@ export default {
         purchase_price: [
           {
             required: true,
+            message: '请输入销售价'
+          }
+        ],
+        selling_price_currency: [
+          {
+            required: true,
+            message: '请选择币种'
+          }
+        ],
+        selling_price: [
+          {
+            required: true,
             message: '请输入采购价'
           }
         ],
@@ -498,49 +540,49 @@ export default {
         ],
         product_dimension_l: [
           {
-            reuqired: true,
+            required: true,
             message: '请输入长度'
           }
         ],
         product_dimension_w: [
           {
-            reuqired: true,
+            required: true,
             message: '请输入宽度'
           }
         ],
         product_dimension_h: [
           {
-            reuqired: true,
+            required: true,
             message: '请输入高度'
           }
         ],
         packing_dimension_l: [
           {
-            reuqired: true,
+            required: true,
             message: '请输入长度'
           }
         ],
         packing_dimension_w: [
           {
-            reuqired: true,
+            required: true,
             message: '请输入宽度'
           }
         ],
         packing_dimension_h: [
           {
-            reuqired: true,
+            required: true,
             message: '请输入高度'
           }
         ],
         rough_weight: [
           {
-            reuqired: true,
+            required: true,
             message: '请输入毛重'
           }
         ],
         parameter: [
           {
-            reuqired: true,
+            required: true,
             message: '请输入核心参数'
           }
         ]
@@ -577,21 +619,42 @@ export default {
           }
         ]
       },
-      isDisabled: false
+      isDisabled: false,
+      demandRules: {},
+      isRequired: false,
+      bigCategoryList: [],
+      smallCategoryList: [],
+      attachment: [
+        [
+          {
+            images: []
+          }
+        ]
+      ]
     };
   },
+  computed: {
+    getBigCategory() {
+      return this.demandForm.big_category;
+    }
+  },
+  watch: {
+    getBigCategory(val) {
+      this.bigCategoryList.map((item) => {
+        if (item.id === val) {
+          this.smallCategoryList = item.children;
+        }
+      });
+    }
+  },
   mounted() {
+    this.getCategoryList();
     if (this.type === 'detail') {
       this.getDetail();
       this.isDisabled = true;
+    } else {
+      this.getDepartment();
     }
-    // setTimeout(() => {
-    //   if (this.type === 'detail') {
-    //     console.log(this.demandMsg);
-    //   }
-    // }, 1000);
-    // this.getDepartment();
-    // console.log(this.demandRules);
   },
   methods: {
     async getDetail() {
@@ -601,17 +664,54 @@ export default {
         }
       });
       this.demandForm = this.$store.state.demand.demandDetail;
+      this.bigCategoryList.map((item) => {
+        if (item.id === this.demandForm.big_category) {
+          this.smallCategoryList = item.children;
+        }
+      });
       this.imagesList = this.demandForm.images;
+      this.attachment = this.demandForm.competitive_product;
     },
     async getDepartment() {
       await this.$store.dispatch('demand/getDepartment');
       this.department = this.$store.state.demand.department.department;
+      this.isRequired = this.department.indexOf(2) > -1;
+    },
+    async getCategoryList() {
+      await this.$store.dispatch('demand/getCategoryList');
+      this.bigCategoryList = this.$store.state.demand.categoryList;
     },
     async createDemandForm(body) {
       await this.$store.dispatch('demand/createDemandForm', body);
       if (this.$store.state.demand.isSuccess) {
         this.$router.push('/demand-list');
         this.$store.commit('demand/setDemandLoading', true);
+      }
+    },
+    getRules() {
+      let map = {
+        1: this.operationDepartment,
+        2: this.supplyChainDepartment,
+        3: this.saleDepartment
+      };
+      if (this.department.length === 1) {
+        this.demandRules = Object.assign(
+          map[this.department[0]],
+          this.commonRules
+        );
+      } else if (this.department.length === 2) {
+        this.demandRules = Object.assign(
+          map[this.department[0]],
+          map[this.department[1]],
+          this.commonRules
+        );
+      } else {
+        this.demandRules = Object.assign(
+          map[this.department[0]],
+          map[this.department[1]],
+          map[this.department[2]],
+          this.commonRules
+        );
       }
     },
     addRow() {
@@ -630,23 +730,23 @@ export default {
         this.demandForm.images.push(id);
       });
     },
-    // handleCProductImageSuccess(file, fileList) {
-    //   // this.productImagesList.push({
-    //   //   id: file.id,
-    //   //   name: fileList.name
-    //   // });
-    //   // this.productImagesList.forEach((item) => {
-    //   //   let { id } = item;
-    //   //   this.demandForm.competitive_product.images.push(id);
-    //   // });
-    // },
+    handleCProductImageSuccess(file, fileList, index) {
+      this.attachment[index].images.push({
+        id: file.id,
+        name: fileList.name
+      });
+      for (let i in this.attachment[index].images) {
+        let { id } = this.attachment[index].images[i];
+        this.demandForm.competitive_product[index].images.push(id);
+      }
+    },
     submitDemandForm(val) {
+      this.getRules();
       this.$refs.demandForm.validate((valid) => {
         if (valid) {
-          console.log(val);
-          // let form = this.demandForm;
-          // form.type = val;
-          // this.createDemandForm(form);
+          let form = this.demandForm;
+          form.type = val;
+          this.createDemandForm(form);
         }
       });
     }

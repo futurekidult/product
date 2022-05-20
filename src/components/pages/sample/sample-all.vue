@@ -1,121 +1,123 @@
 <template>
-  <div class="border">
-    <div class="select-title">
-      <span class="line">|</span> 筛选条件
-    </div>
-    <el-form
-      label-position="right"
-      label-width="80px"
-      style="display: flex"
-      :model="chooseForm"
-    >
-      <el-form-item label="产品名称">
-        <el-input
-          v-model="chooseForm.product_name"
-          placeholder="请输入内容"
-        />
-      </el-form-item>
-      <el-form-item label="产品品类">
-        <el-select
-          v-model="chooseForm.product_category"
-          placeholder="请选择"
-        />
-      </el-form-item>
-      <el-form-item label="状态">
-        <el-select
-          v-model="chooseForm.state"
-          placeholder="请选择"
-        />
-      </el-form-item>
-      <div style="float: right">
-        <el-form-item>
-          <el-button
-            type="primary"
-            @click="search"
-          >
-            查询
-          </el-button>
-          <el-button
-            class="reset-btn"
-            @click="resetForm"
-          >
-            重置
-          </el-button>
-        </el-form-item>
+  <div v-loading="$store.state.sample.listLoading">
+    <div class="border">
+      <div class="select-title">
+        <span class="line">|</span> 筛选条件
       </div>
-    </el-form>
-  </div>
-
-  <div class="border">
-    <div class="select-title">
-      <span class="line">|</span> 样品列表
-    </div>
-    <el-table
-      border
-      empty-text="无数据"
-      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      :data="sampleList"
-    >
-      <el-table-column
-        label="样品ID"
-        prop="id"
-      />
-      <el-table-column
-        label="关联产品名称"
-        prop="product_name"
-      />
-      <el-table-column
-        label="关联产品ID"
-        prop="product_id"
-      />
-      <el-table-column
-        label="关联定价ID"
-        prop="pricing_id"
-      />
-      <el-table-column
-        label="供应商名称"
-        prop="supplier"
-      />
-      <el-table-column
-        label="计划完成时间"
-        prop="estimated_finish_time"
-      />
-      <el-table-column
-        label="实际完成时间"
-        prop="actual_finish_time"
-      />
-      <el-table-column
-        label="采购员"
-        prop="purchase_specialist"
-      />
-      <el-table-column label="状态">
-        <template #default="scope">
-          <div :class="changeCellColor(scop.row.state)">
-            {{ scope.row.state_desc }}
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="测试结果"
-        prop="test_result"
+      <el-form
+        label-position="right"
+        label-width="80px"
+        style="display: flex"
+        :model="chooseForm"
       >
-        <template #default="scope">
-          <div :class="changeCellColor(scop.row.test_result)">
-            {{ scope.row.test_result }}
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作">
-        <template #default="scope">
-          <el-button
-            type="text"
-            @click="toDetail(scope.row.id)"
-          >
-            查看详情
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+        <el-form-item label="产品名称">
+          <el-input
+            v-model="chooseForm.product_name"
+            placeholder="请输入内容"
+          />
+        </el-form-item>
+        <el-form-item label="产品品类">
+          <el-select
+            v-model="chooseForm.product_category"
+            placeholder="请选择"
+          />
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-select
+            v-model="chooseForm.state"
+            placeholder="请选择"
+          />
+        </el-form-item>
+        <div style="float: right">
+          <el-form-item>
+            <el-button
+              type="primary"
+              @click="search"
+            >
+              查询
+            </el-button>
+            <el-button
+              class="reset-btn"
+              @click="resetForm"
+            >
+              重置
+            </el-button>
+          </el-form-item>
+        </div>
+      </el-form>
+    </div>
+
+    <div class="border">
+      <div class="select-title">
+        <span class="line">|</span> 样品列表
+      </div>
+      <el-table
+        border
+        empty-text="无数据"
+        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+        :data="sampleList"
+      >
+        <el-table-column
+          label="样品ID"
+          prop="id"
+        />
+        <el-table-column
+          label="关联产品名称"
+          prop="product_name"
+        />
+        <el-table-column
+          label="关联产品ID"
+          prop="product_id"
+        />
+        <el-table-column
+          label="关联定价ID"
+          prop="pricing_id"
+        />
+        <el-table-column
+          label="供应商名称"
+          prop="supplier"
+        />
+        <el-table-column
+          label="计划完成时间"
+          prop="estimated_finish_time"
+        />
+        <el-table-column
+          label="实际完成时间"
+          prop="actual_finish_time"
+        />
+        <el-table-column
+          label="采购员"
+          prop="purchase_specialist"
+        />
+        <el-table-column label="状态">
+          <template #default="scope">
+            <div :class="changeCellColor(scope.row.state)">
+              {{ scope.row.state_desc }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="测试结果"
+          prop="test_result"
+        >
+          <template #default="scope">
+            <div :class="changeCellColor(scope.row.test_result)">
+              {{ scope.row.test_result }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template #default="scope">
+            <el-button
+              type="text"
+              @click="toDetail(scope.row.id)"
+            >
+              查看详情
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 

@@ -15,7 +15,7 @@ export default {
     return {
       sampleList: [],
       sampleDetail: {},
-      basicLoading: true,
+      detailLoading: true,
       proofingProgress: {},
       proofingSheet: {},
       testLoading: true,
@@ -25,7 +25,10 @@ export default {
       sampleTestApply: {},
       reviewLoading: true,
       qualitySpecialist: {},
-      sampleBase: {}
+      sampleBase: {},
+      baseLoading: true,
+      proofingLoading: true,
+      listLoading: true
     };
   },
   mutations: {
@@ -55,6 +58,15 @@ export default {
     },
     setSampleBase(state, payload) {
       state.sampleBase = payload;
+    },
+    setBaseLoading(state, payload) {
+      state.baseLoading = payload;
+    },
+    setProofingLoading(state, payload) {
+      state.proofingLoading = payload;
+    },
+    setTestLoading(state, payload) {
+      state.testLoading = payload;
     }
   },
   actions: {
@@ -62,6 +74,7 @@ export default {
       await axios.get('/sample/all/list/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSampleList', res.data.list);
+          context.state.listLoading = false;
         } else {
           ElMessage.error(res.message);
         }
@@ -71,6 +84,7 @@ export default {
       await axios.get('/sample/base/get/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSampleBase', res.data);
+          context.state.detailLoading = false;
         } else {
           ElMessage.error(res.message);
         }
@@ -80,7 +94,7 @@ export default {
       await axios.get('/sample/detail/get/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSampleDetail', res.data);
-          context.state.basicLoading = false;
+          context.commit('setBaseLoading', false);
         } else {
           ElMessage.error(res.message);
         }
@@ -101,6 +115,7 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             context.commit('setProofingProgress', res.data);
+            context.commit('setProofingLoading', false);
           } else {
             ElMessage.error(res.message);
           }
@@ -152,7 +167,7 @@ export default {
       await axios.get('/sample/test-apply/schedule', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setTestProgresss', res.data);
-          context.state.testLoading = false;
+          context.commit('setTestLoading', false);
         } else {
           ElMessage.error(res.message);
         }

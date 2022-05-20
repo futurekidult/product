@@ -15,7 +15,8 @@ export default {
       templateFile: {},
       userList: [],
       simpleUserDetail: {},
-      testQuestion: {}
+      testQuestion: {},
+      userLoading: true
     };
   },
   mutations: {
@@ -42,6 +43,9 @@ export default {
     },
     setTestQuestions(state, payload) {
       state.testQuestion = payload;
+    },
+    setUserLoading(state, payload) {
+      state.userLoading = payload;
     }
   },
   actions: {
@@ -60,6 +64,7 @@ export default {
       await axios.get('/sample/user-test/get/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setUserTest', res.data);
+          context.commit('setUserLoading', false);
         } else {
           ElMessage.error(res.message);
         }
