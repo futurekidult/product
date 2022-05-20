@@ -229,4 +229,9 @@ body {
 .form-desc {
   font-size: 10px;
 }
+
+.overdue,
+.is-read {
+  color: #ea1d1d;
+}
 </style>
