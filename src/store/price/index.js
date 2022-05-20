@@ -59,7 +59,7 @@ export default {
           context.commit('setQuotationList', res.data);
           context.state.quotationLoading = false;
         } else {
-          ElMessage.success(res.message);
+          ElMessage.error(res.message);
         }
       });
     },
@@ -69,7 +69,7 @@ export default {
           context.commit('setReferencePrice', res.data.list);
           context.state.referenceLoading = false;
         } else {
-          ElMessage.success(res.message);
+          ElMessage.error(res.message);
         }
       });
     },
@@ -79,7 +79,7 @@ export default {
           context.commit('setTargetPrice', res.data.list);
           context.state.targetLoading = false;
         } else {
-          ElMessage.success(res.message);
+          ElMessage.error(res.message);
         }
       });
     },

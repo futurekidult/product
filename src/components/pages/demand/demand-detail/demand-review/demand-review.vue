@@ -269,6 +269,9 @@
         <el-form-item
           label="市研负责人"
           prop="market_survey_principal_id"
+          :rules="
+            isNewProductFlag ? productRules.market_survey_principal_id : []
+          "
         >
           <el-select
             v-model="reviewForm.market_survey_principal_id"
@@ -279,6 +282,9 @@
         <el-form-item
           label="用研负责人"
           prop="user_survey_principal_id"
+          :rules="
+            isNewCategoryFlag ? categoryRules.user_survey_principal_id : []
+          "
         >
           <el-select
             v-model="reviewForm.user_survey_principal_id"
@@ -289,6 +295,7 @@
         <el-form-item
           label="用测负责人"
           prop="user_test_principal_id"
+          :rules="isNewCategoryFlag ? categoryRules.user_test_principal_id : []"
         >
           <el-select
             v-model="reviewForm.user_test_principal_id"
@@ -307,6 +314,14 @@
           />
         </el-form-item>
       </div>
+      <el-form-item>
+        <el-button
+          type="primary"
+          @click="submitDemandForm"
+        >
+          提交
+        </el-button>
+      </el-form-item>
     </div>
     <div v-if="reviewForm.state === 0">
       <el-divider />
@@ -333,6 +348,7 @@
   </el-form>
 </template>
 <script>
+import { timestamp } from '../../../../../utils';
 export default {
   data() {
     return {
@@ -352,6 +368,8 @@ export default {
       isNewCategory: false,
       isNewProduct: false,
       isNewCategoryIsNewProduct: false,
+      isNewCategoryFlag: false,
+      isNewProductFlag: false,
       failRules: {
         state: [
           {
@@ -587,20 +605,21 @@ export default {
   },
   watch: {
     getCategory(val) {
-      console.log(val);
       if (val === 1) {
         this.isNewCategory = true;
-        this.passRules = Object.assign(this.passRules, this.categoryRules);
+        this.isNewCategoryFlag = true;
       } else {
         this.isNewCategory = false;
+        this.isNewCategoryFlag = false;
       }
     },
     getProduct(val) {
       if (val === 1) {
         this.isNewProduct = true;
-        this.passRules = Object.assign(this.passRules, this.productRules);
+        this.isNewProductFlag = true;
       } else {
         this.isNewProduct = false;
+        this.isNewProductFlag = false;
       }
     },
     getPosition(val) {
@@ -618,6 +637,12 @@ export default {
       await this.$store.dispatch('demand/reviewDemandForm', body);
     },
     submitDemandForm() {
+      for (let item of Object.keys(this.reviewForm)) {
+        if (item.indexOf('time') !== -1) {
+          this.reviewForm[item] = timestamp(this.reviewForm[item]);
+        }
+      }
+      console.log(this.reviewForm);
       this.$refs.reviewForm.validate((valid) => {
         if (valid) {
           this.reviewDemandForm(this.reviewForm);
@@ -630,15 +655,6 @@ export default {
     deleteRow() {
       this.reviewForm.market.pop();
     }
-    // isShow(isNewCategory, isNewProduct) {
-    //   if (isNewCategory === 1 && isNewProduct === 1) {
-    //     return true;
-    //   } else if (isNewCategory === 1 && isNewProduct === 0) {
-    //     return true;
-    //   } else if (isNewCategory === 0 && isNewProduct === 1) {
-    //     return true;
-    //   }
-    // }
   }
 };
 </script>

@@ -7,7 +7,8 @@ export default {
     return {
       isAgency: 0,
       agencyTest: {},
-      testQuestion: {}
+      testQuestion: {},
+      agencyLoading: true
     };
   },
   mutations: {
@@ -16,6 +17,9 @@ export default {
     },
     setTestQuestion(state, payload) {
       state.testQuestion = payload;
+    },
+    setAgencyLoading(state, payload) {
+      state.agencyLoading = payload;
     }
   },
   actions: {
@@ -32,6 +36,7 @@ export default {
       await axios.get('/sample/agency-test/get/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setAgencyTest', res.data);
+          context.commit('setAgencyLoading', false);
         } else {
           ElMessage.error(res.message);
         }

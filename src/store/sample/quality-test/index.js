@@ -6,7 +6,8 @@ export default {
   state() {
     return {
       qualityDetail: {},
-      testQuestion: {}
+      testQuestion: {},
+      qualityLoading: true
     };
   },
   mutations: {
@@ -15,6 +16,9 @@ export default {
     },
     setTestQuestion(state, payload) {
       state.testQuestion = payload;
+    },
+    setQualityLoading(state, payload) {
+      state.qualityLoading = payload;
     }
   },
   actions: {
@@ -22,6 +26,7 @@ export default {
       await axios.get('/sample/quality-test/get/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setQualityDetail', res.data);
+          context.commit('setQualityLoading', false);
         } else {
           ElMessage.error(res.message);
         }

@@ -8,6 +8,7 @@ export default {
       mouldList: [],
       mould: {},
       mouldLoading: true,
+      listLoading: true,
       designProgress: {},
       designLoading: true,
       protoytpeLoading: true,
@@ -55,6 +56,7 @@ export default {
       await axios.get('/mould/all/list/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setMouldList', res.data.list);
+          context.state.listLoading = false;
         } else {
           ElMessage.error(res.message);
         }
@@ -109,7 +111,7 @@ export default {
       });
     },
     async createPrototype(_, payload) {
-      await axios.post('/mould/prototype/create/', payload).then((res) => {
+      await axios.post('/mould/prototype/update/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         } else {

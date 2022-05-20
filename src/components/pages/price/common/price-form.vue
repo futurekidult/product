@@ -164,20 +164,20 @@
         <el-form-item
           label="内箱重量/kg"
           style="margin-bottom: 18px"
-          prop="inner_weight"
+          prop="inner_box_weight"
         >
           <el-input
-            v-model="quotationForm.inner_weight"
+            v-model="quotationForm.inner_box_weight"
             placeholder="请输入内箱重量"
           />
         </el-form-item>
         <el-form-item
           label="外箱重量/kg"
           style="margin-bottom: 18px"
-          prop="outer_weight"
+          prop="outer_box_weight"
         >
           <el-input
-            v-model="quotationForm.outer_weight"
+            v-model="quotationForm.outer_box_weight"
             placeholder="请输入外箱重量"
           />
         </el-form-item>
@@ -363,7 +363,7 @@ export default {
             message: '请输入高度'
           }
         ],
-        inner_weight: [
+        inner_box_weight: [
           {
             required: true,
             message: '请输入重量'
@@ -387,7 +387,7 @@ export default {
             message: '请输入高度'
           }
         ],
-        outer_weight: [
+        outer_box_weight: [
           {
             required: true,
             message: '请输入重量'

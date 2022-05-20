@@ -4,7 +4,7 @@ import DemandList from './demand';
 import ProductList from './product';
 import SampleList from './sample';
 import axios from '../utils/axios.js';
-import { ElMessage } from 'element-plus';
+// import { ElMessage } from 'element-plus';
 import MouldList from './mould';
 import PriceList from './price';
 import SupplierList from './supplier';
@@ -21,15 +21,9 @@ const store = createStore({
     supplier: SupplierList
   },
   state() {
-    return {
-      allMouldList: []
-    };
+    return {};
   },
-  mutations: {
-    setAllMouldList(state, payload) {
-      state.allMouldList = payload;
-    }
-  },
+  mutations: {},
   actions: {
     async getSystemParameter() {
       let key = 'parameter';
@@ -43,15 +37,6 @@ const store = createStore({
         });
       }
       return dataCache;
-    },
-    async getAllMouldList(context, payload) {
-      await axios.get('/mould/all/list/', payload).then((res) => {
-        if (res.code === 200) {
-          context.commit('setMouldList', res.data.list);
-        } else {
-          ElMessage.error(res.message);
-        }
-      });
     }
   }
 });
