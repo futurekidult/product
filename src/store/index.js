@@ -4,12 +4,11 @@ import DemandList from './demand';
 import ProductList from './product';
 import SampleList from './sample';
 import axios from '../utils/axios.js';
-// import { ElMessage } from 'element-plus';
 import MouldList from './mould';
 import PriceList from './price';
 import SupplierList from './supplier';
+import { ElMessage } from 'element-plus';
 
-let dataCache = new Map();
 const store = createStore({
   modules: {
     workbench: WorkBench,
@@ -21,22 +20,25 @@ const store = createStore({
     supplier: SupplierList
   },
   state() {
-    return {};
+    return {
+      systemParams: {}
+    };
   },
-  mutations: {},
+  mutations: {
+    setSystemParams(state, payload) {
+      state.systemParams = payload;
+    }
+  },
   actions: {
-    async getSystemParameter() {
-      let key = 'parameter';
-      let data = dataCache.get(key);
-      if (!data) {
-        await axios.get('/option/system-parameter/list').then((res) => {
-          if (res.code === 200) {
-            let param = res.data;
-            dataCache.set(key, param);
-          }
-        });
-      }
-      return dataCache;
+    async getSystemParameters(context) {
+      await axios.get('/option/system-parameter/list').then((res) => {
+        if (res.code === 200) {
+          context.commit('setSystemParams', res.data);
+          localStorage.setItem('params', JSON.stringify(res.data));
+        } else {
+          ElMessage.error(res.data);
+        }
+      });
     }
   }
 });

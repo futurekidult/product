@@ -18,6 +18,7 @@
         <el-input
           v-model="questionForm.name"
           placeholder="请输入问题"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -29,6 +30,7 @@
           placeholder="请输入问题描述"
           type="textarea"
           :rows="6"
+          clearable
         />
       </el-form-item>
       <el-divider />

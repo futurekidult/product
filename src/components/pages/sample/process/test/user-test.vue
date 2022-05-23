@@ -238,6 +238,7 @@
           v-model="reasonForm.reason"
           type="textarea"
           :rows="6"
+          clearable
         />
       </el-form-item>
       <el-divider />

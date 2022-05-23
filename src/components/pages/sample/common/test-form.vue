@@ -39,6 +39,7 @@
           v-model="applyForm.total"
           placeholder="请输入样品总数"
           :disabled="disabled"
+          clearable
         />
       </el-form-item>
       <el-form-item label="售卖国整数与测试报告">
@@ -46,6 +47,7 @@
           v-model="applyForm.certificate_and_report"
           placeholder="请选择"
           :disabled="disabled"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -56,6 +58,7 @@
           v-model="applyForm.is_pre_production"
           placeholder="请选择"
           :disabled="disabled"
+          clearable
         >
           <el-option
             v-for="item in hasOptions"
@@ -73,6 +76,7 @@
           v-model="applyForm.has_manual"
           placeholder="请选择"
           :disabled="disabled"
+          clearable
         >
           <el-option
             v-for="item in hasOptions"
@@ -90,6 +94,7 @@
           v-model="applyForm.expected_finish_time"
           placeholder="请选择日期"
           :disabled="disabled"
+          clearable
         />
       </el-form-item>
       <el-divider v-if="type !== 'apply'" />
@@ -102,6 +107,7 @@
           v-model="applyForm.review_result"
           :disabled="type === 'view'"
           placeholder="请选择评审结果"
+          clearable
         >
           <el-option
             v-for="item in reviewOptions"
@@ -121,6 +127,7 @@
           v-model="applyForm.quality_specialist_id"
           placeholder="请选择品质专员"
           :disabled="type === 'view'"
+          clearable
         />
       </el-form-item>
       <el-divider />

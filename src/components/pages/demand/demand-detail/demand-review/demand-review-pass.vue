@@ -69,6 +69,7 @@
             v-model="passForm.marketResearch"
             type="date"
             placeholder="选择日期"
+            clearable
           />
         </el-form-item>
         <el-form-item label="用户分析">
@@ -76,6 +77,7 @@
             v-model="passForm.userAnalysis"
             type="date"
             placeholder="选择日期"
+            clearable
           />
         </el-form-item>
         <el-form-item label="风险调研">
@@ -83,6 +85,7 @@
             v-model="passForm.riskASurvey"
             type="date"
             placeholder="选择日期"
+            clearable
           />
         </el-form-item>
       </div>
@@ -92,6 +95,7 @@
             v-model="passForm.platformSurvey"
             type="date"
             placeholder="选择日期"
+            clearable
           />
         </el-form-item>
         <el-form-item label="产品方案">
@@ -99,6 +103,7 @@
             v-model="passForm.productSchema"
             type="date"
             placeholder="选择日期"
+            clearable
           />
         </el-form-item>
         <el-form-item label="用户调研">
@@ -106,6 +111,7 @@
             v-model="passForm.userSurvey"
             type="date"
             placeholder="选择日期"
+            clearable
           />
         </el-form-item>
       </div>

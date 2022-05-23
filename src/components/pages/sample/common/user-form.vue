@@ -24,6 +24,7 @@
             <el-input
               v-model="item.username"
               placeholder="请输入用户姓名"
+              clearable
             />
           </el-form-item>
           <el-form-item
@@ -34,6 +35,7 @@
             <el-input
               v-model="item.address"
               placeholder="请输入用户地址"
+              clearable
             />
           </el-form-item>
           <el-form-item
@@ -44,6 +46,7 @@
             <el-input
               v-model="item.postcode"
               placeholder="请输入邮编"
+              clearable
             />
           </el-form-item>
           <el-form-item
@@ -54,6 +57,7 @@
             <el-input
               v-model="item.tel"
               placeholder="请输入联系方式"
+              clearable
             />
           </el-form-item>
           <el-form-item
@@ -64,6 +68,7 @@
             <el-input
               v-model="item.email"
               placeholder="请输入邮箱"
+              clearable
             />
           </el-form-item>
         </div>

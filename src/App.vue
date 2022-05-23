@@ -2,6 +2,19 @@
   <router-view />
 </template>
 
+<script>
+export default {
+  mounted() {
+    this.getSystemParamters();
+  },
+  methods: {
+    async getSystemParamters() {
+      await this.$store.dispatch('getSystemParameters');
+    }
+  }
+};
+</script>
+
 <style>
 body {
   margin: 0;
@@ -228,6 +241,7 @@ body {
 
 .form-desc {
   font-size: 10px;
+  text-align: center;
 }
 
 .overdue,

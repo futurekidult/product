@@ -13,22 +13,38 @@
           <el-input
             v-model="chooseForm.name"
             placeholder="请输入内容"
+            clearable
+            @clear="getMouldList()"
           />
         </el-form-item>
         <el-form-item label="创建人">
           <el-input
             v-model="chooseForm.author"
             placeholder="请输入内容"
+            clearable
+            @clear="getMouldList()"
           />
         </el-form-item>
         <el-form-item label="状态">
-          <el-select v-model="chooseForm.status" />
+          <el-select
+            v-model="chooseForm.status"
+            clearable
+            placeholder="请选择状态"
+            @clear="getMouldList()"
+          >
+            <el-option
+              v-for="item in mouldState"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"
+            />
+          </el-select>
         </el-form-item>
         <div style="float: right">
           <el-form-item>
             <el-button
               type="primary"
-              @click="getMouldList"
+              @click="getMouldList()"
             >
               查询
             </el-button>
@@ -129,6 +145,7 @@
             <el-input
               v-model="mouldForm.name"
               placeholder="请输入模具名称"
+              clearable
             />
           </el-form-item>
           <el-form-item
@@ -139,6 +156,7 @@
               v-model="mouldForm.estimated_finish_time"
               type="datetime"
               placeholder="请选择日期"
+              clearable
             />
           </el-form-item>
           <el-divider />
@@ -189,13 +207,18 @@ export default {
             message: '请选择日期'
           }
         ]
-      }
+      },
+      mouldState: []
     };
   },
   mounted() {
     this.getMouldList();
+    this.getState();
   },
   methods: {
+    getState() {
+      this.mouldState = JSON.parse(localStorage.getItem('params')).mould.state;
+    },
     async getMouldList(currentPage = 1, pageSize = 10) {
       let params = this.chooseForm;
       params['current_page'] = currentPage;
@@ -231,6 +254,7 @@ export default {
     },
     resetForm() {
       this.chooseForm = {};
+      this.getMouldList();
     },
     submitMouldForm() {
       this.$refs.mouldForm.validate((valid) => {

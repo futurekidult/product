@@ -18,6 +18,7 @@
         <el-input
           v-model="form.cost"
           placeholder="请输入开模费用"
+          clearable
         >
           <template #prepend>
             ￥
@@ -31,6 +32,7 @@
         <el-input
           v-model="form.mould_factory"
           placeholder="请输入开模工厂"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -41,6 +43,7 @@
           v-model="form.estimated_finish_time"
           type="datetime"
           placeholder="请选择日期"
+          clearable
         />
       </el-form-item>
       <el-form-item label="说明">
@@ -49,6 +52,7 @@
           type="textarea"
           :rows="6"
           placeholder="请输入内容"
+          clearable
         />
       </el-form-item>
       <el-divider />

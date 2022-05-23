@@ -16,6 +16,7 @@
         v-model="demandForm.name"
         placeholder="输入产品名称"
         :disabled="isDisabled"
+        clearable
       />
     </el-form-item>
     <el-form-item
@@ -71,6 +72,7 @@
           v-model="demandForm.big_category"
           placeholder="请选择大品类"
           :disabled="isDisabled"
+          clearable
         >
           <el-option
             v-for="item in bigCategoryList"
@@ -89,6 +91,7 @@
           v-model="demandForm.small_category"
           placeholder="请选择小品类"
           :disabled="isDisabled"
+          clearable
         >
           <el-option
             v-for="item in smallCategoryList"
@@ -107,6 +110,7 @@
         v-model="demandForm.brand"
         placeholder="请输入品牌"
         :disabled="isDisabled"
+        clearable
       />
     </el-form-item>
     <el-scrollbar height="400px">
@@ -172,6 +176,7 @@
             type="textarea"
             :rows="6"
             :disabled="isDisabled"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -184,6 +189,7 @@
             type="textarea"
             :rows="6"
             :disabled="isDisabled"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -197,6 +203,7 @@
             type="textarea"
             :rows="6"
             :disabled="isDisabled"
+            clearable
           />
         </el-form-item>
       </div>
@@ -220,6 +227,7 @@
         v-model="demandForm.parameter"
         placeholder="请输入核心参数"
         :disabled="isDisabled"
+        clearable
       />
     </el-form-item>
     <div class="demand-form_item">
@@ -234,6 +242,7 @@
               class="analy-form_mar"
               placeholder="长度"
               :disabled="isDisabled"
+              clearable
             />
           </el-form-item>
           <el-form-item prop="product_dimension_w">
@@ -242,6 +251,7 @@
               class="analy-form_mar"
               placeholder="宽度"
               :disabled="isDisabled"
+              clearable
             />
           </el-form-item>
           <el-form-item prop="product_dimension_h">
@@ -249,6 +259,7 @@
               v-model="demandForm.product_dimension_h"
               placeholder="高度"
               :disabled="isDisabled"
+              clearable
             />
           </el-form-item>
         </div>
@@ -264,6 +275,7 @@
               class="analy-form_mar"
               placeholder="长度"
               :disabled="isDisabled"
+              clearable
             />
           </el-form-item>
           <el-form-item prop="packing_dimension_w">
@@ -272,6 +284,7 @@
               class="analy-form_mar"
               placeholder="宽度"
               :disabled="isDisabled"
+              clearable
             />
           </el-form-item>
           <el-form-item prop="packing_dimension_h">
@@ -279,6 +292,7 @@
               v-model="demandForm.packing_dimension_h"
               placeholder="高度"
               :disabled="isDisabled"
+              clearable
             />
           </el-form-item>
         </div>
@@ -291,6 +305,7 @@
           v-model="demandForm.rough_weight"
           placeholder="请输入毛重"
           :disabled="isDisabled"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -301,6 +316,7 @@
           v-model="demandForm.shipments"
           placeholder="请输入出货量"
           :disabled="isDisabled"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -315,7 +331,16 @@
               class="analy-form_mar"
               placeholder="请选择货币"
               :disabled="isDisabled"
-            />
+              clearable
+              @focus="getParams"
+            >
+              <el-option
+                v-for="item in currency"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key"
+              />
+            </el-select>
           </el-form-item>
           <el-form-item prop="selling_price">
             <el-input
@@ -323,6 +348,7 @@
               class="analy-form_mar"
               placeholder="请输入金额"
               :disabled="isDisabled"
+              clearable
             />
           </el-form-item>
           <el-form-item prop="purchase_price_rmb">
@@ -349,7 +375,16 @@
               class="analy-form_mar"
               placeholder="请选择货币"
               :disabled="isDisabled"
-            />
+              clearable
+              @focus="getParams"
+            >
+              <el-option
+                v-for="item in currency"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key"
+              />
+            </el-select>
           </el-form-item>
           <el-form-item prop="purchase_price">
             <el-input
@@ -357,6 +392,7 @@
               class="analy-form_mar"
               placeholder="请输入金额"
               :disabled="isDisabled"
+              clearable
             />
           </el-form-item>
           <el-form-item prop="purchase_price_rmb">
@@ -382,6 +418,7 @@
         :rows="6"
         placeholder="请输入特别卖点"
         :disabled="isDisabled"
+        clearable
       />
     </el-form-item>
     <el-form-item
@@ -394,7 +431,16 @@
         :rows="6"
         placeholder="请选择需求洞察来源"
         :disabled="isDisabled"
-      />
+        clearable
+        @focus="getParams"
+      >
+        <el-option
+          v-for="item in resource"
+          :key="item.key"
+          :label="item.value"
+          :value="item.key"
+        />
+      </el-select>
     </el-form-item>
     <el-form-item
       label="痛点"
@@ -404,6 +450,7 @@
         v-model="demandForm.pain_spot"
         placeholder="请输入痛点"
         :disabled="isDisabled"
+        clearable
       />
     </el-form-item>
     <el-form-item
@@ -416,6 +463,7 @@
         :rows="6"
         placeholder="请输入需求点"
         :disabled="isDisabled"
+        clearable
       />
     </el-form-item>
     <el-form-item
@@ -428,6 +476,7 @@
         :rows="6"
         placeholder="请输入产品信息"
         :disabled="isDisabled"
+        clearable
       />
     </el-form-item>
     <el-form-item v-if="type === 'create'">
@@ -630,7 +679,9 @@ export default {
             images: []
           }
         ]
-      ]
+      ],
+      currency: [],
+      resource: []
     };
   },
   computed: {
@@ -749,6 +800,16 @@ export default {
           this.createDemandForm(form);
         }
       });
+    },
+    getParams() {
+      if (localStorage.getItem('params')) {
+        this.currency = JSON.parse(
+          localStorage.getItem('params')
+        ).demand.currency;
+        this.resource = JSON.parse(
+          localStorage.getItem('params')
+        ).demand.resource;
+      }
     }
   }
 };

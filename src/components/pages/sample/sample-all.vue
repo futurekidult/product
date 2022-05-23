@@ -14,25 +14,45 @@
           <el-input
             v-model="chooseForm.product_name"
             placeholder="请输入内容"
+            clearable
+            @clear="getSampleList()"
           />
         </el-form-item>
-        <el-form-item label="产品品类">
+        <el-form-item label="品类">
           <el-select
             v-model="chooseForm.product_category"
             placeholder="请选择"
-          />
+            clearable
+            @clear="getSampleList()"
+          >
+            <el-option
+              v-for="item in categoryList"
+              :key="item.id"
+              :value="item.id"
+              :label="item.name"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="状态">
           <el-select
             v-model="chooseForm.state"
             placeholder="请选择"
-          />
+            clearable
+            @clear="getSampleList()"
+          >
+            <el-option
+              v-for="item in sampleState"
+              :key="item.key"
+              :value="item.key"
+              :label="item.value"
+            />
+          </el-select>
         </el-form-item>
         <div style="float: right">
           <el-form-item>
             <el-button
               type="primary"
-              @click="search"
+              @click="getSampleList()"
             >
               查询
             </el-button>
@@ -126,13 +146,26 @@ export default {
   data() {
     return {
       chooseForm: {},
-      sampleList: []
+      sampleList: [],
+      categoryList: [],
+      sampleState: []
     };
   },
   mounted() {
+    this.getCategoryList();
     this.getSampleList();
+    this.getSampleState();
   },
   methods: {
+    getSampleState() {
+      this.sampleState = JSON.parse(
+        localStorage.getItem('params')
+      ).sample.state;
+    },
+    async getCategoryList() {
+      await this.$store.dispatch('demand/getCategoryList');
+      this.categoryList = this.$store.state.demand.categoryList;
+    },
     async getSampleList(currentPage = 1, pageSize = 10) {
       let params = this.chooseForm;
       params['current_page'] = currentPage;
@@ -140,11 +173,9 @@ export default {
       await this.$store.dispatch('sample/getSampleList', { params });
       this.sampleList = this.$store.state.sample.sampleList;
     },
-    search() {
-      this.getSampleList();
-    },
     resetForm() {
       this.chooseForm = {};
+      this.getSampleList();
     },
     toDetail(id) {
       this.$router.push(`/sample-list/${id}`);

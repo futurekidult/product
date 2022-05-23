@@ -14,6 +14,7 @@
           v-model="agencyForm.isAgency"
           placeholder="请选择"
           :disabled="agencyValue !== -1"
+          clearable
         >
           <el-option
             v-for="item in isAgencyOptions"
@@ -160,6 +161,7 @@
                 v-model="reasonForm.reason"
                 type="textarea"
                 :rows="6"
+                clearable
               />
             </el-form-item>
             <el-divider />

@@ -180,6 +180,7 @@
         <el-select
           v-model="editForm.quality_specialist_id"
           placeholder="请选择品质专员"
+           clearable
         />
       </el-form-item>
       <el-divider />
