@@ -1,7 +1,7 @@
 <template>
   <base-breadcrumb />
   <router-view />
-  <supply-all v-if="hide" />
+  <supply-all v-if="isParent" />
 </template>
 
 <script>
@@ -12,7 +12,7 @@ export default {
     SupplyAll
   },
   computed: {
-    hide() {
+    isParent() {
       return this.$route.name !== 'supplier detail';
     }
   }

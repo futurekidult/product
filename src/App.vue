@@ -116,8 +116,7 @@ body {
 
 .form-item {
   display: grid;
-  grid-template-columns: 49% 49%;
-  gap: 5px;
+  grid-template-columns: 50% 50%;
 }
 
 .el-select {
@@ -126,7 +125,7 @@ body {
 
 .form-template {
   display: grid;
-  grid-template-columns: 40% 20% 40%;
+  grid-template-columns: 33% 33% 33%;
   width: 100%;
 }
 

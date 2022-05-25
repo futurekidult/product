@@ -118,10 +118,7 @@
                 </el-button>
                 <el-button
                   @click="
-                    showApplyForm(
-                      quotationList.pricing_id,
-                      scope.row.quote_amount_rmb
-                    )
+                    showApplyForm(scope.row.id, scope.row.quote_amount_rmb)
                   "
                 >
                   申请调价
@@ -270,6 +267,7 @@
         <el-select
           v-model="editSpecialistForm.purchase_specialist_id"
           placeholder="请选择采购员"
+          clearable
         />
       </el-form-item>
       <el-divider />
@@ -318,7 +316,15 @@
         <el-select
           v-model="applyAdjustmentForm.platform"
           placeholder="请选择平台"
-        />
+          clearable
+        >
+          <el-option
+            v-for="item in targetList"
+            :key="item.platform"
+            :label="item.platform_desc"
+            :value="item.platform"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item
         label="申请调价原因"
@@ -330,6 +336,7 @@
           placeholder="请输入内容"
           type="textarea"
           :rows="6"
+          clearable
         />
       </el-form-item>
       <el-divider />
@@ -422,7 +429,7 @@ export default {
       editSpecialistForm: {},
       applyAdjustmentFormVisible: false,
       applyAdjustmentForm: {},
-      applyId: 0,
+      quoteId: 0,
       priceId: 0,
       viewQuotationFormVisible: false,
       viewId: 0,
@@ -436,6 +443,7 @@ export default {
   mounted() {
     this.getQuotationList();
     this.getReferencePrice();
+    this.getTargetPrice();
   },
   methods: {
     async getQuotationList(currentPage = 1, pageSize = 10) {
@@ -575,7 +583,7 @@ export default {
     },
     showApplyForm(id, price) {
       this.applyAdjustmentFormVisible = true;
-      this.applyId = id;
+      this.quoteId = id;
       this.applyAdjustmentForm.quote_amount_rmb = price;
     },
     closeApplyForm() {
@@ -583,7 +591,7 @@ export default {
     },
     async applyAdjustment(val) {
       let body = val;
-      body['pricing_id'] = this.applyId;
+      body['quote_id'] = this.quoteId;
       await this.$store.dispatch('price/applyAdjustment', body);
       this.applyAdjustmentFormVisible = false;
       this.getQuotationList();

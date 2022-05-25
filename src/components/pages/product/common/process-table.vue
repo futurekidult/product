@@ -80,6 +80,7 @@
           v-model="setStageForm.pricing"
           type="datetime"
           placeholder="请选择计划完成时间"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -90,6 +91,7 @@
           v-model="setStageForm.patent"
           type="datetime"
           placeholder="请选择计划完成时间"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -100,6 +102,7 @@
           v-model="setStageForm.sample"
           type="datetime"
           placeholder="请选择计划完成时间"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -110,6 +113,7 @@
           v-model="setStageForm.order"
           type="datetime"
           placeholder="请选择计划完成时间"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -120,6 +124,7 @@
           v-model="setStageForm.package"
           type="datetime"
           placeholder="请选择计划完成时间"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -130,6 +135,7 @@
           v-model="setStageForm.shipment"
           type="datetime"
           placeholder="请选择计划完成时间"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -140,6 +146,7 @@
           v-model="setStageForm.selling"
           type="datetime"
           placeholder="请选择计划完成时间"
+          clearable
         />
       </el-form-item>
       <el-divider />
@@ -178,6 +185,7 @@
           v-model="stageForm.estimated_finish_time"
           type="datetime"
           placeholder="请选择计划完成时间"
+          clearable
         />
       </el-form-item>
       <el-divider />
@@ -216,6 +224,7 @@
           v-model="timeForm.actual_finish_time"
           type="datetime"
           placeholder="请选择实际完成时间"
+          clearable
         />
       </el-form-item>
       <el-divider />
@@ -239,6 +248,7 @@
 
 <script>
 export default {
+  inject: ['getProcessTable'],
   props: ['getSchedule', 'changeColor'],
   data() {
     return {
@@ -338,6 +348,8 @@ export default {
         estimated_finish_time: val
       };
       await this.$store.dispatch('product/project/updateEstimatedTime', body);
+      this.editStageVisible = false;
+      this.getProcessTable();
     },
     async updateActualTime(val) {
       let body = {
@@ -345,17 +357,20 @@ export default {
         actual_finish_time: val
       };
       await this.$store.dispatch('product/project/updateActualTime', body);
+      this.actualTimeVisible = false;
+      this.getProcessTable();
     },
     async setStageTime(val) {
       let body = val;
       body['product_id'] = this.$route.params.productId;
       await this.$store.dispatch('product/project/setStageTime', body);
+      this.setStageVisible = false;
+      this.getProcessTable();
     },
     submitStageForm() {
       this.$refs.stageForm.validate((valid) => {
         if (valid) {
           this.updateEstimatedTime(this.stageForm.estimated_finish_time);
-          this.editStageVisible = false;
         }
       });
     },
@@ -363,7 +378,6 @@ export default {
       this.$refs.setStageForm.validate((valid) => {
         if (valid) {
           this.setStageTime(this.setStageForm);
-          this.setStageVisible = false;
         }
       });
     },
@@ -371,7 +385,6 @@ export default {
       this.$refs.timeForm.validate((valid) => {
         if (valid) {
           this.updateActualTime(this.timeForm.actual_finish_time);
-          this.actualTimeVisible = false;
         }
       });
     },

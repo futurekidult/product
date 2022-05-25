@@ -1,5 +1,8 @@
 <template>
-  <div class="border">
+  <div
+    v-loading="$store.state.product.order.orderLoading"
+    class="border"
+  >
     <div class="select-title">
       <span class="line">|</span> 下单信息
     </div>
@@ -53,31 +56,19 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <base-pagination
+      :length="orderList.length"
+      :get-list="getOrder"
+    />
   </div>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      orderList: []
-    };
-  },
-  computed: {},
-  mounted() {
-    this.getOrder();
-  },
+  inject: ['getOrder'],
+  props: ['orderList'],
   methods: {
-    async getOrder(currentPage = 1, pageSize = 10) {
-      await this.$store.dispatch('product/order/getOrderList', {
-        params: {
-          product_id: +this.$route.params.productId,
-          current_page: currentPage,
-          page_size: pageSize
-        }
-      });
-      this.orderList = this.$store.state.product.order.orderList;
-    },
     async getSkuForm() {
       await this.$store.dispatch('product/order/getSkuForm');
     },

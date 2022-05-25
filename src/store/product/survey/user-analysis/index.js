@@ -5,24 +5,24 @@ export default {
   namespaced: true,
   state() {
     return {
-      progress: {},
-      analysisForm: {}
+      userAnalysis: {},
+      analysisLoading: true
     };
   },
   mutations: {
-    setProgressData(state, payload) {
-      state.progress = payload;
+    setUserAnalysis(state, payload) {
+      state.userAnalysis = payload;
     },
-    setFormData(state, payload) {
-      state.analysisForm = payload;
+    setAnalysisLoading(state, payload) {
+      state.analysisLoading = payload;
     }
   },
   actions: {
-    async getAnalysisData(context, payload) {
+    async getAnalysis(context, payload) {
       await axios.get('/survey/user-analysis/detail', payload).then((res) => {
         if (res.code === 200) {
-          context.commit('setProgressData', res.data.progress);
-          context.commit('setFormData', res.data.report);
+          context.commit('setUserAnalysis', res.data);
+          context.commit('setAnalysisLoading', false);
         } else {
           ElMessage.error(res.message);
         }

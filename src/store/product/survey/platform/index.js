@@ -5,24 +5,24 @@ export default {
   namespaced: true,
   state() {
     return {
-      progress: {},
-      platformForm: {}
+      platform: {},
+      platformLoading: true
     };
   },
   mutations: {
-    setProcessData(state, payload) {
-      state.progress = payload;
+    setPlatform(state, payload) {
+      state.platform = payload;
     },
-    setFormData(state, payload) {
-      state.platformForm = payload;
+    setPlatformLoading(state, payload) {
+      state.platformLoading = payload;
     }
   },
   actions: {
-    async getPlatformData(context, payload) {
+    async getPlatform(context, payload) {
       await axios.get('/survey/platform/detail', payload).then((res) => {
         if (res.code === 200) {
-          context.commit('setFormData', res.data.report);
-          context.commit('setProcessData', res.data.progress);
+          context.commit('setPlatform', res.data);
+          context.commit('setPlatformLoading', false);
         } else {
           ElMessage.error(res.message);
         }

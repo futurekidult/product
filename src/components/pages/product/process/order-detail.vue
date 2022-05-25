@@ -33,7 +33,7 @@
       </el-descriptions-item>
     </el-descriptions>
 
-    <el-tabs
+    <!-- <el-tabs
       v-model="activeName"
       type="card"
       class="order-tabs"
@@ -56,20 +56,20 @@
       >
         <production-sample />
       </el-tab-pane>
-    </el-tabs>
+    </el-tabs> -->
   </div>
 </template>
 
 <script>
-import SkuName from './order/sku-name.vue';
-import ContractList from './order/contract-list.vue';
-import ProductionSample from './order/pre-production-sample.vue';
+// import SkuName from './order/sku-name.vue';
+// import ContractList from './order/contract-list.vue';
+// import ProductionSample from './order/pre-production-sample.vue';
 
 export default {
   components: {
-    SkuName,
-    ContractList,
-    ProductionSample
+    // SkuName,
+    // ContractList,
+    // ProductionSample
   },
   props: ['orderId'],
   data() {
@@ -81,7 +81,7 @@ export default {
     };
   },
   mounted() {
-    this.getProgress();
+    // this.getProgress();
   },
   methods: {
     async getProgress() {

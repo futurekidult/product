@@ -13,23 +13,52 @@
           <el-input
             v-model="chooseForm.product_name"
             placeholder="请输入内容"
+            clearable
+            @clear="getPriceList()"
           />
         </el-form-item>
-        <el-form-item label="产品品类">
-          <el-select v-model="chooseForm.category" />
+        <el-form-item label="品类">
+          <el-select
+            v-model="chooseForm.category"
+            placeholder="请选择品类"
+            clearable
+            @clear="getPriceList()"
+          >
+            <el-option
+              v-for="item in categoryList"
+              :key="item.id"
+              :value="item.id"
+              :label="item.name"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="状态">
-          <el-select v-model="chooseForm.state" />
+          <el-select
+            v-model="chooseForm.state"
+            placeholder="请选择状态"
+            clearable
+            @clear="getPriceList()"
+          >
+            <el-option
+              v-for="item in pricingEnum"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"
+            />
+          </el-select>
         </el-form-item>
         <div style="float: right">
           <el-form-item>
             <el-button
               type="primary"
-              @click="getPriceList"
+              @click="getPriceList()"
             >
               查询
             </el-button>
-            <el-button class="resetForm">
+            <el-button
+              class="close-btn"
+              @click="resetForm"
+            >
               重置
             </el-button>
           </el-form-item>
@@ -122,13 +151,26 @@ export default {
         category: '',
         state: ''
       },
-      priceList: []
+      priceList: [],
+      pricingEnum: [],
+      categoryList: []
     };
   },
   mounted() {
+    this.getCategoryList();
     this.getPriceList();
+    this.getPricingEnum();
   },
   methods: {
+    getPricingEnum() {
+      this.pricingEnum = JSON.parse(
+        localStorage.getItem('params')
+      ).pricing.state;
+    },
+    async getCategoryList() {
+      await this.$store.dispatch('demand/getCategoryList');
+      this.categoryList = this.$store.state.demand.categoryList;
+    },
     async getPriceList(currentPage = 1, pageSize = 10) {
       let params = this.chooseForm;
       params['current_page'] = currentPage;
@@ -138,6 +180,7 @@ export default {
     },
     resetForm() {
       this.chooseForm = {};
+      this.getPriceList();
     },
     changeCellColor(val) {
       if (val === 40) {

@@ -77,6 +77,7 @@
           v-model="followupForm.estimated_arrival_time"
           type="datetime"
           placeholder="请选择日期"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -86,6 +87,7 @@
         <el-input
           v-model="followupForm.pre_production_sample_quantity"
           placeholder="请输入大货样套数"
+          clearable
         />
       </el-form-item>
       <el-form-item>
@@ -129,6 +131,7 @@
         <el-input
           v-model="courierNumberForm.courier_number"
           placeholder="请输入快递单号"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -139,6 +142,7 @@
           v-model="courierNumberForm.actual_finish_time"
           type="datetime"
           placeholder="选择日期时间"
+          clearable
         />
       </el-form-item>
       <el-divider />

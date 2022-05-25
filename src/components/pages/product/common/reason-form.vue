@@ -19,6 +19,8 @@
           v-model="reasonForm.content"
           type="textarea"
           :rows="6"
+          clearable
+          placeholder="请输入内容"
         />
       </el-form-item>
       <div
@@ -44,6 +46,7 @@
 
 <script>
 export default {
+  inject: ['getQuestion'],
   props: ['dialogVisible', 'title', 'type', 'id', 'submitForm'],
   emits: ['hide-dialog'],
   data() {
@@ -75,6 +78,7 @@ export default {
         if (valid) {
           this.submitForm(this.id, 0, this.reasonForm.content);
           this.visible = false;
+          this.getQuestion();
         }
       });
     }

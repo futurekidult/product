@@ -21,15 +21,28 @@ const store = createStore({
   },
   state() {
     return {
-      systemParams: {}
+      systemParams: {},
+      priceRmb: ''
     };
   },
   mutations: {
     setSystemParams(state, payload) {
       state.systemParams = payload;
+    },
+    setPriceRmb(state, payload) {
+      state.priceRmb = payload;
     }
   },
   actions: {
+    async getPriceRmb(context, payload) {
+      await axios.get('/rmb-of-price/get', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setPriceRmb', res.data.price_rmb);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
     async getSystemParameters(context) {
       await axios.get('/option/system-parameter/list').then((res) => {
         if (res.code === 200) {

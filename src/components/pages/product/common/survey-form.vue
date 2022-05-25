@@ -20,6 +20,7 @@
           v-model="userSurveyForm.product_link"
           placeholder="请输入产品链接"
           :disabled="isDisabled"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -31,6 +32,7 @@
           type="textarea"
           placeholder="请输入具体需求"
           :disabled="isDisabled"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -42,6 +44,7 @@
           type="textarea"
           placeholder="请输入期望结果"
           :disabled="isDisabled"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -53,6 +56,7 @@
           type="datetime"
           placeholder="请选择时间"
           :disabled="isDisabled"
+          clearable
         />
       </el-form-item>
       <el-divider />
@@ -64,6 +68,7 @@
         <el-select
           v-model="userSurveyForm.result"
           placeholder="请选择评审结果"
+          clearable
         />
       </el-form-item>
       <div

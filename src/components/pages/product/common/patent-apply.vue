@@ -35,6 +35,7 @@
           v-model="patentForm.product_name_cn"
           placeholder="请输入产品中文名"
           disabled
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -45,6 +46,7 @@
           v-model="patentForm.product_name_en"
           placeholder="请输入产品英文名"
           :disabled="isDisabled"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -70,6 +72,7 @@
           v-model="patentForm.sale_link"
           type="textarea"
           :disabled="isDisabled"
+          clearable
         />
       </el-form-item>
       <competitive-table :competitive-product="competitiveProduct" />
@@ -83,7 +86,17 @@
         <el-select
           v-model="patentForm.review_result"
           placeholder="请选择评审结果"
-        />
+          clearable
+          :disabled="type === 'view'"
+        >
+          <el-option
+            v-for="item in reviewOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+            :disabled="item.disabled"
+          />
+        </el-select>
       </el-form-item>
       <div
         v-if="type !== 'view'"
@@ -122,6 +135,7 @@ export default {
     'competitiveProduct'
   ],
   emits: ['hide-dialog'],
+  injetc: ['getPatent'],
   data() {
     return {
       countries: [],
@@ -129,7 +143,7 @@ export default {
       visible: this.dialogVisible,
       patentForm: this.form,
       patentRules: {
-        patepatentTt_types: [
+        patent_types: [
           {
             required: true,
             message: '请选择专利类型'
@@ -167,7 +181,22 @@ export default {
             message: '请选择评审结果'
           }
         ]
-      }
+      },
+      reviewOptions: [
+        {
+          label: '请选择',
+          value: -1,
+          disabled: true
+        },
+        {
+          label: '是',
+          value: 1
+        },
+        {
+          label: '否',
+          value: 0
+        }
+      ]
     };
   },
   computed: {
@@ -187,19 +216,18 @@ export default {
     }
   },
   mounted() {
-    this.getEnum();
+    this.getParams();
   },
   methods: {
-    async getEnum() {
-      await this.$store.dispatch('product/patent/getEnum');
-      this.countries = this.$store.state.product.patent.enum.countries;
-      this.patentType = this.$store.state.product.patent.enum.type;
-    },
-    async getPatent() {
-      let params = {
-        product_id: this.$route.params.productId
-      };
-      await this.$store.dispatch('product/patent/getPatent', { params });
+    getParams() {
+      if (localStorage.getItem('params')) {
+        this.countries = JSON.parse(
+          localStorage.getItem('params')
+        ).patent.countries;
+        this.patentType = JSON.parse(
+          localStorage.getItem('params')
+        ).patent.type;
+      }
     },
     cancel() {
       this.visible = false;
@@ -209,6 +237,8 @@ export default {
       let body = params;
       body['product_id'] = 1;
       await this.$store.dispatch('product/patent/patentApply', body);
+      this.visible = false;
+      this.getPatent();
     },
     async patentReview(val) {
       let body = {
@@ -216,6 +246,8 @@ export default {
         review_result: val
       };
       await this.$store.dispatch('product/patent/patentReview', body);
+      this.visible = false;
+      this.getPatent();
     },
     submitPatentApply() {
       this.$refs.patentForm.validate((valid) => {
@@ -225,8 +257,6 @@ export default {
           } else {
             this.patentReview(this.patentForm.review_result);
           }
-          this.getPatent();
-          this.visible = false;
         }
       });
     }

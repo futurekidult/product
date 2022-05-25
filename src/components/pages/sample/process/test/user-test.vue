@@ -360,7 +360,8 @@ export default {
     'buttonState',
     'applyList',
     'getProgress',
-    'changeColor'
+    'changeColor',
+    'testId'
   ],
   data() {
     return {
@@ -384,6 +385,7 @@ export default {
   methods: {
     async confirmTestResult(val) {
       let body = val;
+      body.id = this.testId;
       body['sample_id'] = +this.$route.params.id;
       body['test_apply_id'] = this.id;
       await this.$store.dispatch('sample/user/confirmTestResult', body);

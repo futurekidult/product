@@ -22,16 +22,16 @@
           {{ adjustMsg.platform }}
         </el-descriptions-item>
         <el-descriptions-item label="申请前销售价">
-          {{ adjustMsg.origin_selling_price }}
+          ￥{{ adjustMsg.origin_selling_price }}
         </el-descriptions-item>
         <el-descriptions-item label="申请调整后销售价">
-          {{ adjustMsg.applied_selling_price }}
+          ￥{{ adjustMsg.applied_selling_price }}
         </el-descriptions-item>
         <el-descriptions-item
           v-if="adjustMsg.state === 30"
           label="实际调整后销售价"
         >
-          {{ adjustMsg.adjusted_selling_price_rmb }}
+          ￥{{ adjustMsg.adjusted_selling_price_rmb }}
         </el-descriptions-item>
       </el-descriptions>
 
@@ -50,7 +50,9 @@
       </section>
       <section v-if="adjustMsg.state === 30">
         调价状态:
-        <span>{{ adjustMsg.adjust_state_desc }}</span>
+        <span :class="colorStage(adjustMsg.adjust_state)">{{
+          adjustMsg.adjust_state_desc
+        }}</span>
       </section>
       <el-divider />
     </div>
@@ -73,7 +75,15 @@
               class="analy-form_mar"
               placeholder="请选择货币"
               :disabled="adjustMsg.state === 30"
-            />
+              clearable
+            >
+              <el-option
+                v-for="item in currency"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key"
+              />
+            </el-select>
           </el-form-item>
           <el-form-item prop="adjusted_selling_price">
             <el-input
@@ -81,13 +91,18 @@
               class="analy-form_mar"
               placeholder="请输入金额"
               :disabled="adjustMsg.state === 30"
+              clearable
             />
           </el-form-item>
           <el-form-item>
             <el-input
               v-model="adjustForm.adjusted_selling_price_rmb"
               disabled
-            />
+            >
+              <template #prepend>
+                ￥
+              </template>
+            </el-input>
           </el-form-item>
         </div>
       </el-form-item>
@@ -151,10 +166,33 @@ export default {
             message: '请输入金额'
           }
         ]
-      }
+      },
+      currency: []
     };
   },
+
+  mounted() {
+    this.getPriceRmb();
+    this.getCurrency();
+  },
   methods: {
+    getCurrency() {
+      if (localStorage.getItem('params')) {
+        this.currency = JSON.parse(
+          localStorage.getItem('params')
+        ).demand.currency;
+      }
+    },
+    async getPriceRmb() {
+      let params = {
+        price: this.adjustForm.adjusted_selling_price,
+        currency: this.adjustForm.currency,
+        product_id: +this.$route.params.productId
+      };
+      await this.$store.dispatch('getPriceRmb', { params });
+      this.adjustForm.adjusted_selling_price_rmb =
+        this.$store.state.product.project.priceRmb;
+    },
     async applyPricing(val) {
       await this.$store.dispatch('product/project/applyPricing', val);
       this.visible = false;
@@ -198,7 +236,7 @@ export default {
       this.$emit('hide-dialog', this.visible);
     },
     colorStage(val) {
-      if (val === '待审批') {
+      if (val === 10) {
         return 'result-ing';
       } else {
         return 'result-pass';

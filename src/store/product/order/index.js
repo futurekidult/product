@@ -6,19 +6,16 @@ export default {
   state() {
     return {
       orderList: [],
-      length: 0,
       progress: {},
       sku: {},
       contract: {},
-      preProductSample: {}
+      preProductSample: {},
+      orderLoading: true
     };
   },
   mutations: {
     setOrderList(state, payload) {
       state.orderList = payload;
-    },
-    setLength(state, payload) {
-      state.length = payload;
     },
     setProgress(state, payload) {
       state.progress = payload;
@@ -31,6 +28,9 @@ export default {
     },
     setPreProduct(state, payload) {
       state.preProductSample = payload;
+    },
+    setOrderLoading(state, payload) {
+      state.orderLoading = payload;
     }
   },
   actions: {
@@ -38,7 +38,7 @@ export default {
       await axios.get('/order/part/list/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setOrderList', res.data.list);
-          context.commit('setLength', res.data.total);
+          context.commit('setOrderLoading', false);
         } else {
           ElMessage.error(res.message);
         }

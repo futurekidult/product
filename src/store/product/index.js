@@ -16,7 +16,6 @@ export default {
   state() {
     return {
       productList: [],
-      total: 0,
       singleProductDetail: {},
       systemParameter: {},
       productBase: {},
@@ -30,7 +29,13 @@ export default {
       productDetail: {},
       baseLoading: true,
       detailLoading: true,
-      memberLoading: true
+      memberLoading: true,
+      listLoading: true,
+      pricingLoading: true,
+      mouldLoading: true,
+      sampleLoading: true,
+      questionLoading: true,
+      packageLoading: true
     };
   },
   mutations: {
@@ -39,9 +44,6 @@ export default {
     },
     setProductBase(state, payload) {
       state.productBase = payload;
-    },
-    setLength(state, payload) {
-      state.total = payload;
     },
     setSingleProductDetail(state, payload) {
       state.singleProductDetail = payload;
@@ -69,14 +71,35 @@ export default {
     },
     setProductDetail(state, payload) {
       state.productDetail = payload;
+    },
+    setDetailLoading(state, payload) {
+      state.detailLoading = payload;
+    },
+    setMemberLoading(state, payload) {
+      state.memberLoading = payload;
+    },
+    setPricingLoading(state, payload) {
+      state.pricingLoading = payload;
+    },
+    setMouldLoading(state, payload) {
+      state.mouldLoading = payload;
+    },
+    setSampleLoading(state, payload) {
+      state.sampleLoading = payload;
+    },
+    setQuestionLoading(state, payload) {
+      state.questionLoading = payload;
+    },
+    setPackageLoading(state, payload) {
+      state.packageLoading = payload;
     }
   },
   actions: {
     async getProductList(context, payload) {
-      await axios.get('/product/list', payload).then((res) => {
+      await axios.get('/product/all/list', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setProduct', res.data.list);
-          context.commit('setLength', res.data.total);
+          context.state.listLoading = false;
         } else {
           ElMessage.error(res.message);
         }
@@ -96,7 +119,7 @@ export default {
       await axios.get('/product/detail/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setProductDetail', res.data);
-          context.state.detailLoading = false;
+          context.commit('setDetailLoading', false);
         } else {
           ElMessage.error(res.message);
         }
@@ -112,7 +135,7 @@ export default {
       });
     },
     async updateSingleProductMsg(_, payload) {
-      await axios.post('/product/update', payload).then((res) => {
+      await axios.post('/product/base/update', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.msg);
         } else {
@@ -124,7 +147,7 @@ export default {
       await axios.get('/product/member/list', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setProjectMember', res.data.list);
-          context.state.memberLoading = false;
+          context.commit('setMemberLoading', false);
         } else {
           ElMessage.error(res.message);
         }
@@ -161,6 +184,7 @@ export default {
       await axios.get('/pricing/product/list', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setPricingList', res.data.list);
+          context.commit('setPricingLoading', false);
         } else {
           ElMessage.error(res.message);
         }
@@ -170,6 +194,7 @@ export default {
       await axios.get('/product/mould/list/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setMouldList', res.data.list);
+          context.commit('setMouldLoading', false);
         } else {
           ElMessage.error(res.message);
         }
@@ -201,6 +226,7 @@ export default {
       await axios.get('/sample/part/list/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSampleList', res.data.list);
+          context.commit('setSampleLoading', false);
         } else {
           ElMessage.error(res.message);
         }
@@ -210,6 +236,7 @@ export default {
       await axios.get('/test-problem/list/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setQuestionList', res.data.list);
+          context.commit('setQuestionLoading', false);
         } else {
           ElMessage.error(res.message);
         }
@@ -237,6 +264,7 @@ export default {
       await axios.get('/package/part/list/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setPackageList', res.data.list);
+          context.commit('setPackageLoading', false);
         } else {
           ElMessage.error(res.message);
         }

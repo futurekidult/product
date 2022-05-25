@@ -95,6 +95,7 @@
         >
           <quality-test
             :id="qualityId"
+            :test-id="qualityTestId"
             :progress="qualityProgress"
             :attachment="qualityAttachment"
             :submit-state="qualitySubmitState"
@@ -108,6 +109,7 @@
         >
           <agency-test
             :id="agencyId"
+            :test-id="agencyTestId"
             :progress="agencyProgress"
             :attachment="agencyAttachment"
             :submit-state="agencySubmitState"
@@ -123,6 +125,7 @@
         >
           <user-test
             :id="userId"
+            :test-id="userTestId"
             :progress="userProgress"
             :attachment="userAttachment"
             :submit-state="userSubmitState"
@@ -180,7 +183,7 @@
         <el-select
           v-model="editForm.quality_specialist_id"
           placeholder="请选择品质专员"
-           clearable
+          clearable
         />
       </el-form-item>
       <el-divider />
@@ -243,7 +246,10 @@ export default {
       userSubmitState: 0,
       userId: 0,
       userApplyList: [],
-      userButtonState: 0
+      userButtonState: 0,
+      qualityTestId: 0,
+      agencyTestId: 0,
+      userTestId: 0
     };
   },
   mounted() {
@@ -267,6 +273,7 @@ export default {
         this.$store.state.sample.quality.qualityDetail.is_submit;
       this.qualityId =
         this.$store.state.sample.quality.qualityDetail.test_apply_id;
+      this.qualityTestId = this.$store.state.sample.quality.qualityDetail.id;
     },
     async getAgencyTest() {
       await this.$store.dispatch('sample/agency/getAgencyTest', {
@@ -286,6 +293,7 @@ export default {
       this.agencyId = this.$store.state.sample.agency.agencyTest.test_apply_id;
       this.isAgency = this.$store.state.sample.agency.agencyTest.is_agency;
       this.agencyValue = this.$store.state.sample.agency.agencyTest.is_agency;
+      this.agencyTestId = this.$store.state.sample.agency.agencyTest.id;
     },
     async getUserTest() {
       await this.$store.dispatch('sample/user/getUserTest', {
@@ -311,6 +319,7 @@ export default {
       this.userSubmitState = this.$store.state.sample.user.userTest.is_submit;
       this.userAttachment =
         this.$store.state.sample.user.userTest.test_result_file;
+      this.userTestId = this.$store.state.sample.user.userTest.id;
     },
     async getQualitySpecialist(id) {
       await this.$store.dispatch('sample/getQualitySpecialist', {

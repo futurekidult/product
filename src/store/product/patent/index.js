@@ -5,18 +5,17 @@ export default {
   namespaced: true,
   state() {
     return {
-      enum: {},
       patent: {},
       progress: {},
       contract: {},
       report: {},
-      singlePatent: {}
+      singlePatent: {},
+      patentLoading: true,
+      contractLoading: true,
+      reportLoading: true
     };
   },
   mutations: {
-    setEnum(state, payload) {
-      state.enum = payload;
-    },
     setPatent(state, payload) {
       state.patent = payload;
     },
@@ -31,22 +30,23 @@ export default {
     },
     setSinglePatent(state, payload) {
       state.singlePatent = payload;
+    },
+    setPatentLoading(state, payload) {
+      state.patentLoading = payload;
+    },
+    setContractLoading(state, payload) {
+      state.contractLoading = payload;
+    },
+    setReportLoading(state, payload) {
+      state.reportLoading = payload;
     }
   },
   actions: {
-    async getEnum(context) {
-      await axios.get('/patent/enum/get').then((res) => {
-        if (res.code === 200) {
-          context.commit('setEnum', res.data);
-        } else {
-          ElMessage.error(res.message);
-        }
-      });
-    },
     async getPatent(context, payload) {
       await axios.get('/patent/application/list', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setPatent', res.data);
+          context.commit('setPatentLoading', false);
         } else {
           ElMessage.error(res.message);
         }
@@ -65,6 +65,7 @@ export default {
       await axios.get('/patent/contract/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setContract', res.data);
+          context.commit('setContractLoading', false);
         } else {
           ElMessage.error(res.message);
         }
@@ -74,6 +75,7 @@ export default {
       await axios.get('/patent/report/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setReport', res.data);
+          context.commit('setReportLoading', false);
         } else {
           ElMessage.error(res.message);
         }

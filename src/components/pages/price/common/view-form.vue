@@ -79,21 +79,21 @@
           <div style="display: flex">
             <el-form-item>
               <el-input
-                v-model="quotationForm.inner_length"
+                v-model="quotationForm.inner_l"
                 class="analy-form_mar"
                 disabled
               />
             </el-form-item>
             <el-form-item>
               <el-input
-                v-model="quotationForm.inner_width"
+                v-model="quotationForm.inner_w"
                 class="analy-form_mar"
                 disabled
               />
             </el-form-item>
             <el-form-item>
               <el-input
-                v-model="quotationForm.inner_height"
+                v-model="quotationForm.inner_h"
                 disabled
               />
             </el-form-item>
@@ -103,21 +103,21 @@
           <div style="display: flex">
             <el-form-item>
               <el-input
-                v-model="quotationForm.outer_length"
+                v-model="quotationForm.outer_l"
                 class="analy-form_mar"
                 disabled
               />
             </el-form-item>
             <el-form-item>
               <el-input
-                v-model="quotationForm.outer_width"
+                v-model="quotationForm.outer_w"
                 class="analy-form_mar"
                 disabled
               />
             </el-form-item>
             <el-form-item>
               <el-input
-                v-model="quotationForm.outer_height"
+                v-model="quotationForm.outer_h"
                 disabled
               />
             </el-form-item>

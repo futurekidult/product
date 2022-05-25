@@ -19,7 +19,10 @@
             :label="'平台' + (index + 1)"
             required
           >
-            <el-input v-model="item.platform_desc" />
+            <el-input
+              v-model="item.platform_desc"
+              clearable
+            />
           </el-form-item>
           <el-form-item
             :label="'运营专员' + (index + 1)"
@@ -66,9 +69,9 @@ export default {
     };
   },
   computed: {
-    // getSpecialist() {
-    //   return this.$store.state.product.project.specialist;
-    // }
+    getSpecialist() {
+      return this.$store.state.product.project.specialist;
+    }
   },
   mounted() {
     this.getOperationsSpecialist();

@@ -40,6 +40,7 @@
           v-model="item.platform"
           placeholder="请选择平台"
           :disabled="isDisabled"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -51,6 +52,7 @@
           v-model="item.name"
           placeholder="请输入SKU名"
           :disabled="isDisabled"
+          clearable
         />
       </el-form-item>
     </div>
@@ -141,7 +143,7 @@
     </el-descriptions-item>
     <el-descriptions-item label="操作">
       <el-button
-        :disabled="skuEntrySchedule.state !== 10 "
+        :disabled="skuEntrySchedule.state !== 10"
         @click="completeEntry"
       >
         已完成SKU录入甲骨文

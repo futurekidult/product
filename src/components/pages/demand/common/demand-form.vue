@@ -63,13 +63,13 @@
         </el-button>
       </div>
     </el-form-item>
-    <div class="demand-form_item">
+    <div class="form-item">
       <el-form-item
         label="大品类"
-        prop="big_category"
+        prop="big_category_id"
       >
         <el-select
-          v-model="demandForm.big_category"
+          v-model="demandForm.big_category_id"
           placeholder="请选择大品类"
           :disabled="isDisabled"
           clearable
@@ -85,10 +85,10 @@
       </el-form-item>
       <el-form-item
         label="小品类"
-        prop="small_category"
+        prop="small_category_id"
       >
         <el-select
-          v-model="demandForm.small_category"
+          v-model="demandForm.small_category_id"
           placeholder="请选择小品类"
           :disabled="isDisabled"
           clearable
@@ -194,11 +194,11 @@
         </el-form-item>
         <el-form-item
           :label="'对标理由' + (index + 1)"
-          :prop="`competitive_product.${index}.reason`"
-          :rules="demandRules.reason"
+          :prop="`competitive_product.${index}.benchmarking_reason`"
+          :rules="demandRules.benchmarking_reason"
         >
           <el-input
-            v-model="item.reason"
+            v-model="item.benchmarking_reason"
             placeholder="请输入对标理由"
             type="textarea"
             :rows="6"
@@ -482,13 +482,13 @@
     <el-form-item v-if="type === 'create'">
       <el-button
         class="draft-btn"
-        @click="submitDemandForm(0)"
+        @click="submitDemandForm(10)"
       >
         保存草稿
       </el-button>
       <el-button
         type="primary"
-        @click="submitDemandForm(1)"
+        @click="submitDemandForm(20)"
       >
         提交
       </el-button>
@@ -509,13 +509,13 @@ export default {
         ]
       },
       commonRules: {
-        big_category: [
+        big_category_id: [
           {
             required: true,
             message: '请选择大品类'
           }
         ],
-        small_category: [
+        small_category_id: [
           {
             required: true,
             message: '请选择小品类'
@@ -537,7 +537,7 @@ export default {
             message: '请输入产品链接'
           }
         ],
-        reason: [
+        benchmarking_reason: [
           {
             required: true,
             message: '请输入对标理由'
@@ -796,7 +796,8 @@ export default {
       this.$refs.demandForm.validate((valid) => {
         if (valid) {
           let form = this.demandForm;
-          form.type = val;
+          form.state = val;
+          form.id = +this.$route.params.id;
           this.createDemandForm(form);
         }
       });
@@ -825,10 +826,5 @@ export default {
 .demand-form {
   width: 1280px;
   margin: auto;
-}
-
-.demand-form_item {
-  display: grid;
-  grid-template-columns: 50% 50%;
 }
 </style>

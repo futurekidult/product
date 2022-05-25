@@ -21,6 +21,7 @@
           filterable
           remote
           :remote-method="remoteMethod"
+          clearable
           @change="getAddReason"
         >
           <el-option
@@ -42,13 +43,22 @@
               v-model="quotationForm.quote_currency"
               class="analy-form_mar"
               placeholder="请选择货币"
-            />
+              clearable
+            >
+              <el-option
+                v-for="item in currency"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key"
+              />
+            </el-select>
           </el-form-item>
           <el-form-item prop="quote_amount">
             <el-input
               v-model="quotationForm.quote_amount"
               class="analy-form_mar"
               placeholder="请输入金额"
+              clearable
               @change="getHighReason"
             />
           </el-form-item>
@@ -75,6 +85,7 @@
             placeholder="请输入内容"
             type="textarea"
             :rows="6"
+            clearable
           />
         </el-form-item>
         <el-form-item>
@@ -93,6 +104,7 @@
           placeholder="请输入内容"
           type="textarea"
           :rows="6"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -100,9 +112,10 @@
         prop="quote_validity"
       >
         <el-date-picker
-          v-model="quotationForm.inner_length"
+          v-model="quotationForm.quote_validity"
           type="datetime"
           placeholder="请选择日期"
+          clearable
         />
       </el-form-item>
       <el-divider />
@@ -112,24 +125,27 @@
           required
         >
           <div style="display: flex">
-            <el-form-item prop="inner_length">
+            <el-form-item prop="inner_l">
               <el-input
-                v-model="quotationForm.inner_length"
+                v-model="quotationForm.inner_l"
                 class="analy-form_mar"
                 placeholder="长度"
+                clearable
               />
             </el-form-item>
-            <el-form-item prop="inner_width">
+            <el-form-item prop="inner_w">
               <el-input
-                v-model="quotationForm.inner_width"
+                v-model="quotationForm.inner_w"
                 class="analy-form_mar"
                 placeholder="宽度"
+                clearable
               />
             </el-form-item>
-            <el-form-item prop="inner_height">
+            <el-form-item prop="inner_h">
               <el-input
-                v-model="quotationForm.inner_height"
+                v-model="quotationForm.inner_h"
                 placeholder="高度"
+                clearable
               />
             </el-form-item>
           </div>
@@ -139,24 +155,27 @@
           required
         >
           <div style="display: flex">
-            <el-form-item prop="outer_length">
+            <el-form-item prop="outer_l">
               <el-input
-                v-model="quotationForm.outer_length"
+                v-model="quotationForm.outer_l"
                 class="analy-form_mar"
                 placeholder="长度"
+                clearable
               />
             </el-form-item>
-            <el-form-item prop="outer_width">
+            <el-form-item prop="outer_w">
               <el-input
-                v-model="quotationForm.outer_width"
+                v-model="quotationForm.outer_w"
                 class="analy-form_mar"
                 placeholder="宽度"
+                clearable
               />
             </el-form-item>
-            <el-form-item prop="outer_height">
+            <el-form-item prop="outer_h">
               <el-input
-                v-model="quotationForm.outer_height"
+                v-model="quotationForm.outer_h"
                 placeholder="高度"
+                clearable
               />
             </el-form-item>
           </div>
@@ -169,6 +188,7 @@
           <el-input
             v-model="quotationForm.inner_box_weight"
             placeholder="请输入内箱重量"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -179,6 +199,7 @@
           <el-input
             v-model="quotationForm.outer_box_weight"
             placeholder="请输入外箱重量"
+            clearable
           />
         </el-form-item>
       </div>
@@ -193,13 +214,22 @@
               v-model="quotationForm.head_currency"
               class="analy-form_mar"
               placeholder="请选择货币"
-            />
+              clearable
+            >
+              <el-option
+                v-for="item in currency"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key"
+              />
+            </el-select>
           </el-form-item>
           <el-form-item prop="head_cost">
             <el-input
               v-model="quotationForm.head_cost"
               class="analy-form_mar"
               placeholder="请输入金额"
+              clearable
             />
           </el-form-item>
           <el-form-item prop="head_cost_rmb">
@@ -226,13 +256,22 @@
               v-model="quotationForm.tail_currency"
               class="analy-form_mar"
               placeholder="请选择货币"
-            />
+              clearable
+            >
+              <el-option
+                v-for="item in currency"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key"
+              />
+            </el-select>
           </el-form-item>
           <el-form-item prop="tail_cost">
             <el-input
               v-model="quotationForm.tail_cost"
               class="analy-form_mar"
               placeholder="请输入金额"
+              clearable
             />
           </el-form-item>
           <el-form-item prop="tail_cost_rmb">
@@ -345,19 +384,19 @@ export default {
             message: '请选择日期'
           }
         ],
-        inner_length: [
+        inner_l: [
           {
             required: true,
             message: '请输入长度'
           }
         ],
-        inner_width: [
+        inner_w: [
           {
             required: true,
             message: '请输入宽度'
           }
         ],
-        inner_height: [
+        inner_h: [
           {
             required: true,
             message: '请输入高度'
@@ -369,19 +408,19 @@ export default {
             message: '请输入重量'
           }
         ],
-        outer_length: [
+        outer_l: [
           {
             required: true,
             message: '请输入长度'
           }
         ],
-        outer_width: [
+        outer_w: [
           {
             required: true,
             message: '请输入宽度'
           }
         ],
-        outer_height: [
+        outer_h: [
           {
             required: true,
             message: '请输入高度'
@@ -428,8 +467,12 @@ export default {
       options: [],
       hasAdd: 0,
       isHigh: 0,
-      attachment: {}
+      attachment: {},
+      currency: []
     };
+  },
+  mounted() {
+    this.getParams();
   },
   methods: {
     cancel() {
@@ -503,6 +546,13 @@ export default {
         this.options = this.supplierList.filter((item) => {
           return item.name.indexOf(query) > -1;
         });
+      }
+    },
+    getParams() {
+      if (localStorage.getItem('params')) {
+        this.currency = JSON.parse(
+          localStorage.getItem('params')
+        ).demand.currency;
       }
     }
   }
