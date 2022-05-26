@@ -24,7 +24,7 @@
       prop="images"
     >
       <el-upload
-        action="https://jsonplaceholder.typicode.com/posts/"
+        action=""
         :show-file-list="false"
         :on-success="handleProductImageSuccess"
         :limit="9"
@@ -123,7 +123,7 @@
           :prop="`competitive_product.${index}.images`"
         >
           <el-upload
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action=""
             :show-file-list="false"
             :on-success="
               (file, fileList) =>
@@ -332,7 +332,6 @@
               placeholder="请选择货币"
               :disabled="isDisabled"
               clearable
-              @focus="getParams"
             >
               <el-option
                 v-for="item in currency"
@@ -376,7 +375,6 @@
               placeholder="请选择货币"
               :disabled="isDisabled"
               clearable
-              @focus="getParams"
             >
               <el-option
                 v-for="item in currency"
@@ -432,7 +430,6 @@
         placeholder="请选择需求洞察来源"
         :disabled="isDisabled"
         clearable
-        @focus="getParams"
       >
         <el-option
           v-for="item in resource"
@@ -699,6 +696,7 @@ export default {
     }
   },
   mounted() {
+    this.getParams();
     this.getCategoryList();
     if (this.type === 'detail') {
       this.getDetail();
@@ -802,14 +800,14 @@ export default {
         }
       });
     },
-    getParams() {
+    async getParams() {
       if (localStorage.getItem('params')) {
-        this.currency = JSON.parse(
-          localStorage.getItem('params')
-        ).demand.currency;
-        this.resource = JSON.parse(
-          localStorage.getItem('params')
-        ).demand.resource;
+        let { demand } = JSON.parse(localStorage.getItem('params'));
+        this.currency = demand.currency;
+        this.resource = demand.resource;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getParams();
       }
     }
   }

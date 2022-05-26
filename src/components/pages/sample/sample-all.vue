@@ -157,10 +157,15 @@ export default {
     this.getSampleState();
   },
   methods: {
-    getSampleState() {
-      this.sampleState = JSON.parse(
-        localStorage.getItem('params')
-      ).sample.state;
+    async getSampleState() {
+      if (localStorage.getItem('params')) {
+        this.sampleState = JSON.parse(
+          localStorage.getItem('params')
+        ).sample.state;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getSampleState();
+      }
     },
     async getCategoryList() {
       await this.$store.dispatch('demand/getCategoryList');

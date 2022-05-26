@@ -75,7 +75,7 @@
       </el-form-item>
       <el-form-item label="上传附件">
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action=""
           :show-file-list="false"
           :on-success="handleFileSuccess"
           :limit="1"

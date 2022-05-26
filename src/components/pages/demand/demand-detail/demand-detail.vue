@@ -11,7 +11,6 @@
       <el-descriptions
         :title="demandDetail.name"
         :column="4"
-        style="width: 80%"
       >
         <el-descriptions-item
           v-if="demandDetail.state === 30"

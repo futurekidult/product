@@ -77,9 +77,12 @@ export default {
     }
   },
   methods: {
-    getRole() {
+    async getRole() {
       if (localStorage.getItem('params')) {
         this.role = JSON.parse(localStorage.getItem('params')).product.role;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getRole();
       }
     },
     async createProjectMember(val) {

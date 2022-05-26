@@ -216,8 +216,15 @@ export default {
     this.getState();
   },
   methods: {
-    getState() {
-      this.mouldState = JSON.parse(localStorage.getItem('params')).mould.state;
+    async getState() {
+      if (localStorage.getItem('params')) {
+        this.mouldState = JSON.parse(
+          localStorage.getItem('params')
+        ).mould.state;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getState();
+      }
     },
     async getMouldList(currentPage = 1, pageSize = 10) {
       let params = this.chooseForm;

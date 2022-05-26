@@ -14,7 +14,8 @@ export default {
       adjustmentList: [],
       projectLoading: true,
       profitLoading: true,
-      marketList: []
+      marketList: [],
+      referencePrice: ''
     };
   },
   mutations: {
@@ -47,6 +48,9 @@ export default {
     },
     setMarketList(state, payload) {
       state.marketList = payload;
+    },
+    setReferencePrice(state, payload) {
+      state.referencePrice = payload;
     }
   },
   actions: {
@@ -236,6 +240,15 @@ export default {
       await axios.post('/project/entry/review', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async getReferencePrice(context, payload) {
+      await axios.get('/reference-price/calculate', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setReferencePrice', res.data.reference_price);
         } else {
           ElMessage.error(res.message);
         }

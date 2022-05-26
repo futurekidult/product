@@ -128,9 +128,6 @@ export default {
       deleteId: 0
     };
   },
-  mounted() {
-    // this.getProjectMember();
-  },
   methods: {
     async deleteProjectMember() {
       let body = {

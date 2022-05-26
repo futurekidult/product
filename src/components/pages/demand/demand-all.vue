@@ -184,8 +184,19 @@ export default {
   },
   mounted() {
     this.getDemandList();
+    this.getParams();
   },
   methods: {
+    async getParams() {
+      if (localStorage.getItem('params')) {
+        this.demandState = JSON.parse(
+          localStorage.getItem('params')
+        ).demand.state;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getParams();
+      }
+    },
     async getDemandList(currentPage = 1, pageSize = 10) {
       let params = this.chooseForm;
       params['current_page'] = currentPage;
@@ -198,11 +209,6 @@ export default {
         item.create_time = formatterTime(item.create_time);
         item.review_finish_time = formatterTime(item.review_finish_time);
       });
-      if (localStorage.getItem('params')) {
-        this.demandState = JSON.parse(
-          localStorage.getItem('params')
-        ).demand.state;
-      }
     },
     async getReason(id) {
       await this.$store.dispatch('demand/getReasonText', { params: { id } });

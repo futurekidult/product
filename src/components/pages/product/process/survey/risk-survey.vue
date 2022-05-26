@@ -224,14 +224,17 @@ export default {
     }
   },
   mounted() {
-    this.getParam();
+    this.getParams();
   },
   methods: {
-    getParam() {
+    async getParams() {
       if (localStorage.getItem('params')) {
         this.inventivePatent = JSON.parse(
           localStorage.getItem('params')
         ).risk_survey.inventive_patent;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getParams();
       }
     },
     async updateRisk(val) {

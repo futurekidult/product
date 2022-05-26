@@ -525,18 +525,20 @@ export default {
     this.getParams();
   },
   methods: {
-    getParams() {
+    async getParams() {
       if (localStorage.getItem('params')) {
         this.planOptions = JSON.parse(
           localStorage.getItem('params')
         ).user_survey.plan;
-        this.planOptions.push({ key: 0, value: '请选择' });
-        let { plan } = JSON.parse(localStorage.getItem('params')).user_survey;
-        for (let key in plan) {
-          let index = plan[key].key;
-          this.detailOptions[index] = plan[key];
+        for (let key in this.planOptions) {
+          let index = this.planOptions[key].key;
+          this.detailOptions[index] = this.planOptions[key];
         }
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getParams();
       }
+      this.planOptions.push({ key: 0, value: '请选择' });
       this.detailOptions[0] = {
         children: [
           {

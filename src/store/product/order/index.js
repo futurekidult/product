@@ -10,7 +10,10 @@ export default {
       sku: {},
       contract: {},
       preProductSample: {},
-      orderLoading: true
+      orderLoading: true,
+      skuLoading: true,
+      contractLoading: true,
+      preProductLoading: true
     };
   },
   mutations: {
@@ -31,6 +34,15 @@ export default {
     },
     setOrderLoading(state, payload) {
       state.orderLoading = payload;
+    },
+    setSkuLoading(state, payload) {
+      state.skuLoading = payload;
+    },
+    setContractLoading(state, payload) {
+      state.contractLoading = payload;
+    },
+    setPreProductLoading(state, payload) {
+      state.preProductLoading = payload;
     }
   },
   actions: {
@@ -53,10 +65,11 @@ export default {
         }
       });
     },
-    async getSkuForm(context, payload) {
+    async getSku(context, payload) {
       await axios.get('/order/sku/get/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSku', res.data);
+          context.commit('setSkuLoading', false);
         } else {
           ElMessage.error(res.message);
         }
@@ -66,6 +79,7 @@ export default {
       await axios.get('/order/contract/get/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setContract', res.data);
+          context.commit('setContractLoading', false);
         } else {
           ElMessage.error(res.message);
         }
@@ -99,6 +113,7 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             context.commit('setPreProduct', res.data);
+            context.commit('setPreProductLoading', false);
           } else {
             ElMessage.error(res.message);
           }

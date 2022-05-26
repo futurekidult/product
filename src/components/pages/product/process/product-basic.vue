@@ -238,12 +238,14 @@ export default {
     this.getParams();
   },
   methods: {
-    getParams() {
+    async getParams() {
       if (localStorage.getItem('params')) {
-        this.market = JSON.parse(localStorage.getItem('params')).demand.market;
-        this.platform = JSON.parse(
-          localStorage.getItem('params')
-        ).demand.platform;
+        let { demand } = JSON.parse(localStorage.getItem('params'));
+        this.market = demand.market;
+        this.platform = demand.platform;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getParams();
       }
     },
     handleNodeClick(data) {

@@ -162,10 +162,15 @@ export default {
     this.getPricingEnum();
   },
   methods: {
-    getPricingEnum() {
-      this.pricingEnum = JSON.parse(
-        localStorage.getItem('params')
-      ).pricing.state;
+    async getPricingEnum() {
+      if (localStorage.getItem('params')) {
+        this.pricingEnum = JSON.parse(
+          localStorage.getItem('params')
+        ).pricing.state;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getPricingEnum();
+      }
     },
     async getCategoryList() {
       await this.$store.dispatch('demand/getCategoryList');

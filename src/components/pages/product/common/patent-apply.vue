@@ -219,14 +219,14 @@ export default {
     this.getParams();
   },
   methods: {
-    getParams() {
+    async getParams() {
       if (localStorage.getItem('params')) {
-        this.countries = JSON.parse(
-          localStorage.getItem('params')
-        ).patent.countries;
-        this.patentType = JSON.parse(
-          localStorage.getItem('params')
-        ).patent.type;
+        let { patent } = JSON.parse(localStorage.getItem('params'));
+        this.countries = patent.countries;
+        this.patentType = patent.type;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getParams();
       }
     },
     cancel() {

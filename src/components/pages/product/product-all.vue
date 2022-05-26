@@ -164,7 +164,7 @@
             prop="images"
           >
             <el-upload
-              action="https://jsonplaceholder.typicode.com/posts/"
+              action=""
               :show-file-list="false"
               :on-success="handleFileSuccess"
             >
@@ -249,11 +249,14 @@ export default {
     this.getProductList();
   },
   methods: {
-    getPorductState() {
+    async getPorductState() {
       if (localStorage.getItem('params')) {
         this.productState = JSON.parse(
           localStorage.getItem('params')
         ).product.state;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getPorductState();
       }
     },
     async getCategoryList() {

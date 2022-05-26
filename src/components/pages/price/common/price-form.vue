@@ -44,6 +44,7 @@
               class="analy-form_mar"
               placeholder="请选择货币"
               clearable
+              @clear="clearCurrency('quote')"
             >
               <el-option
                 v-for="item in currency"
@@ -60,6 +61,7 @@
               placeholder="请输入金额"
               clearable
               @change="getHighReason"
+              @clear="clearMoney('quote')"
             />
           </el-form-item>
           <el-form-item prop="quote_amount_rmb">
@@ -215,6 +217,7 @@
               class="analy-form_mar"
               placeholder="请选择货币"
               clearable
+              @clear="clearCurrency('head')"
             >
               <el-option
                 v-for="item in currency"
@@ -230,6 +233,8 @@
               class="analy-form_mar"
               placeholder="请输入金额"
               clearable
+              @change="getRmb('head')"
+              @clear="clearMoney('head')"
             />
           </el-form-item>
           <el-form-item prop="head_cost_rmb">
@@ -257,6 +262,7 @@
               class="analy-form_mar"
               placeholder="请选择货币"
               clearable
+              @clear="clearCurrency('tail')"
             >
               <el-option
                 v-for="item in currency"
@@ -272,6 +278,8 @@
               class="analy-form_mar"
               placeholder="请输入金额"
               clearable
+              @change="getRmb('tail')"
+              @clear="clearMoney('tail')"
             />
           </el-form-item>
           <el-form-item prop="tail_cost_rmb">
@@ -292,7 +300,7 @@
         prop="quotation_file"
       >
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action=""
           :show-file-list="false"
           :on-success="handleFileSuccess"
           :limit="1"
@@ -341,7 +349,7 @@
 import { timestamp } from '../../../../utils/index.js';
 
 export default {
-  props: ['dialogVisible', 'title', 'id', 'getList'],
+  props: ['dialogVisible', 'title', 'id', 'getList', 'productId'],
   emits: ['hide-dialog'],
   data() {
     return {
@@ -498,6 +506,14 @@ export default {
       await this.$store.dispatch('price/getHighReason', {
         params
       });
+      await this.$store.dispatch('getPriceRmb', {
+        params: {
+          price: this.quotationForm.quote_amount,
+          currency: this.quotationForm.quote_currency,
+          product_id: this.productId
+        }
+      });
+      this.quotationForm.quote_amount_rmb = this.$store.state.priceRmb;
       this.isHigh = this.$store.state.price.hasHigh;
     },
     async createQuotation(val) {
@@ -548,11 +564,49 @@ export default {
         });
       }
     },
-    getParams() {
+    async getParams() {
       if (localStorage.getItem('params')) {
         this.currency = JSON.parse(
           localStorage.getItem('params')
         ).demand.currency;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getParams();
+      }
+    },
+    async getRmb(val) {
+      await this.$store.dispatch('getPriceRmb', {
+        params: {
+          price: this.quotationForm.quote_amount,
+          currency: this.quotationForm.quote_currency,
+          product_id: this.productId
+        }
+      });
+      if (val === 'head') {
+        this.quotationForm.head_cost_rmb = this.$store.state.priceRmb;
+      } else {
+        this.quotationForm.tail_cost_rmb = this.$store.state.priceRmb;
+      }
+    },
+    clearCurrency(val) {
+      if (val === 'quote') {
+        this.quotationForm.quote_amount = '';
+        this.quotationForm.quote_amount_rmb = '';
+      } else if (val === 'head') {
+        this.quotationForm.head_cost = '';
+        this.quotationForm.head_cost_rmb = '';
+      } else {
+        this.quotationForm.tail_cost = '';
+        this.quotationForm.tail_cost_rmb = '';
+      }
+    },
+    clearMoney(val) {
+      if (val === 'quote') {
+        this.quotationForm.quote_amount_rmb = '';
+      } else if (val === 'head') {
+        this.quotationForm.head_cost_rmb = '';
+      } else {
+        this.quotationForm.tail_cost_rmb = '';
       }
     }
   }

@@ -45,7 +45,7 @@
         <el-button
           type="primary"
           :disabled="quotationList.pricing_state === 40"
-          @click="showQuotationForm"
+          @click="showQuotationForm(quotationList.related_product_id)"
         >
           新增报价
         </el-button>
@@ -72,6 +72,7 @@
         <el-table-column
           label="报价时间"
           prop="create_time"
+          width="200px"
         />
         <el-table-column label="报价">
           <template #default="scope">
@@ -91,6 +92,7 @@
         <el-table-column
           label="报价有效期"
           prop="quote_validity"
+          width="200px"
         />
         <el-table-column label="状态">
           <template #default="scope">
@@ -99,7 +101,11 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="最终确定定价时间" />
+        <el-table-column
+          label="最终确定定价时间"
+          width="200px"
+          prop="confirm_time"
+        />
         <el-table-column
           label="操作"
           width="400px"
@@ -189,6 +195,7 @@
     v-if="quotationFormVisible"
     :id="priceId"
     title="我要报价"
+    :product-id="relatedProductId"
     :get-list="getQuotationList"
     :dialog-visible="quotationFormVisible"
     @hide-dialog="closeQuotationForm"
@@ -404,6 +411,7 @@
 import PurchaseForm from './common/purchase-form.vue';
 import PriceForm from './common/price-form.vue';
 import ViewForm from './common/view-form.vue';
+import { formatterTime } from '../../../utils';
 
 export default {
   components: {
@@ -437,7 +445,8 @@ export default {
       targetList: [],
       lowVisible: false,
       highVisible: false,
-      submitId: 0
+      submitId: 0,
+      relatedProductId: 0
     };
   },
   mounted() {
@@ -456,6 +465,11 @@ export default {
       this.quotationList = this.$store.state.price.quotationList;
       this.priceId = this.quotationList.pricing_id;
       this.market = this.quotationList.market;
+      this.quotationList.list.forEach((item) => {
+        item.create_time = formatterTime(item.create_time);
+        item.quote_validity = formatterTime(item.quote_validity);
+        item.confirm_time = formatterTime(item.confirm_time);
+      });
     },
     async getReferencePrice() {
       let params = {
@@ -516,8 +530,9 @@ export default {
     closeTargetPriceForm() {
       this.targetFormVisible = false;
     },
-    showQuotationForm() {
+    showQuotationForm(id) {
       this.quotationFormVisible = true;
+      this.relatedProductId = id;
     },
     closeQuotationForm() {
       this.quotationFormVisible = false;

@@ -40,6 +40,9 @@ export default {
     },
     setQuotation(state, payload) {
       state.quotation = payload;
+    },
+    setViewLoading(state, payload) {
+      state.viewLoading = payload;
     }
   },
   actions: {
@@ -163,7 +166,7 @@ export default {
       await axios.get('/pricing/quote/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setQuotation', res.data);
-          context.state.viewLoading = false;
+          context.commit('setViewLoading', false);
         } else {
           ElMessage.error(res.message);
         }

@@ -18,7 +18,7 @@
         {{ data.actual_finish_time }}
       </el-descriptions-item>
       <el-descriptions-item label="结果附件">
-        <div v-if="JSON.stringify(data) === '{}' ? false : true">
+        <div v-if="JSON.stringify(data) !== '{}' ">
           <el-button
             v-if="
               data.state === 10 && JSON.stringify(data.result_file) === '{}'

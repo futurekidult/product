@@ -92,9 +92,20 @@ export default {
     };
   },
   mounted() {
+    this.getParams();
     this.getTodoList();
   },
   methods: {
+    async getParams() {
+      if (localStorage.getItem('params')) {
+        this.workbenchState = JSON.parse(
+          localStorage.getItem('params')
+        ).workbench.state;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getParams();
+      }
+    },
     async getTodoList(currentPage = 1, pageSize = 10) {
       let params = this.chooseForm;
       params['current_page'] = currentPage;
@@ -105,11 +116,6 @@ export default {
         item.create_time = formatterTime(item.create_time);
         item.finish_time = formatterTime(item.finish_time);
       });
-      if (localStorage.getItem('params')) {
-        this.workbenchState = JSON.parse(
-          localStorage.getItem('params')
-        ).workbench.state;
-      }
     },
     async getNotificationList(currentPage = 1, pageSize = 10) {
       let params = {

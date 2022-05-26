@@ -69,7 +69,6 @@
             placeholder="请选择市场"
             style="width: 30%"
             clearable
-            @focus="getMarket"
           >
             <el-option
               v-for="market in market"
@@ -575,46 +574,6 @@ export default {
           value: 1
         }
       ]
-      // market: [
-      //   {
-      //     key: 1,
-      //     value: '美国'
-      //   },
-      //   {
-      //     key: 2,
-      //     value: '英国'
-      //   },
-      //   {
-      //     key: 3,
-      //     value: '欧盟'
-      //   },
-      //   {
-      //     key: 4,
-      //     value: '日本'
-      //   }
-      // ],
-      // platform: [
-      //   {
-      //     key: 1,
-      //     value: 'Amazon'
-      //   },
-      //   {
-      //     key: 2,
-      //     value: 'Lowe\'s'
-      //   },
-      //   {
-      //     key: 3,
-      //     value: 'Wayfair'
-      //   },
-      //   {
-      //     key: 4,
-      //     value: 'Walmart'
-      //   },
-      //   {
-      //     key: 5,
-      //     value: 'Homedepot'
-      //   }
-      // ]
     };
   },
   computed: {
@@ -661,6 +620,9 @@ export default {
       }
     }
   },
+  mounted() {
+    this.getMarket();
+  },
   methods: {
     async reviewDemandForm(val) {
       let body = val;
@@ -685,12 +647,14 @@ export default {
     deleteRow() {
       this.reviewForm.market.pop();
     },
-    getMarket() {
+    async getMarket() {
       if (localStorage.getItem('params')) {
-        this.market = JSON.parse(localStorage.getItem('params')).demand.market;
-        this.platform = JSON.parse(
-          localStorage.getItem('params')
-        ).demand.platform;
+        let { demand } = JSON.parse(localStorage.getItem('params'));
+        this.market = demand.market;
+        this.platform = demand.platform;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getMarket();
       }
     }
   }

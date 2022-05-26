@@ -109,6 +109,9 @@
                   placeholder="请输入金额"
                   :disabled="isDisabled"
                   clearable
+                  @change="
+                    getPriceRmb(item.currency, item.selling_price, index)
+                  "
                 />
               </el-form-item>
               <el-form-item
@@ -282,10 +285,22 @@ export default {
     }
   },
   mounted() {
+    this.getParams();
     this.getProfitCalculation();
     this.getMarket();
   },
   methods: {
+    async getParams() {
+      if (localStorage.getItem('params')) {
+        let { demand } = JSON.parse(localStorage.getItem('params'));
+        this.marketList = demand.market;
+        this.platformList = demand.platform;
+        this.currency = demand.currency;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getParams();
+      }
+    },
     async getMarket() {
       await this.$store.dispatch('product/project/getMarketList', {
         params: {
@@ -304,15 +319,6 @@ export default {
       });
       if (this.type !== 'add') {
         this.profitForm = this.$store.state.product.project.profitCalculation;
-        this.marketList = JSON.parse(
-          localStorage.getItem('params')
-        ).demand.market;
-        this.platformList = JSON.parse(
-          localStorage.getItem('params')
-        ).demand.platform;
-        this.currency = JSON.parse(
-          localStorage.getItem('params')
-        ).demand.currency;
       }
     },
     cancel() {
@@ -349,6 +355,35 @@ export default {
           }
         }
       });
+    },
+    async getReferencePrice(index, val) {
+      let params = {
+        product_id: +this.$route.params.productId,
+        market: this.id,
+        selling_price_rmb: val
+      };
+      await this.$store.dispatch('product/project/getReferencePrice', {
+        params
+      });
+      this.profitForm.list[index].reference_price =
+        this.$store.state.product.project.referencePrice;
+    },
+    async getPriceRmb(currency, price, index) {
+      await this.$store.dispatch('getPriceRmb', {
+        params: {
+          price,
+          currency,
+          product_id: this.$route.params.productId
+        }
+      });
+      this.profitForm.list[index].selling_price_rmb =
+        this.$store.state.priceRmb;
+      if (this.$store.state.getRmbState) {
+        this.getReferencePrice(
+          index,
+          this.profitForm.list[index].selling_price_rmb
+        );
+      }
     }
   }
 };

@@ -340,7 +340,7 @@
         prop="attachment"
       >
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action=""
           :show-file-list="false"
           :on-success="handleFileSuccess"
           :limit="1"
@@ -533,20 +533,18 @@ export default {
     this.getParams();
   },
   methods: {
-    getParams() {
+    async getParams() {
       if (localStorage.getItem('params')) {
-        this.precisePriceRange = JSON.parse(
+        let platform = JSON.parse(
           localStorage.getItem('params')
-        ).survey_platform.precise_price_range;
-        this.competitiveDegree = JSON.parse(
-          localStorage.getItem('params')
-        ).survey_platform.competitive_degree;
-        this.trafficRichness = JSON.parse(
-          localStorage.getItem('params')
-        ).survey_platform.traffic_richness;
-        this.keywordDegree = JSON.parse(
-          localStorage.getItem('params')
-        ).survey_platform.keyword_bidding_degree;
+        ).survey_platform;
+        this.precisePriceRange = platform.precise_price_range;
+        this.competitiveDegree = platform.competitive_degree;
+        this.trafficRichness = platform.traffic_richness;
+        this.keywordDegree = platform.keyword_bidding_degree;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getParams();
       }
     },
     async updatePlatform(val) {

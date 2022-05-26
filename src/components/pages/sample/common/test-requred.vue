@@ -53,7 +53,7 @@
         prop="demand_list_file"
       >
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action=""
           :show-file-list="false"
           :on-success="handleFileSuccess"
           :limit="1"
@@ -315,7 +315,6 @@ export default {
       if (!this.demandForm.user_survey_specialist_id) {
         this.demandForm.user_survey_specialist_id = '';
       }
-      // this.demandForm.user_survey_specialist_id = 10;
       this.loading = this.$store.state.sample.user.reviewLoading;
     },
     async viewUserTestApply() {

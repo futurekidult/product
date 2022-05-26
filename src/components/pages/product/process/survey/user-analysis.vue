@@ -229,7 +229,7 @@
         prop="attachment"
       >
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action=""
           :show-file-list="false"
           :on-success="handleFileSuccess"
           :limit="1"
@@ -383,23 +383,19 @@ export default {
     this.getParams();
   },
   methods: {
-    getParams() {
+    async getParams() {
       if (localStorage.getItem('params')) {
-        this.genderOptions = JSON.parse(
+        let userAnalysis = JSON.parse(
           localStorage.getItem('params')
-        ).survey_user_analysis.gender;
-        this.ageOptions = JSON.parse(
-          localStorage.getItem('params')
-        ).survey_user_analysis.age;
-        this.diplomaOptions = JSON.parse(
-          localStorage.getItem('params')
-        ).survey_user_analysis.diploma;
-        this.annualHouseholdIncome = JSON.parse(
-          localStorage.getItem('params')
-        ).survey_user_analysis.annual_household_income;
-        this.maritalStatus = JSON.parse(
-          localStorage.getItem('params')
-        ).survey_user_analysis.marital_status;
+        ).survey_user_analysis;
+        this.genderOptions = userAnalysis.gender;
+        this.ageOptions = userAnalysis.age;
+        this.diplomaOptions = userAnalysis.diploma;
+        this.annualHouseholdIncome = userAnalysis.annual_household_income;
+        this.maritalStatus = userAnalysis.marital_status;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getParams();
       }
     },
     async updateAnalysis(val) {

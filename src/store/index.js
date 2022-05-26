@@ -22,7 +22,9 @@ const store = createStore({
   state() {
     return {
       systemParams: {},
-      priceRmb: ''
+      priceRmb: '',
+      platform: [],
+      getRmbState: false
     };
   },
   mutations: {
@@ -31,6 +33,9 @@ const store = createStore({
     },
     setPriceRmb(state, payload) {
       state.priceRmb = payload;
+    },
+    setPlatform(state, payload) {
+      state.platform = payload;
     }
   },
   actions: {
@@ -38,6 +43,7 @@ const store = createStore({
       await axios.get('/rmb-of-price/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setPriceRmb', res.data.price_rmb);
+          context.state.getRmbState = true;
         } else {
           ElMessage.error(res.message);
         }
@@ -49,7 +55,16 @@ const store = createStore({
           context.commit('setSystemParams', res.data);
           localStorage.setItem('params', JSON.stringify(res.data));
         } else {
-          ElMessage.error(res.data);
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async getPlatform(context, payload) {
+      await axios.get('/option/pricing/platform/list/', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setPlatform', res.data.list);
+        } else {
+          ElMessage.error(res.message);
         }
       });
     }

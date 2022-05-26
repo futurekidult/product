@@ -4,34 +4,60 @@
     <div v-if="isParent">
       <div class="border">
         <base-tag
-          mode="warning"
+          :mode="mode"
           type="tag"
         >
           <span>{{ productBase.state_desc }}</span>
         </base-tag>
-
-        <el-descriptions
-          :title="productBase.name"
-          :column="4"
+        <el-button
+          v-if="productBase.state === 90"
+          type="text"
+          class="terminate-btn"
+          @click="showViewReasonForm(productBase.termination_reason)"
         >
-          <el-descriptions-item>
-            <template #label>
-              关联需求
-            </template>
-            <el-button type="text">
-              查看
-            </el-button>
-          </el-descriptions-item>
-          <el-descriptions-item label="产品定位">
-            {{ productBase.positioning_desc }}
-          </el-descriptions-item>
-          <el-descriptions-item label="项目经理">
-            {{ productBase.manager_desc }}
-          </el-descriptions-item>
-          <el-descriptions-item label="项目管理员">
-            {{ productBase.administrator_desc }}
-          </el-descriptions-item>
-        </el-descriptions>
+          查看终止原因
+        </el-button>
+        <div style="display: flex; justify-content: space-between">
+          <el-descriptions
+            :title="productBase.name"
+            :column="5"
+            style="width: 80%"
+          >
+            <el-descriptions-item
+              v-if="productBase.state === 90"
+              label="产品ID:"
+            >
+              {{ productBase.id }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label>
+                关联需求ID:
+              </template>
+              <el-button
+                type="text"
+                @click="toRelatedDemand(productBase.demand_id)"
+              >
+                {{ productBase.demand_id }}
+              </el-button>
+            </el-descriptions-item>
+            <el-descriptions-item label="产品定位:">
+              {{ productBase.positioning_desc }}
+            </el-descriptions-item>
+            <el-descriptions-item label="项目经理:">
+              {{ productBase.manager_desc }}
+            </el-descriptions-item>
+            <el-descriptions-item label="项目管理员:">
+              {{ productBase.administrator_desc }}
+            </el-descriptions-item>
+          </el-descriptions>
+
+          <el-button
+            type="danger"
+            @click="showTerminateForm"
+          >
+            终止项目
+          </el-button>
+        </div>
       </div>
 
       <div class="border">
@@ -139,6 +165,20 @@
       </div>
     </div>
   </div>
+
+  <terminate-form
+    v-if="terminateProjectVisible"
+    :dialog-visible="terminateProjectVisible"
+    type="create"
+    @hide-dialog="closeTerminateForm"
+  />
+  <terminate-form
+    v-if="viewReasonVisible"
+    :dialog-visible="viewReasonVisible"
+    type="view"
+    :reason="reason"
+    @hide-dialog="closeViewReasonForm"
+  />
 </template>
 
 <script>
@@ -154,6 +194,7 @@ import QuestionAll from './process/question-all.vue';
 import ProductOrder from './process/product-order.vue';
 import ProductPackage from './process/product-package.vue';
 import { formatterTime } from '../../../utils';
+import TerminateForm from './common/terminate-form.vue';
 
 export default {
   components: {
@@ -167,7 +208,8 @@ export default {
     SampleMessage,
     QuestionAll,
     ProductOrder,
-    ProductPackage
+    ProductPackage,
+    TerminateForm
   },
   provide() {
     return {
@@ -211,7 +253,11 @@ export default {
       patent: {},
       patentProgress: {},
       patentContract: {},
-      applyForm: {}
+      applyForm: {},
+      terminateProjectVisible: false,
+      viewReasonVisible: false,
+      reason: '',
+      mode: ''
     };
   },
   computed: {
@@ -231,6 +277,13 @@ export default {
         }
       });
       this.productBase = this.$store.state.product.productBase;
+      if (this.productBase.state === 90) {
+        this.mode = 'info';
+      } else if (this.productBase.state === 80) {
+        this.mode = 'success';
+      } else {
+        this.mode = 'warning';
+      }
     },
     async getProductDetail() {
       await this.$store.dispatch('product/getProductDetail', {
@@ -459,7 +512,30 @@ export default {
           break;
         default:
       }
+    },
+    toRelatedDemand(id) {
+      this.$router.push(`/demand-list/${id}`);
+    },
+    showTerminateForm() {
+      this.terminateProjectVisible = true;
+    },
+    closeTerminateForm() {
+      this.terminateProjectVisible = false;
+    },
+    showViewReasonForm(reason) {
+      this.viewReasonVisible = true;
+      this.reason = reason;
+    },
+    closeViewReasonForm() {
+      this.viewReasonVisible = false;
     }
   }
 };
 </script>
+
+<style scoped>
+.terminate-btn {
+  position: absolute;
+  left: 355px;
+}
+</style>

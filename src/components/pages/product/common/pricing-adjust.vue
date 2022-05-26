@@ -176,11 +176,14 @@ export default {
     this.getCurrency();
   },
   methods: {
-    getCurrency() {
+    async getCurrency() {
       if (localStorage.getItem('params')) {
         this.currency = JSON.parse(
           localStorage.getItem('params')
         ).demand.currency;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getCurrency();
       }
     },
     async getPriceRmb() {
