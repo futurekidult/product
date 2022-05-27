@@ -45,7 +45,7 @@
         <el-button
           type="primary"
           :disabled="quotationList.pricing_state === 40"
-          @click="showQuotationForm"
+          @click="showQuotationForm(quotationList.related_product_id)"
         >
           新增报价
         </el-button>
@@ -72,6 +72,7 @@
         <el-table-column
           label="报价时间"
           prop="create_time"
+          width="200px"
         />
         <el-table-column label="报价">
           <template #default="scope">
@@ -91,6 +92,7 @@
         <el-table-column
           label="报价有效期"
           prop="quote_validity"
+          width="200px"
         />
         <el-table-column label="状态">
           <template #default="scope">
@@ -99,7 +101,11 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="最终确定定价时间" />
+        <el-table-column
+          label="最终确定定价时间"
+          width="200px"
+          prop="confirm_time"
+        />
         <el-table-column
           label="操作"
           width="400px"
@@ -118,10 +124,7 @@
                 </el-button>
                 <el-button
                   @click="
-                    showApplyForm(
-                      quotationList.pricing_id,
-                      scope.row.quote_amount_rmb
-                    )
+                    showApplyForm(scope.row.id, scope.row.quote_amount_rmb)
                   "
                 >
                   申请调价
@@ -192,6 +195,7 @@
     v-if="quotationFormVisible"
     :id="priceId"
     title="我要报价"
+    :product-id="relatedProductId"
     :get-list="getQuotationList"
     :dialog-visible="quotationFormVisible"
     @hide-dialog="closeQuotationForm"
@@ -270,6 +274,7 @@
         <el-select
           v-model="editSpecialistForm.purchase_specialist_id"
           placeholder="请选择采购员"
+          clearable
         />
       </el-form-item>
       <el-divider />
@@ -318,7 +323,15 @@
         <el-select
           v-model="applyAdjustmentForm.platform"
           placeholder="请选择平台"
-        />
+          clearable
+        >
+          <el-option
+            v-for="item in targetList"
+            :key="item.platform"
+            :label="item.platform_desc"
+            :value="item.platform"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item
         label="申请调价原因"
@@ -330,6 +343,7 @@
           placeholder="请输入内容"
           type="textarea"
           :rows="6"
+          clearable
         />
       </el-form-item>
       <el-divider />
@@ -397,6 +411,7 @@
 import PurchaseForm from './common/purchase-form.vue';
 import PriceForm from './common/price-form.vue';
 import ViewForm from './common/view-form.vue';
+import { formatterTime } from '../../../utils';
 
 export default {
   components: {
@@ -422,7 +437,7 @@ export default {
       editSpecialistForm: {},
       applyAdjustmentFormVisible: false,
       applyAdjustmentForm: {},
-      applyId: 0,
+      quoteId: 0,
       priceId: 0,
       viewQuotationFormVisible: false,
       viewId: 0,
@@ -430,12 +445,14 @@ export default {
       targetList: [],
       lowVisible: false,
       highVisible: false,
-      submitId: 0
+      submitId: 0,
+      relatedProductId: 0
     };
   },
   mounted() {
     this.getQuotationList();
     this.getReferencePrice();
+    this.getTargetPrice();
   },
   methods: {
     async getQuotationList(currentPage = 1, pageSize = 10) {
@@ -448,6 +465,11 @@ export default {
       this.quotationList = this.$store.state.price.quotationList;
       this.priceId = this.quotationList.pricing_id;
       this.market = this.quotationList.market;
+      this.quotationList.list.forEach((item) => {
+        item.create_time = formatterTime(item.create_time);
+        item.quote_validity = formatterTime(item.quote_validity);
+        item.confirm_time = formatterTime(item.confirm_time);
+      });
     },
     async getReferencePrice() {
       let params = {
@@ -508,8 +530,9 @@ export default {
     closeTargetPriceForm() {
       this.targetFormVisible = false;
     },
-    showQuotationForm() {
+    showQuotationForm(id) {
       this.quotationFormVisible = true;
+      this.relatedProductId = id;
     },
     closeQuotationForm() {
       this.quotationFormVisible = false;
@@ -575,7 +598,7 @@ export default {
     },
     showApplyForm(id, price) {
       this.applyAdjustmentFormVisible = true;
-      this.applyId = id;
+      this.quoteId = id;
       this.applyAdjustmentForm.quote_amount_rmb = price;
     },
     closeApplyForm() {
@@ -583,7 +606,7 @@ export default {
     },
     async applyAdjustment(val) {
       let body = val;
-      body['pricing_id'] = this.applyId;
+      body['quote_id'] = this.quoteId;
       await this.$store.dispatch('price/applyAdjustment', body);
       this.applyAdjustmentFormVisible = false;
       this.getQuotationList();

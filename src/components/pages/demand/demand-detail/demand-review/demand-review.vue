@@ -13,6 +13,8 @@
       <el-select
         v-model="reviewForm.state"
         style="width: 30%"
+        clearable
+        placeholder="请选择评审结果"
       >
         <el-option
           v-for="item in reviewOptions"
@@ -62,11 +64,19 @@
           :prop="`market.${index}.market_id`"
           :rules="passRules.market_id"
         >
-          <el-input
+          <el-select
             v-model="item.market_id"
             placeholder="请选择市场"
             style="width: 30%"
-          />
+            clearable
+          >
+            <el-option
+              v-for="market in market"
+              :key="market.key"
+              :label="market.value"
+              :value="market.key"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item
           :label="'平台' + (index + 1)"
@@ -110,6 +120,7 @@
             type="datetime"
             placeholder="请选择日期"
             style="width: 80%"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -121,6 +132,7 @@
             type="datetime"
             placeholder="请选择日期"
             style="width: 80%"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -133,6 +145,7 @@
             type="datetime"
             placeholder="请选择日期"
             style="width: 80%"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -145,6 +158,7 @@
             type="datetime"
             placeholder="请选择日期"
             style="width: 80%"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -156,6 +170,7 @@
             type="datetime"
             placeholder="请选择日期"
             style="width: 80%"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -168,6 +183,7 @@
             type="datetime"
             placeholder="请选择日期"
             style="width: 80%"
+            clearable
           />
         </el-form-item>
       </div>
@@ -184,6 +200,7 @@
             v-model="reviewForm.project_director_id"
             class="pass-form_item"
             placeholder="请选择人员"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -194,6 +211,7 @@
             v-model="reviewForm.coo_id"
             class="pass-form_item"
             placeholder="请选择人员"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -204,6 +222,7 @@
             v-model="reviewForm.cmo_id"
             class="pass-form_item"
             placeholder="请选择人员"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -214,6 +233,7 @@
             v-model="reviewForm.cpo_id"
             class="pass-form_item"
             placeholder="请选择人员"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -224,6 +244,7 @@
             v-model="reviewForm.project_manager_id"
             class="pass-form_item"
             placeholder="请选择人员"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -234,6 +255,7 @@
             v-model="reviewForm.project_administrator_id"
             class="pass-form_item"
             placeholder="请选择人员"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -244,6 +266,7 @@
             v-model="reviewForm.operations_principal_id"
             class="pass-form_item"
             placeholder="请选择人员"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -254,6 +277,7 @@
             v-model="reviewForm.product_principal_id"
             class="pass-form_item"
             placeholder="请选择人员"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -264,6 +288,7 @@
             v-model="reviewForm.purchase_principal_id"
             class="pass-form_item"
             placeholder="请选择人员"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -277,6 +302,7 @@
             v-model="reviewForm.market_survey_principal_id"
             class="pass-form_item"
             placeholder="请选择人员"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -290,6 +316,7 @@
             v-model="reviewForm.user_survey_principal_id"
             class="pass-form_item"
             placeholder="请选择人员"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -301,6 +328,7 @@
             v-model="reviewForm.user_test_principal_id"
             class="pass-form_item"
             placeholder="请选择人员"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -311,6 +339,7 @@
             v-model="reviewForm.quality_principal_id"
             class="pass-form_item"
             placeholder="请选择人员 "
+            clearable
           />
         </el-form-item>
       </div>
@@ -334,6 +363,7 @@
           type="textarea"
           :rows="6"
           placeholder="请输入内容"
+          clearable
         />
       </el-form-item>
       <el-form-item>
@@ -543,46 +573,6 @@ export default {
           label: '是',
           value: 1
         }
-      ],
-      market: [
-        {
-          key: 1,
-          value: '美国'
-        },
-        {
-          key: 2,
-          value: '英国'
-        },
-        {
-          key: 3,
-          value: '欧盟'
-        },
-        {
-          key: 4,
-          value: '日本'
-        }
-      ],
-      platform: [
-        {
-          key: 1,
-          value: 'Amazon'
-        },
-        {
-          key: 2,
-          value: 'Lowe\'s'
-        },
-        {
-          key: 3,
-          value: 'Wayfair'
-        },
-        {
-          key: 4,
-          value: 'Walmart'
-        },
-        {
-          key: 5,
-          value: 'Homedepot'
-        }
       ]
     };
   },
@@ -630,6 +620,9 @@ export default {
       }
     }
   },
+  mounted() {
+    this.getMarket();
+  },
   methods: {
     async reviewDemandForm(val) {
       let body = val;
@@ -642,7 +635,6 @@ export default {
           this.reviewForm[item] = timestamp(this.reviewForm[item]);
         }
       }
-      console.log(this.reviewForm);
       this.$refs.reviewForm.validate((valid) => {
         if (valid) {
           this.reviewDemandForm(this.reviewForm);
@@ -654,6 +646,16 @@ export default {
     },
     deleteRow() {
       this.reviewForm.market.pop();
+    },
+    async getMarket() {
+      if (localStorage.getItem('params')) {
+        let { demand } = JSON.parse(localStorage.getItem('params'));
+        this.market = demand.market;
+        this.platform = demand.platform;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getMarket();
+      }
     }
   }
 };

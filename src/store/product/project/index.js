@@ -11,7 +11,11 @@ export default {
       specialist: [],
       profitCalculation: {},
       adjustment: {},
-      adjustmentList: []
+      adjustmentList: [],
+      projectLoading: true,
+      profitLoading: true,
+      marketList: [],
+      referencePrice: ''
     };
   },
   mutations: {
@@ -35,6 +39,18 @@ export default {
     },
     setAdjustmentList(state, payload) {
       state.adjustmentList = payload;
+    },
+    setProjectLoading(state, payload) {
+      state.projectLoading = payload;
+    },
+    setProfitLoading(state, payload) {
+      state.profitLoading = payload;
+    },
+    setMarketList(state, payload) {
+      state.marketList = payload;
+    },
+    setReferencePrice(state, payload) {
+      state.referencePrice = payload;
     }
   },
   actions: {
@@ -42,6 +58,7 @@ export default {
       await axios.get('/project/detail/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setProject', res.data);
+          context.commit('setProjectLoading', false);
         } else {
           ElMessage.error(res.message);
         }
@@ -148,6 +165,7 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             context.commit('setProfitCalculation', res.data);
+            context.commit('setProfitLoading', false);
           } else {
             ElMessage.error(res.message);
           }
@@ -210,6 +228,31 @@ export default {
             ElMessage.error(res.message);
           }
         });
+    },
+    async getMarketList(context, payload) {
+      await axios.get('/option/product-market/list', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setMarketList', res.data.list);
+        }
+      });
+    },
+    async reviewProject(_, payload) {
+      await axios.post('/project/entry/review', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async getReferencePrice(context, payload) {
+      await axios.get('/reference-price/calculate', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setReferencePrice', res.data.reference_price);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
     }
   }
 };

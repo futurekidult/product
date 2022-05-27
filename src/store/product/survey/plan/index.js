@@ -4,24 +4,24 @@ export default {
   namespaced: true,
   state() {
     return {
-      progress: {},
-      planForm: {}
+      plan: {},
+      planLoading: true
     };
   },
   mutations: {
-    setProgressData(state, payload) {
-      state.progress = payload;
+    setPlan(state, payload) {
+      state.plan = payload;
     },
-    setPlanformData(state, payload) {
-      state.planForm = payload;
+    setPlanLoading(state, payload) {
+      state.planLoading = payload;
     }
   },
   actions: {
-    async getPlanData(context, payload) {
+    async getPlan(context, payload) {
       await axios.get('/survey/solutions/detail', payload).then((res) => {
         if (res.code === 200) {
-          context.commit('setProgressData', res.data.progress);
-          context.commit('setPlanformData', res.data.report);
+          context.commit('setPlan', res.data);
+          context.commit('setPlanLoading', false);
         } else {
           ElMessage.error(res.message);
         }

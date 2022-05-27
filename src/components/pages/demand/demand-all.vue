@@ -14,6 +14,7 @@
             v-model="chooseForm.name"
             clearable
             placeholder="请输入产品名称"
+            @clear="getDemandList()"
           />
         </el-form-item>
         <el-form-item label="创建人">
@@ -21,6 +22,7 @@
             v-model="chooseForm.creator_id"
             clearable
             placeholder="请输入创建人"
+            @clear="getDemandList()"
           />
         </el-form-item>
         <el-form-item label="状态">
@@ -28,14 +30,30 @@
             v-model="chooseForm.state"
             clearable
             placeholder="请选择需求状态"
-          />
+            @clear="getDemandList()"
+          >
+            <el-option
+              v-for="item in demandState"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"
+            />
+          </el-select>
         </el-form-item>
         <div style="float: right">
           <el-form-item>
-            <el-button type="primary">
+            <el-button
+              type="primary"
+              @click="getDemandList()"
+            >
               查询
             </el-button>
-            <el-button> 重置 </el-button>
+            <el-button
+              class="close-btn"
+              @click="resetForm"
+            >
+              重置
+            </el-button>
           </el-form-item>
         </div>
       </el-form>
@@ -105,7 +123,7 @@
           <template #default="scope">
             <div
               class="reason"
-              @click="resaonDialog(scope.row.failed_reason)"
+              @click="reasonDialog(scope.row.failed_reason)"
             >
               查看原因
             </div>
@@ -123,7 +141,10 @@
         </el-table-column>
       </el-table>
 
-      <base-pagination :length="demandList.length" />
+      <base-pagination
+        :length="demandList.length"
+        :get-list="getDemandList"
+      />
     </div>
   </div>
 
@@ -157,13 +178,25 @@ export default {
       },
       reasonFormVisible: false,
       demandList: [],
-      reasonForm: {}
+      reasonForm: {},
+      demandState: []
     };
   },
   mounted() {
     this.getDemandList();
+    this.getParams();
   },
   methods: {
+    async getParams() {
+      if (localStorage.getItem('params')) {
+        this.demandState = JSON.parse(
+          localStorage.getItem('params')
+        ).demand.state;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getParams();
+      }
+    },
     async getDemandList(currentPage = 1, pageSize = 10) {
       let params = this.chooseForm;
       params['current_page'] = currentPage;
@@ -181,7 +214,7 @@ export default {
       await this.$store.dispatch('demand/getReasonText', { params: { id } });
       this.reasonForm.content = this.$store.state.demand.reasonText;
     },
-    resaonDialog(id) {
+    reasonDialog(id) {
       this.reasonFormVisible = true;
       this.getReason(id);
     },
@@ -193,6 +226,10 @@ export default {
     },
     toProductDetail(id) {
       this.$router.push(`/product-list/${id}`);
+    },
+    resetForm() {
+      this.chooseForm = {};
+      this.getDemandList();
     },
     changeCellColor(val) {
       if (val === 20) {

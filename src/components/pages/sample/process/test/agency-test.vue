@@ -14,6 +14,7 @@
           v-model="agencyForm.isAgency"
           placeholder="请选择"
           :disabled="agencyValue !== -1"
+          clearable
         >
           <el-option
             v-for="item in isAgencyOptions"
@@ -160,6 +161,7 @@
                 v-model="reasonForm.reason"
                 type="textarea"
                 :rows="6"
+                clearable
               />
             </el-form-item>
             <el-divider />
@@ -194,7 +196,8 @@ export default {
     'id',
     'getProgress',
     'hasAgency',
-    'changeColor'
+    'changeColor',
+    'testId'
   ],
   data() {
     return {
@@ -226,6 +229,7 @@ export default {
   methods: {
     async confirmTestResult(val) {
       let body = val;
+      body.id = this.testId;
       body['sample_id'] = +this.$route.params.id;
       body['test_apply_id'] = this.id;
       await this.$store.dispatch('sample/agency/confirmTestResult', body);

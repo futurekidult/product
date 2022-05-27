@@ -17,6 +17,7 @@
         <el-select
           v-model="memberForm.user_id"
           placeholder="请输入成员名称"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -28,7 +29,15 @@
           v-model="memberForm.role_id"
           placeholder="请输入成员角色"
           :disabled="type === 'edit'"
-        />
+          clearable
+        >
+          <el-option
+            v-for="item in role"
+            :key="item.key"
+            :label="item.value"
+            :value="item.key"
+          />
+        </el-select>
       </el-form-item>
       <el-divider />
       <div style="text-align: right">
@@ -51,36 +60,44 @@
 
 <script>
 export default {
-  props: ['title', 'dialogVisible', 'getList', 'id', 'type', 'user'],
+  inject: ['getMember'],
+  props: ['title', 'dialogVisible', 'id', 'type', 'user'],
   emits: ['hide-dialog'],
   data() {
     return {
       visible: this.dialogVisible,
-      memberForm: {
-        user_id: '',
-        role_id: ''
-      }
+      memberForm: {},
+      role: []
     };
   },
   mounted() {
+    this.getRole();
     if (this.type === 'edit') {
       this.memberForm = this.user;
     }
   },
   methods: {
+    async getRole() {
+      if (localStorage.getItem('params')) {
+        this.role = JSON.parse(localStorage.getItem('params')).product.role;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getRole();
+      }
+    },
     async createProjectMember(val) {
       let body = val;
       body['product_id'] = +this.$route.params.productId;
       await this.$store.dispatch('product/createProjectMember', body);
       this.visible = false;
-      this.getList();
+      this.getMember();
     },
     async updateProjectMember(val) {
       let body = val;
-      body['id'] = this.id;
+      body.id = this.id;
       await this.$store.dispatch('product/updateProjectMember', body);
       this.visible = false;
-      this.getList();
+      this.getMember();
     },
     cancel() {
       this.visible = false;

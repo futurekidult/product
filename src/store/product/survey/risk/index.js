@@ -5,24 +5,24 @@ export default {
   namespaced: true,
   state() {
     return {
-      progress: {},
-      riskForm: {}
+      risk: {},
+      riskLoading: true
     };
   },
   mutations: {
-    setProgressData(state, payload) {
-      state.progress = payload;
+    setRisk(state, payload) {
+      state.risk = payload;
     },
-    setPlanformData(state, payload) {
-      state.riskForm = payload;
+    setRiskLoading(state, payload) {
+      state.riskLoading = payload;
     }
   },
   actions: {
-    async getRiskData(context, payload) {
+    async getRisk(context, payload) {
       await axios.get('/survey/risk/detail', payload).then((res) => {
         if (res.code === 200) {
-          context.commit('setProgressData', res.data.progress);
-          context.commit('setPlanformData', res.data.report);
+          context.commit('setRisk', res.data);
+          context.commit('setRiskLoading', false);
         } else {
           ElMessage.error(res.message);
         }

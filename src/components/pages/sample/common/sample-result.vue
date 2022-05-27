@@ -16,7 +16,7 @@
         prop="user_template_file"
       >
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action=""
           :show-file-list="false"
           :on-success="handleFileSuccess"
           :limit="1"

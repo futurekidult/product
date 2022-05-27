@@ -53,6 +53,7 @@
           type="textarea"
           :rows="6"
           placeholder="请输入文件路径"
+          clearable
         />
       </el-form-item>
       <el-form-item>

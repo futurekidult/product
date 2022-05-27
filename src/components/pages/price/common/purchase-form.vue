@@ -57,6 +57,9 @@ export default {
       };
       await this.$store.dispatch('price/getReferencePrice', { params });
       this.priceList = this.$store.state.price.referencePrice;
+      this.priceList.forEach((item) => {
+        item.reference_price = `￥${item.reference_price}`;
+      });
       this.loading = this.$store.state.price.referenceLoading;
     },
     async getTargetPrice() {
@@ -66,6 +69,9 @@ export default {
         }
       });
       this.priceList = this.$store.state.price.targetPrice;
+      this.priceList.forEach((item) => {
+        item.target_price = `￥${item.target_price}`;
+      });
       this.loading = this.$store.state.price.targetLoading;
     },
     cancel() {

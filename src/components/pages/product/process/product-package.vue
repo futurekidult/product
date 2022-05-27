@@ -1,65 +1,71 @@
 <template>
-  <div class="select-title">
-    <span class="line">|</span> 包材设计
-  </div>
+  <div v-loading="$store.state.product.packageLoading">
+    <div class="select-title">
+      <span class="line">|</span> 包材设计
+    </div>
 
-  <el-table
-    border
-    empty-text="无数据"
-    :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-    :data="packageList"
-  >
-    <el-table-column
-      label="序号"
-      type="index"
-      width="80px"
-    />
-    <el-table-column
-      label="关联定价ID"
-      prop="pricing_id"
-    />
-    <el-table-column
-      label="运营负责人"
-      prop="operations_principal"
-    />
-    <el-table-column
-      label="计划完成时间"
-      prop="estimated_finish_time"
-    />
-    <el-table-column
-      label="实际完成时间"
-      prop="actual_finish_time"
-    />
-    <el-table-column
-      label="结果文件地址"
-      prop="result_path"
-      show-overflow-tooltip
-    />
-    <el-table-column label="状态">
-      <template #default="scope">
-        <div :class="changeColor(scope.row.state)">
-          {{ scope.row.state_desc }}
-        </div>
-      </template>
-    </el-table-column>
-    <el-table-column
-      label="操作"
-      width="300px"
+    <el-table
+      border
+      empty-text="无数据"
+      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+      :data="packageList"
     >
-      <template #default="scope">
-        <el-button @click="showResultForm(scope.row.id)">
-          上传结果
-        </el-button>
-        <el-button
-          type="primary"
-          @click="confirmResult(scope.row.id)"
-        >
-          结果确认
-        </el-button>
-      </template>
-    </el-table-column>
-  </el-table>
+      <el-table-column
+        label="序号"
+        type="index"
+        width="80px"
+      />
+      <el-table-column
+        label="关联定价ID"
+        prop="pricing_id"
+      />
+      <el-table-column
+        label="运营负责人"
+        prop="operations_principal"
+      />
+      <el-table-column
+        label="计划完成时间"
+        prop="estimated_finish_time"
+      />
+      <el-table-column
+        label="实际完成时间"
+        prop="actual_finish_time"
+      />
+      <el-table-column
+        label="结果文件地址"
+        prop="result_path"
+        show-overflow-tooltip
+      />
+      <el-table-column label="状态">
+        <template #default="scope">
+          <div :class="changeColor(scope.row.state)">
+            {{ scope.row.state_desc }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="操作"
+        width="300px"
+      >
+        <template #default="scope">
+          <el-button @click="showResultForm(scope.row.id)">
+            上传结果
+          </el-button>
+          <el-button
+            type="primary"
+            @click="confirmResult(scope.row.id)"
+          >
+            结果确认
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
 
+    <base-pagination
+      :length="packageList.length"
+      :get-list="getPackage"
+    />
+  </div>
   <el-dialog
     v-model="resultFormVisible"
     width="30%"
@@ -79,6 +85,8 @@
           v-model="resultForm.result_path"
           type="textarea"
           :rows="6"
+          clearable
+          placeholder="请输入内容"
         />
       </el-form-item>
       <el-form-item label="">
@@ -107,40 +115,28 @@
 
 <script>
 export default {
-  props: ['changeColor'],
+  inject: ['getPackage'],
+  props: ['changeColor', 'packageList'],
   data() {
     return {
-      packageList: [],
       packageId: 0,
       resultForm: {},
       resultFormVisible: false
     };
   },
-  mounted() {
-    this.getPackageList();
-  },
   methods: {
-    async getPackageList(currentPage = 1, pageSize = 10) {
-      let params = {
-        product_id: +this.$route.params.productId,
-        current_page: currentPage,
-        page_size: pageSize
-      };
-      await this.$store.dispatch('product/getPackageList', { params });
-      this.packageList = this.$store.state.product.packageList;
-    },
     async confirmPackageResult(id) {
       await this.$store.dispatch('product/confirmPackageResult', {
         id
       });
-      this.getPackageList();
+      this.getPackage();
     },
     async createPackageResult(val) {
       let body = val;
       body.id = this.packageId;
       await this.$store.dispatch('product/createPackageResult', body);
       this.resultFormVisible = false;
-      this.getPackageList();
+      this.getPackage();
     },
     showResultForm(id) {
       this.resultFormVisible = true;

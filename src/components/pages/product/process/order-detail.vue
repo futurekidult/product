@@ -29,7 +29,9 @@
         {{ progress.actual_finish_time }}
       </el-descriptions-item>
       <el-descriptions-item label="状态">
-        {{ progress.state_desc }}
+        <div :class="changeColor(progress.state)">
+          {{ progress.state_desc }}
+        </div>
       </el-descriptions-item>
     </el-descriptions>
 
@@ -37,24 +39,35 @@
       v-model="activeName"
       type="card"
       class="order-tabs"
+      @tab-click="handleClick"
     >
       <el-tab-pane
         label="SKU"
         name="sku"
       >
-        <sku-name />
+        <sku-name
+          :sku-form="skuForm"
+          :sku-id="skuId"
+          :attachment="skuAttachment"
+          :sku-entry-schedule="skuEntrySchedule"
+          :schedule="skuSchedule"
+        />
       </el-tab-pane>
       <el-tab-pane
         label="合同"
         name="contract"
       >
-        <contract-list />
+        <contract-list
+          :contract="contract"
+          :export-contract="exportContract"
+          :purchase-contract="purchaseContract"
+        />
       </el-tab-pane>
       <el-tab-pane
         label="大货样"
         name="pre-production-sample"
       >
-        <production-sample />
+        <production-sample :pre-product-sample="preProductSample" />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -64,6 +77,7 @@
 import SkuName from './order/sku-name.vue';
 import ContractList from './order/contract-list.vue';
 import ProductionSample from './order/pre-production-sample.vue';
+import { formatterTime } from '../../../../utils';
 
 export default {
   components: {
@@ -71,44 +85,119 @@ export default {
     ContractList,
     ProductionSample
   },
+  provide() {
+    return {
+      getSku: this.getSku,
+      changeColor: this.changeColor,
+      getContract: this.getContract,
+      getPreProductSample: this.getPreProductSample
+    };
+  },
   props: ['orderId'],
   data() {
     return {
       activeName: 'sku',
       progress: {},
       schedule: {},
-      sku: {}
+      skuForm: {},
+      skuId: 0,
+      skuAttachment: {},
+      skuEntrySchedule: {},
+      skuSchedule: {},
+      contract: {},
+      exportContract: {},
+      purchaseContract: {},
+      preProductSample: {}
     };
   },
   mounted() {
     this.getProgress();
+    this.getSku();
   },
   methods: {
     async getProgress() {
       await this.$store.dispatch('product/order/getProgress', {
         params: {
-          id: this.orderId
+          id: +this.$route.params.orderId
         }
       });
       this.progress = this.$store.state.product.order.progress;
+      this.progress.actual_finish_time = formatterTime(
+        this.progress.actual_finish_time
+      );
+      this.progress.estimated_finish_time = formatterTime(
+        this.progress.estimated_finish_time
+      );
+    },
+    async getSku() {
+      await this.$store.dispatch('product/order/getSku', {
+        params: {
+          order_id: +this.$route.params.orderId
+        }
+      });
+      this.skuForm = this.$store.state.product.order.sku.sku_info;
+      this.skuId = this.$store.state.product.order.sku.id;
+      this.skuAttachment = this.skuForm.project_plan_file;
+      this.skuEntrySchedule =
+        this.$store.state.product.order.sku.sku_entry_schedule;
+      this.skuEntrySchedule.actual_finish_time = formatterTime(
+        this.skuEntrySchedule.actual_finish_time
+      );
+      this.skuSchedule = this.$store.state.product.order.sku.sku_name_schedule;
+      this.skuSchedule.actual_finish_time = formatterTime(
+        this.skuSchedule.actual_finish_time
+      );
     },
     async getContract() {
       await this.$store.dispatch('product/order/getContract', {
         params: {
-          order_id: this.$route.params.orderId
+          order_id: +this.$route.params.orderId
         }
       });
+      this.contract = this.$store.state.product.order.contract;
+      this.exportContract = this.contract.export_contract;
+      this.exportContract.actual_finish_time = formatterTime(
+        this.exportContract.actual_finish_time
+      );
+      this.purchaseContract = this.contract.purchase_contract;
+      this.purchaseContract.actual_finish_time = formatterTime(
+        this.purchaseContract.actual_finish_time
+      );
     },
     async getPreProductSample() {
       await this.$store.dispatch('product/order/getPreProduct', {
-        params: { order_id: this.$route.params.orderId }
+        params: {
+          order_id: +this.$route.params.orderId
+        }
       });
+      this.preProductSample = this.$store.state.product.order.preProductSample;
+      this.preProductSample.estimated_arrival_time = formatterTime(
+        this.preProductSample.estimated_arrival_time
+      );
+      this.preProductSample.actual_arrival_time = formatterTime(
+        this.preProductSample.actual_arrival_time
+      );
+      this.preProductSample.actual_finish_time = formatterTime(
+        this.preProductSample.actual_finish_time
+      );
     },
     handleClick(tab) {
-      if (tab.props.name === 'contract') {
+      if (tab.props.name === 'sku') {
+        this.$store.commit('product/order/setSkuLoading', true);
+        this.getSku();
+      } else if (tab.props.name === 'contract') {
+        this.$store.commit('product/order/setContractLoading', true);
         this.getContract();
-      } else if (tab.props.name === 'pre-production-sample') {
+      } else {
+        this.$store.commit('product/order/setPreProductLoading', true);
         this.getPreProductSample();
+      }
+    },
+    changeColor(val) {
+      if (val === 40) {
+        return 'result-pass';
+      } else {
+        return 'result-ing';
       }
     }
   }

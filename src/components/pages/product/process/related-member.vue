@@ -1,81 +1,83 @@
 <template>
-  <div class="member-item">
-    <div class="select-title">
-      <span class="line">|</span> 项目成员
+  <div v-loading="$store.state.product.memberLoading">
+    <div class="member-item">
+      <div class="select-title">
+        <span class="line">|</span> 项目成员
+      </div>
+      <el-button
+        type="primary"
+        @click="showAddForm"
+      >
+        新增成员
+      </el-button>
     </div>
-    <el-button
-      type="primary"
-      @click="showAddForm"
+    <el-table
+      border
+      empty-text="无数据"
+      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+      :data="projectMember"
     >
-      新增成员
-    </el-button>
+      <el-table-column
+        label="序号"
+        type="index"
+        width="80px"
+      />
+      <el-table-column
+        label="成员名称"
+        prop="name"
+      />
+      <el-table-column
+        label="成员角色"
+        prop="role"
+      />
+      <el-table-column
+        label="创建时间"
+        prop="create_time"
+      />
+      <el-table-column
+        label="操作"
+        width="150px"
+      >
+        <template #default="scope">
+          <el-button
+            type="text"
+            @click="
+              showEditForm(scope.row.id, scope.row.user_id, scope.row.role_id)
+            "
+          >
+            修改
+          </el-button>
+          <span class="table-btn">|</span>
+          <el-button
+            type="text"
+            @click="showDeleteDialog(scope.row.id)"
+          >
+            删除
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <base-pagination
+      :length="projectMember.length"
+      :get-list="getMember"
+    />
   </div>
-  <el-table
-    border
-    empty-text="无数据"
-    :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-    :data="projectMember"
-  >
-    <el-table-column
-      label="序号"
-      type="index"
-      width="80px"
-    />
-    <el-table-column
-      label="成员名称"
-      prop="name"
-    />
-    <el-table-column
-      label="成员角色"
-      prop="role"
-    />
-    <el-table-column
-      label="创建时间"
-      prop="create_time"
-    />
-    <el-table-column
-      label="操作"
-      width="150px"
-    >
-      <template #default="scope">
-        <el-button
-          type="text"
-          @click="
-            showEditForm(scope.row.id, scope.row.user_id, scope.row.role_id)
-          "
-        >
-          修改
-        </el-button>
-        <span class="table-btn">|</span>
-        <el-button
-          type="text"
-          @click="showDeleteDialog(scope.row.id)"
-        >
-          删除
-        </el-button>
-      </template>
-    </el-table-column>
-  </el-table>
-
-  <base-pagination :length="projectMember.length" />
 
   <member-form
     v-if="addDialog"
     :dialog-visible="addDialog"
     title="新增成员"
     type="create"
-    :get-list="getProjectMember"
     @hide-dialog="closeAddForm"
   />
 
   <member-form
     v-if="editDialog"
-    :id="id"
+    :id="editId"
     :dialog-visible="editDialog"
     title="修改"
     type="edit"
     :user="userMsg"
-    :get-list="getProjectMember"
     @hide-dialog="closeEditForm"
   />
 
@@ -114,10 +116,11 @@ export default {
     MemberForm,
     BasePagination
   },
+  inject: ['getMember'],
+  props: ['projectMember'],
   data() {
     return {
       addDialog: false,
-      projectMember: [],
       editDialog: false,
       deleteDialog: false,
       userMsg: {},
@@ -125,26 +128,14 @@ export default {
       deleteId: 0
     };
   },
-  mounted() {
-    this.getProjectMember();
-  },
   methods: {
-    async getProjectMember() {
-      await this.$store.dispatch('product/getProjectMember', {
-        params: {
-          id: +this.$route.params.productId,
-          page_size: 10,
-          current_page: 1
-        }
-      });
-      this.projectMember = this.$store.state.product.projectMember;
-    },
     async deleteProjectMember() {
       let body = {
         id: this.deleteId
       };
       await this.$store.dispatch('product/deleteProjectMember', body);
       this.deleteDialog = false;
+      this.getMember();
     },
     showAddForm() {
       this.addDialog = true;

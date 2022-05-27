@@ -1,63 +1,66 @@
 <template>
-  <div class="order-title">
-    大货样确认进度表
-  </div>
+  <div v-loading="$store.state.product.order.preProductLoading">
+    <div class="order-title">
+      大货样确认进度表
+    </div>
 
-  <el-descriptions
-    border
-    :column="8"
-    direction="vertical"
-  >
-    <el-descriptions-item label="任务负责人">
-      {{ preProductSample.principal }}
-    </el-descriptions-item>
-    <el-descriptions-item label="计划到货时间">
-      {{ preProductSample.estimated_arrival_time }}
-    </el-descriptions-item>
-    <el-descriptions-item label="大货样套数">
-      {{ preProductSample.pre_production_sample_quantity }}
-    </el-descriptions-item>
-    <el-descriptions-item label="实际到货时间">
-      {{ preProductSample.actual_arrival_time }}
-    </el-descriptions-item>
-    <el-descriptions-item label="实际完成时间">
-      {{ preProductSample.actual_finish_time }}
-    </el-descriptions-item>
-    <el-descriptions-item label="快递单号">
-      {{ preProductSample.courier_number }}
-    </el-descriptions-item>
-    <el-descriptions-item label="状态">
-      {{ preProductSample.state_desc }}
-    </el-descriptions-item>
-    <el-descriptions-item label="操作">
-      <div style="display: flex">
+    <el-descriptions
+      border
+      :column="8"
+      direction="vertical"
+    >
+      <el-descriptions-item label="任务负责人">
+        {{ preProductSample.principal }}
+      </el-descriptions-item>
+      <el-descriptions-item label="计划到货时间">
+        {{ preProductSample.estimated_arrival_time }}
+      </el-descriptions-item>
+      <el-descriptions-item label="大货样套数">
+        {{ preProductSample.pre_production_sample_quantity }}
+      </el-descriptions-item>
+      <el-descriptions-item label="实际到货时间">
+        {{ preProductSample.actual_arrival_time }}
+      </el-descriptions-item>
+      <el-descriptions-item label="实际完成时间">
+        {{ preProductSample.actual_finish_time }}
+      </el-descriptions-item>
+      <el-descriptions-item label="快递单号">
+        {{ preProductSample.courier_number }}
+      </el-descriptions-item>
+      <el-descriptions-item label="状态">
+        <div :class="changeColor(preProductSample.state)">
+          {{ preProductSample.state_desc }}
+        </div>
+      </el-descriptions-item>
+      <el-descriptions-item label="操作">
+        <div style="display: flex">
+          <el-button
+            v-if="preProductSample.state === 10"
+            class="pre-product_btn"
+            @click="showFollowupSheet(preProductSample.id)"
+          >
+            大货样跟进单
+          </el-button>
+          <el-button
+            v-if="preProductSample.state === 20"
+            type="primary"
+            class="pre-product_btn"
+            @click="showCourierNumber(preProductSample.id)"
+          >
+            大货样收货
+          </el-button>
+        </div>
         <el-button
-          v-if="preProductSample.state === 10"
-          class="pre-product_btn"
-          @click="showFollowupSheet(preProductSample.id)"
-        >
-          大货样跟进单
-        </el-button>
-        <el-button
-          v-if="preProductSample.state === 20"
+          v-if="preProductSample.state === 30"
           type="primary"
           class="pre-product_btn"
-          @click="showCourierNumber(preProductSample.id)"
+          @click="confirmPreProductSample(preProductSample.id)"
         >
-          大货样收货
+          大货样确认
         </el-button>
-      </div>
-      <el-button
-        v-if="preProductSample.state === 30"
-        type="primary"
-        class="pre-product_btn"
-        @click="confirmPreProductSample(preProductSample.id)"
-      >
-        大货样确认
-      </el-button>
-    </el-descriptions-item>
-  </el-descriptions>
-
+      </el-descriptions-item>
+    </el-descriptions>
+  </div>
   <el-dialog
     v-model="followupSheetDialog"
     title="大货样跟进单"
@@ -77,6 +80,7 @@
           v-model="followupForm.estimated_arrival_time"
           type="datetime"
           placeholder="请选择日期"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -86,6 +90,7 @@
         <el-input
           v-model="followupForm.pre_production_sample_quantity"
           placeholder="请输入大货样套数"
+          clearable
         />
       </el-form-item>
       <el-form-item>
@@ -129,6 +134,7 @@
         <el-input
           v-model="courierNumberForm.courier_number"
           placeholder="请输入快递单号"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -139,6 +145,7 @@
           v-model="courierNumberForm.actual_finish_time"
           type="datetime"
           placeholder="选择日期时间"
+          clearable
         />
       </el-form-item>
       <el-divider />
@@ -187,6 +194,8 @@
 
 <script>
 export default {
+  inject: ['changeColor', 'getPreProductSample'],
+  props: ['preProductSample'],
   data() {
     return {
       followupSheetDialog: false,
@@ -222,23 +231,10 @@ export default {
           }
         ]
       },
-      id: 0,
-      preProductSample: {}
+      id: 0
     };
   },
-  computed: {},
-  mounted() {
-    this.getPreProductSample();
-  },
   methods: {
-    async getPreProductSample() {
-      await this.$store.dispatch('product/order/getPreProduct', {
-        params: {
-          order_id: this.$route.params.orderId
-        }
-      });
-      this.preProductSample = this.$store.state.product.order.preProductSample;
-    },
     showFollowupSheet() {
       this.followupSheetDialog = true;
     },
@@ -260,12 +256,13 @@ export default {
         this.courierNumberForm
       );
       this.courierNumberDialog = false;
+      this.SampleSample();
     },
     submitFollowupForm() {
       this.$refs.followupForm.validate((valid) => {
         if (valid) {
           this.submitSheet();
-          this.getPreProductSample();
+          this.SampleSample();
         }
       });
     },
@@ -279,7 +276,6 @@ export default {
       this.$refs.courierNumberForm.validate((valid) => {
         if (valid) {
           this.submitReceipt();
-          this.getPreProductSample();
         }
       });
     },
@@ -292,7 +288,7 @@ export default {
         id: this.id
       });
       this.confirmVisible = false;
-      this.getPreProductSample();
+      this.SampleSample();
     },
     closeConfirm() {
       this.confirmVisible = false;

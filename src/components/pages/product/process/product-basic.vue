@@ -46,19 +46,24 @@
         </el-button>
       </div>
     </el-form-item>
-    <el-form-item label="大品类">
-      <el-input
-        v-model="productForm.big_category_desc"
-        disabled
-      />
-    </el-form-item>
-    <el-form-item label="小品类">
-      <el-input
-        v-model="productForm.small_category_desc"
-        disabled
-      />
-    </el-form-item>
-    <el-form-item label="品牌">
+    <div class="form-item">
+      <el-form-item label="大品类">
+        <el-input
+          v-model="productForm.big_category_desc"
+          disabled
+        />
+      </el-form-item>
+      <el-form-item label="小品类">
+        <el-input
+          v-model="productForm.small_category_desc"
+          disabled
+        />
+      </el-form-item>
+    </div>
+    <el-form-item
+      label="品牌"
+      style="width: 50%"
+    >
       <el-input
         v-model="productForm.brand"
         disabled
@@ -90,11 +95,21 @@
       v-for="(item, index) in productForm.market"
       :key="index"
     >
-      <el-form-item :label="'市场' + (index + 1)">
-        <el-input
+      <el-form-item
+        :label="'市场' + (index + 1)"
+        style="width: 50%"
+      >
+        <el-select
           v-model="item.id"
           disabled
-        />
+        >
+          <el-option
+            v-for="content in market"
+            :key="content.key"
+            :label="content.value"
+            :value="content.key"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item
         v-model="item.id"
@@ -117,6 +132,7 @@
 
 <script>
 export default {
+  props: ['attachment', 'productForm'],
   data() {
     return {
       list: [
@@ -204,86 +220,8 @@ export default {
         children: this.childrenFunc,
         label: 'name'
       },
-      base: {
-        name: '产品名称',
-        images: [
-          {
-            id: 1,
-            type: 1,
-            name: '图片1.jpg'
-          },
-          {
-            id: 2,
-            type: 1,
-            name: '图片2.jpg'
-          },
-          {
-            id: 3,
-            type: 1,
-            name: '图片3.jpg'
-          }
-        ],
-        big_category_id: 1,
-        big_category_desc: '大品类',
-        small_category_id: 10,
-        small_category_desc: '小品类',
-        brand: '品牌',
-        is_new_category: 1,
-        is_new_product: 1,
-        market: [
-          {
-            id: 1,
-            name: '市场名',
-            platform: [10, 20]
-          },
-          {
-            id: 2,
-            name: '市场名1',
-            platform: [10, 20]
-          }
-        ]
-      },
-      market: [
-        {
-          key: 1,
-          value: '美国'
-        },
-        {
-          key: 2,
-          value: '英国'
-        },
-        {
-          key: 3,
-          value: '欧盟'
-        },
-        {
-          key: 4,
-          value: '日本'
-        }
-      ],
-      platform: [
-        {
-          key: 1,
-          value: 'Amazon'
-        },
-        {
-          key: 2,
-          value: 'Lowe\'s'
-        },
-        {
-          key: 3,
-          value: 'Wayfair'
-        },
-        {
-          key: 4,
-          value: 'Walmart'
-        },
-        {
-          key: 5,
-          value: 'Homedepot'
-        }
-      ],
-      productForm: {},
+      market: [],
+      platform: [],
       options: [
         {
           label: '是',
@@ -293,22 +231,22 @@ export default {
           label: '否',
           value: 0
         }
-      ],
-      attachment: []
+      ]
     };
   },
   mounted() {
-    this.getProductDetail();
+    this.getParams();
   },
   methods: {
-    async getProductDetail() {
-      await this.$store.dispatch('product/getProductDetail', {
-        params: {
-          id: +this.$route.params.productId
-        }
-      });
-      this.productForm = this.$store.state.product.productDetail;
-      this.attachment = this.productForm.images;
+    async getParams() {
+      if (localStorage.getItem('params')) {
+        let { demand } = JSON.parse(localStorage.getItem('params'));
+        this.market = demand.market;
+        this.platform = demand.platform;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getParams();
+      }
     },
     handleNodeClick(data) {
       console.log(data);

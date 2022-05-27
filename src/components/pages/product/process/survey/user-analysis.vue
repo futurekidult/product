@@ -1,235 +1,284 @@
 <template>
-  <div class="survey-title">
-    调研进度表
-  </div>
+  <div v-loading="$store.state.product.survey.userAnalysis.analysisLoading">
+    <div class="survey-title">
+      调研进度表
+    </div>
 
-  <survey-schedule :get-progress="progress" />
+    <survey-schedule :get-progress="progress" />
 
-  <div class="survey-title">
-    调研报告内容
-  </div>
+    <div class="survey-title">
+      调研报告内容
+    </div>
 
-  <el-form
-    ref="analysisForm"
-    label-width="110px"
-    style="width: 50%"
-    :model="analysisForm"
-    :rules="analysisRules"
-  >
-    <div class="form-item">
-      <el-form-item
-        label="性别"
-        prop="gender"
+    <el-form
+      ref="analysisForm"
+      label-width="110px"
+      style="width: 50%"
+      :model="analysisForm"
+      :rules="analysisRules"
+    >
+      <div class="form-item">
+        <el-form-item
+          label="性别"
+          prop="gender"
+        >
+          <el-select
+            v-model="analysisForm.gender"
+            placeholder="请选择性别"
+            :disabled="isDisabled"
+            clearable
+          >
+            <el-option
+              v-for="item in genderOptions"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="年龄"
+          prop="age"
+        >
+          <el-select
+            v-model="analysisForm.age"
+            placeholder="请选择年龄"
+            :disabled="isDisabled"
+            clearable
+          >
+            <el-option
+              v-for="item in ageOptions"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="职业"
+          prop="profession"
+        >
+          <el-input
+            v-model="analysisForm.profession"
+            placeholder="请输入职业"
+            maxlength="15"
+            show-word-limit
+            :disabled="isDisabled"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item
+          label="学历"
+          prop="diploma"
+        >
+          <el-select
+            v-model="analysisForm.diploma"
+            placeholder="请选择学历"
+            :disabled="isDisabled"
+            clearable
+          >
+            <el-option
+              v-for="item in diplomaOptions"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="家庭年收入"
+          prop="annual_household_income"
+        >
+          <el-select
+            v-model="analysisForm.annual_household_income"
+            placeholder="请选择家庭年收入"
+            :disabled="isDisabled"
+            clearable
+          >
+            <el-option
+              v-for="item in annualHouseholdIncome"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="婚姻状况"
+          prop="marital_status"
+        >
+          <el-select
+            v-model="analysisForm.marital_status"
+            placeholder="请选择婚姻状况"
+            :disabled="isDisabled"
+            clearable
+          >
+            <el-option
+              v-for="item in maritalStatus"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"
+            />
+          </el-select>
+        </el-form-item>
+      </div>
+      <div
+        v-for="(item, index) in analysisForm.country"
+        :key="index"
+        style="display: flex"
       >
-        <el-select
-          v-model="analysisForm.gender"
-          placeholder="请选择性别"
+        <el-form-item
+          :label="'国家' + (index + 1)"
+          :prop="`country.${index}.country_id`"
+          :rules="analysisRules.country"
+        >
+          <el-select
+            v-model="item.country_id"
+            :disabled="isDisabled"
+            clearable
+            placeholder="请选择国家"
+          />
+        </el-form-item>
+        <el-form-item
+          :label="'州/大区' + (index + 1)"
+          :prop="`country.${index}.region_id`"
+          :rules="analysisRules.region"
+        >
+          <el-select
+            v-model="item.region_id"
+            clearable
+            :disabled="isDisabled"
+            placeholder="请选择州/大区"
+          />
+        </el-form-item>
+        <el-form-item
+          :label="'城市' + (index + 1)"
+          :prop="`country.${index}.city_id`"
+          :rules="analysisRules.city"
+        >
+          <el-select
+            v-model="item.city_id"
+            :disabled="isDisabled"
+            clearable
+            placeholder="请选择城市"
+          />
+        </el-form-item>
+      </div>
+      <el-form-item>
+        <el-button
+          class="user-btn"
           :disabled="isDisabled"
-        />
+          @click="addStateCity"
+        >
+          + 新增
+        </el-button>
+        <el-button
+          class="user-btn"
+          type="danger"
+          :disabled="isDisabled"
+          @click="deleteStateCity"
+        >
+          - 删除
+        </el-button>
       </el-form-item>
       <el-form-item
-        label="年龄"
-        prop="age"
-      >
-        <el-select
-          v-model="analysisForm.age"
-          placeholder="请选择年龄"
-          :disabled="isDisabled"
-        />
-      </el-form-item>
-      <el-form-item
-        label="职业"
-        prop="profession"
+        v-for="(item, index) in analysisForm.usage_scenario"
+        :key="index"
+        :label="'使用场景' + (index + 1)"
+        :prop="`usage_scenario[${index}]`"
+        :rules="analysisRules.usage_scenario"
       >
         <el-input
-          v-model="analysisForm.profession"
-          placeholder="请输入职业"
+          v-model="analysisForm.usage_scenario[index]"
+          placeholder="请输入使用场景"
           maxlength="15"
           show-word-limit
-          :disabled="isDisabled"
-        />
-      </el-form-item>
-      <el-form-item
-        label="学历"
-        prop="diploma"
-      >
-        <el-select
-          v-model="analysisForm.diploma"
-          placeholder="请选择学历"
-          :disabled="isDisabled"
-        />
-      </el-form-item>
-      <el-form-item
-        label="家庭年收入"
-        prop="annual_household_income"
-      >
-        <el-select
-          v-model="analysisForm.annual_household_income"
-          placeholder="请选择家庭年收入"
-          :disabled="isDisabled"
-        />
-      </el-form-item>
-      <el-form-item
-        label="婚姻状况"
-        prop="marital_status"
-      >
-        <el-select
-          v-model="analysisForm.marital_status"
-          placeholder="请选择婚姻状况"
-          :disabled="isDisabled"
-        />
-      </el-form-item>
-    </div>
-    <div
-      v-for="(item, index) in analysisForm.country"
-      :key="index"
-      style="display: flex"
-    >
-      <el-form-item
-        :label="'国家' + (index + 1)"
-        :prop="`country.${index}.country_id`"
-        :rules="analysisRules.country"
-      >
-        <el-select
-          v-model="item.country_id"
-          :disabled="isDisabled"
-        />
-      </el-form-item>
-      <el-form-item
-        :label="'州/大区' + (index + 1)"
-        :prop="`country.${index}.region_id`"
-        :rules="analysisRules.region"
-      >
-        <el-select
-          v-model="item.region_id"
           clearable
           :disabled="isDisabled"
         />
       </el-form-item>
-      <el-form-item
-        :label="'城市' + (index + 1)"
-        :prop="`country.${index}.city_id`"
-        :rules="analysisRules.city"
-      >
-        <el-select
-          v-model="item.city_id"
+      <el-form-item>
+        <el-button
+          class="user-btn"
           :disabled="isDisabled"
+          @click="addUsageScenario"
+        >
+          + 新增
+        </el-button>
+        <el-button
+          class="user-btn"
+          type="danger"
+          :disabled="isDisabled"
+          @click="deleteUsageScenario"
+        >
+          - 删除
+        </el-button>
+      </el-form-item>
+      <el-form-item label="备注">
+        <el-input
+          v-model="analysisForm.remark"
+          :rows="6"
+          type="textarea"
+          placeholder="请输入备注"
+          :disabled="isDisabled"
+          clearable
         />
       </el-form-item>
-    </div>
-    <el-form-item>
-      <el-button
-        class="user-btn"
-        :disabled="isDisabled"
-        @click="addStateCity"
+      <el-form-item
+        label="上传附件"
+        prop="attachment"
       >
-        + 新增
-      </el-button>
-      <el-button
-        class="user-btn"
-        type="danger"
-        :disabled="isDisabled"
-        @click="deleteStateCity"
-      >
-        - 删除
-      </el-button>
-    </el-form-item>
-    <el-form-item
-      v-for="(item, index) in analysisForm.usage_scenario"
-      :key="index"
-      :label="'使用场景' + (index + 1)"
-      :prop="`usage_scenario[${index}]`"
-      :rules="analysisRules.usage_scenario"
-    >
-      <el-input
-        v-model="analysisForm.usage_scenario[index]"
-        placeholder="请输入使用场景"
-        maxlength="15"
-        show-word-limit
-        clearable
-        :disabled="isDisabled"
-      />
-    </el-form-item>
-    <el-form-item>
-      <el-button
-        class="user-btn"
-        :disabled="isDisabled"
-        @click="addUsageScenario"
-      >
-        + 新增
-      </el-button>
-      <el-button
-        class="user-btn"
-        type="danger"
-        :disabled="isDisabled"
-        @click="deleteUsageScenario"
-      >
-        - 删除
-      </el-button>
-    </el-form-item>
-    <el-form-item label="备注">
-      <el-input
-        v-model="analysisForm.remark"
-        :rows="6"
-        type="textarea"
-        placeholder="请输入备注"
-        :disabled="isDisabled"
-      />
-    </el-form-item>
-    <el-form-item
-      label="上传附件"
-      prop="attachment"
-    >
-      <el-upload
-        action="https://jsonplaceholder.typicode.com/posts/"
-        :show-file-list="false"
-        :on-success="handleFileSuccess"
-        :limit="1"
-      >
-        <el-button
-          type="primary"
-          :disabled="isDisabled"
+        <el-upload
+          action=""
+          :show-file-list="false"
+          :on-success="handleFileSuccess"
+          :limit="1"
         >
-          点击上传
-        </el-button>
-      </el-upload>
-      <div class="attachment">
-        支持office文档格式,文档不超过5MB
-      </div>
-    </el-form-item>
-    <el-form-item>
-      <div
-        v-if="show"
-        class="attachment-list"
-      >
-        <div>
-          {{ handleAttachment(attachment.name) }}
+          <el-button
+            type="primary"
+            :disabled="isDisabled"
+          >
+            点击上传
+          </el-button>
+        </el-upload>
+        <div class="attachment">
+          支持office文档格式,文档不超过5MB
         </div>
+      </el-form-item>
+      <el-form-item>
+        <div
+          v-if="show"
+          class="attachment-list"
+        >
+          <div>
+            {{ handleAttachment(attachment.name) }}
+          </div>
+          <el-button
+            v-if="!isDisabled"
+            type="text"
+            @click="deleteFile(attachment.id)"
+          >
+            删除
+          </el-button>
+          <el-button
+            v-else
+            type="text"
+          >
+            下载
+          </el-button>
+        </div>
+      </el-form-item>
+      <el-form-item>
         <el-button
           v-if="!isDisabled"
-          type="text"
-          @click="deleteFile(attachment.id)"
+          type="primary"
+          @click="submitAnalysisForm"
         >
-          删除
+          提交
         </el-button>
-        <el-button
-          v-else
-          type="text"
-        >
-          下载
-        </el-button>
-      </div>
-    </el-form-item>
-    <el-form-item>
-      <el-button
-        v-if="!isDisabled"
-        type="primary"
-        @click="submitAnalysisForm"
-      >
-        提交
-      </el-button>
-    </el-form-item>
-  </el-form>
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 
 <script>
@@ -239,15 +288,15 @@ export default {
   components: {
     SurveySchedule
   },
+  props: ['progress', 'attachment', 'analysisForm', 'getList'],
   data() {
     return {
       fileList: [],
       countryRow: {
-        country_id: null,
-        region_id: null,
-        city_id: null
+        country_id: '',
+        region_id: '',
+        city_id: ''
       },
-      analysisForm: {},
       analysisRules: {
         gender: [
           {
@@ -318,9 +367,11 @@ export default {
       },
       count: 0,
       show: true,
-      attachment: {},
-      progress: {},
-      id: 0
+      ageOptions: [],
+      diplomaOptions: [],
+      annualHouseholdIncome: [],
+      maritalStatus: [],
+      genderOptions: []
     };
   },
   computed: {
@@ -329,26 +380,34 @@ export default {
     }
   },
   mounted() {
-    this.getAnalysis();
+    this.getParams();
   },
   methods: {
-    async getAnalysis() {
-      await this.$store.dispatch('product/survey/userAnalysis/getAnalysisData');
-      this.progress = this.$store.state.product.survey.userAnalysis.progress;
-      this.analysisForm =
-        this.$store.state.product.survey.userAnalysis.analysisForm;
-      this.attachment = this.analysisForm.attachment;
-      this.id = this.progress.id;
+    async getParams() {
+      if (localStorage.getItem('params')) {
+        let userAnalysis = JSON.parse(
+          localStorage.getItem('params')
+        ).survey_user_analysis;
+        this.genderOptions = userAnalysis.gender;
+        this.ageOptions = userAnalysis.age;
+        this.diplomaOptions = userAnalysis.diploma;
+        this.annualHouseholdIncome = userAnalysis.annual_household_income;
+        this.maritalStatus = userAnalysis.marital_status;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getParams();
+      }
     },
     async updateAnalysis(val) {
       let body = val;
-      body['survey_schedule_id'] = this.id;
+      body['survey_schedule_id'] = this.progress.id;
       body['product_id'] = +this.$route.params.productId;
       body['attachment'] = this.attachment.id;
       await this.$store.dispatch(
         'product/survey/userAnalysis/submitAnalysis',
         body
       );
+      this.getList();
     },
     handleAttachment(file) {
       if (file === undefined) {
@@ -361,7 +420,6 @@ export default {
       this.$refs.analysisForm.validate((valid) => {
         if (valid) {
           this.updateAnalysis(this.analysisForm);
-          this.getAnalysis();
         }
       });
     },

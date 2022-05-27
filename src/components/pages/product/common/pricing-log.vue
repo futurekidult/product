@@ -27,16 +27,16 @@
               {{ item.platform }}
             </el-descriptions-item>
             <el-descriptions-item label="申请前销售价">
-              {{ item.origin_selling_price }}
+              ￥ {{ item.origin_selling_price }}
             </el-descriptions-item>
             <el-descriptions-item label="申请调整后销售价">
-              {{ item.applied_selling_price }}
+              ￥{{ item.applied_selling_price }}
             </el-descriptions-item>
             <el-descriptions-item
               v-if="item.adjusted_selling_price_rmb === '' ? '' : 'hide'"
               label="实际调整后销售价"
             >
-              {{ item.adjusted_selling_price_rmb }}
+              ￥{{ item.adjusted_selling_price_rmb }}
             </el-descriptions-item>
           </el-descriptions>
 
@@ -90,7 +90,7 @@ export default {
       this.$emit('hide-dialog', this.visible);
     },
     colorStage(val) {
-      if (val === '待审批') {
+      if (val === 10) {
         return 'result-ing';
       } else {
         return 'result-pass';
@@ -104,7 +104,7 @@ export default {
       }
     },
     isNull(val) {
-      if (val === null || val === 0) {
+      if (val === 0 || val === '') {
         return 'hide';
       }
     }

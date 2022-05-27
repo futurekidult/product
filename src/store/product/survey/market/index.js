@@ -5,19 +5,24 @@ export default {
   namespaced: true,
   state() {
     return {
-      market: {}
+      market: {},
+      marketLoading: true
     };
   },
   mutations: {
-    setMarketData(state, payload) {
+    setMarket(state, payload) {
       state.market = payload;
+    },
+    setMarketLoading(state, payload) {
+      state.marketLoading = payload;
     }
   },
   actions: {
-    async getMarketData(context, payload) {
+    async getMarket(context, payload) {
       await axios.get('/survey/market/detail', payload).then((res) => {
         if (res.code === 200) {
-          context.commit('setMarketData', res.data);
+          context.commit('setMarket', res.data);
+          context.commit('setMarketLoading', false);
         } else {
           ElMessage.error(res.message);
         }
@@ -31,11 +36,6 @@ export default {
           ElMessage.error(res.message);
         }
       });
-    }
-  },
-  getters: {
-    getMarketList(state) {
-      return state.market;
     }
   }
 };

@@ -1,30 +1,30 @@
 <template>
   <el-dialog
     v-model="visible"
-    :title="title"
-    width="20%"
+    title="终止项目"
+    width="30%"
     @close="cancel"
   >
     <el-form
-      ref="reasonForm"
-      :model="reasonForm"
-      :rules="getRules"
+      ref="terminateForm"
+      :model="terminateForm"
     >
       <el-form-item
-        label="内容"
-        prop="content"
+        label="终止原因"
+        prop="reason"
         :rules="[{ required: true, message: '请输入内容' }]"
       >
         <el-input
-          v-model="reasonForm.content"
+          v-model="terminateForm.reason"
+          placeholder="请输入内容"
+          clearable
           type="textarea"
           :rows="6"
-          clearable
-          placeholder="请输入内容"
         />
       </el-form-item>
+      <el-divider />
       <div
-        v-if="type === 'ignore'"
+        v-if="type === 'create'"
         style="text-align: right"
       >
         <el-button
@@ -35,7 +35,7 @@
         </el-button>
         <el-button
           type="primary"
-          @click="submitReasonForm"
+          @click="submitForm"
         >
           提交
         </el-button>
@@ -46,39 +46,36 @@
 
 <script>
 export default {
-  inject: ['getQuestion'],
-  props: ['dialogVisible', 'title', 'type', 'id', 'submitForm'],
+  props: ['type', 'dialogVisible', 'reason'],
   emits: ['hide-dialog'],
   data() {
     return {
       visible: this.dialogVisible,
-      reasonForm: {}
+      terminateForm: {}
     };
   },
   mounted() {
-    if (this.type !== 'ignore') {
-      this.getContent();
+    if (this.type === 'view') {
+      this.terminateForm.reason = this.reason;
     }
   },
   methods: {
-    async getContent() {
-      await this.$store.dispatch('product/getContent', {
+    async terminateProject() {
+      await this.$store.dispatch('product/terminateProject', {
         params: {
-          id: this.id
+          id: +this.$route.params.productId,
+          reason: this.terminateForm.reason
         }
       });
-      this.reasonForm.content = this.$store.state.product.content.content;
     },
     cancel() {
       this.visible = false;
       this.$emit('hide-dialog', this.visible);
     },
-    submitReasonForm() {
-      this.$refs.reasonForm.validate((valid) => {
+    submitForm() {
+      this.$refs.terminateForm.validate((valid) => {
         if (valid) {
-          this.submitForm(this.id, 0, this.reasonForm.content);
-          this.visible = false;
-          this.getQuestion();
+          this.terminateProject();
         }
       });
     }

@@ -68,6 +68,7 @@
         <el-select
           v-model="resultForm.result"
           placeholder="请选择样品结果"
+          clearable
         >
           <el-option
             v-for="item in resultOptions"

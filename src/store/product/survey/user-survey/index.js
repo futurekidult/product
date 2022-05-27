@@ -9,7 +9,8 @@ export default {
       progress: {},
       surveyApply: [],
       planList: [],
-      userSurveyDetail: {}
+      userSurveyDetail: {},
+      userLoading: true
     };
   },
   mutations: {
@@ -27,6 +28,9 @@ export default {
     },
     setUserSurveyDetail(state, payload) {
       state.userSurveyDetail = payload;
+    },
+    setUserLoading(state, payload) {
+      state.userLoading = payload;
     }
   },
   actions: {
@@ -37,6 +41,7 @@ export default {
           context.commit('setProgressData', res.data.progress);
           context.commit('setSurveyApply', res.data.survey_apply);
           context.commit('setPlanList', res.data.plan_list);
+          context.commit('setUserLoading', false);
         } else {
           ElMessage.error(res.message);
         }

@@ -79,21 +79,21 @@
           <div style="display: flex">
             <el-form-item>
               <el-input
-                v-model="quotationForm.inner_length"
+                v-model="quotationForm.inner_l"
                 class="analy-form_mar"
                 disabled
               />
             </el-form-item>
             <el-form-item>
               <el-input
-                v-model="quotationForm.inner_width"
+                v-model="quotationForm.inner_w"
                 class="analy-form_mar"
                 disabled
               />
             </el-form-item>
             <el-form-item>
               <el-input
-                v-model="quotationForm.inner_height"
+                v-model="quotationForm.inner_h"
                 disabled
               />
             </el-form-item>
@@ -103,21 +103,21 @@
           <div style="display: flex">
             <el-form-item>
               <el-input
-                v-model="quotationForm.outer_length"
+                v-model="quotationForm.outer_l"
                 class="analy-form_mar"
                 disabled
               />
             </el-form-item>
             <el-form-item>
               <el-input
-                v-model="quotationForm.outer_width"
+                v-model="quotationForm.outer_w"
                 class="analy-form_mar"
                 disabled
               />
             </el-form-item>
             <el-form-item>
               <el-input
-                v-model="quotationForm.outer_height"
+                v-model="quotationForm.outer_h"
                 disabled
               />
             </el-form-item>
@@ -152,7 +152,14 @@
               v-model="quotationForm.head_currency"
               class="analy-form_mar"
               disabled
-            />
+            >
+              <el-option
+                v-for="item in currency"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key"
+              />
+            </el-select>
           </el-form-item>
           <el-form-item>
             <el-input
@@ -183,7 +190,14 @@
               v-model="quotationForm.tail_currency"
               class="analy-form_mar"
               disabled
-            />
+            >
+              <el-option
+                v-for="item in currency"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key"
+              />
+            </el-select>
           </el-form-item>
           <el-form-item>
             <el-input
@@ -253,15 +267,18 @@ export default {
           name: 'xxx有限公司2'
         }
       ],
-      attachment: {}
+      attachment: {},
+      currency: []
     };
   },
   mounted() {
     this.getQuotation();
+    this.getParams();
   },
   methods: {
     cancel() {
       this.visible = false;
+      this.$store.commit('price/setViewLoading', true);
       this.$emit('hide-dialog', false);
     },
     async getQuotation() {
@@ -278,6 +295,16 @@ export default {
         this.quotationForm.create_time
       );
       this.attachment = this.quotationForm.quotation;
+    },
+    async getParams() {
+      if (localStorage.getItem('params')) {
+        this.currency = JSON.parse(
+          localStorage.getItem('params')
+        ).demand.currency;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getParams();
+      }
     }
   }
 };

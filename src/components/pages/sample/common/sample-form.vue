@@ -19,6 +19,7 @@
           v-model="proofingForm.sample_model"
           placeholder="请输入样品型号"
           :disabled="disabled"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -29,6 +30,7 @@
           v-model="proofingForm.demand_quantity"
           placeholder="请输入需求数量"
           :disabled="disabled"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -39,6 +41,7 @@
           v-model="proofingForm.has_verify"
           placeholder="请选择"
           :disabled="disabled"
+          clearable
         >
           <el-option
             v-for="item in hasVerifyOptions"
@@ -57,6 +60,7 @@
           type="datetime"
           placeholder="请选择"
           :disabled="disabled"
+          clearable
         />
       </el-form-item>
       <el-form-item label="备注">
@@ -66,11 +70,12 @@
           type="textarea"
           rows="5"
           :disabled="disabled"
+          clearable
         />
       </el-form-item>
       <el-form-item label="上传附件">
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action=""
           :show-file-list="false"
           :on-success="handleFileSuccess"
           :limit="1"

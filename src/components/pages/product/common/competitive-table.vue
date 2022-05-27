@@ -25,7 +25,7 @@
         />
         <el-table-column
           label="对标理由"
-          prop="reason"
+          prop="benchmarking_reason"
         />
       </el-table>
     </el-collapse-item>

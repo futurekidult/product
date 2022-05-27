@@ -20,6 +20,7 @@
           v-model="demandForm.user_experience_duration"
           placeholder="请输入天数"
           :disabled="isDisbaled"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -31,6 +32,7 @@
           type="datetime"
           placeholder="请选择日期"
           :disabled="isDisbaled"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -43,6 +45,7 @@
           type="textarea"
           :rows="6"
           :disabled="isDisbaled"
+          clearable
         />
       </el-form-item>
       <el-form-item
@@ -50,7 +53,7 @@
         prop="demand_list_file"
       >
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action=""
           :show-file-list="false"
           :on-success="handleFileSuccess"
           :limit="1"
@@ -96,6 +99,7 @@
           v-model="demandForm.review_result"
           placeholder="请选择"
           :disabled="isViewDisabled"
+          clearable
         >
           <el-option
             v-for="item in reviewOptions"
@@ -114,6 +118,7 @@
             v-model="demandForm.sample_demand_quantity"
             placeholder="请输入需求数"
             :disabled="isViewDisabled"
+            clearable
           />
         </el-form-item>
         <el-form-item
@@ -162,6 +167,7 @@
             v-model="demandForm.user_survey_specialist_id"
             placeholder="请选择用研专员"
             :disabled="isViewDisabled"
+            clearable
           />
         </el-form-item>
       </div>
@@ -309,7 +315,6 @@ export default {
       if (!this.demandForm.user_survey_specialist_id) {
         this.demandForm.user_survey_specialist_id = '';
       }
-      // this.demandForm.user_survey_specialist_id = 10;
       this.loading = this.$store.state.sample.user.reviewLoading;
     },
     async viewUserTestApply() {

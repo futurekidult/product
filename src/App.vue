@@ -2,6 +2,19 @@
   <router-view />
 </template>
 
+<script>
+export default {
+  mounted() {
+    this.getSystemParamters();
+  },
+  methods: {
+    async getSystemParamters() {
+      await this.$store.dispatch('getSystemParameters');
+    }
+  }
+};
+</script>
+
 <style>
 body {
   margin: 0;
@@ -103,8 +116,7 @@ body {
 
 .form-item {
   display: grid;
-  grid-template-columns: 49% 49%;
-  gap: 5px;
+  grid-template-columns: 50% 50%;
 }
 
 .el-select {
@@ -113,7 +125,7 @@ body {
 
 .form-template {
   display: grid;
-  grid-template-columns: 40% 20% 40%;
+  grid-template-columns: 33% 33% 33%;
   width: 100%;
 }
 
@@ -228,6 +240,7 @@ body {
 
 .form-desc {
   font-size: 10px;
+  text-align: center;
 }
 
 .overdue,
