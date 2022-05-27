@@ -35,6 +35,9 @@ export default {
     setSampleList(state, payload) {
       state.sampleList = payload;
     },
+    setListLoading(state, payload) {
+      state.listLoading = payload;
+    },
     setSampleDetail(state, payload) {
       state.sampleDetail = payload;
     },
@@ -74,7 +77,7 @@ export default {
       await axios.get('/sample/all/list/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSampleList', res.data.list);
-          context.state.listLoading = false;
+          context.commit('setListLoading', false);
         } else {
           ElMessage.error(res.message);
         }

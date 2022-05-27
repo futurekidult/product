@@ -1,6 +1,5 @@
 <template>
-  <base-breadcrumb />
-  <supplier-form type="create" />
+  <supplier-form type="update" />
 </template>
 
 <script>
@@ -9,6 +8,7 @@ import SupplierForm from './common/supplier-form.vue';
 export default {
   components: {
     SupplierForm
-  }
+  },
+  props: ['id']
 };
 </script>

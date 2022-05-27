@@ -23,6 +23,9 @@ export default {
     setMouldList(state, payload) {
       state.mouldList = payload;
     },
+    setListLoading(state, payload) {
+      state.listLoading = payload;
+    },
     setMould(state, payload) {
       state.mould = payload;
     },
@@ -56,7 +59,7 @@ export default {
       await axios.get('/mould/all/list/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setMouldList', res.data.list);
-          context.state.listLoading = false;
+          context.commit('setListLoading', false);
         } else {
           ElMessage.error(res.message);
         }

@@ -7,6 +7,8 @@ import DemandDetail from './components/pages/demand/demand-detail/demand-detail.
 import SupplyList from './components/pages/supplier/supply-list.vue';
 import SupplierCreate from './components/pages/supplier/supplier-create.vue';
 import SupplierDetail from './components/pages/supplier/supplier-detail.vue';
+import BlackList from './components/pages/supplier/black-list.vue';
+import SupplierUpdate from './components/pages/supplier/supplier-update.vue';
 import PriceList from './components/pages/price/price-list.vue';
 import QuotationList from './components/pages/price/quotation-list.vue';
 import MouldList from './components/pages/mould/mould-list.vue';
@@ -77,6 +79,15 @@ const router = createRouter({
                 title: '供应商详情'
               },
               props: true
+            },
+            {
+              path: '/supplist-list/supplier-update/:id',
+              name: 'supplier update',
+              component: SupplierUpdate,
+              meta: {
+                title: '编辑供应商'
+              },
+              props: true
             }
           ]
         },
@@ -86,6 +97,14 @@ const router = createRouter({
           component: SupplierCreate,
           meta: {
             title: '创建供应商'
+          }
+        },
+        {
+          path: '/black-list',
+          name: 'black list',
+          component: BlackList,
+          meta: {
+            title: '黑名单'
           }
         },
         {

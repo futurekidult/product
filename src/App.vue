@@ -150,7 +150,8 @@ body {
 .test-item,
 .member-item,
 .open-mould_item,
-.quotation-item {
+.quotation-item,
+.supplier-item {
   display: flex;
   justify-content: space-between;
 }

@@ -63,7 +63,7 @@
       <template #default="scope">
         <el-button
           :disabled="scope.row.is_delivered_desc === '是'"
-          @click="deliverSample(scope.row.user_test_apply_id)"
+          @click="deliverSample(scope.row.user_test_apply_id, scope.row.id)"
         >
           样品已寄送
         </el-button>
@@ -153,10 +153,11 @@ export default {
         item.upload_time = formatterTime(item.upload_time);
       });
     },
-    async deliverSample(val) {
+    async deliverSample(testId, userId) {
       let body = {
-        user_test_apply_id: val,
-        is_delivered: 1
+        user_test_apply_id: testId,
+        is_delivered: 1,
+        user_id: userId
       };
       await this.$store.dispatch('sample/user/deliverSample', body);
       this.getUserList();

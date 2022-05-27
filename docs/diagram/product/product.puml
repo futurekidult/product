@@ -12,6 +12,7 @@ title 新品列表
 title 新品详情
 
 +_ ProductDetail
+++ TerminateForm
 ++_ BaseTag
 ++_ ProductBasic(调研中)
 ++_ RelatedMember(调研中)
