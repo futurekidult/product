@@ -43,31 +43,38 @@ export default {
               path: '/demand-list',
               meta: { title: '需求管理' }
             });
+            this.$store.commit('demand/setDemandLoading', true);
             break;
           case 'supplier':
           case 'supplier create':
+          case 'black list':
+          case 'supplier update':
             prefix = prefix.concat({
               path: '/supplier-list',
               meta: { title: '供应商管理' }
             });
+            this.$store.commit('supplier/setSupplierLoading', true);
             break;
           case 'price':
             prefix = prefix.concat({
               path: '/price-list',
               meta: { title: '定价管理' }
             });
+            this.$store.commit('price/setPriceLoading', true);
             break;
           case 'mould':
             prefix = prefix.concat({
               path: '/mould-list',
               meta: { title: '模具管理' }
             });
+            this.$store.commit('mould/setListLoading', true);
             break;
           case 'sample':
             prefix = prefix.concat({
               path: '/sample-list',
               meta: { title: '样品管理' }
             });
+            this.$store.commit('sample/setListLoading', true);
             break;
           case 'product':
             if (matched.length === 4) {
@@ -86,6 +93,7 @@ export default {
                 meta: { title: '新品管理' }
               });
             }
+            this.$store.commit('product/setListLoading', true);
             break;
           default:
         }

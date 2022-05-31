@@ -23,6 +23,9 @@ export default {
     setPriceList(state, payload) {
       state.priceList = payload;
     },
+    setPriceLoading(state, payload) {
+      state.priceLoading = payload;
+    },
     setQuotationList(state, payload) {
       state.quotationList = payload;
     },
@@ -50,7 +53,7 @@ export default {
       await axios.get('/pricing/all/list', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setPriceList', res.data.list);
-          context.state.priceLoading = false;
+          context.commit('setPriceLoading', false);
         } else {
           ElMessage.success(res.message);
         }

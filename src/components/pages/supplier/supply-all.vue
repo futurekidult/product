@@ -1,109 +1,288 @@
 <template>
-  <div class="border">
-    <div class="select-title">
-      <span class="line">|</span> 筛选条件
-    </div>
-    <el-form
-      label-width="100px"
-      style="display: flex"
-      :model="chooseForm"
-    >
-      <el-form-item label="供应商名称">
-        <el-input
-          v-model="chooseForm.id"
-          clearable
-          placeholder="请输入供应商名称"
-        />
-      </el-form-item>
-      <el-form-item label="创建人">
-        <el-input
-          v-model="chooseForm.author"
-          clearable
-          placeholder="请输入创建人"
-        />
-      </el-form-item>
-      <el-form-item label="状态">
-        <el-select
-          v-model="chooseForm.status"
-          clearable
-          placeholder="请选择"
-        >
-          <el-option
-            label="草稿"
-            value="0"
-          />
-          <el-option
-            label="待评审"
-            value="1"
-          />
-          <el-option
-            label="评审通过"
-            value="2"
-          />
-          <el-option
-            label="评审不通过"
-            value="3"
-          />
-        </el-select>
-      </el-form-item>
-      <div style="float: right">
-        <el-form-item>
-          <el-button type="primary">
-            查询
-          </el-button>
-          <el-button> 重置 </el-button>
-        </el-form-item>
+  <div v-loading="$store.state.supplier.supplierLoading">
+    <div class="border">
+      <div class="select-title">
+        <span class="line">|</span> 筛选条件
       </div>
-    </el-form>
-  </div>
-
-  <div class="border">
-    <div class="select-title">
-      <span class="line">|</span> 供应商列表
-      <el-button
-        type="primary"
-        class="create"
-        @click="toCreate"
+      <el-form
+        label-width="100px"
+        style="display: flex"
+        :model="chooseForm"
       >
-        创建供应商
-      </el-button>
+        <el-form-item label="供应商名称">
+          <el-input
+            v-model="chooseForm.name"
+            clearable
+            placeholder="请输入供应商名称"
+            @clear="getSupplierList()"
+          />
+        </el-form-item>
+        <el-form-item label="采购员">
+          <el-input
+            v-model="chooseForm.purchase_specialist"
+            clearable
+            placeholder="请输入采购员"
+            @clear="getSupplierList()"
+          />
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-select
+            v-model="chooseForm.state"
+            clearable
+            placeholder="请选择"
+            @clear="getSupplierList()"
+          >
+            <el-option
+              v-for="item in supplierState"
+              :key="item.key"
+              :label="item.value"
+              :value="item.key"
+            />
+          </el-select>
+        </el-form-item>
+        <div style="float: right">
+          <el-form-item>
+            <el-button
+              type="primary"
+              @click="getSupplierList"
+            >
+              查询
+            </el-button>
+            <el-button
+              class="close-btn"
+              @click="resetForm"
+            >
+              重置
+            </el-button>
+          </el-form-item>
+        </div>
+      </el-form>
     </div>
 
-    <el-table border>
-      <el-table-column label="供应商ID" />
-      <el-table-column label="供应商名称" />
-      <el-table-column label="营业执照注册号" />
-      <el-table-column label="货源地" />
-      <el-table-column label="创建时间" />
-      <el-table-column label="审批完成时间" />
-      <el-table-column label="创建人" />
-      <el-table-column label="状态" />
-      <el-table-column label="操作" />
-    </el-table>
+    <div class="border">
+      <div class="select-title supplier-item">
+        <div>
+          <span class="line">|</span> 供应商列表
+          <el-button
+            type="text"
+            @click="toBlackList"
+          >
+            查看黑名单
+          </el-button>
+        </div>
+        <el-button
+          type="primary"
+          class="create"
+          @click="toCreate"
+        >
+          创建供应商
+        </el-button>
+      </div>
 
-    <el-button @click="toDetail">
-      查看详情
-    </el-button>
+      <el-table
+        border
+        empty-text="无数据"
+        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+        :data="supplierList"
+      >
+        <el-table-column
+          label="供应商ID"
+          prop="id"
+        />
+        <el-table-column
+          label="供应商名称"
+          prop="name"
+        />
+        <el-table-column
+          label="供应商类型"
+          prop="type"
+        />
+        <el-table-column
+          label="合作等级"
+          prop="cooperation_level"
+        />
+        <el-table-column
+          label="采购员"
+          prop="purchase_specialist"
+        />
+        <el-table-column
+          label="创建时间"
+          prop="create_time"
+        />
+        <el-table-column
+          label="审批完成时间"
+          prop="approval_time"
+        />
+        <el-table-column label="状态">
+          <template #default="scope">
+            <div :class="changeColor(scope.row.state)">
+              {{ scope.row.state_desc }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          width="250px"
+        >
+          <template #default="scope">
+            <div style="display: flex">
+              <el-button
+                type="text"
+                @click="toDetail(scope.row.id)"
+              >
+                查看
+              </el-button>
+              <div v-if="scope.row.state === 10">
+                <span class="table-btn">|</span>
+                <el-button
+                  type="text"
+                  @click="deleteSupplier(scope.row.id)"
+                >
+                  删除
+                </el-button>
+                <span class="table-btn">|</span>
+                <el-button
+                  type="text"
+                  @click="toDetail(scope.row.id)"
+                >
+                  供应商审批
+                </el-button>
+              </div>
+              <div
+                v-else
+                style="display: flex"
+              >
+                <div v-if="scope.row.state === 30">
+                  <span class="table-btn">|</span>
+                  <el-button
+                    type="text"
+                    @click="toUpdate(scope.row.id)"
+                  >
+                    编辑
+                  </el-button>
+                </div>
+                <div>
+                  <span class="table-btn">|</span>
+                  <el-button
+                    type="text"
+                    @click="showBlackDialog(scope.row.id)"
+                  >
+                    加入黑名单
+                  </el-button>
+                </div>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <base-pagination
+        :length="40"
+        :get-list="getSupplierList"
+      />
+    </div>
   </div>
+
+  <confirm-dialog
+    v-if="blackDialogVisible"
+    :id="supplierBlackId"
+    :dialog-visible="blackDialogVisible"
+    type="black"
+    :get-list="getSupplierList"
+    @hide-dialog="closeBlackDialog"
+  />
 </template>
 
 <script>
+import { formatterTime } from '../../../utils';
+import ConfirmDialog from './common/confirm-dialog.vue';
+
 export default {
+  components: {
+    ConfirmDialog
+  },
   data() {
     return {
       chooseForm: {
-        id: '',
-        author: '',
-        status: ''
-      }
+        name: '',
+        purchase_specialist: '',
+        state: ''
+      },
+      supplierList: [],
+      supplierState: [],
+      blackDialogVisible: false,
+      supplierBlackId: 0
     };
   },
+  mounted() {
+    this.getState();
+    this.getSupplierList();
+  },
   methods: {
+    async getState() {
+      if (localStorage.getItem('params')) {
+        this.supplierState = JSON.parse(
+          localStorage.getItem('params')
+        ).supplier.state;
+      } else {
+        await this.$store.dispatch('getSystemParameters');
+        this.getState();
+      }
+    },
+    async getSupplierList(currentPage = 1, pageSize = 10) {
+      this.$store.commit('supplier/setSupplierLoading', true);
+      let params = this.chooseForm;
+      params['current_page'] = currentPage;
+      params['page_size'] = pageSize;
+      await this.$store.dispatch('supplier/getSupplierList', { params });
+      this.supplierList = this.$store.state.supplier.supplierList;
+      this.supplierList.forEach((item) => {
+        item.create_time = formatterTime(item.create_time);
+        item.approval_time = formatterTime(item.approval_time);
+      });
+    },
     toCreate() {
+      this.$store.commit('supplier/setCreateState', false);
       this.$router.push('/supplier-create');
     },
-    toDetail() {
-      this.$router.push('/supplier-list/1');
+    toUpdate(id) {
+      this.$store.commit('supplier/setUpdateState', false);
+      this.$store.commit('supplier/setSupplierDetailLoading', true);
+      this.$router.push(`/supplist-list/supplier-update/${id}`);
+    },
+    toDetail(id) {
+      this.$store.commit('supplier/setSupplierDetailLoading', true);
+      this.$router.push(`/supplier-list/${id}`);
+    },
+    changeColor(val) {
+      if (val === 10) {
+        return 'result-ing';
+      } else if (val === 20) {
+        return 'result-fail';
+      } else {
+        return 'result-pass';
+      }
+    },
+    resetForm() {
+      this.chooseForm = {};
+      this.getSupplierList();
+    },
+    async deleteSupplier(id) {
+      await this.$store.dispatch('supplier/deleteSupplier', {
+        id
+      });
+      this.getSupplierList();
+    },
+    toBlackList() {
+      this.$store.commit('supplier/setBlackLoading', true);
+      this.$router.push('/black-list');
+    },
+    showBlackDialog(id) {
+      this.blackDialogVisible = true;
+      this.supplierBlackId = id;
+    },
+    closeBlackDialog() {
+      this.blackDialogVisible = false;
     }
   }
 };

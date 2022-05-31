@@ -92,6 +92,9 @@ export default {
     },
     setPackageLoading(state, payload) {
       state.packageLoading = payload;
+    },
+    setListLoading(state, payload) {
+      state.listLoading = payload;
     }
   },
   actions: {
@@ -99,7 +102,7 @@ export default {
       await axios.get('/product/all/list', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setProduct', res.data.list);
-          context.state.listLoading = false;
+          context.commit('setListLoading', false);
         } else {
           ElMessage.error(res.message);
         }

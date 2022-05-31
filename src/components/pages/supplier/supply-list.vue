@@ -13,7 +13,10 @@ export default {
   },
   computed: {
     isParent() {
-      return this.$route.name !== 'supplier detail';
+      return (
+        this.$route.name !== 'supplier detail' &&
+        this.$route.name !== 'supplier update'
+      );
     }
   }
 };

@@ -5,8 +5,7 @@ title 供应商列表
 ++_ BaseBreadcrumb
 ++_ SupplierAll
 +++_ BasePagination
-+++_ BlackList
-++++_ BasePagination
++++_ ConfirmDialog
 
 @endmindmap
 
@@ -19,13 +18,28 @@ title 创建供应商
 
 @endmindmap
 
-
 @startmindmap
 title 供应商详情
 
 +_ SupplierDetail
 ++_ BaseTag
 ++_ SupplierForm
-++_ CompanyDescription
+
+@endmindmap
+
+@startmindmap
+title 更新供应商
+
++_ SupplierUpdate
+++_ SupplierForm
+
+@endmindmap
+
+@startmindmap
+title 黑名单
+
++_ BlackList
+++_ ConfirmDialog
+++_ BaseBreadcrumb
 
 @endmindmap
