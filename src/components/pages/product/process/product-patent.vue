@@ -140,7 +140,7 @@
     title="专利排查申请"
     type="apply"
     :form="applyForm"
-    :competitive-product="competitiveProduct"
+    :product-form="patent"
     @hide-dialog="closePatentApply"
   />
 
@@ -151,7 +151,7 @@
     title="专利排查需求评审"
     type="review"
     :form="reviewForm"
-    :competitive-product="competitiveProduct"
+    :product-form="patent"
     @hide-dialog="closePatentReview"
   />
 
@@ -161,7 +161,7 @@
     title="查看"
     type="view"
     :form="viewForm"
-    :competitive-product="competitiveProduct"
+    :product-form="patent"
     @hide-dialog="closeViewReview"
   />
 </template>
@@ -192,9 +192,6 @@ export default {
     };
   },
   computed: {
-    competitiveProduct() {
-      return this.patent.competitive_product;
-    },
     buttonState() {
       return this.patent.button_state;
     }

@@ -70,7 +70,7 @@ export default {
   props: ['orderList'],
   methods: {
     async getSkuForm() {
-      await this.$store.dispatch('product/order/getSkuForm');
+      await this.$store.dispatch('product/order/getSku');
     },
     async getOrderProgress() {
       await this.$store.dispatch('product/order/getProgress', {

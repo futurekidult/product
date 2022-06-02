@@ -229,7 +229,7 @@ export default {
       getProject: this.getProject
     };
   },
-  props: ['productId'],
+  props: ['productId', 'orderId'],
   data() {
     return {
       activeName: 'basic',

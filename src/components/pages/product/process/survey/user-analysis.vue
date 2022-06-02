@@ -14,7 +14,7 @@
       ref="analysisForm"
       label-width="110px"
       style="width: 50%"
-      :model="analysisForm"
+      :model="form"
       :rules="analysisRules"
     >
       <div class="form-item">
@@ -23,7 +23,7 @@
           prop="gender"
         >
           <el-select
-            v-model="analysisForm.gender"
+            v-model="form.gender"
             placeholder="请选择性别"
             :disabled="isDisabled"
             clearable
@@ -41,7 +41,7 @@
           prop="age"
         >
           <el-select
-            v-model="analysisForm.age"
+            v-model="form.age"
             placeholder="请选择年龄"
             :disabled="isDisabled"
             clearable
@@ -59,7 +59,7 @@
           prop="profession"
         >
           <el-input
-            v-model="analysisForm.profession"
+            v-model="form.profession"
             placeholder="请输入职业"
             maxlength="15"
             show-word-limit
@@ -72,7 +72,7 @@
           prop="diploma"
         >
           <el-select
-            v-model="analysisForm.diploma"
+            v-model="form.diploma"
             placeholder="请选择学历"
             :disabled="isDisabled"
             clearable
@@ -90,7 +90,7 @@
           prop="annual_household_income"
         >
           <el-select
-            v-model="analysisForm.annual_household_income"
+            v-model="form.annual_household_income"
             placeholder="请选择家庭年收入"
             :disabled="isDisabled"
             clearable
@@ -108,7 +108,7 @@
           prop="marital_status"
         >
           <el-select
-            v-model="analysisForm.marital_status"
+            v-model="form.marital_status"
             placeholder="请选择婚姻状况"
             :disabled="isDisabled"
             clearable
@@ -123,44 +123,21 @@
         </el-form-item>
       </div>
       <div
-        v-for="(item, index) in analysisForm.country"
+        v-for="(item, index) in form.country"
         :key="index"
-        style="display: flex"
       >
         <el-form-item
-          :label="'国家' + (index + 1)"
-          :prop="`country.${index}.country_id`"
+          :label="'城市' + (index + 1)"
+          :prop="`country[${index}]`"
           :rules="analysisRules.country"
         >
-          <el-select
-            v-model="item.country_id"
+          <el-cascader
+            v-model="form.country[index]"
             :disabled="isDisabled"
             clearable
+            :options="countryOption"
+            :props="defaultProps"
             placeholder="请选择国家"
-          />
-        </el-form-item>
-        <el-form-item
-          :label="'州/大区' + (index + 1)"
-          :prop="`country.${index}.region_id`"
-          :rules="analysisRules.region"
-        >
-          <el-select
-            v-model="item.region_id"
-            clearable
-            :disabled="isDisabled"
-            placeholder="请选择州/大区"
-          />
-        </el-form-item>
-        <el-form-item
-          :label="'城市' + (index + 1)"
-          :prop="`country.${index}.city_id`"
-          :rules="analysisRules.city"
-        >
-          <el-select
-            v-model="item.city_id"
-            :disabled="isDisabled"
-            clearable
-            placeholder="请选择城市"
           />
         </el-form-item>
       </div>
@@ -182,14 +159,14 @@
         </el-button>
       </el-form-item>
       <el-form-item
-        v-for="(item, index) in analysisForm.usage_scenario"
+        v-for="(item, index) in form.usage_scenario"
         :key="index"
         :label="'使用场景' + (index + 1)"
         :prop="`usage_scenario[${index}]`"
         :rules="analysisRules.usage_scenario"
       >
         <el-input
-          v-model="analysisForm.usage_scenario[index]"
+          v-model="form.usage_scenario[index]"
           placeholder="请输入使用场景"
           maxlength="15"
           show-word-limit
@@ -216,7 +193,7 @@
       </el-form-item>
       <el-form-item label="备注">
         <el-input
-          v-model="analysisForm.remark"
+          v-model="form.remark"
           :rows="6"
           type="textarea"
           placeholder="请输入备注"
@@ -229,9 +206,9 @@
         prop="attachment"
       >
         <el-upload
-          action=""
+          action
           :show-file-list="false"
-          :on-success="handleFileSuccess"
+          :http-request="handleFileSuccess"
           :limit="1"
         >
           <el-button
@@ -251,21 +228,33 @@
           class="attachment-list"
         >
           <div>
-            {{ handleAttachment(attachment.name) }}
+            {{ handleAttachment(file.name) }}
           </div>
-          <el-button
-            v-if="!isDisabled"
-            type="text"
-            @click="deleteFile(attachment.id)"
-          >
-            删除
-          </el-button>
-          <el-button
-            v-else
-            type="text"
-          >
-            下载
-          </el-button>
+          <div style="display: flex">
+            <div v-if="handleAttachment(file.type) === 12860">
+              <el-button
+                type="text"
+                @click="showViewFile(file.id)"
+              >
+                预览
+              </el-button>
+              <span class="table-btn">|</span>
+            </div>
+            <el-button
+              v-if="!isDisabled"
+              type="text"
+              @click="deleteFile"
+            >
+              删除
+            </el-button>
+            <el-button
+              v-else
+              type="text"
+              @click="download(file.id, file.name)"
+            >
+              下载
+            </el-button>
+          </div>
         </div>
       </el-form-item>
       <el-form-item>
@@ -282,6 +271,7 @@
 </template>
 
 <script>
+import { downloadFile, getFile, previewFile } from '../../../../../utils';
 import SurveySchedule from '../../common/survey- schedule.vue';
 
 export default {
@@ -292,11 +282,6 @@ export default {
   data() {
     return {
       fileList: [],
-      countryRow: {
-        country_id: '',
-        region_id: '',
-        city_id: ''
-      },
       analysisRules: {
         gender: [
           {
@@ -340,18 +325,18 @@ export default {
             message: '请选择国家'
           }
         ],
-        region: [
-          {
-            required: true,
-            message: '请选择州/大区'
-          }
-        ],
-        city: [
-          {
-            required: true,
-            message: '请选择城市'
-          }
-        ],
+        // region: [
+        //   {
+        //     required: true,
+        //     message: '请选择州/大区'
+        //   }
+        // ],
+        // city: [
+        //   {
+        //     required: true,
+        //     message: '请选择城市'
+        //   }
+        // ],
         usage_scenario: [
           {
             required: true,
@@ -371,7 +356,15 @@ export default {
       diplomaOptions: [],
       annualHouseholdIncome: [],
       maritalStatus: [],
-      genderOptions: []
+      genderOptions: [],
+      form: this.analysisForm,
+      file: this.attachment,
+      countryOption: [],
+      defaultProps: {
+        value: 'id',
+        label: 'name',
+        children: 'children'
+      }
     };
   },
   computed: {
@@ -379,8 +372,23 @@ export default {
       return this.progress.state === 10 ? false : true;
     }
   },
+  watch: {
+    attachment(val) {
+      this.file = val;
+    },
+    analysisForm(val) {
+      this.form = val;
+      if (this.form.usage_scenario.length === 0) {
+        this.form.usage_scenario = [['']];
+      }
+      if (this.form.country.length === 0) {
+        this.form.usage_scenario = [['']];
+      }
+    }
+  },
   mounted() {
     this.getParams();
+    this.getCountryList();
   },
   methods: {
     async getParams() {
@@ -398,11 +406,15 @@ export default {
         this.getParams();
       }
     },
+    async getCountryList() {
+      await this.$store.dispatch('getCountry');
+      this.countryOption = this.$store.state.countryList;
+    },
     async updateAnalysis(val) {
       let body = val;
       body['survey_schedule_id'] = this.progress.id;
       body['product_id'] = +this.$route.params.productId;
-      body['attachment'] = this.attachment.id;
+      body['attachment'] = this.file.id;
       await this.$store.dispatch(
         'product/survey/userAnalysis/submitAnalysis',
         body
@@ -417,39 +429,56 @@ export default {
       }
     },
     submitAnalysisForm() {
+      this.form.attachment = this.file.id;
       this.$refs.analysisForm.validate((valid) => {
         if (valid) {
-          this.updateAnalysis(this.analysisForm);
+          this.updateAnalysis(this.form);
         }
       });
     },
-    addUsageScenario() {
-      this.analysisForm.usage_scenario.length++;
+    async handleFileSuccess(e) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        this.show = true;
+        this.file = {
+          id: this.$store.state.fileRes.id,
+          name: this.$store.state.fileRes.file_name,
+          type: this.$store.state.fileRes.type
+        };
+      }
     },
-    handleFileSuccess(file, fileList) {
-      this.attachment = {
-        id: file.id,
-        name: fileList.name
-      };
-      this.analysisForm.attachment = file.id;
-      this.show = true;
-    },
-    deleteFile(id) {
-      console.log(id);
-      this.attachment = {};
+    deleteFile() {
+      this.file = {};
+      this.form.attachment = '';
       this.show = false;
     },
-    previewFile(id) {
-      console.log(id);
+    async download(id, name) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        downloadFile(this.$store.state.viewLink, name);
+      }
+    },
+    async showViewFile(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        previewFile(this.$store.state.viewLink);
+      }
     },
     addStateCity() {
-      this.analysisForm.country.push(this.countryRow);
+      this.form.country.push([]);
+    },
+    addUsageScenario() {
+      this.form.usage_scenario.push([]);
     },
     deleteStateCity() {
-      this.analysisForm.country.pop();
+      this.form.country.pop();
     },
     deleteUsageScenario() {
-      this.analysisForm.usage_scenario.length--;
+      this.form.usage_scenario.pop();
     }
   }
 };

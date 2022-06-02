@@ -42,7 +42,7 @@
           <el-button
             v-if="!show"
             type="text"
-            @click="show = !show"
+            @click="showForm"
           >
             展开内容
           </el-button>
@@ -108,6 +108,10 @@ export default {
       } else {
         return 'danger';
       }
+    },
+    showForm() {
+      this.show = !this.show;
+      this.$store.commit('demand/setDemandDetailLoading', true);
     }
   }
 };

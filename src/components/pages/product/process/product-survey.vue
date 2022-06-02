@@ -52,7 +52,6 @@
         :progress="planProgress"
         :attachment="planAttachment"
         :product-form="planForm"
-        :competitive-product="competitiveProduct"
       />
     </el-tab-pane>
     <el-tab-pane
@@ -117,7 +116,6 @@ export default {
       planProgress: {},
       planForm: {},
       planAttachment: {},
-      competitiveProduct: [],
       riskProgress: {},
       riskForm: {},
       riskAttachment: {},
@@ -185,7 +183,6 @@ export default {
       );
       this.planForm = this.$store.state.product.survey.plan.plan.report;
       this.planAttachment = this.planForm.attachment;
-      this.competitiveProduct = this.planForm.competitive_product;
     },
     async getRisk() {
       await this.$store.dispatch('product/survey/risk/getRisk');

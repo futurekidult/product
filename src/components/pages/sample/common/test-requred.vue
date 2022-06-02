@@ -1,7 +1,6 @@
 <template>
   <el-dialog
     v-model="visible"
-    v-loading="loading"
     :title="title"
     width="30%"
     @close="cancel"
@@ -53,9 +52,9 @@
         prop="demand_list_file"
       >
         <el-upload
-          action=""
+          action
           :show-file-list="false"
-          :on-success="handleFileSuccess"
+          :http-request="handleFileSuccess"
           :limit="1"
         >
           <el-button
@@ -75,18 +74,31 @@
           class="attachment-list"
         >
           <div>{{ attachment.name }}</div>
-          <el-button
-            v-if="type === 'apply'"
-            type="text"
-          >
-            删除
-          </el-button>
-          <el-button
-            v-else
-            type="text"
-          >
-            下载
-          </el-button>
+          <div style="display: flex">
+            <div v-if="attachment.type === 12860">
+              <el-button
+                type="text"
+                @click="showViewFile(attachment.id)"
+              >
+                预览
+              </el-button>
+              <span class="table-btn">|</span>
+            </div>
+            <el-button
+              v-if="type === 'apply'"
+              type="text"
+              @click="deleteFile"
+            >
+              删除
+            </el-button>
+            <el-button
+              v-else
+              type="text"
+              @click="download(attachment.id, attachment.name)"
+            >
+              下载
+            </el-button>
+          </div>
         </div>
       </el-form-item>
       <el-divider />
@@ -126,9 +138,9 @@
           prop="user_requirement_file"
         >
           <el-upload
-            action=""
+            action
             :show-file-list="false"
-            :on-success="handleRequirementFileSuccess"
+            :http-request="handleRequirementFileSuccess"
             :limit="1"
           >
             <el-button
@@ -148,26 +160,45 @@
             class="attachment-list"
           >
             <div>{{ requiredAttachment.name }}</div>
-            <el-button
-              v-if="type === 'apply'"
-              type="text"
-            >
-              删除
-            </el-button>
-            <el-button type="text">
-              下载
-            </el-button>
+            <div style="display: flex">
+              <div v-if="requiredAttachment.type === 12860">
+                <el-button
+                  type="text"
+                  @click="showViewFile(requiredAttachment.id)"
+                >
+                  预览
+                </el-button>
+                <span class="table-btn">|</span>
+              </div>
+              <el-button
+                v-if="type !== 'view'"
+                type="text"
+                @click="deleteRequiredFile"
+              >
+                删除
+              </el-button>
+              <el-button
+                v-else
+                type="text"
+                @click="
+                  download(requiredAttachment.id, requiredAttachment.name)
+                "
+              >
+                下载
+              </el-button>
+            </div>
           </div>
         </el-form-item>
         <el-form-item
           label="选择用研专员"
           prop="user_survey_specialist_id"
         >
-          <el-select
+          <select-tree
             v-model="demandForm.user_survey_specialist_id"
-            placeholder="请选择用研专员"
-            :disabled="isViewDisabled"
-            clearable
+            :value="demandForm.user_survey_specialist_id"
+            :data="memberList"
+            :props="defaultProps"
+            @input="getValue"
           />
         </el-form-item>
       </div>
@@ -193,8 +224,18 @@
 </template>
 
 <script>
-import { timestamp } from '../../../../utils';
+import {
+  downloadFile,
+  getFile,
+  previewFile,
+  timestamp
+} from '../../../../utils';
+import SelectTree from '../../../common/select-tree.vue';
+
 export default {
+  components: {
+    SelectTree
+  },
   props: ['dialogVisible', 'title', 'type', 'id'],
   emits: ['hide-dialog'],
   data() {
@@ -261,7 +302,11 @@ export default {
       attachment: {},
       requiredAttachment: {},
       requiredShow: false,
-      loading: true
+      memberList: [],
+      defaultProps: {
+        children: this.childrenFunc,
+        label: 'name'
+      }
     };
   },
   computed: {
@@ -290,6 +335,7 @@ export default {
     }
   },
   mounted() {
+    this.getOrganizationList();
     if (this.type === 'review') {
       this.getUserTestApply();
     } else if (this.type === 'view') {
@@ -315,7 +361,6 @@ export default {
       if (!this.demandForm.user_survey_specialist_id) {
         this.demandForm.user_survey_specialist_id = '';
       }
-      this.loading = this.$store.state.sample.user.reviewLoading;
     },
     async viewUserTestApply() {
       await this.$store.dispatch('sample/user/viewUserTestApply', {
@@ -328,26 +373,34 @@ export default {
       this.requiredAttachment = this.demandForm.user_requirement_file;
       this.show = true;
       this.requiredShow = true;
-      this.loading = this.$store.state.sample.user.viewLoading;
     },
-
     async reviewTestApply(val) {
       let body = val;
       body.id = this.id;
       await this.$store.dispatch('sample/user/reviewTestApply', body);
       this.visible = false;
     },
+    async getOrganizationList() {
+      await this.$store.dispatch('getOrganizationList');
+      this.memberList = this.$store.state.organizationList;
+    },
     cancel() {
       this.visible = false;
       this.$emit('hide-dialog', this.visible);
     },
-    handleRequirementFileSuccess(file, fileList) {
-      this.requiredAttachment = {
-        id: file.id,
-        name: fileList.name
-      };
-      this.demandForm.user_requirement_file = this.requiredAttachment.id;
-      this.requiredShow = true;
+    async handleRequirementFileSuccess(e) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        this.requiredShow = true;
+        this.requiredAttachment = {
+          id: this.$store.state.fileRes.id,
+          name: this.$store.state.fileRes.file_name,
+          type: this.$store.state.fileRes.type
+        };
+        this.demandForm.user_requirement_file = this.requiredAttachment.id;
+      }
     },
     submitForm() {
       this.$refs.demandForm.validate((valid) => {
@@ -371,16 +424,54 @@ export default {
         }
       });
     },
-    handleFileSuccess(file, fileList) {
-      this.show = true;
-      this.attachment = {
-        id: file.id,
-        name: fileList.name
-      };
-      this.demandForm.demand_list_file = this.attachment.id;
+    async handleFileSuccess(e) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        this.show = true;
+        this.attachment = {
+          id: this.$store.state.fileRes.id,
+          name: this.$store.state.fileRes.file_name,
+          type: this.$store.state.fileRes.type
+        };
+        this.demandForm.demand_list_file = this.attachment.id;
+      }
     },
     deleteFile() {
+      this.attachment = {};
+      this.demandForm.demand_list_file = '';
       this.show = false;
+    },
+    deleteRequiredFile() {
+      this.requiredAttachment = {};
+      this.demandForm.user_requirement_file = '';
+      this.requiredShow = false;
+    },
+    async showViewFile(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        previewFile(this.$store.state.viewLink);
+      }
+    },
+    async download(id, name) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        downloadFile(this.$store.state.viewLink, name);
+      }
+    },
+    getValue(val) {
+      this.demandForm.user_survey_specialist_id = val;
+    },
+    childrenFunc(data) {
+      if (data.member_list) {
+        for (const item of data.member_list) {
+          data.children.push(item);
+        }
+      }
+      return data.children;
     }
   }
 };

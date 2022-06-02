@@ -14,18 +14,18 @@
       ref="productForm"
       label-width="110px"
       style="width: 50%"
-      :model="productForm"
+      :model="form"
       :rules="productRules"
     >
       <el-form-item
-        v-for="(item, index) in productForm.usage_scenario"
+        v-for="(item, index) in form.usage_scenario"
         :key="index"
         :label="'使用场景' + (index + 1)"
         :prop="`usage_scenario[${index}]`"
         :rules="productRules.usage_scenario"
       >
         <el-input
-          v-model="productForm.usage_scenario[index]"
+          v-model="form.usage_scenario[index]"
           placeholder="请输入使用场景"
           maxlength="15"
           show-word-limit
@@ -55,7 +55,7 @@
         prop="pain_spot"
       >
         <el-input
-          v-model="productForm.pain_spot"
+          v-model="form.pain_spot"
           type="textarea"
           maxlength="200"
           show-word-limit
@@ -69,7 +69,7 @@
         prop="user_demand_analysis"
       >
         <el-input
-          v-model="productForm.user_demand_analysis"
+          v-model="form.user_demand_analysis"
           type="textarea"
           maxlength="200"
           show-word-limit
@@ -83,7 +83,7 @@
         prop="pointcut"
       >
         <el-input
-          v-model="productForm.pointcut"
+          v-model="form.pointcut"
           type="textarea"
           maxlength="200"
           show-word-limit
@@ -92,7 +92,7 @@
           clearable
         />
       </el-form-item>
-      <competitive-table :competitive-product="competitiveProduct" />
+      <competitive-table :product-form="form" />
       <el-collapse class="collapse-item">
         <el-collapse-item title="新品信息">
           <div class="analy-form_item">
@@ -103,7 +103,7 @@
               <div style="display: flex">
                 <el-form-item prop="inner_box_dimension_l">
                   <el-input
-                    v-model="productForm.inner_box_dimension_l"
+                    v-model="form.inner_box_dimension_l"
                     class="analy-form_mar"
                     placeholder="长度"
                     :disabled="isDisabled"
@@ -112,7 +112,7 @@
                 </el-form-item>
                 <el-form-item prop="inner_box_dimension_w">
                   <el-input
-                    v-model="productForm.inner_box_dimension_w"
+                    v-model="form.inner_box_dimension_w"
                     class="analy-form_mar"
                     placeholder="宽度"
                     :disabled="isDisabled"
@@ -121,7 +121,7 @@
                 </el-form-item>
                 <el-form-item prop="inner_box_dimension_h">
                   <el-input
-                    v-model="productForm.inner_box_dimension_h"
+                    v-model="form.inner_box_dimension_h"
                     placeholder="高度"
                     :disabled="isDisabled"
                     clearable
@@ -136,7 +136,7 @@
               <div style="display: flex">
                 <el-form-item prop="outer_box_dimension_l">
                   <el-input
-                    v-model="productForm.outer_box_dimension_l"
+                    v-model="form.outer_box_dimension_l"
                     class="analy-form_mar"
                     placeholder="长度"
                     :disabled="isDisabled"
@@ -145,7 +145,7 @@
                 </el-form-item>
                 <el-form-item prop="outer_box_dimension_w">
                   <el-input
-                    v-model="productForm.outer_box_dimension_w"
+                    v-model="form.outer_box_dimension_w"
                     class="analy-form_mar"
                     placeholder="宽度"
                     :disabled="isDisabled"
@@ -154,7 +154,7 @@
                 </el-form-item>
                 <el-form-item prop="outer_box_dimension_h">
                   <el-input
-                    v-model="productForm.outer_box_dimension_h"
+                    v-model="form.outer_box_dimension_h"
                     placeholder="高度"
                     :disabled="isDisabled"
                     clearable
@@ -168,7 +168,7 @@
               prop="inner_box_weight"
             >
               <el-input
-                v-model="productForm.inner_box_weight"
+                v-model="form.inner_box_weight"
                 placeholder="请输入内箱重量"
                 :disabled="isDisabled"
                 clearable
@@ -180,7 +180,7 @@
               prop="outer_box_weight"
             >
               <el-input
-                v-model="productForm.outer_box_weight"
+                v-model="form.outer_box_weight"
                 placeholder="请输入外箱重量"
                 :disabled="isDisabled"
                 clearable
@@ -195,11 +195,12 @@
             <div style="display: flex">
               <el-form-item prop="head_cost_currency">
                 <el-select
-                  v-model="productForm.head_cost_currency"
+                  v-model="form.head_cost_currency"
                   class="analy-form_mar"
                   placeholder="请选择货币"
                   :disabled="isDisabled"
                   clearable
+                  @clear="clearCurrency('head')"
                 >
                   <el-option
                     v-for="item in currency"
@@ -211,14 +212,18 @@
               </el-form-item>
               <el-form-item prop="head_cost">
                 <el-input
-                  v-model="productForm.head_cost"
+                  v-model="form.head_cost"
                   class="analy-form_mar"
                   placeholder="请输入金额"
+                  :disabled="isDisabled"
+                  clearable
+                  @change="getRmb('head')"
+                  @clear="clearMoney('head')"
                 />
               </el-form-item>
               <el-form-item prop="head_cost_rmb">
                 <el-input
-                  v-model="productForm.head_cost_rmb"
+                  v-model="form.head_cost_rmb"
                   disabled
                   placeholder="请输入人民币"
                 >
@@ -237,11 +242,12 @@
             <div style="display: flex">
               <el-form-item prop="tail_cost_currency">
                 <el-select
-                  v-model="productForm.tail_cost_currency"
+                  v-model="form.tail_cost_currency"
                   class="analy-form_mar"
                   placeholder="请选择货币"
                   :disabled="isDisabled"
                   clearable
+                  @clear="clearCurrency('tail')"
                 >
                   <el-option
                     v-for="item in currency"
@@ -253,16 +259,65 @@
               </el-form-item>
               <el-form-item prop="tail_cost">
                 <el-input
-                  v-model="productForm.tail_cost"
+                  v-model="form.tail_cost"
                   class="analy-form_mar"
                   placeholder="请输入金额"
                   :disabled="isDisabled"
                   clearable
+                  @change="getRmb('tail')"
+                  @clear="clearMoney('tail')"
                 />
               </el-form-item>
               <el-form-item prop="tail_cost_rmb">
                 <el-input
-                  v-model="productForm.tail_cost_rmb"
+                  v-model="form.tail_cost_rmb"
+                  disabled
+                  placeholder="请输入人民币"
+                >
+                  <template #prepend>
+                    ￥
+                  </template>
+                </el-input>
+              </el-form-item>
+            </div>
+          </el-form-item>
+          <el-form-item
+            label="海运单价"
+            style="margin-bottom: 18px"
+            required
+          >
+            <div style="display: flex">
+              <el-form-item prop="sea_freight_currency">
+                <el-select
+                  v-model="form.sea_freight_currency"
+                  class="analy-form_mar"
+                  placeholder="请选择货币"
+                  :disabled="isDisabled"
+                  clearable
+                  @clear="clearCurrency('sea_freight')"
+                >
+                  <el-option
+                    v-for="item in currency"
+                    :key="item.key"
+                    :label="item.value"
+                    :value="item.key"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item prop="sea_freight_cost">
+                <el-input
+                  v-model="form.sea_freight_cost"
+                  class="analy-form_mar"
+                  placeholder="请输入金额"
+                  :disabled="isDisabled"
+                  clearable
+                  @change="getRmb('sea_freight')"
+                  @clear="clearMoney('sea_freight')"
+                />
+              </el-form-item>
+              <el-form-item prop="sea_freight_cost_rmb">
+                <el-input
+                  v-model="form.sea_freight_cost_rmb"
                   disabled
                   placeholder="请输入人民币"
                 >
@@ -280,9 +335,9 @@
         prop="attachment"
       >
         <el-upload
-          action=""
+          action
           :show-file-list="false"
-          :on-success="handleFileSuccess"
+          :http-request="handleFileSuccess"
           :limit="1"
         >
           <el-button
@@ -302,24 +357,36 @@
           class="attachment-list"
         >
           <div>
-            {{ handleAttachment(attachment.name) }}
+            {{ handleAttachment(file.name) }}
           </div>
-          <el-button
-            v-if="!isDisabled"
-            type="text"
-            @click="deleteFile(attachment.id)"
-          >
-            删除
-          </el-button>
-          <el-button
-            v-else
-            type="text"
-          >
-            下载
-          </el-button>
+          <div style="display: flex">
+            <div v-if="handleAttachment(file.type) === 12860">
+              <el-button
+                type="text"
+                @click="showViewFile(file.id)"
+              >
+                预览
+              </el-button>
+              <span class="table-btn">|</span>
+            </div>
+            <el-button
+              v-if="!isDisabled"
+              type="text"
+              @click="deleteFile"
+            >
+              删除
+            </el-button>
+            <el-button
+              v-else
+              type="text"
+              @click="download(file.id, file.name)"
+            >
+              下载
+            </el-button>
+          </div>
         </div>
       </el-form-item>
-      <el-form-item>
+      <el-form-item v-if="!isDisabled">
         <el-button
           type="primary"
           @click="submitProductForm"
@@ -334,19 +401,14 @@
 <script>
 import SurveySchedule from '../../common/survey- schedule.vue';
 import CompetitiveTable from '../../common/competitive-table.vue';
+import { downloadFile, getFile, previewFile } from '../../../../../utils';
 
 export default {
   components: {
     SurveySchedule,
     CompetitiveTable
   },
-  props: [
-    'progress',
-    'attachment',
-    'getList',
-    'competitiveProduct',
-    'productForm'
-  ],
+  props: ['progress', 'attachment', 'getList', 'productForm'],
   data() {
     return {
       productRules: {
@@ -458,6 +520,24 @@ export default {
             message: '请输入人民币'
           }
         ],
+        sea_freight_currency: [
+          {
+            required: true,
+            message: '请输入金额'
+          }
+        ],
+        sea_freight_cost: [
+          {
+            required: true,
+            message: '请输入人民币'
+          }
+        ],
+        sea_freight_cost_rmb: [
+          {
+            required: true,
+            message: '请输入人民币'
+          }
+        ],
         attachment: [
           {
             required: true,
@@ -466,12 +546,22 @@ export default {
         ]
       },
       show: true,
-      currency: []
+      currency: [],
+      file: this.attachment,
+      form: this.productForm
     };
   },
   computed: {
     isDisabled() {
       return this.progress.state === 10 ? false : true;
+    }
+  },
+  watch: {
+    attachment(val) {
+      this.file = val;
+    },
+    productForm(val) {
+      this.form = val;
     }
   },
   mounted() {
@@ -492,7 +582,7 @@ export default {
       let body = val;
       body['survey_schedule_id'] = this.progress.id;
       body['product_id'] = +this.$route.params.productId;
-      body['attachment'] = this.attachment.id;
+      body['attachment'] = this.file.id;
       await this.$store.dispatch('product/survey/plan/submitPlan', body);
       this.getList();
     },
@@ -504,31 +594,65 @@ export default {
       }
     },
     addUsageScenario() {
-      this.productForm.usage_scenario.length++;
+      this.form.usage_scenariopush([]);
     },
     deleteUsageScenario() {
-      this.productForm.usage_scenario.length--;
+      this.form.usage_scenario.pop();
     },
-    handleFileSuccess(file, fileList) {
-      this.attachment = {
-        id: file.id,
-        name: fileList.name
-      };
-      this.productForm.attachment = file.id;
-      this.show = true;
+    async handleFileSuccess(e) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        this.show = true;
+        this.file = {
+          id: this.$store.state.fileRes.id,
+          name: this.$store.state.fileRes.file_name,
+          type: this.$store.state.fileRes.type
+        };
+      }
     },
-    deleteFile(id) {
-      console.log(id);
-      this.attachment = {};
+    async download(id, name) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        downloadFile(this.$store.state.viewLink, name);
+      }
+    },
+    async showViewFile(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        previewFile(this.$store.state.viewLink);
+      }
+    },
+    async getRmb(val) {
+      await this.$store.dispatch('getPriceRmb', {
+        params: {
+          price: this.form[`${val}_cost`],
+          currency: this.form[`${val}_cost_currency`],
+          product_id: +this.$route.params.productId
+        }
+      });
+      this.form[`${val}_cost_rmb`] = this.$store.state.priceRmb;
+    },
+    clearCurrency(val) {
+      this.form[`${val}_cost`] = '';
+      this.form[`${val}_cost_rmb`] = '';
+    },
+    clearMoney(val) {
+      this.form[`${val}_cost_rmb`] = '';
+    },
+    deleteFile() {
+      this.file = {};
+      this.form.attachment = '';
       this.show = false;
     },
-    previewFile(id) {
-      console.log(id);
-    },
     submitProductForm() {
+      this.form.attachment = this.file.id;
       this.$refs.productForm.validate((valid) => {
         if (valid) {
-          this.updatePlan(this.productForm);
+          this.updatePlan(this.form);
         }
       });
     }

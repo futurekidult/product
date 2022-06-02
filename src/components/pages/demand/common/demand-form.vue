@@ -24,10 +24,10 @@
       prop="images"
     >
       <el-upload
-        action=""
+        action
         :show-file-list="false"
-        :on-success="handleProductImageSuccess"
         :limit="9"
+        :http-request="handleProductImageSuccess"
       >
         <el-button
           type="primary"
@@ -49,18 +49,23 @@
         <div>
           {{ item.name }}
         </div>
-        <el-button
-          v-if="type === 'create'"
-          type="text"
-        >
-          删除
-        </el-button>
-        <el-button
-          v-else
-          type="text"
-        >
-          下载
-        </el-button>
+        <div style="display: flex">
+          <div v-if="type === 'create'">
+            <el-button
+              type="text"
+              @click="deleteProductImg(item.id, imagesList)"
+            >
+              删除
+            </el-button>
+            <span class="table-btn">|</span>
+          </div>
+          <el-button
+            type="text"
+            @click="showViewDialog(item.id)"
+          >
+            预览
+          </el-button>
+        </div>
       </div>
     </el-form-item>
     <div class="form-item">
@@ -113,9 +118,9 @@
         clearable
       />
     </el-form-item>
-    <el-scrollbar height="400px">
+    <el-scrollbar height="440px">
       <div
-        v-for="(item, index) in attachment"
+        v-for="(item, index) in demandForm.competitive_product"
         :key="index"
       >
         <el-form-item
@@ -123,12 +128,9 @@
           :prop="`competitive_product.${index}.images`"
         >
           <el-upload
-            action=""
+            action
             :show-file-list="false"
-            :on-success="
-              (file, fileList) =>
-                handleCProductImageSuccess(file, fileList, index)
-            "
+            :http-request="(e) => handleCProductImageSuccess(e, index)"
             :limit="9"
           >
             <el-button
@@ -142,27 +144,32 @@
             请上传png/jpg/jpeg等图片格式,单个文件不能超过5MB
           </div>
         </el-form-item>
-        <el-form-item v-if="item.images !== []">
+        <el-form-item>
           <div
-            v-for="(images, idx) in item.images"
+            v-for="(image, idx) in attachment[index].images"
             :key="idx"
             class="attachment-list"
           >
             <div>
-              {{ images.name }}
+              {{ image.name }}
             </div>
-            <el-button
-              v-if="type === 'create'"
-              type="text"
-            >
-              删除
-            </el-button>
-            <el-button
-              v-else
-              type="text"
-            >
-              下载
-            </el-button>
+            <div style="display: flex">
+              <div v-if="type === 'create'">
+                <el-button
+                  type="text"
+                  @click="deleteProductImg(image.id, attachment[index].images)"
+                >
+                  删除
+                </el-button>
+                <span class="table-btn">|</span>
+              </div>
+              <el-button
+                type="text"
+                @click="showViewDialog(image.id)"
+              >
+                预览
+              </el-button>
+            </div>
           </div>
         </el-form-item>
         <el-form-item
@@ -213,6 +220,7 @@
         + 新增竞品
       </el-button>
       <el-button
+        v-if="demandForm.competitive_product.length !== 1"
         type="danger"
         @click="deleteRow"
       >
@@ -491,14 +499,28 @@
       </el-button>
     </el-form-item>
   </el-form>
+
+  <view-dialog
+    v-if="viewImgDialog"
+    :link="imgLink"
+    :visible="viewImgDialog"
+    @hide-dialog="closeViewDialog"
+  />
 </template>
 
 <script>
+import { getFile } from '../../../../utils';
+import ViewDialog from '../../../common/view-dialog.vue';
+
 export default {
+  components: {
+    ViewDialog
+  },
   props: ['type'],
   data() {
     return {
       demandForm: {
+        images: [],
         competitive_product: [
           {
             images: []
@@ -671,14 +693,16 @@ export default {
       bigCategoryList: [],
       smallCategoryList: [],
       attachment: [
-        [
-          {
-            images: []
-          }
-        ]
+        {
+          images: []
+        }
       ],
       currency: [],
-      resource: []
+      resource: [],
+      res: {},
+      CRes: {},
+      imgLink: '',
+      viewImgDialog: false
     };
   },
   computed: {
@@ -764,33 +788,62 @@ export default {
       }
     },
     addRow() {
-      this.demandForm.competitive_product.push({});
+      this.demandForm.competitive_product.push({
+        images: []
+      });
+      this.attachment.push({
+        images: []
+      });
     },
     deleteRow() {
       this.demandForm.competitive_product.pop();
+      this.attachment.pop();
     },
-    handleProductImageSuccess(file, fileList) {
-      this.imagesList.push({
-        id: file.id,
-        name: fileList.name
-      });
+    async handleProductImageSuccess(e) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        this.res = this.$store.state.fileRes;
+        this.imagesList.push({
+          id: this.res.id,
+          name: this.res.file_name
+        });
+      }
+    },
+    async handleCProductImageSuccess(e, index) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        this.CRes = this.$store.state.fileRes;
+        this.attachment[index].images.push({
+          id: this.CRes.id,
+          name: this.CRes.file_name
+        });
+      }
+    },
+    deleteProductImg(id, arr) {
+      arr.splice(
+        arr.findIndex((e) => {
+          return e.id === id;
+        }),
+        1
+      );
+    },
+    submitDemandForm(val) {
+      this.getRules();
       this.imagesList.forEach((item) => {
         let { id } = item;
         this.demandForm.images.push(id);
       });
-    },
-    handleCProductImageSuccess(file, fileList, index) {
-      this.attachment[index].images.push({
-        id: file.id,
-        name: fileList.name
-      });
-      for (let i in this.attachment[index].images) {
-        let { id } = this.attachment[index].images[i];
-        this.demandForm.competitive_product[index].images.push(id);
+      for (let index in this.attachment) {
+        let { images } = this.attachment[index];
+        for (let i in images) {
+          let { id } = images[i];
+          this.demandForm.competitive_product[index].images.push(id);
+        }
       }
-    },
-    submitDemandForm(val) {
-      this.getRules();
       this.$refs.demandForm.validate((valid) => {
         if (valid) {
           let form = this.demandForm;
@@ -809,6 +862,17 @@ export default {
         await this.$store.dispatch('getSystemParameters');
         this.getParams();
       }
+    },
+    async showViewDialog(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        this.viewImgDialog = true;
+        this.imgLink = this.$store.state.viewLink;
+      }
+    },
+    closeViewDialog() {
+      this.viewImgDialog = false;
     }
   }
 };

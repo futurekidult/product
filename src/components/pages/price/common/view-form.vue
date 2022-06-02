@@ -218,10 +218,48 @@
           </el-form-item>
         </div>
       </el-form-item>
+      <el-form-item
+        label="海运单价"
+        style="margin-bottom: 18px"
+      >
+        <div style="display: flex">
+          <el-form-item>
+            <el-select
+              v-model="quotationForm.sea_freight_currency"
+              class="analy-form_mar"
+              disabled
+            >
+              <el-option
+                v-for="item in currency"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-input
+              v-model="quotationForm.sea_freight_cost"
+              class="analy-form_mar"
+              disabled
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-input
+              v-model="quotationForm.sea_freight_cost_rmb"
+              disabled
+            >
+              <template #prepend>
+                ￥
+              </template>
+            </el-input>
+          </el-form-item>
+        </div>
+      </el-form-item>
       <el-form-item label="上传附件">
         <el-upload
           :show-file-list="false"
-          action=""
+          action
           :limit="1"
         >
           <el-button
@@ -238,9 +276,23 @@
       <el-form-item>
         <div class="attachment-list">
           <div>{{ attachment.name }}</div>
-          <el-button type="text">
-            下载
-          </el-button>
+          <div style="display: flex">
+            <el-button
+              type="text"
+              @click="download(attachment.id, attachment.name)"
+            >
+              下载
+            </el-button>
+            <div v-if="attachment.type === 12860">
+              <span class="table-btn">|</span>
+              <el-button
+                type="text"
+                @click="showViewFile(attachment.id)"
+              >
+                预览
+              </el-button>
+            </div>
+          </div>
         </div>
       </el-form-item>
     </el-form>
@@ -248,7 +300,11 @@
 </template>
 
 <script>
-import { formatterTime } from '../../../../utils/index.js';
+import {
+  downloadFile,
+  formatterTime,
+  previewFile
+} from '../../../../utils/index.js';
 
 export default {
   props: ['dialogVisible', 'title', 'id'],
@@ -257,16 +313,6 @@ export default {
     return {
       visible: this.dialogVisible,
       quotationForm: {},
-      supplierList: [
-        {
-          id: 1,
-          name: 'xxx有限公司1'
-        },
-        {
-          id: 2,
-          name: 'xxx有限公司2'
-        }
-      ],
       attachment: {},
       currency: []
     };
@@ -304,6 +350,20 @@ export default {
       } else {
         await this.$store.dispatch('getSystemParameters');
         this.getParams();
+      }
+    },
+    async download(id, name) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        downloadFile(this.$store.state.viewLink, name);
+      }
+    },
+    async showViewFile(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        previewFile(this.$store.state.viewLink);
       }
     }
   }

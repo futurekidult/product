@@ -14,10 +14,12 @@
         prop="user_id"
         :rules="[{ required: true, message: '请选择成员' }]"
       >
-        <el-select
+        <select-tree
           v-model="memberForm.user_id"
-          placeholder="请输入成员名称"
-          clearable
+          :value="memberForm.user_id"
+          :data="memberList"
+          :props="defaultProps"
+          @input="getValue"
         />
       </el-form-item>
       <el-form-item
@@ -59,7 +61,12 @@
 </template>
 
 <script>
+import SelectTree from '../../../common/select-tree.vue';
+
 export default {
+  components: {
+    SelectTree
+  },
   inject: ['getMember'],
   props: ['title', 'dialogVisible', 'id', 'type', 'user'],
   emits: ['hide-dialog'],
@@ -67,11 +74,17 @@ export default {
     return {
       visible: this.dialogVisible,
       memberForm: {},
-      role: []
+      role: [],
+      memberList: [],
+      defaultProps: {
+        children: this.childrenFunc,
+        label: 'name'
+      }
     };
   },
   mounted() {
     this.getRole();
+    this.getOrganizationList();
     if (this.type === 'edit') {
       this.memberForm = this.user;
     }
@@ -98,6 +111,21 @@ export default {
       await this.$store.dispatch('product/updateProjectMember', body);
       this.visible = false;
       this.getMember();
+    },
+    async getOrganizationList() {
+      await this.$store.dispatch('getOrganizationList');
+      this.memberList = this.$store.state.organizationList;
+    },
+    childrenFunc(data) {
+      if (data.member_list) {
+        for (const item of data.member_list) {
+          data.children.push(item);
+        }
+      }
+      return data.children;
+    },
+    getValue(val) {
+      this.memberForm.user_id = val;
     },
     cancel() {
       this.visible = false;

@@ -37,7 +37,7 @@
         <template #default="scope">
           <el-button
             type="text"
-            @click="showConsequenceForm(scope.row.consequence_id)"
+            @click="showConsequenceForm(scope.row.consequence)"
           >
             查看内容
           </el-button>
@@ -69,6 +69,7 @@
       <el-table-column label="原因">
         <template #default="scope">
           <el-button
+            v-if="scope.row.state === 30"
             type="text"
             @click="showReasonForm(scope.row.ignore_reason_id)"
           >
@@ -118,7 +119,7 @@
   />
   <reason-form
     v-if="consequenceFormVisible"
-    :id="consequenceId"
+    :content="consequence"
     :dialog-visible="consequenceFormVisible"
     title="后果描述"
     type="consequence"
@@ -165,7 +166,7 @@ export default {
       reasonFormVisible: false,
       consequenceFormVisible: false,
       questionId: 0,
-      consequenceId: 0,
+      consequence: '',
       reasonId: 0,
       resolveDialog: false,
       resolveId: 0
@@ -190,9 +191,9 @@ export default {
     closeIgnoreForm() {
       this.ignoreFormVisible = false;
     },
-    showConsequenceForm(id) {
+    showConsequenceForm(content) {
       this.consequenceFormVisible = true;
-      this.consequenceId = id;
+      this.consequence = content;
     },
     closeConsequenceForm() {
       this.consequenceFormVisible = false;

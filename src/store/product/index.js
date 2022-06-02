@@ -236,7 +236,7 @@ export default {
       });
     },
     async getQuestionList(context, payload) {
-      await axios.get('/test-problem/list/', payload).then((res) => {
+      await axios.get('/product/test-problem/list/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setQuestionList', res.data.list);
           context.commit('setQuestionLoading', false);
@@ -246,7 +246,7 @@ export default {
       });
     },
     async submitQuestionResult(_, payload) {
-      await axios.post('/test-problem/result/', payload).then((res) => {
+      await axios.post('/product/test-problem/result/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         } else {

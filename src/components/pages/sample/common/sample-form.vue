@@ -75,16 +75,16 @@
       </el-form-item>
       <el-form-item label="上传附件">
         <el-upload
-          action=""
+          action
           :show-file-list="false"
-          :on-success="handleFileSuccess"
+          :http-request="handleFileSuccess"
           :limit="1"
         >
           <el-button
             type="primary"
             :disabled="disabled"
           >
-            点击上传
+            上传
           </el-button>
         </el-upload>
         <div class="attachment">
@@ -97,19 +97,31 @@
           class="attachment-list"
         >
           <div>{{ attachment.name }}</div>
-          <el-button
-            v-if="type === 'create' || type === 'edit'"
-            type="text"
-            @click="deleteFile(attachment.id)"
-          >
-            删除
-          </el-button>
-          <el-button
-            v-else
-            type="text"
-          >
-            下载
-          </el-button>
+          <div style="display: flex">
+            <div v-if="attachment.type === 12860">
+              <el-button
+                type="text"
+                @click="showViewFile(attachment.id)"
+              >
+                预览
+              </el-button>
+              <span class="table-btn">|</span>
+            </div>
+            <el-button
+              v-if="type === 'create' || type === 'edit'"
+              type="text"
+              @click="deleteFile"
+            >
+              删除
+            </el-button>
+            <el-button
+              v-else
+              type="text"
+              @click="download(attachment.id, attachment.name)"
+            >
+              下载
+            </el-button>
+          </div>
         </div>
       </el-form-item>
       <el-divider />
@@ -155,6 +167,7 @@
 </template>
 
 <script>
+import { downloadFile, getFile, previewFile } from '../../../../utils';
 export default {
   inject: ['getProofing'],
   props: ['dialogVisible', 'title', 'type', 'form'],
@@ -235,13 +248,18 @@ export default {
         this.attachment = this.proofingForm.proofing_sheet_file;
       }
     },
-    handleFileSuccess(file, fileList) {
-      this.attachment = {
-        id: file.id,
-        name: fileList.name
-      };
-      this.proofingForm.proofing_sheet_file = this.attachment.id;
-      this.show = true;
+    async handleFileSuccess(e) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        this.show = true;
+        this.attachment = {
+          id: this.$store.state.fileRes.id,
+          name: this.$store.state.fileRes.file_name,
+          type: this.$store.state.fileRes.type
+        };
+      }
     },
     cancel() {
       this.visible = false;
@@ -256,6 +274,7 @@ export default {
       }
     },
     submitProofingSheet() {
+      this.proofingForm.proofing_sheet_file = this.attachment.id;
       this.$refs.proofingForm.validate((valid) => {
         if (valid) {
           this.proofingForm.has_verify = +this.proofingForm.has_verify;
@@ -267,10 +286,24 @@ export default {
         }
       });
     },
-    deleteFile(id) {
-      console.log(id);
+    deleteFile() {
       this.attachment = {};
+      this.proofingForm.proofing_sheet_file = '';
       this.show = false;
+    },
+    async showViewFile(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        previewFile(this.$store.state.viewLink);
+      }
+    },
+    async download(id, name) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        downloadFile(this.$store.state.viewLink, name);
+      }
     },
     submitProofingSheetApproval(val) {
       this.approvalProofingSheet({

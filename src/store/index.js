@@ -24,7 +24,13 @@ const store = createStore({
       systemParams: {},
       priceRmb: '',
       platform: [],
-      getRmbState: false
+      getRmbState: false,
+      uploadState: false,
+      fileRes: {},
+      viewLink: '',
+      attachmentState: false,
+      organizationList: [],
+      countryList: []
     };
   },
   mutations: {
@@ -36,6 +42,24 @@ const store = createStore({
     },
     setPlatform(state, payload) {
       state.platform = payload;
+    },
+    setUploadState(state, payload) {
+      state.uploadState = payload;
+    },
+    setFileResponse(state, payload) {
+      state.fileRes = payload;
+    },
+    setViewLink(state, payload) {
+      state.viewLink = payload;
+    },
+    setAttachmentState(state, payload) {
+      state.attachmentState = payload;
+    },
+    setOrganizationList(state, payload) {
+      state.organizationList = payload;
+    },
+    setCountry(state, payload) {
+      state.countryList = payload;
     }
   },
   actions: {
@@ -63,6 +87,45 @@ const store = createStore({
       await axios.get('/option/pricing/platform/list/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setPlatform', res.data.list);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async uploadFile(context, payload) {
+      await axios.post('/attachment/upload', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+          context.commit('setUploadState', true);
+          context.commit('setFileResponse', res.data);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async getViewLink(context, payload) {
+      await axios.get('/attachment/view', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setViewLink', res.data.url);
+          context.commit('setAttachmentState', true);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async getOrganizationList(context) {
+      await axios.get('/organization/list').then((res) => {
+        if (res.code === 200) {
+          context.commit('setOrganizationList', res.data.list);
+        } else {
+          ElMessage.error(res.message);
+        }
+      });
+    },
+    async getCountry(context) {
+      await axios.get('/option/country/list').then((res) => {
+        if (res.code === 200) {
+          context.commit('setCountry', res.data.list);
         } else {
           ElMessage.error(res.message);
         }

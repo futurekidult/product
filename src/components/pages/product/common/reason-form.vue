@@ -47,7 +47,7 @@
 <script>
 export default {
   inject: ['getQuestion'],
-  props: ['dialogVisible', 'title', 'type', 'id', 'submitForm'],
+  props: ['dialogVisible', 'title', 'type', 'id', 'submitForm', 'content'],
   emits: ['hide-dialog'],
   data() {
     return {
@@ -56,8 +56,10 @@ export default {
     };
   },
   mounted() {
-    if (this.type !== 'ignore') {
+    if (this.type === 'reason') {
       this.getContent();
+    } else if (this.type === 'consequence') {
+      this.reasonForm.content = this.content;
     }
   },
   methods: {

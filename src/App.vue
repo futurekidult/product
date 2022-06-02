@@ -108,10 +108,6 @@ body {
 
 .attachment-list div {
   color: #606266;
-  cursor: pointer;
-}
-.attachment-list div:hover {
-  color: #409eff;
 }
 
 .form-item {
@@ -151,7 +147,8 @@ body {
 .member-item,
 .open-mould_item,
 .quotation-item,
-.supplier-item {
+.supplier-item,
+.user-item {
   display: flex;
   justify-content: space-between;
 }

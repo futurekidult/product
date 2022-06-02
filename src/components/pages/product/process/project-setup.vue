@@ -54,7 +54,7 @@
       ref="projectForm"
       label-width="100px"
       class="project-form"
-      :model="projectForm"
+      :model="form"
       :rules="projectRules"
     >
       <el-form-item
@@ -63,9 +63,10 @@
         prop="review_result"
       >
         <el-select
-          v-model="projectForm.review_result"
+          v-model="form.review_result"
           placeholder="请选择评审结果"
           clearable
+          :disabled="progress.state === 40"
         >
           <el-option
             v-for="item in options"
@@ -77,19 +78,19 @@
       </el-form-item>
       <el-divider />
       <el-form-item
-        v-if="projectForm.review_result === 0"
+        v-if="form.review_result === 0"
         label="不通过原因"
         style="width: 50%"
         prop="unapproved_reason"
       >
         <el-input
-          v-model="projectForm.unapproved_reason"
+          v-model="form.unapproved_reason"
           type="textarea"
           placeholder="请输入不通过原因"
           clearable
         />
       </el-form-item>
-      <div v-if="projectForm.review_result === 1">
+      <div v-if="form.review_result === 1">
         <profit-calculation :get-profit="profit" />
         <process-table
           :get-schedule="schedule"
@@ -106,9 +107,9 @@
           style="margin-bottom: 18px"
         >
           <el-upload
-            action=""
+            action
             :show-file-list="false"
-            :on-success="handleFileSuccess"
+            :http-request="handleFileSuccess"
             :limit="1"
           >
             <el-button
@@ -127,22 +128,35 @@
             v-if="show"
             class="attachment-list"
           >
-            <div @click="previewFile(attachment.id)">
-              {{ attachment.name }}
+            <div>
+              {{ handleAttachment(attachment.name) }}
             </div>
-            <el-button
-              v-if="!isDisabled"
-              type="text"
-              @click="deleteFile(attachment.id)"
-            >
-              删除
-            </el-button>
-            <el-button
-              v-else
-              type="text"
-            >
-              下载
-            </el-button>
+            <div style="display: flex">
+              <div v-if="handleAttachment(file.type) === 12860">
+                <el-button
+                  type="text"
+                  @click="showViewFile(file.id)"
+                >
+                  预览
+                </el-button>
+
+                <span class="table-btn"> |</span>
+              </div>
+              <el-button
+                v-if="!isDisabled"
+                type="text"
+                @click="deleteFile(attachment.id)"
+              >
+                删除
+              </el-button>
+              <el-button
+                v-else
+                type="text"
+                @click="download(file.id, file.name)"
+              >
+                下载
+              </el-button>
+            </div>
           </div>
         </el-form-item>
       </div>
@@ -162,6 +176,7 @@
 <script>
 import ProfitCalculation from '../common/profit-calculation.vue';
 import ProcessTable from '../common/process-table.vue';
+import { getFile, downloadFile, previewFile } from '../../../../utils';
 
 export default {
   components: {
@@ -210,7 +225,9 @@ export default {
           label: '不通过'
         }
       ],
-      show: true
+      show: true,
+      file: this.attachment,
+      form: this.projectForm
     };
   },
   computed: {
@@ -225,6 +242,14 @@ export default {
       return this.progress.state === 10 ? false : true;
     }
   },
+  watch: {
+    attachment(val) {
+      this.file = val;
+    },
+    projectForm(val) {
+      this.form = val;
+    }
+  },
   methods: {
     async reviewProject(val) {
       let body = val;
@@ -232,27 +257,50 @@ export default {
       await this.$store.dispatch('product/project/reviewProject', body);
       this.getProject();
     },
-    handleFileSuccess(file, fileList) {
-      this.attachment = {
-        id: file.id,
-        name: fileList.name
-      };
-      this.projectForm.sale_plan = file.id;
-      this.show = true;
+    async handleFileSuccess(e) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        this.show = true;
+        this.file = {
+          id: this.$store.state.fileRes.id,
+          name: this.$store.state.fileRes.file_name,
+          type: this.$store.state.fileRes.type
+        };
+      }
     },
-    previewFile(id) {
-      console.log(id);
+    async download(id, name) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        downloadFile(this.$store.state.viewLink, name);
+      }
     },
-    deleteFile(id) {
-      console.log(id);
-      this.attachment = {};
+    async showViewFile(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        previewFile(this.$store.state.viewLink);
+      }
+    },
+    handleAttachment(file) {
+      if (file === undefined) {
+        return '';
+      } else {
+        return file;
+      }
+    },
+    deleteFile() {
+      this.file = {};
+      this.form.sale_plan = '';
       this.show = false;
     },
     submitProjectForm() {
+      this.form.sale_plan = this.file.id;
       this.$refs.projectForm.validate((valid) => {
         if (valid) {
-          this.projectForm.sale_plan = this.attachment.id;
-          this.reviewProject(this.projectForm);
+          this.reviewProject(this.form);
         }
       });
     },

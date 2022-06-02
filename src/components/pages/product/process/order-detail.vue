@@ -61,6 +61,8 @@
           :contract="contract"
           :export-contract="exportContract"
           :purchase-contract="purchaseContract"
+          :manual="manual"
+          :diecuts="diecuts"
         />
       </el-tab-pane>
       <el-tab-pane
@@ -107,7 +109,9 @@ export default {
       contract: {},
       exportContract: {},
       purchaseContract: {},
-      preProductSample: {}
+      preProductSample: {},
+      manual: {},
+      diecuts: {}
     };
   },
   mounted() {
@@ -130,6 +134,7 @@ export default {
       );
     },
     async getSku() {
+      this.$store.commit('product/order/setSkuLoading', true);
       await this.$store.dispatch('product/order/getSku', {
         params: {
           order_id: +this.$route.params.orderId
@@ -149,6 +154,7 @@ export default {
       );
     },
     async getContract() {
+      this.$store.commit('product/order/setContractLoading', true);
       await this.$store.dispatch('product/order/getContract', {
         params: {
           order_id: +this.$route.params.orderId
@@ -163,8 +169,11 @@ export default {
       this.purchaseContract.actual_finish_time = formatterTime(
         this.purchaseContract.actual_finish_time
       );
+      this.manual = this.purchaseContract.product_manual_file;
+      this.diecuts = this.purchaseContract.diecuts_file;
     },
     async getPreProductSample() {
+      this.$store.commit('product/order/setPreProductLoading', true);
       await this.$store.dispatch('product/order/getPreProduct', {
         params: {
           order_id: +this.$route.params.orderId
@@ -183,13 +192,10 @@ export default {
     },
     handleClick(tab) {
       if (tab.props.name === 'sku') {
-        this.$store.commit('product/order/setSkuLoading', true);
         this.getSku();
       } else if (tab.props.name === 'contract') {
-        this.$store.commit('product/order/setContractLoading', true);
         this.getContract();
       } else {
-        this.$store.commit('product/order/setPreProductLoading', true);
         this.getPreProductSample();
       }
     },
