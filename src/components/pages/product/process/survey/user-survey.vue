@@ -270,32 +270,55 @@
                   scope.row.proceeding === 1
               "
             >
-              <div v-if="!scope.row.attachment">
-                <el-button type="text">
-                  点击上传
-                </el-button>
+              <div v-if="JSON.stringify(scope.row.attachment) === '{}'">
+                <el-upload
+                  action
+                  :show-file-list="false"
+                  :http-request="
+                    (e) => handleFileSuccess(e, scope.row.attachment)
+                  "
+                  :limit="1"
+                >
+                  <el-button type="text">
+                    上传
+                  </el-button>
+                </el-upload>
               </div>
-              <div v-if="scope.row.state !== 1">
-                <el-button type="text">
+              <div v-if="scope.row.state !== 10">
+                <el-button
+                  type="text"
+                  @click="showViewFile(scope.row.attachment.id)"
+                >
                   预览
                 </el-button>
                 <span class="table-btn">|</span>
-                <el-button type="text">
+                <el-button
+                  type="text"
+                  @click="
+                    download(scope.row.attachment.id, scope.row.attachment.name)
+                  "
+                >
                   下载
                 </el-button>
               </div>
               <div
                 v-if="
-                  scope.row.attachment &&
-                    scope.row.state === 1 &&
+                  JSON.stringify(scope.row.attachment) !== '{}' &&
+                    scope.row.state === 10 &&
                     buttonState.plan === 0
                 "
               >
-                <el-button type="text">
+                <el-button
+                  type="text"
+                  @click="showViewFile(scope.row.attachment.id)"
+                >
                   预览
                 </el-button>
                 <span class="table-btn">|</span>
-                <el-button type="text">
+                <el-button
+                  type="text"
+                  @click="deleteFile(scope.row.attachment)"
+                >
                   删除
                 </el-button>
               </div>
@@ -479,7 +502,12 @@
 </template>
 
 <script>
-import { timestamp } from '../../../../../utils';
+import {
+  downloadFile,
+  getFile,
+  previewFile,
+  timestamp
+} from '../../../../../utils';
 import SurveyForm from '../../common/survey-form.vue';
 
 export default {
@@ -757,6 +785,42 @@ export default {
           item.detail = '';
         }
       });
+    },
+    async handleFileSuccess(e, attachment) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        attachment['id'] = this.$store.state.fileRes.id;
+        attachment['name'] = this.$store.state.fileRes.id;
+        attachment['type'] = this.$store.state.fileRes.id;
+        // this.attachment = {
+        //   id: this.$store.state.fileRes.id,
+        //   name: this.$store.state.fileRes.file_name,
+        //   type: this.$store.state.fileRes.type
+        // };
+        this.getList();
+      }
+    },
+    async download(id, name) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        downloadFile(this.$store.state.viewLink, name);
+      }
+    },
+    async showViewFile(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        previewFile(this.$store.state.viewLink);
+      }
+    },
+    deleteFile(obj) {
+      delete obj['id'];
+      delete obj['type'];
+      delete obj['name'];
+      this.getList();
     }
   }
 };
