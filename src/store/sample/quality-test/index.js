@@ -27,8 +27,6 @@ export default {
         if (res.code === 200) {
           context.commit('setQualityDetail', res.data);
           context.commit('setQualityLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -38,8 +36,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             context.commit('setTestQuestion', res.data);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -49,8 +45,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -60,8 +54,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -71,8 +63,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -82,8 +72,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     }

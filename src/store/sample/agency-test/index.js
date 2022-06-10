@@ -27,8 +27,6 @@ export default {
       await axios.post('/sample/agency-test/is-test/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -37,8 +35,6 @@ export default {
         if (res.code === 200) {
           context.commit('setAgencyTest', res.data);
           context.commit('setAgencyLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -48,8 +44,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -59,8 +53,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -70,8 +62,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             context.commit('setTestQuestion', res.data);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -81,8 +71,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -92,8 +80,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     }

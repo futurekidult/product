@@ -103,8 +103,6 @@ export default {
         if (res.code === 200) {
           context.commit('setProduct', res.data.list);
           context.commit('setListLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -113,8 +111,6 @@ export default {
         if (res.code === 200) {
           context.commit('setProductBase', res.data);
           context.state.baseLoading = false;
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -123,17 +119,13 @@ export default {
         if (res.code === 200) {
           context.commit('setProductDetail', res.data);
           context.commit('setDetailLoading', false);
-        } else {
-          ElMessage.error(res.message);
-        }
+        } 
       });
     },
     async getSingleDetailMsg(context, payload) {
       await axios.get('/product/detail/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSingleProductDetail', res.data);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -141,9 +133,7 @@ export default {
       await axios.post('/product/base/update', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.msg);
-        } else {
-          ElMessage.error(res.msg);
-        }
+        } 
       });
     },
     async getProjectMember(context, payload) {
@@ -151,8 +141,6 @@ export default {
         if (res.code === 200) {
           context.commit('setProjectMember', res.data.list);
           context.commit('setMemberLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -160,17 +148,13 @@ export default {
       await axios.post('/product/member/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
-        }
+        } 
       });
     },
     async updateProjectMember(_, payload) {
       await axios.post('/product/member/update', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -178,9 +162,7 @@ export default {
       await axios.post('/product/member/delete', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
-        }
+        } 
       });
     },
     async getPricingList(context, payload) {
@@ -188,8 +170,6 @@ export default {
         if (res.code === 200) {
           context.commit('setPricingList', res.data.list);
           context.commit('setPricingLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -198,9 +178,7 @@ export default {
         if (res.code === 200) {
           context.commit('setMouldList', res.data.list);
           context.commit('setMouldLoading', false);
-        } else {
-          ElMessage.error(res.message);
-        }
+        } 
       });
     },
     async createMould(_, payload) {
@@ -209,8 +187,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -220,9 +196,7 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
-          }
+          } 
         });
     },
     async getSampleList(context, payload) {
@@ -230,9 +204,7 @@ export default {
         if (res.code === 200) {
           context.commit('setSampleList', res.data.list);
           context.commit('setSampleLoading', false);
-        } else {
-          ElMessage.error(res.message);
-        }
+        } 
       });
     },
     async getQuestionList(context, payload) {
@@ -240,17 +212,13 @@ export default {
         if (res.code === 200) {
           context.commit('setQuestionList', res.data.list);
           context.commit('setQuestionLoading', false);
-        } else {
-          ElMessage.error(res.message);
-        }
+        } 
       });
     },
     async submitQuestionResult(_, payload) {
       await axios.post('/product/test-problem/result/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -258,9 +226,7 @@ export default {
       await axios.get('/reason/text/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setContent', res.data);
-        } else {
-          ElMessage.error(res.message);
-        }
+        } 
       });
     },
     async getPackageList(context, payload) {
@@ -268,8 +234,6 @@ export default {
         if (res.code === 200) {
           context.commit('setPackageList', res.data.list);
           context.commit('setPackageLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -277,8 +241,6 @@ export default {
       await axios.post('/package/result/confirm/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -286,18 +248,14 @@ export default {
       await axios.post('/package/result/create/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
-        }
+        } 
       });
     },
     async terminateProject(_, payload) {
       await axios.post('/product/single/terminate', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
-        }
+        } 
       });
     }
   }

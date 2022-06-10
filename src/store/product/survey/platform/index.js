@@ -23,8 +23,6 @@ export default {
         if (res.code === 200) {
           context.commit('setPlatform', res.data);
           context.commit('setPlatformLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -32,8 +30,6 @@ export default {
       await axios.post('/survey/platform/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     }

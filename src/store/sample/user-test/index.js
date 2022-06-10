@@ -55,9 +55,7 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
-          }
+          } 
         });
     },
     async getUserTest(context, payload) {
@@ -65,9 +63,7 @@ export default {
         if (res.code === 200) {
           context.commit('setUserTest', res.data);
           context.commit('setUserLoading', false);
-        } else {
-          ElMessage.error(res.message);
-        }
+        } 
       });
     },
     async confirmTestResult(_, payload) {
@@ -76,9 +72,7 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
-          }
+          } 
         });
     },
     async getUserTestApply(context, payload) {
@@ -88,9 +82,7 @@ export default {
           if (res.code === 200) {
             context.commit('setApplyDetail', res.data);
             context.state.reviewLoading = false;
-          } else {
-            ElMessage.error(res.message);
-          }
+          } 
         });
     },
     async viewUserTestApply(context, payload) {
@@ -98,9 +90,7 @@ export default {
         if (res.code === 200) {
           context.commit('setViewApplyDetail', res.data);
           context.state.viewLoading = false;
-        } else {
-          ElMessage.error(res.message);
-        }
+        } 
       });
     },
     async reviewTestApply(_, payload) {
@@ -109,9 +99,7 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
-          }
+          } 
         });
     },
     async getSpecialist(context, payload) {
@@ -121,9 +109,7 @@ export default {
           if (res.code === 200) {
             context.commit('setSpecialist', res.data);
             context.state.editLoading = false;
-          } else {
-            ElMessage.success(res.message);
-          }
+          } 
         });
     },
     async updateSpecialist(_, payload) {
@@ -132,9 +118,7 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
-          }
+          } 
         });
     },
     async getTemplate(context, payload) {
@@ -143,9 +127,7 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             context.commit('setTemplateFile', res.data);
-          } else {
-            ElMessage.error(res.message);
-          }
+          } 
         });
     },
     async createTemplate(_, payload) {
@@ -154,9 +136,7 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
-          }
+          } 
         });
     },
     async createUserTest(_, payload) {
@@ -165,18 +145,14 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
-          }
+          } 
         });
     },
     async getUserList(context, payload) {
       await axios.get('/sample/user-test/user/list/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setUserList', res.data.list);
-        } else {
-          ElMessage.error(res.message);
-        }
+        } 
       });
     },
     async deliverSample(_, payload) {
@@ -185,9 +161,7 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
-          }
+          } 
         });
     },
     async uploadFile(_, payload) {
@@ -196,18 +170,14 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
-          }
+          } 
         });
     },
     async getSimpleUserDetail(context, payload) {
       await axios.get('/sample/user-test/user/get/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSimpleUserDetail', res.data);
-        } else {
-          ElMessage.error(res.message);
-        }
+        } 
       });
     },
     async getTestQuestion(context, payload) {
@@ -216,9 +186,7 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             context.commit('setTestQuestions', res.data);
-          } else {
-            ElMessage.error(res.message);
-          }
+          } 
         });
     },
     async createTestQuestion(_, payload) {
@@ -227,9 +195,7 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
-          }
+          } 
         });
     },
     async updateTestQuestion(_, payload) {
@@ -238,9 +204,7 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
-          }
+          } 
         });
     },
     async submitTestResult(_, payload) {
@@ -249,9 +213,7 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
-          }
+          } 
         });
     }
   }

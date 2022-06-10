@@ -47,8 +47,6 @@ export default {
         if (res.code === 200) {
           context.commit('setPatent', res.data);
           context.commit('setPatentLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -56,8 +54,6 @@ export default {
       await axios.get('/patent/schedule/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setProgress', res.data);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -66,8 +62,6 @@ export default {
         if (res.code === 200) {
           context.commit('setContract', res.data);
           context.commit('setContractLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -76,8 +70,6 @@ export default {
         if (res.code === 200) {
           context.commit('setReport', res.data);
           context.commit('setReportLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -85,8 +77,6 @@ export default {
       await axios.post('/patent/application/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -94,8 +84,6 @@ export default {
       await axios.get('/patent/application/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSinglePatent', res.data);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -103,8 +91,6 @@ export default {
       await axios.post('/patent/application/review', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -112,8 +98,6 @@ export default {
       await axios.post('/patent/application/confirm', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -121,8 +105,6 @@ export default {
       await axios.post('/patent/contract/upload', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -130,8 +112,6 @@ export default {
       await axios.post('/patent/report/upload', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     }

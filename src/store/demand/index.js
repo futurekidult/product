@@ -9,7 +9,6 @@ export default {
       demandLoading: true,
       reasonText: '',
       categoryList: [],
-      department: {},
       isSuccess: false,
       demandDetail: {},
       demandDetailLoading: true,
@@ -29,9 +28,6 @@ export default {
     setCategoryList(state, payload) {
       state.categoryList = payload;
     },
-    setDepartment(state, payload) {
-      state.department = payload;
-    },
     setDemandDetail(state, payload) {
       state.demandDetail = payload;
     },
@@ -45,8 +41,6 @@ export default {
         if (res.code === 200) {
           context.commit('setList', res.data.list);
           context.commit('setDemandLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -54,8 +48,6 @@ export default {
       await axios.get('/reason/text/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setReasonText', res.data.content);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -64,17 +56,6 @@ export default {
         if (res.code === 200) {
           context.commit('setCategoryList', res.data.list);
           context.state.optionLoading = false;
-        } else {
-          ElMessage.error(res.message);
-        }
-      });
-    },
-    async getDepartment(context, payload) {
-      await axios.get('/user/get', payload).then((res) => {
-        if (res.code === 200) {
-          context.commit('setDepartment', res.data);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -84,7 +65,6 @@ export default {
           ElMessage.success(res.message);
           context.state.isSuccess = true;
         } else {
-          ElMessage.error(res.message);
           context.state.isSuccess = false;
         }
       });
@@ -94,8 +74,6 @@ export default {
         if (res.code === 200) {
           context.commit('setDemandDetail', res.data);
           context.commit('setDemandDetailLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -103,8 +81,6 @@ export default {
       await axios.post('/demand/entry/review', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     }

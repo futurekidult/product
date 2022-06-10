@@ -64,8 +64,6 @@ export default {
         if (res.code === 200) {
           context.commit('setQuotationList', res.data);
           context.state.quotationLoading = false;
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -74,8 +72,6 @@ export default {
         if (res.code === 200) {
           context.commit('setReferencePrice', res.data.list);
           context.state.referenceLoading = false;
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -84,8 +80,6 @@ export default {
         if (res.code === 200) {
           context.commit('setTargetPrice', res.data.list);
           context.state.targetLoading = false;
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -93,8 +87,6 @@ export default {
       await axios.post('/pricing/quote/terminate', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -102,8 +94,6 @@ export default {
       await axios.post('/pricing/quote/confirm', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -111,8 +101,6 @@ export default {
       await axios.post('/pricing/quote/delete', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -122,8 +110,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -131,8 +117,6 @@ export default {
       await axios.post('/pricing/adjustment/apply', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -140,8 +124,6 @@ export default {
       await axios.get('/pricing/appended-reason/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setHasAdd', res.data.has_same_supplier);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -151,8 +133,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             context.commit('setHasHigh', res.data.beyond_reference);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -160,8 +140,6 @@ export default {
       await axios.post('/pricing/quote/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -170,8 +148,6 @@ export default {
         if (res.code === 200) {
           context.commit('setQuotation', res.data);
           context.commit('setViewLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -179,8 +155,6 @@ export default {
       await axios.post('/pricing/quote/submit', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     }

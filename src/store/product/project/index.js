@@ -15,7 +15,8 @@ export default {
       projectLoading: true,
       profitLoading: true,
       marketList: [],
-      referencePrice: ''
+      referencePrice: {},
+      rate: ''
     };
   },
   mutations: {
@@ -51,6 +52,9 @@ export default {
     },
     setReferencePrice(state, payload) {
       state.referencePrice = payload;
+    },
+    setRate(state, payload) {
+      state.rate = payload;
     }
   },
   actions: {
@@ -59,8 +63,6 @@ export default {
         if (res.code === 200) {
           context.commit('setProject', res.data);
           context.commit('setProjectLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -70,8 +72,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             context.commit('setProfit', res.data);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -79,8 +79,6 @@ export default {
       await axios.get('/project/schedule/list', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSchedule', res.data);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -90,8 +88,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -101,8 +97,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -110,8 +104,6 @@ export default {
       await axios.post('/project/schedule/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -121,8 +113,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -132,8 +122,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -143,8 +131,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             context.commit('setSpecialist', res.data.list);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -154,8 +140,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -166,8 +150,6 @@ export default {
           if (res.code === 200) {
             context.commit('setProfitCalculation', res.data);
             context.commit('setProfitLoading', false);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -175,8 +157,6 @@ export default {
       await axios.get('/pricing/adjustment/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setAdjustment', res.data);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -184,8 +164,6 @@ export default {
       await axios.get('/pricing/adjustment/list', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setAdjustmentList', res.data.list);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -195,8 +173,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -204,8 +180,6 @@ export default {
       await axios.post('/pricing/adjustment/approve', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -213,8 +187,6 @@ export default {
       await axios.post('/pricing/adjust', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -224,8 +196,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -240,17 +210,22 @@ export default {
       await axios.post('/project/entry/review', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
     async getReferencePrice(context, payload) {
-      await axios.get('/reference-price/calculate', payload).then((res) => {
+      await axios
+        .get('/pricing/reference-price/calculate', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            context.commit('setReferencePrice', res.data);
+          }
+        });
+    },
+    async getRate(context, payload) {
+      await axios.get('/pricing/latest-rate/get', payload).then((res) => {
         if (res.code === 200) {
-          context.commit('setReferencePrice', res.data.reference_price);
-        } else {
-          ElMessage.error(res.message);
+          context.commit('setRate', res.data.rate);
         }
       });
     }
