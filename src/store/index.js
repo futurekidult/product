@@ -1,4 +1,5 @@
 import { createStore } from 'vuex';
+import { ElMessage } from 'element-plus';
 import WorkBench from './workbench';
 import DemandList from './demand';
 import ProductList from './product';
@@ -7,7 +8,7 @@ import axios from '../utils/axios.js';
 import MouldList from './mould';
 import PriceList from './price';
 import SupplierList from './supplier';
-import { ElMessage } from 'element-plus';
+import SystemList from './system';
 
 const store = createStore({
   modules: {
@@ -17,7 +18,8 @@ const store = createStore({
     sample: SampleList,
     mould: MouldList,
     price: PriceList,
-    supplier: SupplierList
+    supplier: SupplierList,
+    system: SystemList
   },
   state() {
     return {
@@ -30,7 +32,8 @@ const store = createStore({
       viewLink: '',
       attachmentState: false,
       organizationList: [],
-      countryList: []
+      countryList: [],
+      userInfo: {}
     };
   },
   mutations: {
@@ -60,16 +63,17 @@ const store = createStore({
     },
     setCountry(state, payload) {
       state.countryList = payload;
+    },
+    setUserInfo(state, payload) {
+      state.userInfo = payload;
     }
   },
   actions: {
     async getPriceRmb(context, payload) {
-      await axios.get('/rmb-of-price/get', payload).then((res) => {
+      await axios.get('/pricing/rmb-of-price/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setPriceRmb', res.data.price_rmb);
           context.state.getRmbState = true;
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -78,8 +82,6 @@ const store = createStore({
         if (res.code === 200) {
           context.commit('setSystemParams', res.data);
           localStorage.setItem('params', JSON.stringify(res.data));
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -87,8 +89,6 @@ const store = createStore({
       await axios.get('/option/pricing/platform/list/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setPlatform', res.data.list);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -98,8 +98,6 @@ const store = createStore({
           ElMessage.success(res.message);
           context.commit('setUploadState', true);
           context.commit('setFileResponse', res.data);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -108,8 +106,6 @@ const store = createStore({
         if (res.code === 200) {
           context.commit('setViewLink', res.data.url);
           context.commit('setAttachmentState', true);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -117,8 +113,6 @@ const store = createStore({
       await axios.get('/organization/list').then((res) => {
         if (res.code === 200) {
           context.commit('setOrganizationList', res.data.list);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -126,8 +120,20 @@ const store = createStore({
       await axios.get('/option/country/list').then((res) => {
         if (res.code === 200) {
           context.commit('setCountry', res.data.list);
-        } else {
-          ElMessage.error(res.message);
+        }
+      });
+    },
+    async getToken() {
+      await axios.get('/csrftoken/get').then((res) => {
+        if (res.code === 200) {
+          localStorage.setItem('token', JSON.stringify(res.data.csrftoken));
+        }
+      });
+    },
+    async getUserInfo(context) {
+      await axios.get('/admin/get').then((res) => {
+        if (res.code === 200) {
+          context.commit('setUserInfo', res.data);
         }
       });
     }

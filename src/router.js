@@ -19,6 +19,7 @@ import ProductList from './components/pages/product/product-list.vue';
 import ProductDetail from './components/pages/product/product-detail.vue';
 import OrderDetail from './components/pages/product/process/order-detail.vue';
 import NotFound from './components/pages/not-found.vue';
+import SystemList from './components/pages/system/system-list.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -193,6 +194,14 @@ const router = createRouter({
               props: true
             }
           ]
+        },
+        {
+          path: '/system-list',
+          name: 'system',
+          component: SystemList,
+          meta: {
+            title: '系统管理'
+          }
         }
       ]
     },
