@@ -193,12 +193,11 @@
           label="选择用研专员"
           prop="user_survey_specialist_id"
         >
-          <select-tree
+          <el-tree-select
             v-model="demandForm.user_survey_specialist_id"
-            :value="demandForm.user_survey_specialist_id"
             :data="memberList"
+            clearable
             :props="defaultProps"
-            @input="getValue"
           />
         </el-form-item>
       </div>
@@ -230,12 +229,8 @@ import {
   previewFile,
   timestamp
 } from '../../../../utils';
-import SelectTree from '../../../common/select-tree.vue';
 
 export default {
-  components: {
-    SelectTree
-  },
   props: ['dialogVisible', 'title', 'type', 'id'],
   emits: ['hide-dialog'],
   data() {
@@ -304,7 +299,7 @@ export default {
       requiredShow: false,
       memberList: [],
       defaultProps: {
-        children: this.childrenFunc,
+        children: 'children',
         label: 'name'
       }
     };
@@ -383,6 +378,9 @@ export default {
     async getOrganizationList() {
       await this.$store.dispatch('getOrganizationList');
       this.memberList = this.$store.state.organizationList;
+       for (let key in this.memberList) {
+        this.childrenFunc(this.memberList[key]);
+      }
     },
     cancel() {
       this.visible = false;
@@ -461,9 +459,6 @@ export default {
       if (this.$store.state.attachmentState) {
         downloadFile(this.$store.state.viewLink, name);
       }
-    },
-    getValue(val) {
-      this.demandForm.user_survey_specialist_id = val;
     },
     childrenFunc(data) {
       if (data.member_list) {

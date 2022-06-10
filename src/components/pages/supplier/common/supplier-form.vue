@@ -444,13 +444,12 @@
           prop="purchase_specialist_id"
           :rules="[{ required: true, message: '请选择采购员' }]"
         >
-          <select-tree
+          <el-tree-select
             v-model="supplierForm.purchase_specialist_id"
-            :value="supplierForm.purchase_specialist_id"
             :data="memberList"
+            clearable
             :props="defaultProps"
             :disabled="isDisabled"
-            @input="getValue"
           />
         </el-form-item>
       </div>
@@ -783,11 +782,9 @@
 
 <script>
 import { downloadFile, getFile, previewFile } from '../../../../utils';
-import SelectTree from '../../../common/select-tree.vue';
 import ViewDialog from '../../../common/view-dialog.vue';
 export default {
   components: {
-    SelectTree,
     ViewDialog
   },
   props: ['type'],
@@ -815,7 +812,7 @@ export default {
       qualityEvaluationFile: {},
       memberList: [],
       defaultProps: {
-        children: this.childrenFunc,
+        children: 'children',
         label: 'name'
       },
       viewImgDialog: false,
@@ -842,6 +839,9 @@ export default {
     async getOrganizationList() {
       await this.$store.dispatch('getOrganizationList');
       this.memberList = this.$store.state.organizationList;
+      for (let key in this.memberList) {
+        this.childrenFunc(this.memberList[key]);
+      }
     },
     async getParams() {
       if (localStorage.getItem('params')) {
@@ -975,9 +975,6 @@ export default {
           }
         }
       });
-    },
-    getValue(val) {
-      this.supplierForm.purchase_specialist_id = val;
     },
     closeViewDialog() {
       this.viewImgDialog = false;

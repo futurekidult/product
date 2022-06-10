@@ -14,12 +14,11 @@
         prop="user_id"
         :rules="[{ required: true, message: '请选择成员' }]"
       >
-        <select-tree
+        <el-tree-select
           v-model="memberForm.user_id"
-          :value="memberForm.user_id"
           :data="memberList"
+          clearable
           :props="defaultProps"
-          @input="getValue"
         />
       </el-form-item>
       <el-form-item
@@ -61,12 +60,7 @@
 </template>
 
 <script>
-import SelectTree from '../../../common/select-tree.vue';
-
 export default {
-  components: {
-    SelectTree
-  },
   inject: ['getMember'],
   props: ['title', 'dialogVisible', 'id', 'type', 'user'],
   emits: ['hide-dialog'],
@@ -77,7 +71,7 @@ export default {
       role: [],
       memberList: [],
       defaultProps: {
-        children: this.childrenFunc,
+        children: 'children',
         label: 'name'
       }
     };
@@ -115,6 +109,9 @@ export default {
     async getOrganizationList() {
       await this.$store.dispatch('getOrganizationList');
       this.memberList = this.$store.state.organizationList;
+       for (let key in this.memberList) {
+        this.childrenFunc(this.memberList[key]);
+      }
     },
     childrenFunc(data) {
       if (data.member_list) {
@@ -123,9 +120,6 @@ export default {
         }
       }
       return data.children;
-    },
-    getValue(val) {
-      this.memberForm.user_id = val;
     },
     cancel() {
       this.visible = false;

@@ -313,12 +313,11 @@
         prop="user_survey_specialist_id"
         :rules="[{ required: true, message: '请选择用研专员' }]"
       >
-        <select-tree
+        <el-tree-select
           v-model="editForm.user_survey_specialist_id"
-          :value="editForm.user_survey_specialist_id"
           :data="memberList"
+          clearable
           :props="defaultProps"
-          @input="getValue"
         />
       </el-form-item>
       <el-divider />
@@ -364,15 +363,13 @@ import TestRequired from '../../common/test-requred.vue';
 import TestQuestions from '../../common/test-template.vue';
 import TemplateForm from '../../common/template-form.vue';
 import { downloadFile, getFile, previewFile } from '../../../../../utils';
-import SelectTree from '../../../../common/select-tree.vue';
 
 export default {
   components: {
     UserList,
     TestRequired,
     TestQuestions,
-    TemplateForm,
-    SelectTree
+    TemplateForm
   },
   props: [
     'id',
@@ -406,7 +403,7 @@ export default {
       show: true,
       memberList: [],
       defaultProps: {
-        children: this.childrenFunc,
+        children: 'children',
         label: 'name'
       }
     };
@@ -458,6 +455,9 @@ export default {
     async getOrganizationList() {
       await this.$store.dispatch('getOrganizationList');
       this.memberList = this.$store.state.organizationList;
+      for (let key in this.memberList) {
+        this.childrenFunc(this.memberList[key]);
+      }
     },
     showApplyForm() {
       this.applyFormVisible = true;
@@ -559,9 +559,6 @@ export default {
           this.submitTestResult(this.file.id);
         }
       });
-    },
-    getValue(val) {
-      this.editForm.user_survey_specialist_id = val;
     },
     childrenFunc(data) {
       if (data.member_list) {
