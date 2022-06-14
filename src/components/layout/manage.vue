@@ -13,6 +13,19 @@
           新品开发系统1.0.0
         </div>
       </div>
+      <div class="header-right">
+        <div>欢迎您，{{ $store.state.userInfo.name }}</div>
+        <el-divider
+          direction="vertical"
+          class="header-right_divider"
+        />
+        <el-button
+          type="text"
+          class="exit-btn"
+        >
+          退出
+        </el-button>
+      </div>
     </el-header>
     <el-container>
       <el-aside width="250px">
@@ -58,11 +71,39 @@
               <span>供应商管理</span>
             </template>
           </el-menu-item>
-          <el-menu-item index="8">
+          <el-sub-menu index="/system-list">
             <template #title>
               <span>系统管理</span>
             </template>
-          </el-menu-item>
+            <el-menu-item index="/system-list/organization-list">
+              组织管理
+            </el-menu-item>
+            <el-menu-item index="/system-list/admin-list">
+              用户管理
+            </el-menu-item>
+            <el-menu-item index="/system-list/role-list">
+              角色管理
+            </el-menu-item>
+            <el-menu-item index="/system-list/privilege-list">
+              权限管理
+            </el-menu-item>
+            <el-sub-menu index="/system-list/basic-data">
+              <template #title>
+                <span>基础数据</span>
+              </template>
+              <el-menu-item
+                index="/system-list/basic-data/profit-calculation/rule"
+              >
+                核算利润规则
+              </el-menu-item>
+              <el-menu-item index="/system-list/basic-data/rate-list">
+                汇率表
+              </el-menu-item>
+            </el-sub-menu>
+            <el-menu-item index="/system-list/todo-list">
+              待办管理
+            </el-menu-item>
+          </el-sub-menu>
         </el-menu>
       </el-aside>
       <el-main>
@@ -88,6 +129,8 @@ export default {
   background-color: #3a3f4d;
   padding: 20px;
   height: 80px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .header-left {
@@ -113,5 +156,23 @@ export default {
 .el-submenu__title:hover,
 .el-menu-item:hover {
   background-color: #3a3f4d;
+}
+
+.header-right {
+  color: #fff;
+  display: flex;
+  height: 43px;
+  line-height: 43px;
+}
+
+.header-right > div {
+  margin-left: 10px;
+}
+
+.header-right_divider,
+.exit-btn {
+  height: 20px;
+  margin: 12px 5px;
+  color: #fff;
 }
 </style>

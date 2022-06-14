@@ -45,7 +45,7 @@
       <el-divider />
       <div style="text-align: right">
         <el-button
-          class="cancel-btn"
+          class="close-btn"
           @click="cancel"
         >
           取消
@@ -63,8 +63,7 @@
 
 <script>
 export default {
-  inject: ['getRoleList'],
-  props: ['type', 'dialogVisible', 'id', 'authList'],
+  props: ['type', 'dialogVisible', 'id', 'authList', 'getList'],
   emits: ['hide-dialog'],
   data() {
     return {
@@ -73,7 +72,10 @@ export default {
         children: 'children',
         label: 'name'
       },
-      roleForm: {}
+      roleForm: {
+        name: '',
+        privileges: []
+      }
     };
   },
   mounted() {
@@ -85,14 +87,14 @@ export default {
     async createRole(body) {
       await this.$store.dispatch('system/createRole', body);
       this.visible = false;
-      this.getRoleList();
+      this.getList();
     },
     async updateRole(val) {
       let body = val;
       body['id'] = this.id;
       await this.$store.dispatch('system/updateRole', body);
       this.visible = false;
-      this.getRoleList();
+      this.getList();
     },
     async getRole() {
       await this.$store.dispatch('system/getRole', {

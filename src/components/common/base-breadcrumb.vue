@@ -37,6 +37,29 @@ export default {
       let prefix = [{ path: '/work-bench', meta: { title: '首页' } }];
       if (!this.isHome(matched[1])) {
         switch (matched[1].name) {
+          case 'organization':
+          case 'admin':
+          case 'role':
+          case 'privilege':
+          case 'todo list':
+            prefix = prefix.concat({
+              path: '',
+              meta: { title: '系统管理' }
+            });
+            break;
+          case 'rule':
+          case 'rate':
+            prefix = prefix.concat(
+              {
+                path: '',
+                meta: { title: '系统管理' }
+              },
+              {
+                path: '',
+                meta: { title: '基础数据' }
+              }
+            );
+            break;
           case 'demand':
           case 'demand create':
             prefix = prefix.concat({

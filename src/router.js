@@ -19,7 +19,13 @@ import ProductList from './components/pages/product/product-list.vue';
 import ProductDetail from './components/pages/product/product-detail.vue';
 import OrderDetail from './components/pages/product/process/order-detail.vue';
 import NotFound from './components/pages/not-found.vue';
-import SystemList from './components/pages/system/system-list.vue';
+import OrganziationList from './components/pages/system/organization-list.vue';
+import AdminList from './components/pages/system/admin-list.vue';
+import RoleList from './components/pages/system/role-list.vue';
+import PrivilegeList from './components/pages/system/privilege-list.vue';
+import CalculationRule from './components/pages/system/calculation-rule.vue';
+import RateList from './components/pages/system/rate-list.vue';
+import TodoList from './components/pages/system/todo-list.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -196,11 +202,59 @@ const router = createRouter({
           ]
         },
         {
-          path: '/system-list',
-          name: 'system',
-          component: SystemList,
+          path: '/system-list/organization-list',
+          name: 'organization',
+          component: OrganziationList,
           meta: {
-            title: '系统管理'
+            title: '组织管理'
+          }
+        },
+        {
+          path: '/system-list/admin-list',
+          name: 'admin',
+          component: AdminList,
+          meta: {
+            title: '用户管理'
+          }
+        },
+        {
+          path: '/system-list/role-list',
+          name: 'role',
+          component: RoleList,
+          meta: {
+            title: '角色管理'
+          }
+        },
+        {
+          path: '/system-list/privilege-list',
+          name: 'privilege',
+          component: PrivilegeList,
+          meta: {
+            title: '权限管理'
+          }
+        },
+        {
+          path: '/system-list/basic-data/profit-calculation/rule',
+          name: 'rule',
+          component: CalculationRule,
+          meta: {
+            title: '核算利润规则'
+          }
+        },
+        {
+          path: '/system-list/basic-data/rate-list',
+          name: 'rate',
+          component: RateList,
+          meta: {
+            title: '汇率表'
+          }
+        },
+        {
+          path: '/system-list/todo-list',
+          name: 'todo list',
+          component: TodoList,
+          meta: {
+            title: '待办转移'
           }
         }
       ]

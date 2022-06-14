@@ -14,7 +14,14 @@ export default {
       roleList: [],
       roleLoading: true,
       adminRole: {},
-      role: {}
+      role: {},
+      todoList: [],
+      todoLoading: true,
+      calculationRuleList: [],
+      calculationRuleListLoading: true,
+      calculationRuleDetail: {},
+      rateList: [],
+      rateListLoading: true
     };
   },
   mutations: {
@@ -47,6 +54,27 @@ export default {
     },
     setRole(state, payload) {
       state.role = payload;
+    },
+    setTodoList(state, payload) {
+      state.todoList = payload;
+    },
+    setTodoLoading(state, payload) {
+      state.todoLoading = payload;
+    },
+    setCalculationRuleList(state, payload) {
+      state.calculationRuleList = payload;
+    },
+    setCalculationRuleDetail(state, payload) {
+      state.calculationRuleDetail = payload;
+    },
+    setCalculationRuleListLoading(state, payload) {
+      state.calculationRuleListLoading = payload;
+    },
+    setRateList(state, payload) {
+      state.rateList = payload;
+    },
+    setRateListLoading(state, payload) {
+      state.rateListLoading = payload;
     }
   },
   actions: {
@@ -119,6 +147,71 @@ export default {
     },
     async deleteRole(_, payload) {
       await axios.post('/system/role/delete', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
+    },
+    async getTodoList(context, payload) {
+      await axios.get('/system/todo/list', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setTodoList', res.data.list);
+          context.commit('setTodoLoading', false);
+        }
+      });
+    },
+    async transferTodo(_, payload) {
+      await axios.post('/system/todo/transfer', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
+    },
+    async getCalculationRuleList(context, payload) {
+      await axios
+        .get('/system/profit-calculation-rule/list', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            context.commit('setCalculationRuleList', res.data.list);
+            context.commit('setCalculationRuleListLoading', false);
+          }
+        });
+    },
+    async getCalculationRuleDetail(context, payload) {
+      await axios
+        .get('/system/profit-calculation-rule/detail/get', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            context.commit('setCalculationRuleDetail', res.data);
+          }
+        });
+    },
+    async updateCalculationRule(_, payload) {
+      await axios
+        .post('/system/profit-calculation/rule/update', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(res.message);
+          }
+        });
+    },
+    async getRateList(context, payload) {
+      await axios.get('/system/exchange/rate/list', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setRateList', res.data.list);
+          context.commit('setRateListLoading', false);
+        }
+      });
+    },
+    async createRate(_, payload) {
+      await axios.post('/system/exchange/rate/create', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
+    },
+    async deleteRate(_, payload) {
+      await axios.post('/system/exchange/rate/delete', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }

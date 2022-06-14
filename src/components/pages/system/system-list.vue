@@ -1,3 +1,4 @@
+<!--
 <template>
   <base-breadcrumb />
   <div class="border">
@@ -58,7 +59,7 @@ import AdminList from './admin-list.vue';
 import RoleList from './role-list.vue';
 import PrivilegeList from './privilege-list.vue';
 import BasicData from './basic-data.vue';
-import TodoManagement from './todo-management.vue';
+import TodoManagement from './todo-list.vue';
 
 export default {
   components: {
@@ -129,3 +130,5 @@ export default {
   }
 };
 </script>
+
+-->

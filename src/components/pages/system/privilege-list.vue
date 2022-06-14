@@ -1,25 +1,39 @@
 <template>
-  <div class="nav-title">
-    <span class="line">|</span> 菜单权限列表
-  </div>
+  <base-breadcrumb />
 
-  <el-tree
-    v-loading="$store.state.system.privilegeLoading"
-    :data="privilegeList"
-    :props="defaultProps"
-  />
+  <div class="border">
+    <div class="nav-title">
+      <span class="line">|</span> 菜单权限列表
+    </div>
+
+    <el-tree
+      v-loading="$store.state.system.privilegeLoading"
+      :data="privilegeList"
+      :props="defaultProps"
+    />
+  </div>
 </template>
 
 <script>
 export default {
-  props: ['privilegeList'],
   data() {
     return {
       defaultProps: {
         children: 'children',
         label: 'name'
-      }
+      },
+      privilegeList: []
     };
+  },
+  mounted() {
+    this.getPrivilegeList();
+  },
+  methods: {
+    async getPrivilegeList() {
+      this.$store.commit('system/setPrivilegeLoading', true);
+      await this.$store.dispatch('system/getPrivilegeList');
+      this.privilegeList = this.$store.state.system.privilegeList;
+    }
   }
 };
 </script>
