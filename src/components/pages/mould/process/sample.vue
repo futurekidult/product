@@ -59,9 +59,9 @@
         :rules="[{ required: true, message: '请上传附件' }]"
       >
         <el-upload
-          action=""
+          action
           :show-file-list="false"
-          :on-success="handleSuccessFile"
+          :http-request="handleImgSuccess"
           :limit="9"
         >
           <el-button
@@ -75,28 +75,32 @@
           支持office文档格式,文档不超过5MB
         </div>
       </el-form-item>
-      <el-form-item v-if="progress.prototype_file !== []">
+      <el-form-item>
         <div
-          v-for="(item, index) in attachment"
+          v-for="(item, index) in imgList"
           :key="index"
           class="attachment-list"
         >
           <div>
             {{ item.name }}
           </div>
-          <el-button
-            v-if="!isDisabled"
-            type="text"
-            @click="deleteFile(item.id)"
-          >
-            删除
-          </el-button>
-          <el-button
-            v-else
-            type="text"
-          >
-            下载
-          </el-button>
+          <div style="display: flex">
+            <el-button
+              type="text"
+              @click="showViewDialog(item.id)"
+            >
+              预览
+            </el-button>
+            <div v-if="!isDisabled">
+              <span class="table-btn">|</span>
+              <el-button
+                type="text"
+                @click="deleteImg(item.id)"
+              >
+                删除
+              </el-button>
+            </div>
+          </div>
         </div>
       </el-form-item>
       <el-form-item>
@@ -110,15 +114,31 @@
       </el-form-item>
     </el-form>
   </section>
+
+  <view-dialog
+    v-if="viewImgDialog"
+    :link="imgLink"
+    :visible="viewImgDialog"
+    @hide-dialog="closeViewDialog"
+  />
 </template>
 
 <script>
+import { getFile } from '../../../../utils';
+import ViewDialog from '../../../common/view-dialog.vue';
+
 export default {
+  components: {
+    ViewDialog
+  },
   inject: ['getMould'],
   props: ['changeColor', 'progress', 'getList', 'attachment'],
   data() {
     return {
-      prototypeForm: {}
+      prototypeForm: {},
+      imgList: this.attachment,
+      viewImgDialog: false,
+      imgLink: ''
     };
   },
   computed: {
@@ -130,6 +150,11 @@ export default {
       }
     }
   },
+  watch: {
+    attachment(val) {
+      this.imgList = val;
+    }
+  },
   methods: {
     async createPrototype(val) {
       let body = {
@@ -139,28 +164,48 @@ export default {
       await this.$store.dispatch('mould/createPrototype', body);
       this.getList();
     },
-    handleSuccessFile(file, fileList) {
-      this.attachment.push({
-        id: file.id,
-        name: fileList.name
-      });
-      this.prototypeForm.prototype_file = this.attachment;
+    async handleImgSuccess(e) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        this.res = this.$store.state.fileRes;
+        this.imgList.push({
+          id: this.res.id,
+          name: this.res.file_name
+        });
+      }
+    },
+    async showViewDialog(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        this.viewImgDialog = true;
+        this.imgLink = this.$store.state.viewLink;
+      }
+    },
+    closeViewDialog() {
+      this.viewImgDialog = false;
+    },
+    deleteImg(id) {
+      this.imgList.splice(
+        this.imgList.findIndex((e) => {
+          return e.id === id;
+        }),
+        1
+      );
     },
     submitPrototypeForm() {
+      this.prototypeForm.prototype_file = [];
+      this.imgList.forEach((item) => {
+        let { id } = item;
+        this.prototypeForm.prototype_file.push(id);
+      });
       this.$refs.prototypeForm.validate((valid) => {
         if (valid) {
           this.createPrototype(this.prototypeForm.prototype_file);
         }
       });
-    },
-    deleteFile(id) {
-      this.attachment.splice(
-        this.attachment.findIndex((e) => {
-          return e.id === id;
-        }),
-        1
-      );
-      this.prototypeForm.prototype_file = this.attachment;
     },
     async approvalPrototype(val) {
       await this.$store.dispatch('mould/approvalPrototype', {

@@ -26,11 +26,11 @@
       ref="skuForm"
       label-width="110px"
       style="width: 50%; margin: 20px 0"
-      :model="skuForm"
+      :model="form"
       :rules="skuRules"
     >
       <div
-        v-for="(item, index) in skuForm.sku"
+        v-for="(item, index) in form.sku"
         :key="index"
         style="display: flex"
       >
@@ -86,9 +86,9 @@
         prop="project_plan_file"
       >
         <el-upload
-          action=""
+          action
           :show-file-list="false"
-          :on-success="handleFileSuccess"
+          :http-request="handleFileSuccess"
           :limit="1"
         >
           <el-button
@@ -110,19 +110,31 @@
           <div>
             {{ handleAttachment(attachment.name) }}
           </div>
-          <el-button
-            v-if="isDisabled"
-            type="text"
-          >
-            下载
-          </el-button>
-          <el-button
-            v-else
-            type="text"
-            @click="deleteFile(attachment.id)"
-          >
-            删除
-          </el-button>
+          <div style="display: flex">
+            <div v-if="handleAttachment(file.type) === 12860">
+              <el-button
+                type="text"
+                @click="showViewFile(file.id)"
+              >
+                预览
+              </el-button>
+              <span class="table-btn">|</span>
+            </div>
+            <el-button
+              v-if="isDisabled"
+              type="text"
+              @click="download(file.id, file.name)"
+            >
+              下载
+            </el-button>
+            <el-button
+              v-else
+              type="text"
+              @click="deleteFile"
+            >
+              删除
+            </el-button>
+          </div>
         </div>
       </el-form-item>
       <el-form-item>
@@ -169,6 +181,7 @@
 </template>
 
 <script>
+import { downloadFile, getFile, previewFile } from '../../../../../utils';
 export default {
   inject: ['getSku', 'changeColor'],
   props: ['skuForm', 'attachment', 'skuEntrySchedule', 'schedule', 'skuId'],
@@ -195,12 +208,22 @@ export default {
         ]
       },
       show: true,
-      platform: []
+      platform: [],
+      file: this.attachment,
+      form: this.skuForm
     };
   },
   computed: {
     isDisabled() {
       return this.schedule.state === 40 ? true : false;
+    }
+  },
+  watch: {
+    attachment(val) {
+      this.file = val;
+    },
+    skuForm(val) {
+      this.form = val;
     }
   },
   mounted() {
@@ -222,19 +245,38 @@ export default {
       body['id'] = this.skuId;
       body['sku_info']['project_plan_file'] = this.attachment.id;
       await this.$store.dispatch('product/order/submitSkuname', body);
+      this.getSku();
     },
-    handleFileSuccess(file, fileList) {
-      this.attachment = {
-        id: file.id,
-        name: fileList.name
-      };
+    async showViewFile(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        previewFile(this.$store.state.viewLink);
+      }
     },
-    previewFile(id) {
-      console.log(id);
+    async handleFileSuccess(e) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        this.show = true;
+        this.file = {
+          id: this.$store.state.fileRes.id,
+          name: this.$store.state.fileRes.file_name,
+          type: this.$store.state.fileRes.type
+        };
+      }
     },
-    deleteFile(id) {
-      console.log(id);
-      this.attachment = {};
+    async download(id, name) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        downloadFile(this.$store.state.viewLink, name);
+      }
+    },
+    deleteFile() {
+      this.file = {};
+      this.form.project_plan_file = '';
       this.show = false;
     },
     handleAttachment(file) {
@@ -245,11 +287,10 @@ export default {
       }
     },
     submitSkuForm() {
-      this.skuForm.project_plan_file = this.attachment.id;
+      this.form.project_plan_file = this.file.id;
       this.$refs.skuForm.validate((valid) => {
         if (valid) {
-          this.updateSkuname(this.skuForm);
-          this.getSku();
+          this.updateSkuname(this.form);
         }
       });
     },

@@ -13,7 +13,6 @@
       </div>
       <el-button
         type="primary"
-        :disabled="JSON.stringify(progress) !== '{}'"
         @click="showProofingCreate"
       >
         提交打样单

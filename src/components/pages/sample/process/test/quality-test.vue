@@ -64,9 +64,9 @@
         :rules="[{ required: true, message: '请上传附件' }]"
       >
         <el-upload
-          action=""
+          action
           :show-file-list="false"
-          :on-success="handleFileSuccess"
+          :http-request="handleFileSuccess"
           :limit="1"
         >
           <el-button
@@ -81,20 +81,36 @@
         </div>
       </el-form-item>
       <el-form-item>
-        <div class="attachment-list">
-          <div>{{ attachment.name }}</div>
-          <el-button
-            v-if="submitState !== 1"
-            type="text"
-          >
-            删除
-          </el-button>
-          <el-button
-            v-else
-            type="text"
-          >
-            下载
-          </el-button>
+        <div
+          v-if="show"
+          class="attachment-list"
+        >
+          <div>{{ file.name }}</div>
+          <div style="display: flex">
+            <div v-if="file.type === 12860">
+              <el-button
+                type="text"
+                @click="showViewFile(file.id)"
+              >
+                预览
+              </el-button>
+              <span class="table-btn">|</span>
+            </div>
+            <el-button
+              v-if="submitState !== 1"
+              type="text"
+              @click="deleteFile"
+            >
+              删除
+            </el-button>
+            <el-button
+              v-else
+              type="text"
+              @click="download(file.id, file.name)"
+            >
+              下载
+            </el-button>
+          </div>
         </div>
       </el-form-item>
       <el-form-item v-if="submitState !== 1">
@@ -145,6 +161,7 @@
 </template>
 
 <script>
+import { downloadFile, getFile, previewFile } from '../../../../../utils';
 import TestQuestions from '../../common/test-template.vue';
 
 export default {
@@ -166,8 +183,15 @@ export default {
       reasonForm: {},
       fileForm: {
         test_result_file: this.attachment
-      }
+      },
+      file: this.attachment,
+      show: true
     };
+  },
+  watch: {
+    attachment(val) {
+      this.file = val;
+    }
   },
   methods: {
     async confirmTestResult(val) {
@@ -195,12 +219,37 @@ export default {
         test_result: 1
       });
     },
-    handleFileSuccess(file, fileList) {
-      this.attachment = {
-        id: file.id,
-        name: fileList.name
-      };
-      this.fileForm.test_result_file = this.attachment.id;
+    async handleFileSuccess(e) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        this.show = true;
+        this.file = {
+          id: this.$store.state.fileRes.id,
+          name: this.$store.state.fileRes.file_name,
+          type: this.$store.state.fileRes.type
+        };
+      }
+    },
+    async download(id, name) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        downloadFile(this.$store.state.viewLink, name);
+      }
+    },
+    async showViewFile(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        previewFile(this.$store.state.viewLink);
+      }
+    },
+    deleteFile() {
+      this.file = {};
+      this.fileForm.test_result_file = '';
+      this.show = false;
     },
     showFailReason() {
       this.failFormVisible = true;
@@ -212,6 +261,7 @@ export default {
       });
     },
     submitReport() {
+      this.fileForm.test_result_file = this.file.id;
       this.$refs.fileForm.validate((valid) => {
         if (valid) {
           this.submitTestResult(this.attachment.id);

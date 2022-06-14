@@ -75,7 +75,7 @@
           clearable
         />
       </el-form-item>
-      <competitive-table :competitive-product="competitiveProduct" />
+      <competitive-table :product-form="productForm" />
       <el-divider />
 
       <el-form-item
@@ -126,14 +126,7 @@ export default {
   components: {
     CompetitiveTable
   },
-  props: [
-    'dialogVisible',
-    'formTitle',
-    'type',
-    'form',
-    'id',
-    'competitiveProduct'
-  ],
+  props: ['dialogVisible', 'formTitle', 'type', 'form', 'id', 'productForm'],
   emits: ['hide-dialog'],
   injetc: ['getPatent'],
   data() {

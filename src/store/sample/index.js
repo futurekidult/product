@@ -78,8 +78,6 @@ export default {
         if (res.code === 200) {
           context.commit('setSampleList', res.data.list);
           context.commit('setListLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -88,8 +86,6 @@ export default {
         if (res.code === 200) {
           context.commit('setSampleBase', res.data);
           context.state.detailLoading = false;
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -98,8 +94,6 @@ export default {
         if (res.code === 200) {
           context.commit('setSampleDetail', res.data);
           context.commit('setBaseLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -107,8 +101,6 @@ export default {
       await axios.post('/sample/result/confirm/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -119,8 +111,6 @@ export default {
           if (res.code === 200) {
             context.commit('setProofingProgress', res.data);
             context.commit('setProofingLoading', false);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -130,8 +120,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -139,8 +127,6 @@ export default {
       await axios.get('/sample/proofing-sheet/get/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setProofingSheet', res.data);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -150,8 +136,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -161,8 +145,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -171,8 +153,6 @@ export default {
         if (res.code === 200) {
           context.commit('setTestProgresss', res.data);
           context.commit('setTestLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -180,8 +160,6 @@ export default {
       await axios.get('/option/sample/market/list/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSamplemarketList', res.data);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -189,8 +167,6 @@ export default {
       await axios.post('/sample/test-apply/create/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -198,8 +174,6 @@ export default {
       await axios.get('/sample/test-apply/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSampleTestApply', res.data);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -207,8 +181,6 @@ export default {
       await axios.post('/sample/test-apply/review/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -227,8 +199,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -236,8 +206,6 @@ export default {
       await axios.post('/sample/test/problem/record/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success('记录的问题可在产品详情页查看');
-        } else {
-          ElMessage.error(res.message);
         }
       });
     }

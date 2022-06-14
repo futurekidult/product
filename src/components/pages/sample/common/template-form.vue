@@ -16,9 +16,9 @@
         prop="user_template_file"
       >
         <el-upload
-          action=""
+          action
           :show-file-list="false"
-          :on-success="handleFileSuccess"
+          :http-request="handleFileSuccess"
           :limit="1"
         >
           <el-button
@@ -38,19 +38,31 @@
           class="attachment-list"
         >
           <div>{{ attachment.name }}</div>
-          <el-button
-            v-if="type === 'create'"
-            type="text"
-            @click="deleteFile(attachment.id)"
-          >
-            删除
-          </el-button>
-          <el-button
-            v-else
-            type="text"
-          >
-            下载
-          </el-button>
+          <div style="display: flex">
+            <div v-if="attachment.type === 12860">
+              <el-button
+                type="text"
+                @click="showViewFile(attachment.id)"
+              >
+                预览
+              </el-button>
+              <span class="table-btn">|</span>
+            </div>
+            <el-button
+              v-if="type === 'create'"
+              type="text"
+              @click="deleteFile"
+            >
+              删除
+            </el-button>
+            <el-button
+              v-else
+              type="text"
+              @click="download(attachment.id, attachment.name)"
+            >
+              下载
+            </el-button>
+          </div>
         </div>
       </el-form-item>
       <el-divider />
@@ -76,6 +88,7 @@
 </template>
 
 <script>
+import { downloadFile, getFile, previewFile } from '../../../../utils';
 export default {
   inject: ['getUser'],
   props: ['id', 'dialogVisible', 'type', 'title'],
@@ -121,25 +134,44 @@ export default {
       this.visible = false;
       this.getUser();
     },
+    async showViewFile(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        previewFile(this.$store.state.viewLink);
+      }
+    },
+    async download(id, name) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        downloadFile(this.$store.state.viewLink, name);
+      }
+    },
     cancel() {
       this.visible = false;
       this.$emit('hide-dialog', this.visible);
     },
-    handleFileSuccess(file, fileList) {
-      this.attachment = {
-        id: file.id,
-        name: fileList.name
-      };
-      this.templateForm.user_template_file = this.attachment.id;
-      this.show = true;
+    async handleFileSuccess(e) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        this.show = true;
+        this.attachment = {
+          id: this.$store.state.fileRes.id,
+          name: this.$store.state.fileRes.file_name,
+          type: this.$store.state.fileRes.type
+        };
+      }
     },
-    deleteFile(id) {
-      console.log(id);
+    deleteFile() {
       this.attachment = {};
-      this.templateForm = {};
+      this.templateForm.user_template_file = '';
       this.show = false;
     },
     submitTemplateForm() {
+      this.templateForm.user_template_file = this.attachment.id;
       this.$refs.templateForm.validate((valid) => {
         if (valid) {
           this.createTemplate(this.templateForm);

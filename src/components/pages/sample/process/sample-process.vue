@@ -63,6 +63,7 @@ export default {
   },
   methods: {
     async getSampleDetail() {
+      this.$store.commit('sample/setBaseLoading', true);
       await this.$store.dispatch('sample/getSampleDetail', {
         params: {
           id: +this.$route.params.id
@@ -77,14 +78,22 @@ export default {
       );
     },
     async getProofingProgress() {
+      this.$store.commit('sample/setProofingLoading', true);
       await this.$store.dispatch('sample/getProofingProgress', {
         params: {
           sample_id: +this.$route.params.id
         }
       });
       this.proofingProgress = this.$store.state.sample.proofingProgress;
+      this.proofingProgress.submit_time = formatterTime(
+        this.proofingProgress.submit_time
+      );
+      this.proofingProgress.actual_finish_time = formatterTime(
+        this.proofingProgress.actual_finish_time
+      );
     },
     async getTestProgress() {
+      this.$store.commit('sample/setTestLoading', true);
       await this.$store.dispatch('sample/getTestProgress', {
         params: {
           sample_id: +this.$route.params.id
@@ -99,13 +108,10 @@ export default {
     },
     handleClick(tab) {
       if (tab.props.name === 'basic') {
-        this.$store.commit('sample/setBaseLoading', true);
         this.getSampleDetail();
       } else if (tab.props.name === 'proofing') {
-        this.$store.commit('sample/setProofingLoading', true);
         this.getProofingProgress();
       } else {
-        this.$store.commit('sample/setTestLoading', true);
         this.getTestProgress();
       }
     },

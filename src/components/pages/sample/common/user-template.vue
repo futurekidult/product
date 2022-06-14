@@ -47,14 +47,64 @@
     <el-table-column
       label="测试结果文件"
       prop="test_result_file"
+      width="150px"
     >
-      <el-button type="text">
-        下载
-      </el-button>
-      <span class="table-btn">|</span>
-      <el-button type="text">
-        预览
-      </el-button>
+      <template #default="scope">
+        <div style="display: flex">
+          <el-upload
+            action
+            :show-file-list="false"
+            :http-request="handleFileSuccess"
+            :limit="1"
+          >
+            <el-button
+              v-if="
+                JSON.stringify(scope.row.test_result_file) === '{}' &&
+                  scope.row.button_state.is_upload === 0
+              "
+              type="text"
+            >
+              上传
+            </el-button>
+          </el-upload>
+          <div v-if="JSON.stringify(scope.row.test_result_file) !== '{}'">
+            <el-button
+              type="text"
+              @click="showViewFile(scope.row.test_result_file.id)"
+            >
+              预览
+            </el-button>
+          </div>
+          <div v-if="scope.row.button_state.is_upload === 1">
+            <span class="table-btn">|</span>
+            <el-button
+              type="text"
+              @click="
+                download(
+                  scope.row.test_result_file.id,
+                  scope.row.test_result_file.name
+                )
+              "
+            >
+              下载
+            </el-button>
+          </div>
+          <div
+            v-if="
+              JSON.stringify(scope.row.test_result_file) !== '{}' &&
+                scope.row.button_state.is_upload === 0
+            "
+          >
+            <span class="table-btn">|</span>
+            <el-button
+              type="text"
+              @click="deleteFile"
+            >
+              删除
+            </el-button>
+          </div>
+        </div>
+      </template>
     </el-table-column>
     <el-table-column
       label="操作"
@@ -84,13 +134,19 @@
     </el-table-column>
   </el-table>
 
-  <el-button
-    style="margin: 15px 0"
-    @click="showUserForm"
-  >
-    + 新增测试用户
-  </el-button>
+  <div class="user-item">
+    <el-button
+      style="margin: 15px 0"
+      @click="showUserForm"
+    >
+      + 新增测试用户
+    </el-button>
 
+    <base-pagination
+      :length="userList.length"
+      :get-list="getUserList"
+    />
+  </div>
   <user-form
     v-if="userVisible"
     :dialog-visible="userVisible"
@@ -116,7 +172,12 @@
 import UserForm from './user-form.vue';
 import SampleResult from './sample-result.vue';
 import ViewUser from './view-user.vue';
-import { formatterTime } from '../../../../utils';
+import {
+  downloadFile,
+  formatterTime,
+  getFile,
+  previewFile
+} from '../../../../utils';
 
 export default {
   components: {
@@ -131,19 +192,20 @@ export default {
       resultFormVisible: false,
       testUserId: 0,
       viewUserVisible: false,
-      viewUserid: 0
+      viewUserid: 0,
+      file: {}
     };
   },
   mounted() {
     this.getUserList();
   },
   methods: {
-    async getUserList() {
+    async getUserList(currentPage = 1, pageSize = 10) {
       await this.$store.dispatch('sample/user/getUserList', {
         params: {
           sample_id: +this.$route.params.id,
-          current_page: 1,
-          page_size: 10
+          current_page: currentPage,
+          page_size: pageSize
         }
       });
       this.userList = this.$store.state.sample.user.userList;
@@ -161,6 +223,37 @@ export default {
       };
       await this.$store.dispatch('sample/user/deliverSample', body);
       this.getUserList();
+    },
+    async handleFileSuccess(e) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        this.show = true;
+        this.file = {
+          id: this.$store.state.fileRes.id,
+          name: this.$store.state.fileRes.file_name,
+          type: this.$store.state.fileRes.type
+        };
+        this.getUserList();
+      }
+    },
+    async download(id, name) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        downloadFile(this.$store.state.viewLink, name);
+      }
+    },
+    async showViewFile(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        previewFile(this.$store.state.viewLink);
+      }
+    },
+    deleteFile() {
+      this.file = {};
     },
     showResultForm(id) {
       this.resultFormVisible = true;

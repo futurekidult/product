@@ -60,8 +60,6 @@ export default {
         if (res.code === 200) {
           context.commit('setMouldList', res.data.list);
           context.commit('setListLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -69,8 +67,6 @@ export default {
       await axios.post('/mould/detail/create/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -79,8 +75,6 @@ export default {
         if (res.code === 200) {
           context.commit('setMould', res.data);
           context.state.mouldLoading = false;
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -89,8 +83,6 @@ export default {
         if (res.code === 200) {
           context.commit('setDesignProgress', res.data);
           context.commit('setDesignLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -98,8 +90,6 @@ export default {
       await axios.post('/mould/product-design/create/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -108,8 +98,6 @@ export default {
         if (res.code === 200) {
           context.commit('setPrototypeProgress', res.data);
           context.commit('setPrototypeLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -117,8 +105,6 @@ export default {
       await axios.post('/mould/prototype/update/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -126,8 +112,6 @@ export default {
       await axios.post('/mould/prototype/approval/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -136,8 +120,6 @@ export default {
         if (res.code === 200) {
           context.commit('setMakingMould', res.data);
           context.commit('setMakingMouldLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -145,8 +127,6 @@ export default {
       await axios.post('/mould/making/create/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -154,8 +134,6 @@ export default {
       await axios.post('/mould/making/update/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -163,8 +141,6 @@ export default {
       await axios.post('/mould/making/approval/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -173,8 +149,6 @@ export default {
         if (res.code === 200) {
           context.commit('setTestingMould', res.data);
           context.commit('setTestingMouldLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -182,8 +156,6 @@ export default {
       await axios.post('/mould/testing/approval/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -191,8 +163,6 @@ export default {
       await axios.post('/mould/testing/confirm/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     }

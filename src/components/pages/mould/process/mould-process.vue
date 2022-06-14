@@ -79,23 +79,32 @@ export default {
   },
   methods: {
     async getProductDesign() {
+      this.$store.commit('mould/setDesignLoading', true);
       await this.$store.dispatch('mould/getProductDesign', {
         params: {
           mould_id: +this.$route.params.id
         }
       });
       this.designProgress = this.$store.state.mould.designProgress;
+      this.designProgress.actual_finish_time = formatterTime(
+        this.designProgress.actual_finish_time
+      );
     },
     async getPrototype() {
+      this.$store.commit('mould/setPrototypeLoading', true);
       await this.$store.dispatch('mould/getPrototype', {
         params: {
           mould_id: +this.$route.params.id
         }
       });
       this.prototypeProgress = this.$store.state.mould.prototypeProgress;
+      this.prototypeProgress.actual_finish_time = formatterTime(
+        this.prototypeProgress.actual_finish_time
+      );
       this.attachment = this.prototypeProgress.prototype_file;
     },
     async getMakingMould() {
+      this.$store.commit('mould/setMakingMouldLoading', true);
       await this.$store.dispatch('mould/getMakingMould', {
         params: {
           mould_id: +this.$route.params.id
@@ -110,6 +119,7 @@ export default {
       );
     },
     async getTestingMould() {
+      this.$store.commit('mould/setTestingMouldLoading', true);
       await this.$store.dispatch('mould/getTestingMould', {
         params: {
           mould_id: +this.$route.params.id
@@ -122,16 +132,12 @@ export default {
     },
     handleClick(tab) {
       if (tab.props.name === 'design') {
-        this.$store.commit('mould/setDesignLoading', true);
         this.getProductDesign();
       } else if (tab.props.name === 'prototype') {
-        this.$store.commit('mould/setPrototypeLoading', true);
         this.getPrototype();
       } else if (tab.props.name === 'open') {
-        this.$store.commit('mould/setMakingMouldLoading', true);
         this.getMakingMould();
       } else {
-        this.$store.commit('mould/setTestingMouldLoading', true);
         this.getTestingMould();
       }
     }

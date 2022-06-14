@@ -105,11 +105,11 @@ export default {
       resultOptions: [
         {
           label: '已终止-重新打样',
-          value: 2
+          value: 40
         },
         {
           label: '已终止-样品终止',
-          value: 3
+          value: 50
         }
       ]
     };
@@ -132,7 +132,7 @@ export default {
     },
     submitTestResult() {
       if (this.sampleDetail.test_result === 1) {
-        this.confirmTestResult(1);
+        this.confirmTestResult(30);
       } else {
         this.$refs.resultForm.validate((valid) => {
           if (valid) {

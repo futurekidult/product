@@ -51,8 +51,6 @@ export default {
         if (res.code === 200) {
           context.commit('setOrderList', res.data.list);
           context.commit('setOrderLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -60,8 +58,6 @@ export default {
       await axios.get('/order/detail/get/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setProgress', res.data);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -70,8 +66,6 @@ export default {
         if (res.code === 200) {
           context.commit('setSku', res.data);
           context.commit('setSkuLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -80,8 +74,6 @@ export default {
         if (res.code === 200) {
           context.commit('setContract', res.data);
           context.commit('setContractLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -91,8 +83,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -102,8 +92,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -114,8 +102,6 @@ export default {
           if (res.code === 200) {
             context.commit('setPreProduct', res.data);
             context.commit('setPreProductLoading', false);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -125,8 +111,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -134,8 +118,6 @@ export default {
       await axios.post('/order/goods-receipt/create/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -145,8 +127,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -154,8 +134,6 @@ export default {
       await axios.post('/order/sku/entry/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -163,8 +141,6 @@ export default {
       await axios.post('/order/sku/name/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     }

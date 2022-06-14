@@ -332,7 +332,7 @@
         <el-form-item label="SWFT CODE">
           <el-input
             v-model="supplierForm.swift_code"
-            placeholder="请输入SWFT CODE"
+            placeholder="请输入SWIFT CODE"
             clearable
             :disabled="isDisabled"
           />
@@ -444,10 +444,11 @@
           prop="purchase_specialist_id"
           :rules="[{ required: true, message: '请选择采购员' }]"
         >
-          <el-select
+          <el-tree-select
             v-model="supplierForm.purchase_specialist_id"
-            placeholder="请选择采购员"
+            :data="memberList"
             clearable
+            :props="defaultProps"
             :disabled="isDisabled"
           />
         </el-form-item>
@@ -458,12 +459,9 @@
         :rules="[{ required: true, message: '请上传附件' }]"
       >
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action
           :show-file-list="false"
-          :on-success="
-            (file, fileList) =>
-              handleFileArrSuccess(file, fileList, vatInvoiceFile)
-          "
+          :http-request="(e) => handleFileArrSuccess(e, vatInvoiceFile)"
           :limit="9"
         >
           <el-button
@@ -486,19 +484,25 @@
           <div>
             {{ item.name }}
           </div>
-          <el-button
-            v-if="!isDisabled"
-            type="text"
-            @click="deleteFileItem(vatInvoiceFile, item.id, 'vat_invoice_file')"
-          >
-            删除
-          </el-button>
-          <el-button
-            v-else
-            type="text"
-          >
-            下载
-          </el-button>
+          <div style="display: flex">
+            <div v-if="!isDisabled">
+              <el-button
+                type="text"
+                @click="
+                  deleteFileItem(vatInvoiceFile, item.id, 'vat_invoice_file')
+                "
+              >
+                删除
+              </el-button>
+              <span class="table-btn">|</span>
+            </div>
+            <el-button
+              type="text"
+              @click="showViewDialog(item.id)"
+            >
+              预览
+            </el-button>
+          </div>
         </div>
       </el-form-item>
       <el-form-item
@@ -507,11 +511,10 @@
         :rules="[{ required: true, message: '请上传附件' }]"
       >
         <el-upload
-          action=""
+          action
           :show-file-list="false"
-          :on-success="
-            (file, fileList) =>
-              handleFileArrSuccess(file, fileList, accountOpeningLicenseFile)
+          :http-request="
+            (e) => handleFileArrSuccess(e, accountOpeningLicenseFile)
           "
           :limit="9"
         >
@@ -535,25 +538,29 @@
           <div>
             {{ item.name }}
           </div>
-          <el-button
-            v-if="!isDisabled"
-            type="text"
-            @click="
-              deleteFileItem(
-                accountOpeningLicenseFile,
-                item.id,
-                'account_opening_license_file'
-              )
-            "
-          >
-            删除
-          </el-button>
-          <el-button
-            v-else
-            type="text"
-          >
-            下载
-          </el-button>
+          <div style="display: flex">
+            <div v-if="!isDisabled">
+              <el-button
+                type="text"
+                @click="
+                  deleteFileItem(
+                    accountOpeningLicenseFile,
+                    item.id,
+                    'account_opening_license_file'
+                  )
+                "
+              >
+                删除
+              </el-button>
+              <span class="table-btn">|</span>
+            </div>
+            <el-button
+              type="text"
+              @click="showViewDialog(item.id)"
+            >
+              预览
+            </el-button>
+          </div>
         </div>
       </el-form-item>
       <el-form-item
@@ -562,12 +569,9 @@
         :rules="[{ required: true, message: '请上传附件' }]"
       >
         <el-upload
-          action=""
+          action
           :show-file-list="false"
-          :on-success="
-            (file, fileList) =>
-              handleFileArrSuccess(file, fileList, businessLicenseFile)
-          "
+          :http-request="(e) => handleFileArrSuccess(e, businessLicenseFile)"
           :limit="9"
         >
           <el-button
@@ -590,25 +594,29 @@
           <div>
             {{ item.name }}
           </div>
-          <el-button
-            v-if="!isDisabled"
-            type="text"
-            @click="
-              deleteFileItem(
-                businessLicenseFile,
-                item.id,
-                'business_license_file'
-              )
-            "
-          >
-            删除
-          </el-button>
-          <el-button
-            v-else
-            type="text"
-          >
-            下载
-          </el-button>
+          <div style="display: flex">
+            <div v-if="!isDisabled">
+              <el-button
+                type="text"
+                @click="
+                  deleteFileItem(
+                    businessLicenseFile,
+                    item.id,
+                    'business_license_file'
+                  )
+                "
+              >
+                删除
+              </el-button>
+              <span class="table-btn">|</span>
+            </div>
+            <el-button
+              type="text"
+              @click="showViewDialog(item.id)"
+            >
+              预览
+            </el-button>
+          </div>
         </div>
       </el-form-item>
       <el-form-item
@@ -617,12 +625,9 @@
         :rules="[{ required: true, message: '请上传附件' }]"
       >
         <el-upload
-          action=""
+          action
           :show-file-list="false"
-          :on-success="
-            (file, fileList) =>
-              handleFileSuccess(file, fileList, purchaseEvaluationFile)
-          "
+          :http-request="(e) => handleFileSuccess(e, purchaseEvaluationFile)"
           :limit="1"
         >
           <el-button
@@ -644,19 +649,39 @@
           <div>
             {{ purchaseEvaluationFile.name }}
           </div>
-          <el-button
-            v-if="!isDisabled"
-            type="text"
-            @click="deletePurchaseFile(purchaseEvaluationFile.id)"
-          >
-            删除
-          </el-button>
-          <el-button
-            v-else
-            type="text"
-          >
-            下载
-          </el-button>
+          <div style="display: flex">
+            <el-button
+              v-if="!isDisabled"
+              type="text"
+              @click="deleteQualityFile(purchaseEvaluationFile.id)"
+            >
+              删除
+            </el-button>
+            <div style="display: flex">
+              <el-button
+                v-if="isDisabled"
+                type="text"
+                @click="
+                  download(
+                    purchaseEvaluationFile.id,
+                    purchaseEvaluationFile.name
+                  )
+                "
+              >
+                下载
+              </el-button>
+              <div>
+                <span class="table-btn">|</span>
+                <el-button
+                  v-if="purchaseEvaluationFile.type === 12860"
+                  type="text"
+                  @click="showViewFile(purchaseEvaluationFile.id)"
+                >
+                  预览
+                </el-button>
+              </div>
+            </div>
+          </div>
         </div>
       </el-form-item>
       <el-form-item
@@ -665,12 +690,9 @@
         :rules="[{ required: true, message: '请上传附件' }]"
       >
         <el-upload
-          action=""
+          action
           :show-file-list="false"
-          :on-success="
-            (file, fileList) =>
-              handleFileSuccess(file, fileList, qualityEvaluationFile)
-          "
+          :http-request="(e) => handleFileSuccess(e, qualityEvaluationFile)"
           :limit="9"
         >
           <el-button
@@ -692,19 +714,36 @@
           <div>
             {{ qualityEvaluationFile.name }}
           </div>
-          <el-button
-            v-if="!isDisabled"
-            type="text"
-            @click="deleteQualityFile(qualityEvaluationFile.id)"
-          >
-            删除
-          </el-button>
-          <el-button
-            v-else
-            type="text"
-          >
-            下载
-          </el-button>
+          <div style="display: flex">
+            <el-button
+              v-if="!isDisabled"
+              type="text"
+              @click="deleteQualityFile(qualityEvaluationFile.id)"
+            >
+              删除
+            </el-button>
+            <div style="display: flex">
+              <el-button
+                v-if="isDisabled"
+                type="text"
+                @click="
+                  download(qualityEvaluationFile.id, qualityEvaluationFile.name)
+                "
+              >
+                下载
+              </el-button>
+              <div>
+                <span class="table-btn">|</span>
+                <el-button
+                  v-if="qualityEvaluationFile.type === 12860"
+                  type="text"
+                  @click="showViewFile(purchaseEvaluationFile.id)"
+                >
+                  预览
+                </el-button>
+              </div>
+            </div>
+          </div>
         </div>
       </el-form-item>
       <el-form-item>
@@ -732,10 +771,22 @@
       </el-form-item>
     </el-form>
   </div>
+
+  <view-dialog
+    v-if="viewImgDialog"
+    :link="imgLink"
+    :visible="viewImgDialog"
+    @hide-dialog="closeViewDialog"
+  />
 </template>
 
 <script>
+import { downloadFile, getFile, previewFile } from '../../../../utils';
+import ViewDialog from '../../../common/view-dialog.vue';
 export default {
+  components: {
+    ViewDialog
+  },
   props: ['type'],
   data() {
     return {
@@ -758,7 +809,14 @@ export default {
       accountOpeningLicenseFile: [],
       businessLicenseFile: [],
       purchaseEvaluationFile: {},
-      qualityEvaluationFile: {}
+      qualityEvaluationFile: {},
+      memberList: [],
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      },
+      viewImgDialog: false,
+      imgLink: ''
     };
   },
   computed: {
@@ -772,11 +830,19 @@ export default {
   },
   mounted() {
     this.getParams();
+    this.getOrganizationList();
     if (this.type !== 'create') {
       this.getSupplierDetail();
     }
   },
   methods: {
+    async getOrganizationList() {
+      await this.$store.dispatch('getOrganizationList');
+      this.memberList = this.$store.state.organizationList;
+      for (let key in this.memberList) {
+        this.childrenFunc(this.memberList[key]);
+      }
+    },
     async getParams() {
       if (localStorage.getItem('params')) {
         let { supplier } = JSON.parse(localStorage.getItem('params'));
@@ -828,15 +894,43 @@ export default {
     deleteRow(val) {
       this.supplierForm[val].pop();
     },
-    handleFileArrSuccess(file, fileList, arr) {
-      arr.push({
-        id: file.id,
-        name: fileList.name
-      });
+    childrenFunc(data) {
+      if (data.member_list) {
+        for (const item of data.member_list) {
+          data.children.push(item);
+        }
+      }
+      return data.children;
     },
-    handleFileSuccess(file, fileList, obj) {
-      obj['id'] = file.id;
-      obj['name'] = fileList.name;
+    async showViewDialog(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        this.viewImgDialog = true;
+        this.imgLink = this.$store.state.viewLink;
+      }
+    },
+    async handleFileArrSuccess(e, arr) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        arr.push({
+          id: this.$store.state.fileRes.id,
+          name: this.$store.state.fileRes.file_name,
+          type: this.$store.state.fileRes.type
+        });
+      }
+    },
+    async handleFileSuccess(e, obj) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        obj['id'] = this.$store.state.fileRes.id;
+        obj['name'] = this.$store.state.fileRes.file_name;
+        obj['type'] = this.$store.state.fileRes.type;
+      }
     },
     handleFileArr(oldArr, key) {
       this.supplierForm[key] = [];
@@ -854,13 +948,11 @@ export default {
       );
       this.supplierForm[key] = arr;
     },
-    deleteQualityFile(id) {
-      console.log(id);
+    deleteQualityFile() {
       this.qualityEvaluationFile = {};
       this.submitForm.quality_evaluation_file = {};
     },
-    deletePurchaseFile(id) {
-      console.log(id);
+    deletePurchaseFile() {
       this.purchaseEvaluationFile = {};
       this.submitForm.purchase_evaluation_file = {};
     },
@@ -883,6 +975,23 @@ export default {
           }
         }
       });
+    },
+    closeViewDialog() {
+      this.viewImgDialog = false;
+    },
+    async showViewFile(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        previewFile(this.$store.state.viewLink);
+      }
+    },
+    async download(id, name) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        downloadFile(this.$store.state.viewLink, name);
+      }
     }
   }
 };

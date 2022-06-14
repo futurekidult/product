@@ -296,13 +296,58 @@
         </div>
       </el-form-item>
       <el-form-item
+        label="海运单价"
+        style="margin-bottom: 18px"
+        required
+      >
+        <div style="display: flex">
+          <el-form-item prop="sea_freight_currency">
+            <el-select
+              v-model="quotationForm.sea_freight_currency"
+              class="analy-form_mar"
+              placeholder="请选择货币"
+              clearable
+              @clear="clearCurrency('sea_freight')"
+            >
+              <el-option
+                v-for="item in currency"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item prop="sea_freight_cost">
+            <el-input
+              v-model="quotationForm.sea_freight_cost"
+              class="analy-form_mar"
+              placeholder="请输入金额"
+              clearable
+              @change="getRmb('sea_freight')"
+              @clear="clearMoney('sea_freight')"
+            />
+          </el-form-item>
+          <el-form-item prop="sea_freight_cost_rmb">
+            <el-input
+              v-model="quotationForm.sea_freight_cost_rmb"
+              disabled
+              placeholder="请输入人民币"
+            >
+              <template #prepend>
+                ￥
+              </template>
+            </el-input>
+          </el-form-item>
+        </div>
+      </el-form-item>
+      <el-form-item
         label="上传附件"
         prop="quotation_file"
       >
         <el-upload
-          action=""
+          action
           :show-file-list="false"
-          :on-success="handleFileSuccess"
+          :http-request="handleFileSuccess"
           :limit="1"
         >
           <el-button type="primary">
@@ -315,16 +360,27 @@
       </el-form-item>
       <el-form-item>
         <div
-          v-if="true"
+          v-if="show"
           class="attachment-list"
         >
-          <div>{{ attachment.name }}</div>
-          <el-button
-            type="text"
-            @click="deleteFile(attachment.id)"
-          >
-            删除
-          </el-button>
+          <div>{{ handleAttachment(attachment.name) }}</div>
+          <div style="display: flex">
+            <el-button
+              type="text"
+              @click="deleteFile"
+            >
+              删除
+            </el-button>
+            <div v-if="attachment.type === 12860">
+              <span class="table-btn">|</span>
+              <el-button
+                type="text"
+                @click="showViewFile(attachment.id)"
+              >
+                预览
+              </el-button>
+            </div>
+          </div>
         </div>
       </el-form-item>
       <div style="text-align: right">
@@ -346,7 +402,7 @@
 </template>
 
 <script>
-import { timestamp } from '../../../../utils/index.js';
+import { getFile, previewFile, timestamp } from '../../../../utils/index.js';
 
 export default {
   props: ['dialogVisible', 'title', 'id', 'getList', 'productId'],
@@ -369,6 +425,12 @@ export default {
           }
         ],
         quote_amount: [
+          {
+            required: true,
+            message: '请输入金额'
+          }
+        ],
+        quote_amount_rmb: [
           {
             required: true,
             message: '请输入金额'
@@ -452,6 +514,12 @@ export default {
             message: '请输入金额'
           }
         ],
+        head_cost_rmb: [
+          {
+            required: true,
+            message: '请输入金额'
+          }
+        ],
         tail_currency: [
           {
             required: true,
@@ -459,6 +527,30 @@ export default {
           }
         ],
         tail_cost: [
+          {
+            required: true,
+            message: '请输入金额'
+          }
+        ],
+        tail_cost_rmb: [
+          {
+            required: true,
+            message: '请输入金额'
+          }
+        ],
+        sea_freight_currency: [
+          {
+            required: true,
+            message: '请选择货币'
+          }
+        ],
+        sea_freight_cost: [
+          {
+            required: true,
+            message: '请输入金额'
+          }
+        ],
+        sea_freight_cost_rmb: [
           {
             required: true,
             message: '请输入金额'
@@ -476,7 +568,8 @@ export default {
       hasAdd: 0,
       isHigh: 0,
       attachment: {},
-      currency: []
+      currency: [],
+      show: false
     };
   },
   mounted() {
@@ -524,6 +617,7 @@ export default {
       this.getList();
     },
     submitForm() {
+      this.quotationForm.quotation_file = this.attachment.id;
       this.$refs.quotationForm.validate((valid) => {
         if (valid) {
           this.quotationForm.quote_validity = timestamp(
@@ -533,19 +627,37 @@ export default {
         }
       });
     },
-    handleFileSuccess(file, fileList) {
-      this.attachment = {
-        id: file.id,
-        name: fileList.name
-      };
-      this.quotationForm.quotation_file = this.attachment.id;
-      this.show = true;
+    async handleFileSuccess(e) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        this.show = true;
+        this.attachment = {
+          id: this.$store.state.fileRes.id,
+          name: this.$store.state.fileRes.file_name,
+          type: this.$store.state.fileRes.type
+        };
+      }
     },
-    deleteFile(id) {
-      console.log(id);
+    handleAttachment(file) {
+      if (file === undefined) {
+        return '';
+      } else {
+        return file;
+      }
+    },
+    deleteFile() {
       this.attachment = {};
-      this.quotationForm.quotation_file = null;
+      this.quotationForm.quotation_file = '';
       this.show = false;
+    },
+    async showViewFile(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        previewFile(this.$store.state.viewLink);
+      }
     },
     async getSupplier() {
       let params = {
@@ -577,36 +689,27 @@ export default {
     async getRmb(val) {
       await this.$store.dispatch('getPriceRmb', {
         params: {
-          price: this.quotationForm.quote_amount,
-          currency: this.quotationForm.quote_currency,
+          price: this.quotationForm[`${val}_cost`],
+          currency: this.quotationForm[`${val}_cost_currency`],
           product_id: this.productId
         }
       });
-      if (val === 'head') {
-        this.quotationForm.head_cost_rmb = this.$store.state.priceRmb;
-      } else {
-        this.quotationForm.tail_cost_rmb = this.$store.state.priceRmb;
-      }
+      this.quotationForm[`${val}_cost_rmb`] = this.$store.state.priceRmb;
     },
     clearCurrency(val) {
       if (val === 'quote') {
         this.quotationForm.quote_amount = '';
         this.quotationForm.quote_amount_rmb = '';
-      } else if (val === 'head') {
-        this.quotationForm.head_cost = '';
-        this.quotationForm.head_cost_rmb = '';
       } else {
-        this.quotationForm.tail_cost = '';
-        this.quotationForm.tail_cost_rmb = '';
+        this.quotationForm[`${val}_cost`] = '';
+        this.quotationForm[`${val}_cost_rmb`] = '';
       }
     },
     clearMoney(val) {
       if (val === 'quote') {
         this.quotationForm.quote_amount_rmb = '';
-      } else if (val === 'head') {
-        this.quotationForm.head_cost_rmb = '';
       } else {
-        this.quotationForm.tail_cost_rmb = '';
+        this.quotationForm[`${val}_cost_rmb`] = '';
       }
     }
   }

@@ -196,99 +196,108 @@
           label="项目总监"
           prop="project_director_id"
         >
-          <el-select
+          <el-tree-select
             v-model="reviewForm.project_director_id"
-            class="pass-form_item"
-            placeholder="请选择人员"
+            :data="memberList"
             clearable
+            :props="defaultProps"
+            style="width: 339px"
           />
         </el-form-item>
         <el-form-item
           label="运营总监"
           prop="coo_id"
         >
-          <el-select
+          <el-tree-select
             v-model="reviewForm.coo_id"
-            class="pass-form_item"
-            placeholder="请选择人员"
+            :data="memberList"
             clearable
+            :props="defaultProps"
+            style="width: 339px"
           />
         </el-form-item>
         <el-form-item
           label="营销总监"
           prop="cmo_id"
         >
-          <el-select
+          <el-tree-select
             v-model="reviewForm.cmo_id"
-            class="pass-form_item"
-            placeholder="请选择人员"
+            :data="memberList"
             clearable
+            :props="defaultProps"
+            style="width: 339px"
           />
         </el-form-item>
         <el-form-item
           label="供应链总监"
           prop="cpo_id"
         >
-          <el-select
+          <el-tree-select
             v-model="reviewForm.cpo_id"
-            class="pass-form_item"
-            placeholder="请选择人员"
+            :data="memberList"
             clearable
+            :props="defaultProps"
+            style="width: 339px"
           />
         </el-form-item>
         <el-form-item
           label="项目经理"
           prop="project_manager_id"
         >
-          <el-select
+          <el-tree-select
             v-model="reviewForm.project_manager_id"
-            class="pass-form_item"
-            placeholder="请选择人员"
+            :data="memberList"
             clearable
+            :props="defaultProps"
+            style="width: 339px"
           />
         </el-form-item>
         <el-form-item
           label="项目管理员"
           prop="project_administrator_id"
         >
-          <el-select
+          <el-tree-select
             v-model="reviewForm.project_administrator_id"
-            class="pass-form_item"
-            placeholder="请选择人员"
+            :data="memberList"
             clearable
+            :props="defaultProps"
+            style="width: 339px"
           />
         </el-form-item>
         <el-form-item
           label="运营负责人"
           prop="operations_principal_id"
         >
-          <el-select
+          <el-tree-select
             v-model="reviewForm.operations_principal_id"
-            class="pass-form_item"
-            placeholder="请选择人员"
+            :data="memberList"
             clearable
+            :props="defaultProps"
+            style="width: 339px"
           />
         </el-form-item>
         <el-form-item
           label="产品负责人"
           prop="product_principal_id"
         >
-          <el-select
+          <el-tree-select
             v-model="reviewForm.product_principal_id"
-            class="pass-form_item"
-            placeholder="请选择人员"
+            :data="memberList"
             clearable
+            :props="defaultProps"
+            style="width: 339px"
           />
         </el-form-item>
         <el-form-item
           label="采购负责人"
           prop="purchase_principal_id"
         >
-          <el-select
+          <el-tree-select
             v-model="reviewForm.purchase_principal_id"
-            class="pass-form_item"
-            placeholder="请选择人员"
+            :data="memberList"
             clearable
+            :props="defaultProps"
+            style="width: 339px"
           />
         </el-form-item>
         <el-form-item
@@ -298,11 +307,12 @@
             isNewProductFlag ? productRules.market_survey_principal_id : []
           "
         >
-          <el-select
+          <el-tree-select
             v-model="reviewForm.market_survey_principal_id"
-            class="pass-form_item"
-            placeholder="请选择人员"
+            :data="memberList"
             clearable
+            :props="defaultProps"
+            style="width: 339px"
           />
         </el-form-item>
         <el-form-item
@@ -312,11 +322,12 @@
             isNewCategoryFlag ? categoryRules.user_survey_principal_id : []
           "
         >
-          <el-select
+          <el-tree-select
             v-model="reviewForm.user_survey_principal_id"
-            class="pass-form_item"
-            placeholder="请选择人员"
+            :data="memberList"
             clearable
+            :props="defaultProps"
+            style="width: 339px"
           />
         </el-form-item>
         <el-form-item
@@ -324,22 +335,24 @@
           prop="user_test_principal_id"
           :rules="isNewCategoryFlag ? categoryRules.user_test_principal_id : []"
         >
-          <el-select
+          <el-tree-select
             v-model="reviewForm.user_test_principal_id"
-            class="pass-form_item"
-            placeholder="请选择人员"
+            :data="memberList"
             clearable
+            :props="defaultProps"
+            style="width: 339px"
           />
         </el-form-item>
         <el-form-item
           label="品质负责人"
           prop="quality_principal_id"
         >
-          <el-select
+          <el-tree-select
             v-model="reviewForm.quality_principal_id"
-            class="pass-form_item"
-            placeholder="请选择人员 "
+            :data="memberList"
             clearable
+            :props="defaultProps"
+            style="width: 339px"
           />
         </el-form-item>
       </div>
@@ -379,6 +392,7 @@
 </template>
 <script>
 import { timestamp } from '../../../../../utils';
+
 export default {
   data() {
     return {
@@ -573,7 +587,12 @@ export default {
           label: '是',
           value: 1
         }
-      ]
+      ],
+      memberList: [],
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      }
     };
   },
   computed: {
@@ -622,6 +641,7 @@ export default {
   },
   mounted() {
     this.getMarket();
+    this.getOrganizationList();
   },
   methods: {
     async reviewDemandForm(val) {
@@ -640,6 +660,21 @@ export default {
           this.reviewDemandForm(this.reviewForm);
         }
       });
+    },
+    async getOrganizationList() {
+      await this.$store.dispatch('getOrganizationList');
+      this.memberList = this.$store.state.organizationList;
+      for (let key in this.memberList) {
+        this.childrenFunc(this.memberList[key]);
+      }
+    },
+    childrenFunc(data) {
+      if (data.member_list) {
+        for (const item of data.member_list) {
+          data.children.push(item);
+        }
+      }
+      return data.children;
     },
     addRow() {
       this.reviewForm.market.push({});

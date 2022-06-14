@@ -47,8 +47,6 @@ export default {
         if (res.code === 200) {
           context.commit('setSupplierList', res.data.list);
           context.commit('setSupplierLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -57,8 +55,6 @@ export default {
         if (res.code === 200) {
           context.commit('setBlackList', res.data.list);
           context.commit('setBlackLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -66,8 +62,6 @@ export default {
       await axios.post('/supplier/detail/delete', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -75,8 +69,6 @@ export default {
       await axios.post('/supplier/black-list/add', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -84,8 +76,6 @@ export default {
       await axios.post('/supplier/white-list/add', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -94,8 +84,6 @@ export default {
         if (res.code === 200) {
           ElMessage.success(res.message);
           context.commit('setCreateState', true);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -104,8 +92,6 @@ export default {
         if (res.code === 200) {
           context.commit('setSupplierDetail', res.data);
           context.commit('setSupplierDetailLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -114,8 +100,6 @@ export default {
         if (res.code === 200) {
           ElMessage.success(res.message);
           context.commit('setUpdateState', true);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -123,8 +107,6 @@ export default {
       await axios.post('supplier/entry/approve', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     }

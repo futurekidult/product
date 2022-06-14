@@ -36,20 +36,20 @@
     </div>
 
     <el-form
-      ref="surveyForm"
+      ref="form"
       label-width="121px"
       style="width: 50%"
       :rules="surveyRules"
-      :model="surveyForm"
+      :model="form"
     >
       <el-form-item
         label="产品图片"
         prop="images"
       >
         <el-upload
-          action=""
+          action
           :show-file-list="false"
-          :on-success="handleImgSuccess"
+          :http-request="handleImgSuccess"
           :limit="9"
         >
           <el-button
@@ -69,22 +69,26 @@
           :key="img.id"
           class="attachment-list"
         >
-          <div @click="previewImg(img.id)">
+          <div>
             {{ img.name }}
           </div>
-          <el-button
-            v-if="!isDisabled"
-            type="text"
-            @click="deleteImg(img.id)"
-          >
-            删除
-          </el-button>
-          <el-button
-            v-else
-            type="text"
-          >
-            下载
-          </el-button>
+          <div style="display: flex">
+            <div v-if="!isDisabled">
+              <el-button
+                type="text"
+                @click="deleteImg(img.id)"
+              >
+                删除
+              </el-button>
+              <span class="table-btn">|</span>
+            </div>
+            <el-button
+              type="text"
+              @click="showViewDialog(img.id)"
+            >
+              预览
+            </el-button>
+          </div>
         </div>
       </el-form-item>
       <el-form-item
@@ -92,7 +96,7 @@
         prop="product_link"
       >
         <el-input
-          v-model="surveyForm.product_link"
+          v-model="form.product_link"
           type="textarea"
           maxlength="200"
           show-word-limit
@@ -106,7 +110,7 @@
         prop="specification_parameter"
       >
         <el-input
-          v-model="surveyForm.specification_parameter"
+          v-model="form.specification_parameter"
           type="textarea"
           maxlength="200"
           show-word-limit
@@ -120,7 +124,7 @@
         prop="product_function"
       >
         <el-input
-          v-model="surveyForm.product_function"
+          v-model="form.product_function"
           type="textarea"
           maxlength="200"
           show-word-limit
@@ -134,7 +138,7 @@
         prop="demand_analysis"
       >
         <el-input
-          v-model="surveyForm.demand_analysis"
+          v-model="form.demand_analysis"
           type="textarea"
           maxlength="200"
           show-word-limit
@@ -149,7 +153,7 @@
           prop="annual_sales"
         >
           <el-input
-            v-model="surveyForm.annual_sales"
+            v-model="form.annual_sales"
             placeholder="请输入年度销售额"
             :disabled="isDisabled"
             clearable
@@ -160,7 +164,7 @@
           prop="growth_rate"
         >
           <el-input
-            v-model="surveyForm.growth_rate"
+            v-model="form.growth_rate"
             placeholder="请输入同比增长率"
             :disabled="isDisabled"
             clearable
@@ -173,7 +177,7 @@
           prop="peak_season_start"
         >
           <el-select
-            v-model="surveyForm.peak_season_start"
+            v-model="form.peak_season_start"
             placeholder="请选择淡旺季系数"
             :disabled="isDisabled"
             clearable
@@ -191,7 +195,7 @@
           prop="peak_season_end"
         >
           <el-select
-            v-model="surveyForm.peak_season_end"
+            v-model="form.peak_season_end"
             placeholder="请选择淡旺季系数"
             :disabled="isDisabled"
             clearable
@@ -211,7 +215,7 @@
           prop="competitive_degree"
         >
           <el-select
-            v-model="surveyForm.competitive_degree"
+            v-model="form.competitive_degree"
             placeholder="请选择竞争度/垄断性"
             :disabled="isDisabled"
             clearable
@@ -229,7 +233,7 @@
           prop="is_nosedive_category"
         >
           <el-select
-            v-model="surveyForm.is_nosedive_category"
+            v-model="form.is_nosedive_category"
             placeholder="请选择类目是否跳水"
             :disabled="isDisabled"
             clearable
@@ -247,7 +251,7 @@
           prop="precise_price_range"
         >
           <el-select
-            v-model="surveyForm.precise_price_range"
+            v-model="form.precise_price_range"
             placeholder="请选择精准价位段
         "
             :disabled="isDisabled"
@@ -263,10 +267,10 @@
         </el-form-item>
         <el-form-item
           label="流量丰富度"
-          prop="flow_richness"
+          prop="traffic_richness"
         >
           <el-select
-            v-model="surveyForm.flow_richness"
+            v-model="form.traffic_richness"
             placeholder="请选择流量丰富度"
             :disabled="isDisabled"
             clearable
@@ -284,7 +288,7 @@
           prop="is_nosedive_keyword"
         >
           <el-select
-            v-model="surveyForm.is_nosedive_keyword"
+            v-model="form.is_nosedive_keyword"
             placeholder="请选择关键词是否跳水"
             :disabled="isDisabled"
             clearable
@@ -302,7 +306,7 @@
           prop="keyword_bidding_degree"
         >
           <el-select
-            v-model="surveyForm.keyword_bidding_degree"
+            v-model="form.keyword_bidding_degree"
             placeholder="请选择关键词竞价"
             :disabled="isDisabled"
             clearable
@@ -322,7 +326,7 @@
         prop="is_benchmarking"
       >
         <el-select
-          v-model="surveyForm.is_benchmarking"
+          v-model="form.is_benchmarking"
           placeholder="请选择竞品是否对标"
           :disabled="isDisabled"
           clearable
@@ -340,9 +344,9 @@
         prop="attachment"
       >
         <el-upload
-          action=""
+          action
           :show-file-list="false"
-          :on-success="handleFileSuccess"
+          :http-request="handleFileSuccess"
           :limit="1"
         >
           <el-button
@@ -362,21 +366,33 @@
           class="attachment-list"
         >
           <div>
-            {{ handleAttachment(attachment.name) }}
+            {{ handleAttachment(file.name) }}
           </div>
-          <el-button
-            v-if="!isDisabled"
-            type="text"
-            @click="deleteFile(attachment.id)"
-          >
-            删除
-          </el-button>
-          <el-button
-            v-else
-            type="text"
-          >
-            下载
-          </el-button>
+          <div style="display: flex">
+            <div v-if="file.type === 12860">
+              <el-button
+                type="text"
+                @click="showViewFile(file.id)"
+              >
+                预览
+              </el-button>
+              <span class="table-btn">|</span>
+            </div>
+            <el-button
+              v-if="!isDisabled"
+              type="text"
+              @click="deleteFile"
+            >
+              删除
+            </el-button>
+            <el-button
+              v-else
+              type="text"
+              @click="download(file.id, file.name)"
+            >
+              下载
+            </el-button>
+          </div>
         </div>
       </el-form-item>
       <el-form-item v-if="!isDisabled">
@@ -389,10 +405,23 @@
       </el-form-item>
     </el-form>
   </div>
+
+  <view-dialog
+    v-if="viewImgDialog"
+    :link="imgLink"
+    :visible="viewImgDialog"
+    @hide-dialog="closeViewDialog"
+  />
 </template>
 
 <script>
+import { downloadFile, getFile, previewFile } from '../../../../../utils';
+import ViewDialog from '../../../../common/view-dialog.vue';
+
 export default {
+  components: {
+    ViewDialog
+  },
   props: [
     'changeColor',
     'progress',
@@ -476,7 +505,7 @@ export default {
             message: '请选择精准价位段'
           }
         ],
-        flow_richness: [
+        traffic_richness: [
           {
             required: true,
             message: '请选择流量丰富度'
@@ -521,12 +550,25 @@ export default {
       precisePriceRange: [],
       competitiveDegree: [],
       trafficRichness: [],
-      keywordDegree: []
+      keywordDegree: [],
+      res: {},
+      viewImgDialog: false,
+      imgLink: '',
+      file: this.attachment,
+      form: this.surveyForm
     };
   },
   computed: {
     isDisabled() {
       return this.progress.state === 10 ? false : true;
+    }
+  },
+  watch: {
+    attachment(val) {
+      this.file = val;
+    },
+    surveyForm(val) {
+      this.form = val;
     }
   },
   mounted() {
@@ -549,13 +591,14 @@ export default {
     },
     async updatePlatform(val) {
       let body = val;
-      body['attachment'] = this.attachment.id;
+      body['attachment'] = this.file.id;
       body['survey_schedule_id'] = this.progress.id;
       body['product_id'] = +this.$route.params.productId;
       await this.$store.dispatch(
         'product/survey/platform/submitPlatform',
         body
       );
+      this.getList();
     },
     handleAttachment(file) {
       if (file === undefined) {
@@ -564,22 +607,41 @@ export default {
         return file;
       }
     },
-    handleImgSuccess(file, fileList) {
-      this.productImages.push({
-        id: file.id,
-        name: fileList.name
-      });
+    async handleImgSuccess(e) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        this.res = this.$store.state.fileRes;
+        this.productImages.push({
+          id: this.res.id,
+          name: this.res.file_name
+        });
+      }
     },
-    handleFileSuccess(file, fileList) {
-      this.attachment = {
-        id: file.id,
-        name: fileList.name
-      };
-      this.surveyForm.attachment = file.id;
-      this.show = true;
+    async handleFileSuccess(e) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        this.show = true;
+        this.file = {
+          id: this.$store.state.fileRes.id,
+          name: this.$store.state.fileRes.file_name,
+          type: this.$store.state.fileRes.type
+        };
+      }
     },
-    previewImg(id) {
-      console.log(id);
+    async showViewDialog(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        this.viewImgDialog = true;
+        this.imgLink = this.$store.state.viewLink;
+      }
+    },
+    closeViewDialog() {
+      this.viewImgDialog = false;
     },
     deleteImg(id) {
       this.productImages.splice(
@@ -589,22 +651,37 @@ export default {
         1
       );
     },
-    deleteFile(id) {
-      console.log(id);
-      this.attachment = {};
+    deleteFile() {
+      this.file = {};
+      this.form.attachment = '';
       this.show = false;
     },
     submitSurveyForm() {
+      this.form.images = [];
       this.productImages.forEach((item) => {
         let { id } = item;
-        this.surveyForm.images.push(id);
+        this.form.images.push(id);
       });
-      this.$refs.surveyForm.validate((valid) => {
+      this.form.attachment = this.file.id;
+      this.$refs.form.validate((valid) => {
         if (valid) {
-          this.updatePlatform(this.surveyForm);
-          this.getList();
+          this.updatePlatform(this.form);
         }
       });
+    },
+    async download(id, name) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        downloadFile(this.$store.state.viewLink, name);
+      }
+    },
+    async showViewFile(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        previewFile(this.$store.state.viewLink);
+      }
     }
   }
 };

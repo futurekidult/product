@@ -14,7 +14,7 @@
       ref="riskForm"
       label-width="110px"
       style="width: 50%"
-      :model="riskForm"
+      :model="form"
       :rules="riskRules"
     >
       <div class="form-item">
@@ -23,7 +23,7 @@
           prop="inventive_patent"
         >
           <el-select
-            v-model="riskForm.inventive_patent"
+            v-model="form.inventive_patent"
             placeholder="请选择发明专利"
             :disabled="isDisabled"
             clearable
@@ -41,7 +41,7 @@
           prop="need_verify"
         >
           <el-select
-            v-model="riskForm.need_verify"
+            v-model="form.need_verify"
             placeholder="请选择是否需要认证"
             :disabled="isDisabled"
             clearable
@@ -60,7 +60,7 @@
         prop="design_patent"
       >
         <el-input
-          v-model="riskForm.design_patent"
+          v-model="form.design_patent"
           type="textarea"
           maxlength="200"
           show-word-limit
@@ -74,7 +74,7 @@
         prop="legal_regulation"
       >
         <el-input
-          v-model="riskForm.legal_regulation"
+          v-model="form.legal_regulation"
           type="textarea"
           maxlength="200"
           show-word-limit
@@ -88,7 +88,7 @@
         prop="other_risk"
       >
         <el-input
-          v-model="riskForm.other_risk"
+          v-model="form.other_risk"
           type="textarea"
           maxlength="200"
           show-word-limit
@@ -103,9 +103,9 @@
         prop="attachment"
       >
         <el-upload
-          action=""
+          action
           :show-file-list="false"
-          :on-success="handleFileSuccess"
+          :http-request="handleFileSuccess"
           :limit="1"
         >
           <el-button
@@ -125,21 +125,33 @@
           class="attachment-list"
         >
           <div>
-            {{ handleAttachment(attachment.name) }}
+            {{ handleAttachment(file.name) }}
           </div>
-          <el-button
-            v-if="!isDisabled"
-            type="text"
-            @click="deleteFile(attachment.id)"
-          >
-            删除
-          </el-button>
-          <el-button
-            v-else
-            type="text"
-          >
-            下载
-          </el-button>
+          <div style="display: flex">
+            <div v-if="handleAttachment(file.type) === 12860">
+              <el-button
+                type="text"
+                @click="showViewFile(file.id)"
+              >
+                预览
+              </el-button>
+              <span class="table-btn">|</span>
+            </div>
+            <el-button
+              v-if="!isDisabled"
+              type="text"
+              @click="deleteFile"
+            >
+              删除
+            </el-button>
+            <el-button
+              v-else
+              type="text"
+              @click="download(file.id, file.name)"
+            >
+              下载
+            </el-button>
+          </div>
         </div>
       </el-form-item>
       <el-form-item>
@@ -156,6 +168,7 @@
 </template>
 
 <script>
+import { downloadFile, getFile, previewFile } from '../../../../../utils';
 import SurveySchedule from '../../common/survey- schedule.vue';
 
 export default {
@@ -215,12 +228,22 @@ export default {
           value: 0
         }
       ],
-      inventivePatent: []
+      inventivePatent: [],
+      file: this.attachment,
+      form: this.riskForm
     };
   },
   computed: {
     isDisabled() {
       return this.progress.state === 10 ? false : true;
+    }
+  },
+  watch: {
+    attachment(val) {
+      this.file = val;
+    },
+    riskForm(val) {
+      this.form = val;
     }
   },
   mounted() {
@@ -253,27 +276,44 @@ export default {
       }
     },
     submitRiskForm() {
+      this.form.attachment = this.file.id;
       this.$refs.riskForm.validate((valid) => {
         if (valid) {
-          this.updateRisk(this.riskForm);
+          this.updateRisk(this.form);
         }
       });
     },
-    handleFileSuccess(file, fileList) {
-      this.fileList.push({
-        id: file.id,
-        name: fileList.name
-      });
-      this.riskForm.attachment = file.id;
-      this.show = true;
+    async handleFileSuccess(e) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        this.show = true;
+        this.file = {
+          id: this.$store.state.fileRes.id,
+          name: this.$store.state.fileRes.file_name,
+          type: this.$store.state.fileRes.type
+        };
+      }
     },
-    deleteFile(id) {
-      console.log(id);
-      this.attachment = {};
+    async showViewFile(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        previewFile(this.$store.state.viewLink);
+      }
+    },
+    deleteFile() {
+      this.file = {};
+      this.form.attachment = '';
       this.show = false;
     },
-    previewFile(id) {
-      console.log(id);
+    async download(id, name) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        downloadFile(this.$store.state.viewLink, name);
+      }
     }
   }
 };

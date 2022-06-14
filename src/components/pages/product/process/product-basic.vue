@@ -1,10 +1,4 @@
 <template>
-  <el-tree
-    :data="list"
-    :props="defaultProps"
-    @node-click="handleNodeClick"
-  />
-
   <el-form
     :model="productForm"
     label-width="100px"
@@ -18,7 +12,7 @@
     </el-form-item>
     <el-form-item label="产品图片">
       <el-upload
-        action=""
+        action
         :show-file-list="false"
       >
         <el-button
@@ -41,8 +35,11 @@
         <div>
           {{ item.name }}
         </div>
-        <el-button type="text">
-          下载
+        <el-button
+          type="text"
+          @click="showViewDialog(item.id)"
+        >
+          预览
         </el-button>
       </div>
     </el-form-item>
@@ -128,98 +125,25 @@
       </el-form-item>
     </div>
   </el-form>
+
+  <view-dialog
+    v-if="viewImgDialog"
+    :link="imgLink"
+    :visible="viewImgDialog"
+    @hide-dialog="closeViewDialog"
+  />
 </template>
 
 <script>
+import ViewDialog from '../../../common/view-dialog.vue';
+
 export default {
+  components: {
+    ViewDialog
+  },
   props: ['attachment', 'productForm'],
   data() {
     return {
-      list: [
-        {
-          id: 1,
-          name: '经营管理中心',
-          children: [
-            {
-              id: 1,
-              name: 'IT部',
-              children: [
-                {
-                  id: 1,
-                  name: '技术组'
-                },
-                {
-                  id: 1,
-                  name: '产品组'
-                }
-              ],
-              member_list: [
-                {
-                  user_id: 1,
-                  name: '李四',
-                  title: '职位'
-                },
-                {
-                  user_id: 1,
-                  name: '李四',
-                  title: '职位'
-                }
-              ]
-            }
-          ],
-          member_list: [
-            {
-              user_id: 1,
-              name: '张三',
-              title: '职位'
-            },
-            {
-              user_id: 1,
-              name: '张三',
-              title: '职位'
-            }
-          ]
-        },
-        {
-          id: 1,
-          name: '新业务中心',
-          children: [
-            {
-              id: 1,
-              name: '独立站',
-              children: [],
-              member_list: [
-                {
-                  user_id: 1,
-                  name: '张三',
-                  title: '职位'
-                },
-                {
-                  user_id: 1,
-                  name: '张三',
-                  title: '职位'
-                }
-              ]
-            }
-          ],
-          member_list: [
-            {
-              user_id: 1,
-              name: '张三',
-              title: '职位'
-            },
-            {
-              user_id: 1,
-              name: '张三',
-              title: '职位'
-            }
-          ]
-        }
-      ],
-      defaultProps: {
-        children: this.childrenFunc,
-        label: 'name'
-      },
       market: [],
       platform: [],
       options: [
@@ -231,7 +155,9 @@ export default {
           label: '否',
           value: 0
         }
-      ]
+      ],
+      imgLink: '',
+      viewImgDialog: false
     };
   },
   mounted() {
@@ -248,16 +174,16 @@ export default {
         this.getParams();
       }
     },
-    handleNodeClick(data) {
-      console.log(data);
-    },
-    childrenFunc(data) {
-      if (data.member_list) {
-        for (const item of data.member_list) {
-          data.children.push(item);
-        }
+    async showViewDialog(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        this.viewImgDialog = true;
+        this.imgLink = this.$store.state.viewLink;
       }
-      return data.children;
+    },
+    closeViewDialog() {
+      this.viewImgDialog = false;
     }
   }
 };

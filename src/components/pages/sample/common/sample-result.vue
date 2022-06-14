@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="visible"
-    :title="title"
+    title="上传结果"
     width="30%"
     @close="cancel"
   >
@@ -16,9 +16,9 @@
         prop="user_template_file"
       >
         <el-upload
-          action=""
+          action
           :show-file-list="false"
-          :on-success="handleFileSuccess"
+          :http-request="handleFileSuccess"
           :limit="1"
         >
           <el-button type="primary">
@@ -35,12 +35,23 @@
           class="attachment-list"
         >
           <div>{{ attachment.name }}</div>
-          <el-button
-            type="text"
-            @click="deleteFile(attachment.id)"
-          >
-            删除
-          </el-button>
+          <div style="display: flex">
+            <div v-if="attachment.type === 12860">
+              <el-button
+                type="text"
+                @click="showViewFile(attachment.id)"
+              >
+                预览
+              </el-button>
+              <span class="table-btn">|</span>
+            </div>
+            <el-button
+              type="text"
+              @click="deleteFile"
+            >
+              删除
+            </el-button>
+          </div>
         </div>
       </el-form-item>
       <el-divider />
@@ -63,6 +74,7 @@
 </template>
 
 <script>
+import { getFile, previewFile } from '../../../../utils';
 export default {
   props: ['id', 'dialogVisible', 'getList'],
   emits: ['hide-dialog'],
@@ -96,18 +108,29 @@ export default {
       this.visible = false;
       this.$emit('hide-dialog', this.visible);
     },
-    handleFileSuccess(file, fileList) {
-      this.attachment = {
-        id: file.id,
-        name: fileList.name
-      };
-      this.resultForm.user_template_file = this.attachment.id;
-      this.show = true;
+    async handleFileSuccess(e) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        this.show = true;
+        this.attachment = {
+          id: this.$store.state.fileRes.id,
+          name: this.$store.state.fileRes.file_name,
+          type: this.$store.state.fileRes.type
+        };
+      }
     },
-    deleteFile(id) {
-      console.log(id);
+    async showViewFile(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        previewFile(this.$store.state.viewLink);
+      }
+    },
+    deleteFile() {
       this.attachment = {};
-      this.templateForm = {};
+      this.resultForm.user_template_file = '';
       this.show = false;
     },
     submitResultForm() {

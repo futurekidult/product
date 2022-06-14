@@ -14,10 +14,11 @@
         prop="user_id"
         :rules="[{ required: true, message: '请选择成员' }]"
       >
-        <el-select
+        <el-tree-select
           v-model="memberForm.user_id"
-          placeholder="请输入成员名称"
+          :data="memberList"
           clearable
+          :props="defaultProps"
         />
       </el-form-item>
       <el-form-item
@@ -67,11 +68,17 @@ export default {
     return {
       visible: this.dialogVisible,
       memberForm: {},
-      role: []
+      role: [],
+      memberList: [],
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      }
     };
   },
   mounted() {
     this.getRole();
+    this.getOrganizationList();
     if (this.type === 'edit') {
       this.memberForm = this.user;
     }
@@ -98,6 +105,21 @@ export default {
       await this.$store.dispatch('product/updateProjectMember', body);
       this.visible = false;
       this.getMember();
+    },
+    async getOrganizationList() {
+      await this.$store.dispatch('getOrganizationList');
+      this.memberList = this.$store.state.organizationList;
+       for (let key in this.memberList) {
+        this.childrenFunc(this.memberList[key]);
+      }
+    },
+    childrenFunc(data) {
+      if (data.member_list) {
+        for (const item of data.member_list) {
+          data.children.push(item);
+        }
+      }
+      return data.children;
     },
     cancel() {
       this.visible = false;

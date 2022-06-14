@@ -22,8 +22,6 @@ export default {
         if (res.code === 200) {
           context.commit('setPlan', res.data);
           context.commit('setPlanLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -31,8 +29,6 @@ export default {
       await axios.post('/survey/solutions/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     }

@@ -21,16 +21,9 @@
         width="600px"
       >
         <template #default="scope">
-          <div :class="scope.row.is_read === 0 ? 'is-read' : ''">
-            {{ scope.row.name }}
+          <div :class="scope.row.state === 0 ? 'is-read' : ''">
+            {{ scope.row.content }}
           </div>
-        </template>
-      </el-table-column>
-      <el-table-column label="关联产品ID">
-        <template #default="scope">
-          <el-button type="text">
-            {{ scope.row.product_id }}
-          </el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -40,7 +33,7 @@
       <el-table-column label="操作">
         <template #default="scope">
           <el-button
-            :disabled="scope.row.is_read === 1"
+            :disabled="scope.row.state === 1"
             @click="noticationRead(scope.row.id)"
           >
             已读

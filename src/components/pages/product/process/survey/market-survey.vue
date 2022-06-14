@@ -47,9 +47,9 @@
         prop="attachment"
       >
         <el-upload
-          action=""
+          action
           :show-file-list="false"
-          :on-success="handleFileSuccess"
+          :http-request="handleFileSuccess"
           :limit="1"
         >
           <el-button
@@ -69,22 +69,35 @@
           class="attachment-list"
         >
           <div>
-            {{ handleAttachment(attachment.name) }}
+            {{ handleAttachment(file.name) }}
           </div>
-          <el-button
-            v-if="!isDisabled"
-            type="text"
-            @click="deleteFile(attachment.id)"
-          >
-            删除
-          </el-button>
-          <el-button
-            v-else
-            type="text"
-            @click="download(attachment.id)"
-          >
-            下载附件
-          </el-button>
+          <div style="display: flex">
+            <div v-if="handleAttachment(file.type) === 12860">
+              <el-button
+                type="text"
+                @click="showViewFile(file.id)"
+              >
+                预览
+              </el-button>
+              <span class="table-btn">|</span>
+            </div>
+            <div style="display: flex">
+              <el-button
+                v-if="!isDisabled"
+                type="text"
+                @click="deleteFile"
+              >
+                删除
+              </el-button>
+              <el-button
+                v-else
+                type="text"
+                @click="download(file.id, file.name)"
+              >
+                下载
+              </el-button>
+            </div>
+          </div>
         </div>
       </el-form-item>
       <el-form-item>
@@ -101,6 +114,8 @@
 </template>
 
 <script>
+import { downloadFile, getFile, previewFile } from '../../../../../utils';
+
 export default {
   props: ['changeColor', 'progress', 'attachment', 'getList'],
   data() {
@@ -114,7 +129,8 @@ export default {
           }
         ]
       },
-      show: true
+      show: true,
+      file: this.attachment
     };
   },
   computed: {
@@ -122,19 +138,30 @@ export default {
       return this.progress.state === 10 ? false : true;
     }
   },
+  watch: {
+    attachment(val) {
+      this.file = val;
+    }
+  },
   methods: {
-    handleFileSuccess(file, fileList) {
-      this.attachment = {
-        id: file.id,
-        name: fileList.name
-      };
-      this.marketForm.attachment = file.id;
-      this.show = true;
+    async handleFileSuccess(e) {
+      this.$store.commit('setUploadState', false);
+      let form = getFile(e);
+      await this.$store.dispatch('uploadFile', form);
+      if (this.$store.state.uploadState) {
+        this.show = true;
+        this.file = {
+          id: this.$store.state.fileRes.id,
+          name: this.$store.state.fileRes.file_name,
+          type: this.$store.state.fileRes.type
+        };
+        this.marketForm.attachment = this.file.id;
+      }
     },
     async submitRequest() {
       let params = {
         product_id: +this.$route.params.productId,
-        attchment_id: this.marketForm.attachment,
+        attachment_id: this.marketForm.attachment,
         survey_schedule_id: this.progress.id
       };
       await this.$store.dispatch(
@@ -144,6 +171,7 @@ export default {
       this.getList();
     },
     submitMarketForm() {
+      this.marketForm.attachment = this.file.id;
       this.$refs.marketForm.validate((valid) => {
         if (valid) {
           this.submitRequest();
@@ -157,17 +185,24 @@ export default {
         return file;
       }
     },
-    previewFile(id) {
-      console.log(id);
-    },
-    deleteFile(id) {
-      console.log(id);
-      this.attachment = {};
-      this.marketForm.attachment = {};
+    deleteFile() {
+      this.file = {};
+      this.marketForm.attachment = '';
       this.show = false;
     },
-    download(id) {
-      console.log(id);
+    async download(id, name) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        downloadFile(this.$store.state.viewLink, name);
+      }
+    },
+    async showViewFile(id) {
+      this.$store.commit('setAttachmentState', false);
+      await this.$store.dispatch('getViewLink', { params: { id } });
+      if (this.$store.state.attachmentState) {
+        previewFile(this.$store.state.viewLink);
+      }
     }
   }
 };

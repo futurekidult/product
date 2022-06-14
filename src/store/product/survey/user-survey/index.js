@@ -42,8 +42,6 @@ export default {
           context.commit('setSurveyApply', res.data.survey_apply);
           context.commit('setPlanList', res.data.plan_list);
           context.commit('setUserLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -51,8 +49,6 @@ export default {
       await axios.post('/survey/user-survey/apply', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -62,8 +58,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -73,8 +67,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -84,8 +76,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -95,8 +85,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -106,8 +94,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -117,8 +103,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -128,8 +112,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -139,8 +121,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -157,8 +137,6 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } else {
-            ElMessage.error(res.message);
           }
         });
     },
@@ -166,8 +144,6 @@ export default {
       await axios.post('/survey/user-survey/plan/add', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     }

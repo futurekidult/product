@@ -23,8 +23,6 @@ export default {
         if (res.code === 200) {
           context.commit('setRisk', res.data);
           context.commit('setRiskLoading', false);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     },
@@ -32,8 +30,6 @@ export default {
       await axios.post('/survey/risk/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } else {
-          ElMessage.error(res.message);
         }
       });
     }
