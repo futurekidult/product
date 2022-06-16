@@ -1,11 +1,11 @@
 <template>
   <el-tabs
-    v-model="activeName"
+    v-model="$store.state.activeTab"
     @tab-click="handleClick"
   >
     <el-tab-pane
       label="基本信息"
-      name="basic"
+      name="base"
     >
       <sample-basic
         :sample-detail="sampleDetail"
@@ -51,7 +51,6 @@ export default {
   },
   data() {
     return {
-      activeName: 'basic',
       sampleDetail: {},
       proofingProgress: {},
       applyList: [],
@@ -59,7 +58,10 @@ export default {
     };
   },
   mounted() {
-    this.getSampleDetail();
+    if (this.$store.state.entry !== 'workbench') {
+      this.$store.commit('setActiveTab', 'base');
+    }
+    this.getRequest(this.$store.state.activeTab);
   },
   methods: {
     async getSampleDetail() {
@@ -106,14 +108,22 @@ export default {
         item.review_finish_time = formatterTime(item.review_finish_time);
       });
     },
-    handleClick(tab) {
-      if (tab.props.name === 'basic') {
-        this.getSampleDetail();
-      } else if (tab.props.name === 'proofing') {
-        this.getProofingProgress();
-      } else {
-        this.getTestProgress();
+    getRequest(val) {
+      switch (val) {
+        case 'base':
+          this.getSampleDetail();
+          break;
+        case 'proofing':
+          this.getProofingProgress();
+          break;
+        case 'test':
+          this.getTestProgress();
+          break;
+        default:
       }
+    },
+    handleClick(tab) {
+      this.getRequest(tab.props.name);
     },
     changeCellColor(val) {
       if (val === 30 || val === 1) {

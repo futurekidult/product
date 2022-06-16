@@ -133,11 +133,14 @@
           :prop="`addresses.${index}.company`"
           :rules="[{ required: true, message: '请选择公司地址' }]"
         >
-          <el-select
+          <el-cascader
             v-model="item.company"
+            :options="cityOption"
+            :props="props"
             placeholder="请选择公司地址"
             clearable
             :disabled="isDisabled"
+            style="width: 100%"
           />
         </el-form-item>
         <el-form-item
@@ -157,11 +160,14 @@
           :prop="`addresses.${index}.shipment`"
           :rules="[{ required: true, message: '请输入出货地址' }]"
         >
-          <el-select
+          <el-cascader
             v-model="item.shipment"
+            :options="cityOption"
+            :props="props"
             placeholder="请输入出货地址"
             clearable
             :disabled="isDisabled"
+            style="width: 100%"
           />
         </el-form-item>
       </div>
@@ -670,10 +676,9 @@
               >
                 下载
               </el-button>
-              <div>
+              <div v-if="purchaseEvaluationFile.type === 12860">
                 <span class="table-btn">|</span>
                 <el-button
-                  v-if="purchaseEvaluationFile.type === 12860"
                   type="text"
                   @click="showViewFile(purchaseEvaluationFile.id)"
                 >
@@ -693,7 +698,7 @@
           action
           :show-file-list="false"
           :http-request="(e) => handleFileSuccess(e, qualityEvaluationFile)"
-          :limit="9"
+          :limit="1"
         >
           <el-button
             type="primary"
@@ -732,10 +737,9 @@
               >
                 下载
               </el-button>
-              <div>
+              <div v-if="qualityEvaluationFile.type === 12860">
                 <span class="table-btn">|</span>
                 <el-button
-                  v-if="qualityEvaluationFile.type === 12860"
                   type="text"
                   @click="showViewFile(purchaseEvaluationFile.id)"
                 >
@@ -815,8 +819,14 @@ export default {
         children: 'children',
         label: 'name'
       },
+      props: {
+        value: 'code',
+        label: 'name',
+        children: 'children'
+      },
       viewImgDialog: false,
-      imgLink: ''
+      imgLink: '',
+      cityOption: []
     };
   },
   computed: {
@@ -829,6 +839,7 @@ export default {
     }
   },
   mounted() {
+    this.getCityOption();
     this.getParams();
     this.getOrganizationList();
     if (this.type !== 'create') {
@@ -887,6 +898,10 @@ export default {
       if (this.$store.state.supplier.updatePass) {
         this.$router.push('/supplier-list');
       }
+    },
+    async getCityOption() {
+      await this.$store.dispatch('supplier/getCityOption');
+      this.cityOption = this.$store.state.supplier.cityOption;
     },
     addRow(val) {
       this.supplierForm[val].push({});

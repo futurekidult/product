@@ -259,8 +259,8 @@ export default {
       await this.$store.dispatch('sample/agency/confirmTestResult', body);
       if (val.test_result === 0) {
         this.failFormVisible = false;
-        this.getProgress();
       }
+      this.getProgress();
     },
     async isAgency(val) {
       let body = val;

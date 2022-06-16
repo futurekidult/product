@@ -139,10 +139,10 @@
       </el-form-item>
       <el-form-item
         label="实际到货时间"
-        prop="actual_finish_time"
+        prop="actual_arrival_time"
       >
         <el-date-picker
-          v-model="courierNumberForm.actual_finish_time"
+          v-model="courierNumberForm.actual_arrival_time"
           type="datetime"
           placeholder="选择日期时间"
           clearable
@@ -218,7 +218,7 @@ export default {
       },
       courierNumberForm: {},
       courierNumberRules: {
-        actual_finish_time: [
+        actual_arrival_time: [
           {
             required: true,
             message: '请选择日期'

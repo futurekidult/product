@@ -34,6 +34,7 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: Manage,
+      redirect: '/work-bench',
       children: [
         {
           path: '/work-bench',

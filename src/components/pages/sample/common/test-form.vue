@@ -11,20 +11,14 @@
       :rules="rules"
       label-width="160px"
     >
-      <el-form-item
-        label="样品型号"
-        required
-      >
+      <el-form-item label="样品型号">
         <el-input
           v-model="applyForm.sample_model"
           placeholder="请输入样品型号"
           disabled
         />
       </el-form-item>
-      <el-form-item
-        label="售卖国家"
-        required
-      >
+      <el-form-item label="售卖国家">
         <el-input
           v-model="applyForm.market"
           placeholder="请输入售卖国家"
@@ -95,6 +89,7 @@
           placeholder="请选择日期"
           :disabled="disabled"
           clearable
+          type="datetime"
         />
       </el-form-item>
       <el-divider v-if="type !== 'apply'" />
@@ -123,11 +118,12 @@
         label="选择品质专员"
         prop="quality_specialist_id"
       >
-        <el-select
+        <el-tree-select
           v-model="applyForm.quality_specialist_id"
-          placeholder="请选择品质专员"
-          :disabled="type === 'view'"
+          :data="memberList"
           clearable
+          :props="defaultProps"
+          :disabled="type === 'view'"
         />
       </el-form-item>
       <el-divider />
@@ -229,7 +225,12 @@ export default {
         }
       ],
       loading: true,
-      reviewValue: 0
+      reviewValue: 0,
+      memberList: [],
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      }
     };
   },
   computed: {
@@ -247,6 +248,7 @@ export default {
     this.isDisabled();
     this.getMsg();
     this.isLoading();
+    this.getOrganizationList();
   },
   methods: {
     getMsg() {
@@ -271,6 +273,7 @@ export default {
       body['sample_id'] = +this.$route.params.id;
       await this.$store.dispatch('sample/createTestApply', body);
       this.visible = false;
+      this.getTest();
     },
     async getSampleTestApply() {
       await this.$store.dispatch('sample/getSampleTestApply', {
@@ -287,7 +290,23 @@ export default {
       let body = val;
       body.id = this.id;
       await this.$store.dispatch('sample/reviewTestApply', body);
+      this.visible = false;
       this.getTest();
+    },
+    async getOrganizationList() {
+      await this.$store.dispatch('getOrganizationList');
+      this.memberList = this.$store.state.organizationList;
+      for (let key in this.memberList) {
+        this.childrenFunc(this.memberList[key]);
+      }
+    },
+    childrenFunc(data) {
+      if (data.member_list) {
+        for (const item of data.member_list) {
+          data.children.push(item);
+        }
+      }
+      return data.children;
     },
     cancel() {
       this.visible = false;

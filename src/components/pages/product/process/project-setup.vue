@@ -94,7 +94,7 @@
         <profit-calculation :get-profit="profit" />
         <process-table
           :get-schedule="schedule"
-          :change-color="changeCellColor"
+          :change-color="changeColor"
         />
 
         <div class="profit-plan_title">

@@ -198,6 +198,7 @@
             :data="memberList"
             clearable
             :props="defaultProps"
+            :disabled="isViewDisabled"
           />
         </el-form-item>
       </div>
@@ -231,6 +232,7 @@ import {
 } from '../../../../utils';
 
 export default {
+  inject: ['getUser'],
   props: ['dialogVisible', 'title', 'type', 'id'],
   emits: ['hide-dialog'],
   data() {
@@ -343,6 +345,7 @@ export default {
       body['sample_id'] = +this.$route.params.id;
       await this.$store.dispatch('sample/user/createTestApply', body);
       this.visible = false;
+      this.getUser();
     },
     async getUserTestApply() {
       await this.$store.dispatch('sample/user/getUserTestApply', {
@@ -374,11 +377,12 @@ export default {
       body.id = this.id;
       await this.$store.dispatch('sample/user/reviewTestApply', body);
       this.visible = false;
+      this.getUser();
     },
     async getOrganizationList() {
       await this.$store.dispatch('getOrganizationList');
       this.memberList = this.$store.state.organizationList;
-       for (let key in this.memberList) {
+      for (let key in this.memberList) {
         this.childrenFunc(this.memberList[key]);
       }
     },

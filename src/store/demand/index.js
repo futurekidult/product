@@ -12,7 +12,8 @@ export default {
       isSuccess: false,
       demandDetail: {},
       demandDetailLoading: true,
-      optionLoading: true
+      optionLoading: true,
+      isDraft: false
     };
   },
   mutations: {
@@ -33,6 +34,9 @@ export default {
     },
     setDemandDetailLoading(state, payload) {
       state.demandDetailLoading = payload;
+    },
+    setDraft(state, payload) {
+      state.isDraft = payload;
     }
   },
   actions: {

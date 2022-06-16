@@ -35,11 +35,7 @@ export default {
   },
   methods: {
     async setBlackSupplier() {
-      await this.$store.dispatch('supplier/setBlackSupplier', {
-        params: {
-          id: this.id
-        }
-      });
+      await this.$store.dispatch('supplier/setBlackSupplier', { id: this.id });
       this.visible = false;
       this.$store.commit('supplier/setSupplierLoading', true);
       this.getList();

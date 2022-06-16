@@ -62,7 +62,7 @@
 
       <div class="border">
         <el-tabs
-          v-model="activeName"
+          v-model="$store.state.activeTab"
           @tab-click="handleClick"
         >
           <el-tab-pane
@@ -232,7 +232,6 @@ export default {
   props: ['productId', 'orderId'],
   data() {
     return {
-      activeName: 'basic',
       id: 0,
       productBase: {},
       productForm: {},
@@ -267,7 +266,10 @@ export default {
   },
   mounted() {
     this.getProductBase();
-    this.getProductDetail();
+    if (this.$store.state.entry !== 'workbench') {
+      this.$store.commit('setActiveTab', 'basic');
+    }
+    this.getResquest(this.$store.state.activeTab);
   },
   methods: {
     async getProductBase() {
@@ -286,6 +288,7 @@ export default {
       }
     },
     async getProductDetail() {
+      this.$store.commit('product/setDetailLoading', true);
       await this.$store.dispatch('product/getProductDetail', {
         params: {
           id: +this.$route.params.productId
@@ -295,6 +298,7 @@ export default {
       this.productAttachment = this.productForm.images;
     },
     async getProjectMember(currentPage = 1, pageSize = 10) {
+      this.$store.commit('product/setMemberLoading', true);
       await this.$store.dispatch('product/getProjectMember', {
         params: {
           id: +this.$route.params.productId,
@@ -308,6 +312,7 @@ export default {
       });
     },
     async getPricingList(currentPage = 1, pageSize = 10) {
+      this.$store.commit('product/setPricingLoading', true);
       let params = {
         current_page: currentPage,
         page_size: pageSize,
@@ -322,6 +327,7 @@ export default {
       });
     },
     async getMouldList(currentPage = 1, pageSize = 10) {
+      this.$store.commit('product/setMouldLoading', true);
       let params = {
         page_size: pageSize,
         current_page: currentPage,
@@ -345,6 +351,7 @@ export default {
       });
     },
     async getSampleList(currentPage = 1, pageSize = 10) {
+      this.$store.commit('product/setSampleLoading', true);
       let params = {
         product_id: +this.$route.params.productId,
         current_page: currentPage,
@@ -359,6 +366,7 @@ export default {
       });
     },
     async getQuestionList(currentPage = 1, pageSize = 10) {
+      this.$store.commit('product/setQuestionLoading', true);
       let params = {
         product_id: +this.$route.params.productId,
         current_page: currentPage,
@@ -371,6 +379,7 @@ export default {
       });
     },
     async getPackageList(currentPage = 1, pageSize = 10) {
+      this.$store.commit('product/setPackageLoading', true);
       let params = {
         product_id: +this.$route.params.productId,
         current_page: currentPage,
@@ -384,6 +393,7 @@ export default {
       });
     },
     async getOrderList(currentPage = 1, pageSize = 10) {
+      this.$store.commit('product/order/setOrderLoading', true);
       await this.$store.dispatch('product/order/getOrderList', {
         params: {
           product_id: +this.$route.params.productId,
@@ -398,6 +408,7 @@ export default {
       });
     },
     async getProject() {
+      this.$store.commit('product/project/setProjectLoading', true);
       await this.$store.dispatch('product/project/getProject', {
         params: { product_id: this.$route.params.productId }
       });
@@ -425,6 +436,7 @@ export default {
       });
     },
     async getPatent() {
+      this.$store.commit('product/patent/setPatentLoading', true);
       await this.$store.dispatch('product/patent/getPatent', {
         params: { product_id: this.$route.params.productId }
       });
@@ -463,55 +475,48 @@ export default {
         return 'result-pass';
       }
     },
-    handleClick(tab) {
-      switch (tab.props.name) {
+    getResquest(val) {
+      switch (val) {
         case 'basic':
-          this.$store.commit('product/setDetailLoading', true);
           this.getProductDetail();
           break;
         case 'member':
-          this.$store.commit('product/setMemberLoading', true);
           this.getProjectMember();
           break;
         case 'price':
-          this.$store.commit('product/setPricingLoading', true);
           this.getPricingList();
           break;
         case 'mould':
-          this.$store.commit('product/setMouldLoading', true);
           this.getMouldList();
           this.getAllMouldList();
           break;
         case 'sample':
-          this.$store.commit('product/setSampleLoading', true);
           this.getSampleList();
           break;
         case 'question':
-          this.$store.commit('product/setQuestionLoading', true);
           this.getQuestionList();
           break;
         case 'package':
-          this.$store.commit('product/setPackageLoading', true);
           this.getPackageList();
           break;
         case 'order':
-          this.$store.commit('product/order/setOrderLoading', true);
           this.getOrderList();
           break;
         case 'project':
-          this.$store.commit('product/project/setProjectLoading', true);
           this.getProfit();
           this.getSchedule();
           this.getProject();
           break;
         case 'patent':
-          this.$store.commit('product/patent/setPatentLoading', true);
           this.getPatent();
           this.getPatentProgress();
           this.getContract();
           break;
         default:
       }
+    },
+    handleClick(tab) {
+      this.getResquest(tab.props.name);
     },
     toRelatedDemand(id) {
       this.$router.push(`/demand-list/${id}`);

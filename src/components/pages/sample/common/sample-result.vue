@@ -134,6 +134,7 @@ export default {
       this.show = false;
     },
     submitResultForm() {
+      this.resultForm.user_template_file = this.attachment.id;
       this.$refs.resultForm.validate((valid) => {
         if (valid) {
           this.uploadFile(this.attachment.id);

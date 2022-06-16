@@ -1,66 +1,81 @@
 <template>
-  <div v-loading="$store.state.demand.demandDetailLoading">
-    <div class="border">
-      <base-tag
-        class="tag"
-        :mode="changeColor(demandDetail.state)"
-      >
-        {{ demandDetail.state_desc }}
-      </base-tag>
-
-      <el-descriptions
-        :title="demandDetail.name"
-        :column="4"
-      >
-        <el-descriptions-item
-          v-if="demandDetail.state === 30"
-          label="关联产品:"
-        >
-          <el-button
-            type="text"
-            @click="toProductDetail(demandDetail.product_id)"
-          >
-            查看
-          </el-button>
-        </el-descriptions-item>
-        <el-descriptions-item label="创建人:">
-          {{ demandDetail.creator_desc }}
-        </el-descriptions-item>
-        <el-descriptions-item label="创建时间:">
-          {{ demandDetail.create_time }}
-        </el-descriptions-item>
-      </el-descriptions>
+  <div
+    v-if="$store.state.demand.isDraft"
+    class="border"
+  >
+    <div v-loading="$store.state.demand.demandDetailLoading">
+      <demand-edit />
     </div>
+  </div>
+  <div v-else>
+    <div v-loading="$store.state.demand.demandDetailLoading">
+      <div class="border">
+        <base-tag
+          class="tag"
+          :mode="changeColor(demandDetail.state)"
+        >
+          {{ demandDetail.state_desc }}
+        </base-tag>
 
-    <div class="border">
-      <div
-        class="select-title"
-        :class="demandDetail.state === 20 ? 'review-msg' : ''"
-      >
-        <div><span class="line">|</span> 需求信息</div>
-        <div v-if="demandDetail.state === 20">
-          <el-button
-            v-if="!show"
-            type="text"
-            @click="showForm"
+        <el-descriptions
+          :title="demandDetail.name"
+          :column="4"
+        >
+          <el-descriptions-item
+            v-if="demandDetail.state === 30"
+            label="关联产品:"
           >
-            展开内容
-          </el-button>
-          <el-button
-            v-else
-            type="text"
-            @click="show = !show"
-          >
-            收起内容
-          </el-button>
-        </div>
+            <el-button
+              type="text"
+              @click="toProductDetail(demandDetail.product_id)"
+            >
+              查看
+            </el-button>
+          </el-descriptions-item>
+          <el-descriptions-item label="创建人:">
+            {{ demandDetail.creator_desc }}
+          </el-descriptions-item>
+          <el-descriptions-item label="创建时间:">
+            {{ demandDetail.create_time }}
+          </el-descriptions-item>
+        </el-descriptions>
       </div>
-      <demand-form
-        v-if="(show && demandDetail.state === 20) || demandDetail.state !== 20"
-        type="detail"
-      />
 
-      <demand-review v-if="demandDetail.state === 20" />
+      <div class="border">
+        <div
+          class="select-title"
+          :class="demandDetail.state === 20 ? 'review-msg' : ''"
+        >
+          <div><span class="line">|</span> 需求信息</div>
+          <div v-if="demandDetail.state === 20">
+            <el-button
+              v-if="!show"
+              type="text"
+              @click="showForm"
+            >
+              展开内容
+            </el-button>
+            <el-button
+              v-else
+              type="text"
+              @click="show = !show"
+            >
+              收起内容
+            </el-button>
+          </div>
+        </div>
+        <demand-form
+          v-if="
+            (show && demandDetail.state === 20) || demandDetail.state !== 20
+          "
+          type="detail"
+        />
+
+        <demand-review
+          v-if="demandDetail.state === 20"
+          :get-detail="getDemandDetail"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -69,11 +84,13 @@
 import { formatterTime } from '../../../../utils';
 import DemandForm from '../common/demand-form.vue';
 import DemandReview from '../demand-detail/demand-review/demand-review.vue';
+import DemandEdit from '../demand-edit.vue';
 
 export default {
   components: {
     DemandForm,
-    DemandReview
+    DemandReview,
+    DemandEdit
   },
   props: ['id'],
   data() {
@@ -87,6 +104,7 @@ export default {
   },
   methods: {
     async getDemandDetail() {
+      this.$store.commit('demand/setDemandDetailLoading', true);
       await this.$store.dispatch('demand/getDemandDetail', {
         params: {
           demand_id: +this.$route.params.id

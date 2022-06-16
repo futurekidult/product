@@ -180,10 +180,11 @@
         prop="quality_specialist_id"
         :rules="[{ required: true, message: '想选择品质专员' }]"
       >
-        <el-select
+        <el-tree-select
           v-model="editForm.quality_specialist_id"
-          placeholder="请选择品质专员"
+          :data="memberList"
           clearable
+          :props="defaultProps"
         />
       </el-form-item>
       <el-divider />
@@ -216,6 +217,7 @@ export default {
     UserTest,
     TestForm
   },
+  inject: ['getTest'],
   provide() {
     return {
       getUser: this.getUserTest
@@ -249,14 +251,36 @@ export default {
       userButtonState: 0,
       qualityTestId: 0,
       agencyTestId: 0,
-      userTestId: 0
+      userTestId: 0,
+      memberList: [],
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      }
     };
   },
   mounted() {
     this.getQualityDetail();
+    this.getOrganizationList();
   },
   methods: {
+    async getOrganizationList() {
+      await this.$store.dispatch('getOrganizationList');
+      this.memberList = this.$store.state.organizationList;
+      for (let key in this.memberList) {
+        this.childrenFunc(this.memberList[key]);
+      }
+    },
+    childrenFunc(data) {
+      if (data.member_list) {
+        for (const item of data.member_list) {
+          data.children.push(item);
+        }
+      }
+      return data.children;
+    },
     async getQualityDetail() {
+      this.$store.commit('sample/quality/setQualityLoading', true);
       await this.$store.dispatch('sample/quality/getQualityDetail', {
         params: {
           sample_id: +this.$route.params.id
@@ -276,6 +300,7 @@ export default {
       this.qualityTestId = this.$store.state.sample.quality.qualityDetail.id;
     },
     async getAgencyTest() {
+      this.$store.commit('sample/agency/setAgencyLoading', true);
       await this.$store.dispatch('sample/agency/getAgencyTest', {
         params: {
           sample_id: +this.$route.params.id
@@ -296,6 +321,7 @@ export default {
       this.agencyTestId = this.$store.state.sample.agency.agencyTest.id;
     },
     async getUserTest() {
+      this.$store.commit('sample/user/setUserLoading', true);
       await this.$store.dispatch('sample/user/getUserTest', {
         params: {
           sample_id: +this.$route.params.id
@@ -335,6 +361,7 @@ export default {
       body['id'] = this.testId;
       await this.$store.dispatch('sample/updateQualitySpecialist', body);
       this.editSpecialistVisible = false;
+      this.getTest();
     },
     showApplyForm() {
       this.testApplyVisible = true;
@@ -385,13 +412,10 @@ export default {
     },
     handleClick(tab) {
       if (tab.props.name === 'quality') {
-        this.$store.commit('sample/quality/setQualityLoading', true);
         this.getQualityDetail();
       } else if (tab.props.name === 'agency') {
-        this.$store.commit('sample/agency/setAgencyLoading', true);
         this.getAgencyTest();
       } else {
-        this.$store.commit('sample/user/setUserLoading', true);
         this.getUserTest();
       }
     }

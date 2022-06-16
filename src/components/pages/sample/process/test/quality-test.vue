@@ -202,8 +202,8 @@ export default {
       await this.$store.dispatch('sample/quality/confirmTestResult', body);
       if (val.test_result === 0) {
         this.failFormVisible = false;
-        this.getProgress();
       }
+      this.getProgress();
     },
     async submitTestResult(val) {
       let body = {

@@ -22,6 +22,7 @@
       />
     </el-tab-pane>
     <el-tab-pane
+      v-if="isNewCategory"
       label="市场调研"
       name="market"
     >
@@ -33,6 +34,7 @@
       />
     </el-tab-pane>
     <el-tab-pane
+      v-if="isNewCategoryProduct"
       label="用户分析"
       name="analysis"
     >
@@ -44,6 +46,7 @@
       />
     </el-tab-pane>
     <el-tab-pane
+      v-if="isNewProduct"
       label="产品方案"
       name="plan"
     >
@@ -66,6 +69,7 @@
       />
     </el-tab-pane>
     <el-tab-pane
+      v-if="isNewProduct"
       label="用户调研"
       name="user"
     >
@@ -123,15 +127,25 @@ export default {
       planList: [],
       userProgress: {},
       surveyApply: [],
-      length: 0
+      length: 0,
+      isNewCategory: false,
+      isNewProduct: false,
+      isNewCategoryProduct: false
     };
   },
   mounted() {
     this.getPlatform();
+    this.getState();
   },
   methods: {
     async getPlatform() {
-      await this.$store.dispatch('product/survey/platform/getPlatform');
+      this.$store.commit('product/survey/platform/setPlatformLoading', true);
+      let params = {
+        id: +this.$route.params.productId
+      };
+      await this.$store.dispatch('product/survey/platform/getPlatform', {
+        params
+      });
       this.platformProgress =
         this.$store.state.product.survey.platform.platform.progress;
       this.platformProgress.estimated_finish_time = formatterTime(
@@ -146,7 +160,11 @@ export default {
       this.platformAttachment = this.platformForm.attachment;
     },
     async getMarket() {
-      await this.$store.dispatch('product/survey/market/getMarket');
+      this.$store.commit('product/survey/market/setMarketLoading', true);
+      let params = {
+        product_id: +this.$route.params.productId
+      };
+      await this.$store.dispatch('product/survey/market/getMarket', { params });
       this.marketProgress =
         this.$store.state.product.survey.market.market.progress;
       this.marketProgress.estimated_finish_time = formatterTime(
@@ -159,7 +177,16 @@ export default {
         this.$store.state.product.survey.market.market.report;
     },
     async getAnalysis() {
-      await this.$store.dispatch('product/survey/userAnalysis/getAnalysis');
+      this.$store.commit(
+        'product/survey/userAnalysis/setAnalysisLoading',
+        true
+      );
+      let params = {
+        id: +this.$route.params.productId
+      };
+      await this.$store.dispatch('product/survey/userAnalysis/getAnalysis', {
+        params
+      });
       this.analysisProgress =
         this.$store.state.product.survey.userAnalysis.userAnalysis.progress;
       this.analysisProgress.estimated_finish_time = formatterTime(
@@ -173,7 +200,11 @@ export default {
       this.analysisAttachment = this.analysisForm.attachment;
     },
     async getPlan() {
-      await this.$store.dispatch('product/survey/plan/getPlan');
+      this.$store.commit('product/survey/plan/setPlanLoading', true);
+      let params = {
+        id: +this.$route.params.productId
+      };
+      await this.$store.dispatch('product/survey/plan/getPlan', { params });
       this.planProgress = this.$store.state.product.survey.plan.plan.progress;
       this.planProgress.estimated_finish_time = formatterTime(
         this.planProgress.estimated_finish_time
@@ -185,7 +216,11 @@ export default {
       this.planAttachment = this.planForm.attachment;
     },
     async getRisk() {
-      await this.$store.dispatch('product/survey/risk/getRisk');
+      this.$store.commit('product/survey/risk/setRiskLoading', true);
+      let params = {
+        id: +this.$route.params.productId
+      };
+      await this.$store.dispatch('product/survey/risk/getRisk', { params });
       this.riskProgress = this.$store.state.product.survey.risk.risk.progress;
       this.riskProgress.estimated_finish_time = formatterTime(
         this.riskProgress.estimated_finish_time
@@ -197,7 +232,13 @@ export default {
       this.riskAttachment = this.riskForm.attachment;
     },
     async getUserSurvey() {
-      await this.$store.dispatch('product/survey/user/getUserSurveyData');
+      this.$store.commit('product/survey/user/setUserLoading', true);
+      let params = {
+        id: +this.$route.params.productId
+      };
+      await this.$store.dispatch('product/survey/user/getUserSurveyData', {
+        params
+      });
       this.buttonState = this.$store.state.product.survey.user.buttonState;
       this.surveyApply = this.$store.state.product.survey.user.surveyApply;
       this.surveyApply.forEach((item) => {
@@ -233,36 +274,37 @@ export default {
     handleClick(tab) {
       switch (tab.props.name) {
         case 'platform':
-          this.$store.commit(
-            'product/survey/platform/setPlatformLoading',
-            true
-          );
           this.getPlatform();
           break;
         case 'market':
-          this.$store.commit('product/survey/market/setMarketLoading', true);
           this.getMarket();
           break;
         case 'analysis':
-          this.$store.commit(
-            'product/survey/userAnalysis/setAnalysisLoading',
-            true
-          );
           this.getAnalysis();
           break;
         case 'plan':
-          this.$store.commit('product/survey/plan/setPlanLoading', true);
           this.getPlan();
           break;
         case 'risk':
-          this.$store.commit('product/survey/risk/setRiskLoading', true);
           this.getRisk();
           break;
         case 'user':
-          this.$store.commit('product/survey/user/setUserLoading', true);
           this.getUserSurvey();
           break;
         default:
+      }
+    },
+    getState() {
+      let state = JSON.parse(localStorage.getItem('position'));
+      let val = String(state.is_new_category) + String(state.is_new_product);
+      if (val === '11') {
+        this.isNewCategoryProduct = true;
+        this.isNewCategory = true;
+        this.isNewProduct = true;
+      } else if (val === '10') {
+        this.isNewCategory = true;
+      } else if (val === '01') {
+        this.isNewProduct = true;
       }
     }
   }

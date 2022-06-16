@@ -52,6 +52,9 @@ export default {
     },
     setTestingMouldLoading(state, payload) {
       state.testingMouldLoading = payload;
+    },
+    setMouldLoading(state, payload) {
+      state.mouldLoading = payload;
     }
   },
   actions: {
@@ -74,7 +77,7 @@ export default {
       await axios.get('/mould/detail/get/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setMould', res.data);
-          context.state.mouldLoading = false;
+          context.commit('setMouldLoading', false);
         }
       });
     },

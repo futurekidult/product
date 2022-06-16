@@ -42,6 +42,7 @@
           + 新增
         </el-button>
         <el-button
+          v-if="scenarioVisible"
           class="user-btn"
           type="danger"
           :disabled="isDisabled"
@@ -217,20 +218,7 @@
                   placeholder="请输入金额"
                   :disabled="isDisabled"
                   clearable
-                  @change="getRmb('head')"
-                  @clear="clearMoney('head')"
                 />
-              </el-form-item>
-              <el-form-item prop="head_cost_rmb">
-                <el-input
-                  v-model="form.head_cost_rmb"
-                  disabled
-                  placeholder="请输入人民币"
-                >
-                  <template #prepend>
-                    ￥
-                  </template>
-                </el-input>
               </el-form-item>
             </div>
           </el-form-item>
@@ -264,20 +252,7 @@
                   placeholder="请输入金额"
                   :disabled="isDisabled"
                   clearable
-                  @change="getRmb('tail')"
-                  @clear="clearMoney('tail')"
                 />
-              </el-form-item>
-              <el-form-item prop="tail_cost_rmb">
-                <el-input
-                  v-model="form.tail_cost_rmb"
-                  disabled
-                  placeholder="请输入人民币"
-                >
-                  <template #prepend>
-                    ￥
-                  </template>
-                </el-input>
               </el-form-item>
             </div>
           </el-form-item>
@@ -311,20 +286,7 @@
                   placeholder="请输入金额"
                   :disabled="isDisabled"
                   clearable
-                  @change="getRmb('sea_freight')"
-                  @clear="clearMoney('sea_freight')"
                 />
-              </el-form-item>
-              <el-form-item prop="sea_freight_cost_rmb">
-                <el-input
-                  v-model="form.sea_freight_cost_rmb"
-                  disabled
-                  placeholder="请输入人民币"
-                >
-                  <template #prepend>
-                    ￥
-                  </template>
-                </el-input>
               </el-form-item>
             </div>
           </el-form-item>
@@ -496,12 +458,6 @@ export default {
             message: '请输入金额'
           }
         ],
-        head_cost_rmb: [
-          {
-            required: true,
-            message: '请输入人民币'
-          }
-        ],
         tail_cost_currency: [
           {
             required: true,
@@ -514,12 +470,6 @@ export default {
             message: '请输入金额'
           }
         ],
-        tail_cost_rmb: [
-          {
-            required: true,
-            message: '请输入人民币'
-          }
-        ],
         sea_freight_currency: [
           {
             required: true,
@@ -527,12 +477,6 @@ export default {
           }
         ],
         sea_freight_cost: [
-          {
-            required: true,
-            message: '请输入人民币'
-          }
-        ],
-        sea_freight_cost_rmb: [
           {
             required: true,
             message: '请输入人民币'
@@ -548,7 +492,8 @@ export default {
       show: true,
       currency: [],
       file: this.attachment,
-      form: this.productForm
+      form: this.productForm,
+      scenarioVisible: false
     };
   },
   computed: {
@@ -562,6 +507,12 @@ export default {
     },
     productForm(val) {
       this.form = val;
+      if (this.form.usage_scenario.length === 0) {
+        this.form.usage_scenario.push([]);
+        this.scenarioVisible = false;
+      } else {
+        this.scenarioVisible = true;
+      }
     }
   },
   mounted() {
@@ -594,10 +545,16 @@ export default {
       }
     },
     addUsageScenario() {
-      this.form.usage_scenariopush([]);
+      this.form.usage_scenario.push([]);
+      if (this.form.usage_scenario.length > 1) {
+        this.scenarioVisible = true;
+      }
     },
     deleteUsageScenario() {
       this.form.usage_scenario.pop();
+      if (this.form.usage_scenario.length === 1) {
+        this.scenarioVisible = false;
+      }
     },
     async handleFileSuccess(e) {
       this.$store.commit('setUploadState', false);
@@ -626,22 +583,8 @@ export default {
         previewFile(this.$store.state.viewLink);
       }
     },
-    async getRmb(val) {
-      await this.$store.dispatch('getPriceRmb', {
-        params: {
-          price: this.form[`${val}_cost`],
-          currency: this.form[`${val}_cost_currency`],
-          product_id: +this.$route.params.productId
-        }
-      });
-      this.form[`${val}_cost_rmb`] = this.$store.state.priceRmb;
-    },
     clearCurrency(val) {
       this.form[`${val}_cost`] = '';
-      this.form[`${val}_cost_rmb`] = '';
-    },
-    clearMoney(val) {
-      this.form[`${val}_cost_rmb`] = '';
     },
     deleteFile() {
       this.file = {};

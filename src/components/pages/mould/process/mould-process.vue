@@ -1,7 +1,7 @@
 <template>
   <div style="margin: 20px 0">
     <el-tabs
-      v-model="activeName"
+      v-model="$store.state.activeTab"
       type="card"
       @tab-click="handleClick"
     >
@@ -28,7 +28,7 @@
       </el-tab-pane>
       <el-tab-pane
         label="开模"
-        name="open"
+        name="mouldopen"
       >
         <mould-open
           :change-color="changeColor"
@@ -38,7 +38,7 @@
       </el-tab-pane>
       <el-tab-pane
         label="试模"
-        name="test"
+        name="mouldtest"
       >
         <mould-test
           :change-color="changeColor"
@@ -66,7 +66,6 @@ export default {
   props: ['changeColor'],
   data() {
     return {
-      activeName: 'design',
       designProgress: {},
       prototypeProgress: {},
       attachment: [],
@@ -75,7 +74,10 @@ export default {
     };
   },
   mounted() {
-    this.getProductDesign();
+    if (this.$store.state.entry !== 'workbench') {
+      this.$store.commit('setActiveTab', 'design');
+    }
+    this.getRequest(this.$store.state.activeTab);
   },
   methods: {
     async getProductDesign() {
@@ -130,16 +132,25 @@ export default {
         this.testingMould.actual_finish_time
       );
     },
-    handleClick(tab) {
-      if (tab.props.name === 'design') {
-        this.getProductDesign();
-      } else if (tab.props.name === 'prototype') {
-        this.getPrototype();
-      } else if (tab.props.name === 'open') {
-        this.getMakingMould();
-      } else {
-        this.getTestingMould();
+    getRequest(val) {
+      switch (val) {
+        case 'design':
+          this.getProductDesign();
+          break;
+        case 'prototype':
+          this.getPrototype();
+          break;
+        case 'mouldopen':
+          this.getMakingMould();
+          break;
+        case 'mouldtest':
+          this.getTestingMould();
+          break;
+        default:
       }
+    },
+    handleClick(tab) {
+      this.getRequest(tab.props.name);
     }
   }
 };

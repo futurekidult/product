@@ -1,66 +1,72 @@
 <template>
-  <div v-loading="$store.state.product.listLoading">
+  <div>
     <div class="border">
       <div class="select-title">
         <span class="line">|</span> 筛选条件
       </div>
-      <el-form
-        label-width="80px"
-        style="display: flex"
-        :model="chooseForm"
-      >
-        <el-form-item label="产品名称">
-          <el-input
-            v-model="chooseForm.name"
-            placeholder="请输入内容"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="品类">
-          <el-select
-            v-model="chooseForm.type"
-            placeholder="请选择"
-            clearable
-          >
-            <el-option
-              v-for="item in categoryList"
-              :key="item.id"
-              :value="item.id"
-              :label="item.name"
+      <div class="select-item">
+        <el-form
+          label-width="80px"
+          style="display: flex"
+          :model="chooseForm"
+        >
+          <el-form-item label="产品名称">
+            <el-input
+              v-model="chooseForm.name"
+              placeholder="请输入内容"
+              clearable
             />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-select
-            v-model="chooseForm.status"
-            clearable
-            placeholder="请选择状态"
-          >
-            <el-option
-              v-for="item in productState"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            />
-          </el-select>
-        </el-form-item>
-        <div>
-          <el-form-item>
-            <el-button
-              type="primary"
-              @click="getProductList()"
-            >
-              查询
-            </el-button>
-            <el-button class="close-btn">
-              重置
-            </el-button>
           </el-form-item>
+          <el-form-item label="品类">
+            <el-select
+              v-model="chooseForm.category_id"
+              placeholder="请选择"
+              clearable
+            >
+              <el-option
+                v-for="item in categoryList"
+                :key="item.id"
+                :value="item.id"
+                :label="item.name"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="状态">
+            <el-select
+              v-model="chooseForm.state"
+              clearable
+              placeholder="请选择状态"
+            >
+              <el-option
+                v-for="item in productState"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key"
+              />
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div>
+          <el-button
+            type="primary"
+            @click="getProductList()"
+          >
+            查询
+          </el-button>
+          <el-button
+            class="close-btn"
+            @click="resetForm"
+          >
+            重置
+          </el-button>
         </div>
-      </el-form>
+      </div>
     </div>
 
-    <div class="border">
+    <div
+      v-loading="$store.state.product.listLoading"
+      class="border"
+    >
       <div class="select-title">
         <span class="line">|</span> 新品列表
       </div>
@@ -212,11 +218,7 @@
 export default {
   data() {
     return {
-      chooseForm: {
-        name: '',
-        type: '',
-        status: ''
-      },
+      chooseForm: {},
       editVisible: false,
       editForm: {
         images: []
@@ -266,6 +268,7 @@ export default {
     toDetail(id) {
       this.productId = id;
       this.$router.push(`/product-list/${id}`);
+      this.$store.commit('setEntry', 'detail');
     },
     async showEditForm(id) {
       this.productId = id;
@@ -285,6 +288,7 @@ export default {
       });
     },
     async getProductList(currentPage = 1, pageSize = 10) {
+      this.$store.commit('product/setListLoading', true);
       let params = this.chooseForm;
       params['current_page'] = currentPage;
       params['page_size'] = pageSize;
@@ -331,6 +335,10 @@ export default {
       } else {
         return 'result-ing';
       }
+    },
+    resetForm() {
+      this.chooseForm = {};
+      this.getProductList();
     }
   }
 };

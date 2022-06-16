@@ -106,6 +106,7 @@
 
 <script>
 export default {
+  inject: ['getUser'],
   props: ['dialogVisible'],
   emits: ['hide-dialog'],
   data() {
@@ -154,6 +155,7 @@ export default {
       };
       await this.$store.dispatch('sample/user/createUserTest', body);
       this.visible = false;
+      this.getUser();
     },
     cancel() {
       this.visible = false;

@@ -74,6 +74,7 @@ export default {
   },
   methods: {
     async getMould() {
+      this.$store.commit('mould/setMouldLoading', true);
       await this.$store.dispatch('mould/getMould', {
         params: {
           id: +this.$route.params.id
