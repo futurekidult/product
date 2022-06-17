@@ -425,8 +425,8 @@ export default {
       await this.$store.dispatch('sample/user/confirmTestResult', body);
       if (val.test_result === 0) {
         this.failFormVisible = false;
-        this.getProgress();
       }
+      this.getProgress();
     },
     async getSpecialist(val) {
       await this.$store.dispatch('sample/user/getSpecialist', {

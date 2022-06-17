@@ -119,7 +119,12 @@ export default {
         if (res.code === 200) {
           context.commit('setProductDetail', res.data);
           context.commit('setDetailLoading', false);
-        } 
+          let position = {
+            is_new_category: res.data.is_new_category,
+            is_new_product: res.data.is_new_product
+          };
+          localStorage.setItem('position', JSON.stringify(position));
+        }
       });
     },
     async getSingleDetailMsg(context, payload) {
@@ -133,7 +138,7 @@ export default {
       await axios.post('/product/base/update', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.msg);
-        } 
+        }
       });
     },
     async getProjectMember(context, payload) {
@@ -148,7 +153,7 @@ export default {
       await axios.post('/product/member/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } 
+        }
       });
     },
     async updateProjectMember(_, payload) {
@@ -162,7 +167,7 @@ export default {
       await axios.post('/product/member/delete', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } 
+        }
       });
     },
     async getPricingList(context, payload) {
@@ -178,7 +183,7 @@ export default {
         if (res.code === 200) {
           context.commit('setMouldList', res.data.list);
           context.commit('setMouldLoading', false);
-        } 
+        }
       });
     },
     async createMould(_, payload) {
@@ -196,7 +201,7 @@ export default {
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
-          } 
+          }
         });
     },
     async getSampleList(context, payload) {
@@ -204,7 +209,7 @@ export default {
         if (res.code === 200) {
           context.commit('setSampleList', res.data.list);
           context.commit('setSampleLoading', false);
-        } 
+        }
       });
     },
     async getQuestionList(context, payload) {
@@ -212,7 +217,7 @@ export default {
         if (res.code === 200) {
           context.commit('setQuestionList', res.data.list);
           context.commit('setQuestionLoading', false);
-        } 
+        }
       });
     },
     async submitQuestionResult(_, payload) {
@@ -226,7 +231,7 @@ export default {
       await axios.get('/reason/text/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setContent', res.data);
-        } 
+        }
       });
     },
     async getPackageList(context, payload) {
@@ -248,14 +253,14 @@ export default {
       await axios.post('/package/result/create/', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } 
+        }
       });
     },
     async terminateProject(_, payload) {
       await axios.post('/product/single/terminate', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } 
+        }
       });
     }
   }

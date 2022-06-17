@@ -8,7 +8,6 @@
     />
     <el-tabs
       v-model="activeName"
-      v-loading="$store.state.workbench.todoListLoading"
       @tab-click="handleClick"
     >
       <el-tab-pane
@@ -107,6 +106,7 @@ export default {
       }
     },
     async getTodoList(currentPage = 1, pageSize = 10) {
+      this.$store.commit('workbench/setTodoListLoading', true);
       let params = this.chooseForm;
       params['current_page'] = currentPage;
       params['page_size'] = pageSize;
@@ -146,10 +146,5 @@ export default {
   position: absolute;
   left: 98px;
   top: 115px;
-}
-
-.todo-title {
-  display: flex;
-  justify-content: space-between;
 }
 </style>

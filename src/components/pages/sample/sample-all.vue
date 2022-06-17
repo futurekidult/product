@@ -1,73 +1,76 @@
 <template>
-  <div v-loading="$store.state.sample.listLoading">
+  <div>
     <div class="border">
       <div class="select-title">
         <span class="line">|</span> 筛选条件
       </div>
-      <el-form
-        label-position="right"
-        label-width="80px"
-        style="display: flex"
-        :model="chooseForm"
-      >
-        <el-form-item label="产品名称">
-          <el-input
-            v-model="chooseForm.product_name"
-            placeholder="请输入内容"
-            clearable
-            @clear="getSampleList()"
-          />
-        </el-form-item>
-        <el-form-item label="品类">
-          <el-select
-            v-model="chooseForm.product_category"
-            placeholder="请选择"
-            clearable
-            @clear="getSampleList()"
-          >
-            <el-option
-              v-for="item in categoryList"
-              :key="item.id"
-              :value="item.id"
-              :label="item.name"
+      <div class="select-item">
+        <el-form
+          label-position="right"
+          label-width="80px"
+          style="display: flex"
+          :model="chooseForm"
+        >
+          <el-form-item label="产品名称">
+            <el-input
+              v-model="chooseForm.product_name"
+              placeholder="请输入内容"
+              clearable
+              @clear="getSampleList()"
             />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-select
-            v-model="chooseForm.state"
-            placeholder="请选择"
-            clearable
-            @clear="getSampleList()"
-          >
-            <el-option
-              v-for="item in sampleState"
-              :key="item.key"
-              :value="item.key"
-              :label="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <div style="float: right">
-          <el-form-item>
-            <el-button
-              type="primary"
-              @click="getSampleList()"
-            >
-              查询
-            </el-button>
-            <el-button
-              class="reset-btn"
-              @click="resetForm"
-            >
-              重置
-            </el-button>
           </el-form-item>
+          <el-form-item label="品类">
+            <el-select
+              v-model="chooseForm.product_category"
+              placeholder="请选择"
+              clearable
+              @clear="getSampleList()"
+            >
+              <el-option
+                v-for="item in categoryList"
+                :key="item.id"
+                :value="item.id"
+                :label="item.name"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="状态">
+            <el-select
+              v-model="chooseForm.state"
+              placeholder="请选择"
+              clearable
+              @clear="getSampleList()"
+            >
+              <el-option
+                v-for="item in sampleState"
+                :key="item.key"
+                :value="item.key"
+                :label="item.value"
+              />
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div>
+          <el-button
+            type="primary"
+            @click="getSampleList()"
+          >
+            查询
+          </el-button>
+          <el-button
+            class="reset-btn"
+            @click="resetForm"
+          >
+            重置
+          </el-button>
         </div>
-      </el-form>
+      </div>
     </div>
 
-    <div class="border">
+    <div
+      v-loading="$store.state.sample.listLoading"
+      class="border"
+    >
       <div class="select-title">
         <span class="line">|</span> 样品列表
       </div>
@@ -116,13 +119,10 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column
-          label="测试结果"
-          prop="test_result"
-        >
+        <el-table-column label="测试结果">
           <template #default="scope">
             <div :class="changeCellColor(scope.row.test_result)">
-              {{ scope.row.test_result }}
+              {{ scope.row.test_result_desc }}
             </div>
           </template>
         </el-table-column>
@@ -172,6 +172,7 @@ export default {
       this.categoryList = this.$store.state.demand.categoryList;
     },
     async getSampleList(currentPage = 1, pageSize = 10) {
+      this.$store.commit('sample/setListLoading', true);
       let params = this.chooseForm;
       params['current_page'] = currentPage;
       params['page_size'] = pageSize;
@@ -184,6 +185,7 @@ export default {
     },
     toDetail(id) {
       this.$router.push(`/sample-list/${id}`);
+      this.$store.commit('setEntry', 'detail');
     },
     changeCellColor(val) {
       if (val === 30 || val === 1) {

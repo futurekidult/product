@@ -23,6 +23,7 @@
           placeholder="请选择市场"
           :disabled="isDisabled"
           clearable
+          @change="getRate(profitForm.market)"
         >
           <el-option
             v-for="item in marketList"
@@ -31,6 +32,15 @@
             :value="item.id"
           />
         </el-select>
+      </el-form-item>
+      <el-form-item
+        v-if="profitForm.market"
+        label="当前汇率"
+      >
+        <el-input
+          v-model="rate"
+          disabled
+        />
       </el-form-item>
       <el-form-item
         label="是否开模"
@@ -76,6 +86,16 @@
               />
             </el-select>
           </el-form-item>
+          <el-form-item v-if="profitForm.list[index].platform">
+            <el-collapse style="width: 100%">
+              <el-collapse-item :title="'利润核算参数明细表' + (index + 1)">
+                <profit-params
+                  :market="profitForm.market"
+                  :platform="profitForm.list[index].platform"
+                />
+              </el-collapse-item>
+            </el-collapse>
+          </el-form-item>
           <el-form-item
             :label="'销售价' + (index + 1)"
             required
@@ -110,7 +130,12 @@
                   :disabled="isDisabled"
                   clearable
                   @change="
-                    getPriceRmb(item.currency, item.selling_price, index)
+                    getPrice(
+                      profitForm.market,
+                      item.platform,
+                      item.selling_price,
+                      index
+                    )
                   "
                 />
               </el-form-item>
@@ -128,6 +153,19 @@
                 </el-input>
               </el-form-item>
             </div>
+          </el-form-item>
+          <el-form-item v-if="profitForm.list[index].selling_price">
+            <el-collapse style="width: 100%">
+              <el-collapse-item :title="'核算系数明细' + (index + 1)">
+                <div>采购价=</div>
+                <div style="margin: 10px">
+                  {{ calculationResult.coef_selling }}*销售价 -
+                  {{ calculationResult.coef_volume }}*体积*海运单价 -
+                  {{ calculationResult.coef_head }}*头程附加 -
+                  {{ calculationResult.coef_tail }}*尾程
+                </div>
+              </el-collapse-item>
+            </el-collapse>
           </el-form-item>
           <el-form-item
             :label="'采购参考价' + (index + 1)"
@@ -151,24 +189,25 @@
             :prop="`list.${index}.operations_specialist_id`"
             :rules="profitRules.operations_specialist_id"
           >
-            <el-select
+            <el-tree-select
               v-model="profitForm.operations_specialist_id"
-              placeholder="请选择运营专员"
-              :disabled="isDisabled"
+              :data="memberList"
               clearable
+              :props="defaultProps"
+              :disabled="isDisabled"
             />
           </el-form-item>
         </div>
         <el-form-item>
           <el-button
-            v-if="type !== 'view'"
+            v-if="!isDisabled"
             style="margin: 15px 0"
             @click="addRow"
           >
             + 新增平台
           </el-button>
           <el-button
-            v-if="type !== 'view'"
+            v-if="!isDisabled"
             style="margin: 15px"
             type="danger"
             @click="deleteRow"
@@ -176,10 +215,10 @@
             - 删除平台
           </el-button>
         </el-form-item>
-        <el-divider v-if="type !== 'view'" />
+        <el-divider v-if="!isDisabled" />
       </el-scrollbar>
       <div
-        v-if="type !== 'view'"
+        v-if="!isDisabled"
         style="text-align: right"
       >
         <el-button
@@ -195,12 +234,29 @@
           提交
         </el-button>
       </div>
+      <div
+        v-if="type === 'confirm'"
+        style="text-align: right"
+      >
+        <el-divider />
+        <el-button
+          type="primary"
+          @click="updateProfitCalculationCoefficient"
+        >
+          确认
+        </el-button>
+      </div>
     </el-form>
   </el-dialog>
 </template>
 
 <script>
+import ProfitParams from './profit-params.vue';
+
 export default {
+  components: {
+    ProfitParams
+  },
   inject: ['getProfitCalcaulation'],
   props: ['dialogVisible', 'title', 'type', 'id'],
   emits: ['hide-dialog'],
@@ -260,12 +316,19 @@ export default {
           value: 0
         }
       ],
-      currency: []
+      currency: [],
+      memberList: [],
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      },
+      rate: '',
+      calculationResult: {}
     };
   },
   computed: {
     isDisabled() {
-      if (this.type === 'view') {
+      if (this.type === 'view' || this.type === 'confirm') {
         return true;
       } else {
         return false;
@@ -285,16 +348,34 @@ export default {
     }
   },
   mounted() {
+    this.getOrganizationList();
     this.getParams();
     this.getProfitCalculation();
     this.getMarket();
+    if (this.type !== 'add') {
+      this.getRate();
+      this.getPrice();
+    }
   },
   methods: {
+    async getOrganizationList() {
+      await this.$store.dispatch('getOrganizationList');
+      this.memberList = this.$store.state.organizationList;
+      for (let key in this.memberList) {
+        this.childrenFunc(this.memberList[key]);
+      }
+    },
+    childrenFunc(data) {
+      if (data.member_list) {
+        for (const item of data.member_list) {
+          data.children.push(item);
+        }
+      }
+      return data.children;
+    },
     async getParams() {
       if (localStorage.getItem('params')) {
         let { demand } = JSON.parse(localStorage.getItem('params'));
-        this.marketList = demand.market;
-        this.platformList = demand.platform;
         this.currency = demand.currency;
       } else {
         await this.$store.dispatch('getSystemParameters');
@@ -320,6 +401,14 @@ export default {
       if (this.type !== 'add') {
         this.profitForm = this.$store.state.product.project.profitCalculation;
       }
+    },
+    async getRate(market) {
+      await this.$store.dispatch('product/project/getRate', {
+        params: {
+          market
+        }
+      });
+      this.rate = this.$store.state.product.project.rate;
     },
     cancel() {
       this.visible = false;
@@ -356,34 +445,32 @@ export default {
         }
       });
     },
-    async getReferencePrice(index, val) {
-      let params = {
-        product_id: +this.$route.params.productId,
-        market: this.id,
-        selling_price_rmb: val
-      };
+    async getPrice(market, platform, price, index) {
       await this.$store.dispatch('product/project/getReferencePrice', {
-        params
-      });
-      this.profitForm.list[index].reference_price =
-        this.$store.state.product.project.referencePrice;
-    },
-    async getPriceRmb(currency, price, index) {
-      await this.$store.dispatch('getPriceRmb', {
         params: {
-          price,
-          currency,
-          product_id: this.$route.params.productId
+          market,
+          platform,
+          product_id: +this.$route.params.productId,
+          price
         }
       });
+      this.calculationResult = this.$store.state.product.project.referencePrice;
       this.profitForm.list[index].selling_price_rmb =
-        this.$store.state.priceRmb;
-      if (this.$store.state.getRmbState) {
-        this.getReferencePrice(
-          index,
-          this.profitForm.list[index].selling_price_rmb
-        );
-      }
+        this.calculationResult.selling_price_rmb;
+      this.profitForm.list[index].reference_price =
+        this.calculationResult.reference_price;
+    },
+    async updateProfitCalculationCoefficient() {
+      let body = {
+        product_id: +this.$route.params.productId,
+        market: this.id
+      };
+      await this.$store.dispatch(
+        'product/project/updateProfitCalculationCoefficient',
+        body
+      );
+      this.visible = false;
+      this.getProfitCalcaulation();
     }
   }
 };

@@ -167,7 +167,12 @@
 </template>
 
 <script>
-import { downloadFile, getFile, previewFile } from '../../../../utils';
+import {
+  downloadFile,
+  getFile,
+  previewFile,
+  timestamp
+} from '../../../../utils';
 export default {
   inject: ['getProofing'],
   props: ['dialogVisible', 'title', 'type', 'form'],
@@ -278,6 +283,11 @@ export default {
       this.$refs.proofingForm.validate((valid) => {
         if (valid) {
           this.proofingForm.has_verify = +this.proofingForm.has_verify;
+          this.proofingForm.demand_quantity =
+            +this.proofingForm.demand_quantity;
+          this.proofingForm.demand_time = timestamp(
+            this.proofingForm.demand_time
+          );
           if (this.type === 'create') {
             this.createProofingSheet(this.proofingForm);
           } else {

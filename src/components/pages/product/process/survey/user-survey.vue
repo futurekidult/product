@@ -284,7 +284,7 @@
                   </el-button>
                 </el-upload>
               </div>
-              <div v-if="scope.row.state !== 10">
+              <div v-if="scope.row.state >= 40">
                 <el-button
                   type="text"
                   @click="showViewFile(scope.row.attachment.id)"
@@ -334,9 +334,9 @@
           width="200px"
         >
           <template #default="scope">
-            <div v-if="scope.row.has_approval_process === 1">
+            <div v-if="scope.row.state === 20">
               <el-button
-                v-if="scope.row.state === 10"
+                v-if="scope.row.state === 20"
                 type="text"
                 @click="approvalItemFail(scope.row.id)"
               >
@@ -344,7 +344,7 @@
               </el-button>
               <el-button
                 type="text"
-                :disabled="scope.row.state !== 10"
+                :disabled="scope.row.state >= 40"
                 @click="approvalItemPass(scope.row.id)"
               >
                 通过
@@ -362,7 +362,7 @@
                 v-if="
                   buttonState.plan === 0 &&
                     buttonState.review_pass === 0 &&
-                    scope.row.state === 10
+                    (scope.row.state === 10 || scope.row.state === 30)
                 "
                 type="text"
                 @click="editOperator(scope.row.id)"
@@ -370,8 +370,13 @@
                 编辑
               </el-button>
               <el-button
+                v-if="
+                  buttonState.plan === 0 &&
+                    buttonState.review_pass === 0 &&
+                    scope.row.state !== 20
+                "
                 type="text"
-                :disabled="scope.row.state !== 10"
+                :disabled="scope.row.state >= 40"
                 @click="finishItem(scope.row.id)"
               >
                 完成
@@ -794,11 +799,6 @@ export default {
         attachment['id'] = this.$store.state.fileRes.id;
         attachment['name'] = this.$store.state.fileRes.id;
         attachment['type'] = this.$store.state.fileRes.id;
-        // this.attachment = {
-        //   id: this.$store.state.fileRes.id,
-        //   name: this.$store.state.fileRes.file_name,
-        //   type: this.$store.state.fileRes.type
-        // };
         this.getList();
       }
     },

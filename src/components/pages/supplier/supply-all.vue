@@ -1,65 +1,68 @@
 <template>
-  <div v-loading="$store.state.supplier.supplierLoading">
+  <div>
     <div class="border">
       <div class="select-title">
         <span class="line">|</span> 筛选条件
       </div>
-      <el-form
-        label-width="100px"
-        style="display: flex"
-        :model="chooseForm"
-      >
-        <el-form-item label="供应商名称">
-          <el-input
-            v-model="chooseForm.name"
-            clearable
-            placeholder="请输入供应商名称"
-            @clear="getSupplierList()"
-          />
-        </el-form-item>
-        <el-form-item label="采购员">
-          <el-input
-            v-model="chooseForm.purchase_specialist"
-            clearable
-            placeholder="请输入采购员"
-            @clear="getSupplierList()"
-          />
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-select
-            v-model="chooseForm.state"
-            clearable
-            placeholder="请选择"
-            @clear="getSupplierList()"
-          >
-            <el-option
-              v-for="item in supplierState"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
+      <div class="select-item">
+        <el-form
+          label-width="100px"
+          style="display: flex"
+          :model="chooseForm"
+        >
+          <el-form-item label="供应商名称">
+            <el-input
+              v-model="chooseForm.name"
+              clearable
+              placeholder="请输入供应商名称"
+              @clear="getSupplierList()"
             />
-          </el-select>
-        </el-form-item>
-        <div style="float: right">
-          <el-form-item>
-            <el-button
-              type="primary"
-              @click="getSupplierList"
-            >
-              查询
-            </el-button>
-            <el-button
-              class="close-btn"
-              @click="resetForm"
-            >
-              重置
-            </el-button>
           </el-form-item>
+          <el-form-item label="采购员">
+            <el-input
+              v-model="chooseForm.purchase_specialist"
+              clearable
+              placeholder="请输入采购员"
+              @clear="getSupplierList()"
+            />
+          </el-form-item>
+          <el-form-item label="状态">
+            <el-select
+              v-model="chooseForm.state"
+              clearable
+              placeholder="请选择"
+              @clear="getSupplierList()"
+            >
+              <el-option
+                v-for="item in supplierState"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key"
+              />
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div>
+          <el-button
+            type="primary"
+            @click="getSupplierList"
+          >
+            查询
+          </el-button>
+          <el-button
+            class="close-btn"
+            @click="resetForm"
+          >
+            重置
+          </el-button>
         </div>
-      </el-form>
+      </div>
     </div>
 
-    <div class="border">
+    <div
+      v-loading="$store.state.supplier.supplierLoading"
+      class="border"
+    >
       <div class="select-title supplier-item">
         <div>
           <span class="line">|</span> 供应商列表
@@ -203,11 +206,7 @@ export default {
   },
   data() {
     return {
-      chooseForm: {
-        name: '',
-        purchase_specialist: '',
-        state: ''
-      },
+      chooseForm: {},
       supplierList: [],
       supplierState: [],
       blackDialogVisible: false,

@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="visible"
-    title="新增测试用户"
+    title="查看测试用户"
     width="30%"
     @close="cancel"
   >

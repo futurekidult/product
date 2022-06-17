@@ -5,11 +5,24 @@
 <script>
 export default {
   mounted() {
-    this.getSystemParamters();
+    this.clearCache();
+    this.getUserInfo();
   },
   methods: {
+    clearCache() {
+      setTimeout(() => {
+        this.getSystemParamters();
+      }, 3600 * 1000 * 24);
+    },
     async getSystemParamters() {
       await this.$store.dispatch('getSystemParameters');
+    },
+    async getToken() {
+      await this.$store.dispatch('getToken');
+    },
+    async getUserInfo() {
+      this.getToken();
+      await this.$store.dispatch('getUserInfo');
     }
   }
 };
@@ -52,7 +65,8 @@ body {
   color: #999999;
 }
 
-.select-title {
+.select-title,
+.nav-title {
   font-weight: 900;
   font-size: 20px;
   margin-bottom: 20px;
@@ -87,7 +101,8 @@ body {
 .design-title,
 .prototype-title,
 .test-title,
-.open-title {
+.open-title,
+.progress-title {
   font-size: 14px;
   margin: 15px 0;
 }
@@ -148,7 +163,10 @@ body {
 .open-mould_item,
 .quotation-item,
 .supplier-item,
-.user-item {
+.user-item,
+.system-item,
+.todo-title,
+.select-item {
   display: flex;
   justify-content: space-between;
 }
@@ -156,7 +174,8 @@ body {
 .user-btn,
 .project-plan_btn,
 .pre-product_btn,
-.member-btn {
+.member-btn,
+.quote-btn {
   width: 120px;
 }
 

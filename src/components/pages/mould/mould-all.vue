@@ -1,65 +1,68 @@
 <template>
-  <div v-loading="$store.state.mould.listLoading">
+  <div>
     <div class="border">
       <div class="select-title">
         <span class="line">|</span> 筛选条件
       </div>
-      <el-form
-        label-width="80px"
-        style="display: flex"
-        :model="chooseForm"
-      >
-        <el-form-item label="模具名称">
-          <el-input
-            v-model="chooseForm.name"
-            placeholder="请输入内容"
-            clearable
-            @clear="getMouldList()"
-          />
-        </el-form-item>
-        <el-form-item label="创建人">
-          <el-input
-            v-model="chooseForm.author"
-            placeholder="请输入内容"
-            clearable
-            @clear="getMouldList()"
-          />
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-select
-            v-model="chooseForm.status"
-            clearable
-            placeholder="请选择状态"
-            @clear="getMouldList()"
-          >
-            <el-option
-              v-for="item in mouldState"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
+      <div class="select-item">
+        <el-form
+          label-width="80px"
+          style="display: flex"
+          :model="chooseForm"
+        >
+          <el-form-item label="模具名称">
+            <el-input
+              v-model="chooseForm.name"
+              placeholder="请输入内容"
+              clearable
+              @clear="getMouldList()"
             />
-          </el-select>
-        </el-form-item>
-        <div style="float: right">
-          <el-form-item>
-            <el-button
-              type="primary"
-              @click="getMouldList()"
-            >
-              查询
-            </el-button>
-            <el-button
-              class="close-btn"
-              @click="resetForm"
-            >
-              重置
-            </el-button>
           </el-form-item>
+          <el-form-item label="创建人">
+            <el-input
+              v-model="chooseForm.creator"
+              placeholder="请输入内容"
+              clearable
+              @clear="getMouldList()"
+            />
+          </el-form-item>
+          <el-form-item label="状态">
+            <el-select
+              v-model="chooseForm.state"
+              clearable
+              placeholder="请选择状态"
+              @clear="getMouldList()"
+            >
+              <el-option
+                v-for="item in mouldState"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key"
+              />
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div>
+          <el-button
+            type="primary"
+            @click="getMouldList()"
+          >
+            查询
+          </el-button>
+          <el-button
+            class="close-btn"
+            @click="resetForm"
+          >
+            重置
+          </el-button>
         </div>
-      </el-form>
+      </div>
     </div>
 
-    <div class="border">
+    <div
+      v-loading="$store.state.mould.listLoading"
+      class="border"
+    >
       <div class="select-title">
         <span class="line">|</span> 模具列表
         <el-button
@@ -186,11 +189,7 @@ import { formatterTime, timestamp } from '../../../utils/index.js';
 export default {
   data() {
     return {
-      chooseForm: {
-        name: '',
-        author: '',
-        status: ''
-      },
+      chooseForm: {},
       mouldList: [],
       mouldFormVisible: false,
       mouldForm: {},
@@ -227,6 +226,7 @@ export default {
       }
     },
     async getMouldList(currentPage = 1, pageSize = 10) {
+      this.$store.commit('mould/setListLoading', true);
       let params = this.chooseForm;
       params['current_page'] = currentPage;
       params['page_size'] = pageSize;
@@ -245,6 +245,7 @@ export default {
     },
     toDetail(id) {
       this.$router.push(`/mould-list/${id}`);
+      this.$store.commit('setEntry', 'detail');
     },
     changeCellColor(val) {
       if (val === 40) {

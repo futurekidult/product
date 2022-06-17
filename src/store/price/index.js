@@ -46,6 +46,9 @@ export default {
     },
     setViewLoading(state, payload) {
       state.viewLoading = payload;
+    },
+    setQuotationLoading(state, payload) {
+      state.quotationLoading = payload;
     }
   },
   actions: {

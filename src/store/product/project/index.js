@@ -16,7 +16,8 @@ export default {
       profitLoading: true,
       marketList: [],
       referencePrice: {},
-      rate: ''
+      rate: '',
+      profitParams: {}
     };
   },
   mutations: {
@@ -55,6 +56,9 @@ export default {
     },
     setRate(state, payload) {
       state.rate = payload;
+    },
+    setProfitParams(state, payload) {
+      state.profitParams = payload;
     }
   },
   actions: {
@@ -228,6 +232,22 @@ export default {
           context.commit('setRate', res.data.rate);
         }
       });
+    },
+    async getProfitParams(context, payload) {
+      await axios.get('/profit-calculation-rule/get', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setProfitParams', res.data);
+        }
+      });
+    },
+    async updateProfitCalculationCoefficient(_, payload) {
+      await axios
+        .post('/project/profit-calculation/coefficient/update', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(res.configmessage);
+          }
+        });
     }
   }
 };

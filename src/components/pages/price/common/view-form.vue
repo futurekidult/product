@@ -30,7 +30,7 @@
           disabled
         />
       </el-form-item>
-      <el-form-item lable="报价">
+      <el-form-item label="报价">
         <el-input
           v-model="quotationForm.quote_amount_rmb"
           disabled

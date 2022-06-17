@@ -12,7 +12,8 @@ export default {
       createPass: false,
       updatePass: false,
       supplierDetail: {},
-      supplierDetailLoading: true
+      supplierDetailLoading: true,
+      cityOption: []
     };
   },
   mutations: {
@@ -39,6 +40,9 @@ export default {
     },
     setSupplierDetailLoading(state, payload) {
       state.supplierDetailLoading = payload;
+    },
+    setCityOption(state, payload) {
+      state.cityOption = payload;
     }
   },
   actions: {
@@ -103,10 +107,17 @@ export default {
         }
       });
     },
-    async approvalSupplier(context, payload) {
+    async approvalSupplier(_, payload) {
       await axios.post('supplier/entry/approve', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
+        }
+      });
+    },
+    async getCityOption(context) {
+      await axios.get('/option/supplier/city/list').then((res) => {
+        if (res.code === 200) {
+          context.commit('setCityOption', res.data.list);
         }
       });
     }

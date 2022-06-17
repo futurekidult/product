@@ -1,65 +1,69 @@
 <template>
-  <div v-loading="$store.state.demand.demandLoading">
+  <div>
     <div class="border">
       <div class="select-title">
         <span class="line">|</span> 筛选条件
       </div>
-      <el-form
-        label-width="80px"
-        style="display: flex"
-        :model="chooseForm"
-      >
-        <el-form-item label="产品名称">
-          <el-input
-            v-model="chooseForm.name"
-            clearable
-            placeholder="请输入产品名称"
-            @clear="getDemandList()"
-          />
-        </el-form-item>
-        <el-form-item label="创建人">
-          <el-input
-            v-model="chooseForm.creator_id"
-            clearable
-            placeholder="请输入创建人"
-            @clear="getDemandList()"
-          />
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-select
-            v-model="chooseForm.state"
-            clearable
-            placeholder="请选择需求状态"
-            @clear="getDemandList()"
-          >
-            <el-option
-              v-for="item in demandState"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
+
+      <div class="select-item">
+        <el-form
+          label-width="80px"
+          style="display: flex"
+          :model="chooseForm"
+        >
+          <el-form-item label="产品名称">
+            <el-input
+              v-model="chooseForm.name"
+              clearable
+              placeholder="请输入产品名称"
+              @clear="getDemandList()"
             />
-          </el-select>
-        </el-form-item>
-        <div style="float: right">
-          <el-form-item>
-            <el-button
-              type="primary"
-              @click="getDemandList()"
-            >
-              查询
-            </el-button>
-            <el-button
-              class="close-btn"
-              @click="resetForm"
-            >
-              重置
-            </el-button>
           </el-form-item>
+          <el-form-item label="创建人">
+            <el-input
+              v-model="chooseForm.creator_id"
+              clearable
+              placeholder="请输入创建人"
+              @clear="getDemandList()"
+            />
+          </el-form-item>
+          <el-form-item label="状态">
+            <el-select
+              v-model="chooseForm.state"
+              clearable
+              placeholder="请选择需求状态"
+              @clear="getDemandList()"
+            >
+              <el-option
+                v-for="item in demandState"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key"
+              />
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div>
+          <el-button
+            type="primary"
+            @click="getDemandList()"
+          >
+            查询
+          </el-button>
+          <el-button
+            class="close-btn"
+            @click="resetForm"
+          >
+            重置
+          </el-button>
         </div>
-      </el-form>
+      </div>
     </div>
 
-    <div class="border">
+    <div
+      v-loading="$store.state.demand.demandLoading"
+      class="border"
+    >
       <div class="select-title">
         <span class="line">|</span> 需求列表
         <el-button
@@ -132,10 +136,18 @@
         <el-table-column label="操作">
           <template #default="scope">
             <el-button
+              v-if="scope.row.state !== 10"
               type="text"
-              @click="toDetail(scope.row.id)"
+              @click="toDetail(scope.row.id, scope.row.state)"
             >
               查看详情
+            </el-button>
+            <el-button
+              v-else
+              type="text"
+              @click="toDetail(scope.row.id, scope.row.state)"
+            >
+              编辑
             </el-button>
           </template>
         </el-table-column>
@@ -146,36 +158,33 @@
         :get-list="getDemandList"
       />
     </div>
-  </div>
 
-  <el-dialog
-    v-model="reasonFormVisible"
-    width="400px"
-    title="查看内容"
-  >
-    <el-form :model="reasonForm">
-      <el-form-item label="不通过原因">
-        <el-input
-          v-model="reasonForm.content"
-          type="textarea"
-          :rows="6"
-          disabled
-        />
-      </el-form-item>
-    </el-form>
-  </el-dialog>
+    <el-dialog
+      v-model="reasonFormVisible"
+      width="400px"
+      title="查看内容"
+    >
+      <el-form :model="reasonForm">
+        <el-form-item label="不通过原因">
+          <el-input
+            v-model="reasonForm.content"
+            type="textarea"
+            :rows="6"
+            disabled
+          />
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
 import { formatterTime } from '../../../utils';
+
 export default {
   data() {
     return {
-      chooseForm: {
-        name: '',
-        creator_id: '',
-        state: ''
-      },
+      chooseForm: {},
       reasonFormVisible: false,
       demandList: [],
       reasonForm: {},
@@ -198,6 +207,7 @@ export default {
       }
     },
     async getDemandList(currentPage = 1, pageSize = 10) {
+      this.$store.commit('demand/setDemandLoading', true);
       let params = this.chooseForm;
       params['current_page'] = currentPage;
       params['page_size'] = pageSize;
@@ -221,8 +231,14 @@ export default {
     toCreate() {
       this.$router.push('/create-demand');
     },
-    toDetail(id) {
+    toDetail(id, val) {
       this.$router.push(`/demand-list/${id}`);
+      if (val === 10) {
+        this.$store.commit('demand/setDraft', true);
+      } else {
+        this.$store.commit('demand/setDraft', false);
+      }
+      this.$store.commit('demand/setDemandDetailLoading', true);
     },
     toProductDetail(id) {
       this.$router.push(`/product-list/${id}`);

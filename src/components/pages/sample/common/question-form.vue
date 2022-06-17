@@ -50,6 +50,7 @@
           + 新增
         </el-button>
         <el-button
+          v-if="questionForm.list.length > 1"
           style="margin: 15px"
           type="danger"
           @click="deleteRow"

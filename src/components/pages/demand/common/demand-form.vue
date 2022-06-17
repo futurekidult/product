@@ -340,6 +340,7 @@
               placeholder="请选择货币"
               :disabled="isDisabled"
               clearable
+              @clear="clearCurrency('selling')"
             >
               <el-option
                 v-for="item in currency"
@@ -356,11 +357,13 @@
               placeholder="请输入金额"
               :disabled="isDisabled"
               clearable
+              @change="getRmb('selling')"
+              @clear="clearMoney('selling')"
             />
           </el-form-item>
-          <el-form-item prop="purchase_price_rmb">
+          <el-form-item prop="selling_price_rmb">
             <el-input
-              v-model="demandForm.purchase_price_rmb"
+              v-model="demandForm.selling_price_rmb"
               disabled
             >
               <template #prepend>
@@ -383,6 +386,7 @@
               placeholder="请选择货币"
               :disabled="isDisabled"
               clearable
+              @clear="clearCurrency('purchase')"
             >
               <el-option
                 v-for="item in currency"
@@ -399,6 +403,8 @@
               placeholder="请输入金额"
               :disabled="isDisabled"
               clearable
+              @change="getRmb('purchase')"
+              @clear="clearMoney('purchase')"
             />
           </el-form-item>
           <el-form-item prop="purchase_price_rmb">
@@ -484,7 +490,7 @@
         clearable
       />
     </el-form-item>
-    <el-form-item v-if="type === 'create'">
+    <el-form-item v-if="type !== 'detail'">
       <el-button
         class="draft-btn"
         @click="submitDemandForm(10)"
@@ -516,7 +522,7 @@ export default {
   components: {
     ViewDialog
   },
-  props: ['type'],
+  props: ['type', 'id'],
   data() {
     return {
       demandForm: {
@@ -725,6 +731,9 @@ export default {
     if (this.type === 'detail') {
       this.getDetail();
       this.isDisabled = true;
+    } else if (this.type === 'edit') {
+      this.getDetail();
+      this.getDepartment();
     } else {
       this.getDepartment();
     }
@@ -746,9 +755,10 @@ export default {
       this.attachment = this.demandForm.competitive_product;
     },
     async getDepartment() {
-      await this.$store.dispatch('demand/getDepartment');
-      this.department = this.$store.state.demand.department.department;
-      this.isRequired = this.department.indexOf(2) > -1;
+      await this.$store.dispatch('getToken');
+      await this.$store.dispatch('getUserInfo');
+      this.department = this.$store.state.userInfo.center_group;
+      this.isRequired = this.department.indexOf(20) > -1;
     },
     async getCategoryList() {
       await this.$store.dispatch('demand/getCategoryList');
@@ -758,14 +768,13 @@ export default {
       await this.$store.dispatch('demand/createDemandForm', body);
       if (this.$store.state.demand.isSuccess) {
         this.$router.push('/demand-list');
-        this.$store.commit('demand/setDemandLoading', true);
       }
     },
     getRules() {
       let map = {
-        1: this.operationDepartment,
-        2: this.supplyChainDepartment,
-        3: this.saleDepartment
+        10: this.operationDepartment,
+        20: this.supplyChainDepartment,
+        30: this.saleDepartment
       };
       if (this.department.length === 1) {
         this.demandRules = Object.assign(
@@ -832,16 +841,19 @@ export default {
       );
     },
     submitDemandForm(val) {
+      this.demandForm.images = [];
       this.getRules();
       this.imagesList.forEach((item) => {
         let { id } = item;
         this.demandForm.images.push(id);
       });
       for (let index in this.attachment) {
+        let imgArr = [];
         let { images } = this.attachment[index];
         for (let i in images) {
           let { id } = images[i];
-          this.demandForm.competitive_product[index].images.push(id);
+          imgArr.push(id);
+          this.demandForm.competitive_product[index].images = imgArr;
         }
       }
       this.$refs.demandForm.validate((valid) => {
@@ -873,6 +885,22 @@ export default {
     },
     closeViewDialog() {
       this.viewImgDialog = false;
+    },
+    async getRmb(val) {
+      await this.$store.dispatch('getPriceRmb', {
+        params: {
+          price: this.demandForm[`${val}_price`],
+          currency: this.demandForm[`${val}_price_currency`]
+        }
+      });
+      this.demandForm[`${val}_price_rmb`] = this.$store.state.priceRmb;
+    },
+    clearMoney(val) {
+      this.demandForm[`${val}_price_rmb`] = '';
+    },
+    clearCurrency(val) {
+      this.demandForm[`${val}_price_rmb`] = '';
+      this.demandForm[`${val}_price`] = '';
     }
   }
 };

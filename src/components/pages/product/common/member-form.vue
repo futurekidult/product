@@ -109,7 +109,7 @@ export default {
     async getOrganizationList() {
       await this.$store.dispatch('getOrganizationList');
       this.memberList = this.$store.state.organizationList;
-       for (let key in this.memberList) {
+      for (let key in this.memberList) {
         this.childrenFunc(this.memberList[key]);
       }
     },

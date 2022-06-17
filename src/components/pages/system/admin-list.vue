@@ -1,38 +1,41 @@
 <template>
-  <div class="nav-title">
-    <span class="line">|</span> 用户列表
-  </div>
+  <base-breadcrumb />
 
-  <div v-loading="$store.state.system.adminLoading">
-    <el-table
-      :data="adminList"
-      empty-text="无数据"
-      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-    >
-      <el-table-column
-        label="姓名"
-        prop="name"
-      />
-      <el-table-column
-        label="所属部门"
-        prop="department"
-      />
-      <el-table-column label="操作">
-        <template #default="scope">
-          <el-button :type="scope.row.state === 1 ? 'danger' : 'primary'">
-            {{ scope.row.state === 1 ? '封禁账号' : '解除封禁' }}
-          </el-button>
-          <el-button
-            type="warning"
-            @click="showRoleForm(scope.row.id)"
-          >
-            配置角色
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-  </div>
+  <div class="border">
+    <div class="nav-title">
+      <span class="line">|</span> 用户列表
+    </div>
 
+    <div v-loading="$store.state.system.adminLoading">
+      <el-table
+        :data="adminList"
+        empty-text="无数据"
+        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+      >
+        <el-table-column
+          label="姓名"
+          prop="name"
+        />
+        <el-table-column
+          label="所属部门"
+          prop="department"
+        />
+        <el-table-column label="操作">
+          <template #default="scope">
+            <el-button :type="scope.row.state === 1 ? 'danger' : 'primary'">
+              {{ scope.row.state === 1 ? '封禁账号' : '解除封禁' }}
+            </el-button>
+            <el-button
+              type="warning"
+              @click="showRoleForm(scope.row.id)"
+            >
+              配置角色
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+  </div>
   <el-dialog
     v-model="roleVisible"
     title="配置用户角色"
@@ -69,7 +72,7 @@
       <el-divider />
       <div style="text-align: right">
         <el-button
-          class="cancel-btn"
+          class="close-btn"
           @click="closeRoleForm"
         >
           取消
@@ -87,16 +90,37 @@
 
 <script>
 export default {
-  inject: ['getAdminList'],
-  props: ['adminList', 'roleList', 'organizationList'],
   data() {
     return {
       roleVisible: false,
       roleForm: {},
-      adminId: 0
+      adminId: 0,
+      organizationList: [],
+      adminList: [],
+      roleList: []
     };
   },
+  mounted() {
+    this.getAdminList();
+    this.getOrganizationList();
+    this.getRoleList();
+  },
   methods: {
+    async getOrganizationList() {
+      this.$store.commit('system/setOrganizationLoading', true);
+      await this.$store.dispatch('system/getOrganizationList');
+      this.organizationList = this.$store.state.system.organizationList;
+    },
+    async getAdminList() {
+      this.$store.commit('system/setAdminLoading', true);
+      await this.$store.dispatch('system/getAdminList');
+      this.adminList = this.$store.state.system.adminList;
+    },
+    async getRoleList() {
+      this.$store.commit('system/setRoleLoading', true);
+      await this.$store.dispatch('system/getRoleList');
+      this.roleList = this.$store.state.system.roleList;
+    },
     async showRoleForm(id) {
       await this.$store.dispatch('system/getAdminRole', { params: { id } });
       this.roleForm = this.$store.state.system.adminRole;

@@ -99,6 +99,7 @@
           + 新增市场
         </el-button>
         <el-button
+          v-if="reviewForm.market.length > 1"
           type="danger"
           @click="deleteRow"
         >
@@ -394,6 +395,7 @@
 import { timestamp } from '../../../../../utils';
 
 export default {
+  props: ['getDetail'],
   data() {
     return {
       reviewForm: {
@@ -648,6 +650,7 @@ export default {
       let body = val;
       body['demand_id'] = +this.$route.params.id;
       await this.$store.dispatch('demand/reviewDemandForm', body);
+      this.getDetail();
     },
     submitDemandForm() {
       for (let item of Object.keys(this.reviewForm)) {

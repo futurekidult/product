@@ -74,6 +74,7 @@
           + 新增SKU
         </el-button>
         <el-button
+          v-if="deleteVisible"
           type="danger"
           :disabled="isDisabled"
           @click="deleteSku"
@@ -210,7 +211,8 @@ export default {
       show: true,
       platform: [],
       file: this.attachment,
-      form: this.skuForm
+      form: this.skuForm,
+      deleteVisible: false
     };
   },
   computed: {
@@ -242,7 +244,7 @@ export default {
       let body = {};
       body['sku_info'] = {};
       body['sku_info']['sku'] = val.sku;
-      body['id'] = this.skuId;
+      body['order_id'] = +this.$route.params.orderId;
       body['sku_info']['project_plan_file'] = this.attachment.id;
       await this.$store.dispatch('product/order/submitSkuname', body);
       this.getSku();
@@ -301,10 +303,16 @@ export default {
       this.getSku();
     },
     addSku() {
-      this.skuForm.sku.push({});
+      this.form.sku.push({});
+      if (this.form.sku.length > 1) {
+        this.deleteVisible = true;
+      }
     },
     deleteSku() {
-      this.skuForm.sku.pop();
+      this.form.sku.pop();
+      if (this.form.sku.length === 1) {
+        this.deleteVisible = false;
+      }
     }
   }
 };

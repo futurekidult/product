@@ -1,72 +1,75 @@
 <template>
-  <div v-loading="$store.state.price.priceLoading">
+  <div>
     <div class="border">
       <div class="select-title">
         <span class="line">|</span> 筛选条件
       </div>
-      <el-form
-        label-width="80px"
-        style="display: flex"
-        :model="chooseForm"
-      >
-        <el-form-item label="产品名称">
-          <el-input
-            v-model="chooseForm.product_name"
-            placeholder="请输入内容"
-            clearable
-            @clear="getPriceList()"
-          />
-        </el-form-item>
-        <el-form-item label="品类">
-          <el-select
-            v-model="chooseForm.category"
-            placeholder="请选择品类"
-            clearable
-            @clear="getPriceList()"
-          >
-            <el-option
-              v-for="item in categoryList"
-              :key="item.id"
-              :value="item.id"
-              :label="item.name"
+      <div class="select-item">
+        <el-form
+          label-width="80px"
+          style="display: flex"
+          :model="chooseForm"
+        >
+          <el-form-item label="产品名称">
+            <el-input
+              v-model="chooseForm.product_name"
+              placeholder="请输入内容"
+              clearable
+              @clear="getPriceList()"
             />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="状态">
-          <el-select
-            v-model="chooseForm.state"
-            placeholder="请选择状态"
-            clearable
-            @clear="getPriceList()"
-          >
-            <el-option
-              v-for="item in pricingEnum"
-              :key="item.key"
-              :label="item.value"
-              :value="item.key"
-            />
-          </el-select>
-        </el-form-item>
-        <div style="float: right">
-          <el-form-item>
-            <el-button
-              type="primary"
-              @click="getPriceList()"
-            >
-              查询
-            </el-button>
-            <el-button
-              class="close-btn"
-              @click="resetForm"
-            >
-              重置
-            </el-button>
           </el-form-item>
+          <el-form-item label="品类">
+            <el-select
+              v-model="chooseForm.category"
+              placeholder="请选择品类"
+              clearable
+              @clear="getPriceList()"
+            >
+              <el-option
+                v-for="item in categoryList"
+                :key="item.id"
+                :value="item.id"
+                :label="item.name"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="状态">
+            <el-select
+              v-model="chooseForm.state"
+              placeholder="请选择状态"
+              clearable
+              @clear="getPriceList()"
+            >
+              <el-option
+                v-for="item in pricingEnum"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key"
+              />
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div>
+          <el-button
+            type="primary"
+            @click="getPriceList()"
+          >
+            查询
+          </el-button>
+          <el-button
+            class="close-btn"
+            @click="resetForm"
+          >
+            重置
+          </el-button>
         </div>
-      </el-form>
+      </div>
     </div>
 
-    <div class="border">
+    <div
+      v-loading="$store.state.price.priceLoading"
+      class="border"
+    >
       <div class="select-title">
         <span class="line">|</span> 定价列表
       </div>
@@ -177,6 +180,7 @@ export default {
       this.categoryList = this.$store.state.demand.categoryList;
     },
     async getPriceList(currentPage = 1, pageSize = 10) {
+      this.$store.commit('price/setPriceLoading', true);
       let params = this.chooseForm;
       params['current_page'] = currentPage;
       params['page_size'] = pageSize;

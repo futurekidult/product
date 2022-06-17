@@ -1,214 +1,223 @@
 <template>
-  <div v-loading="$store.state.price.quotationLoading">
-    <div class="border">
-      <el-descriptions
-        :title="quotationList.related_product_name"
-        :column="5"
-        style="width: 80%"
-      >
-        <el-descriptions-item label="关联产品:">
-          {{ quotationList.related_product_name }}
-        </el-descriptions-item>
-        <el-descriptions-item label="定价ID:">
-          {{ quotationList.pricing_id }}
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template #label>
-            采购参考价:
-          </template>
-          <el-button
-            type="text"
-            @click="
-              showReferencePriceForm(
-                quotationList.market,
-                quotationList.related_product_id
-              )
-            "
-          >
-            查看内容
-          </el-button>
-        </el-descriptions-item>
-        <el-descriptions-item label="项目管理员:">
-          {{ quotationList.project_administrator }}
-        </el-descriptions-item>
-        <el-descriptions-item label="采购负责人:">
-          {{ quotationList.purchase_principal }}
-        </el-descriptions-item>
-      </el-descriptions>
-    </div>
-
-    <div class="border">
-      <div class="quotation-item">
-        <div class="select-title">
-          <span class="line">|</span> 报价列表
-        </div>
-        <el-button
-          type="primary"
-          :disabled="quotationList.pricing_state === 40"
-          @click="showQuotationForm(quotationList.related_product_id)"
+  <div>
+    <div v-loading="$store.state.price.quotationLoading">
+      <div class="border">
+        <el-descriptions
+          :title="quotationList.related_product_name"
+          :column="5"
+          style="width: 80%"
         >
-          新增报价
-        </el-button>
-      </div>
-      <el-table
-        border
-        empty-text="无数据"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        :data="quotationList.list"
-      >
-        <el-table-column
-          label="序号"
-          type="index"
-          width="80px"
-        />
-        <el-table-column
-          label="供应商名称"
-          prop="supplier_name"
-        />
-        <el-table-column
-          label="采购员"
-          prop="purchase_specialist"
-        />
-        <el-table-column
-          label="报价时间"
-          prop="create_time"
-          width="200px"
-        />
-        <el-table-column label="报价">
-          <template #default="scope">
-            ￥{{ scope.row.quote_amount_rmb }}
-          </template>
-        </el-table-column>
-        <el-table-column label="采购目标价">
-          <template #default="scope">
+          <el-descriptions-item label="关联产品:">
+            {{ quotationList.related_product_name }}
+          </el-descriptions-item>
+          <el-descriptions-item label="定价ID:">
+            {{ quotationList.pricing_id }}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>
+              采购参考价:
+            </template>
             <el-button
               type="text"
-              @click="showTargetPriceForm(scope.row.id)"
+              @click="showReferencePriceForm"
             >
               查看内容
             </el-button>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="报价有效期"
-          prop="quote_validity"
-          width="200px"
-        />
-        <el-table-column label="状态">
-          <template #default="scope">
-            <div :class="changeCellColor(scope.row.state)">
-              {{ scope.row.state_desc }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="最终确定定价时间"
-          width="200px"
-          prop="confirm_time"
-        />
-        <el-table-column
-          label="操作"
-          width="400px"
+          </el-descriptions-item>
+          <el-descriptions-item label="项目管理员:">
+            {{ quotationList.project_administrator }}
+          </el-descriptions-item>
+          <el-descriptions-item label="采购负责人:">
+            {{ quotationList.purchase_principal }}
+          </el-descriptions-item>
+        </el-descriptions>
+      </div>
+
+      <div class="border">
+        <div class="quotation-item">
+          <div class="select-title">
+            <span class="line">|</span> 报价列表
+          </div>
+          <el-button
+            type="primary"
+            :disabled="quotationList.pricing_state === 40"
+            @click="showQuotationForm"
+          >
+            新增报价
+          </el-button>
+        </div>
+        <el-table
+          border
+          empty-text="无数据"
+          :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+          :data="quotationList.list"
         >
-          <template #default="scope">
-            <div style="display: flex">
-              <el-button @click="showViewQuotationForm(scope.row.id)">
-                查看
+          <el-table-column
+            label="序号"
+            type="index"
+            width="80px"
+          />
+          <el-table-column label="供应商名称">
+            <template #default="scope">
+              <el-button
+                type="text"
+                @click="toDetail(scope.row.supplier_id)"
+              >
+                {{ scope.row.supplier_name }}
               </el-button>
-              <div
-                v-if="scope.row.state === 10"
-                style="margin-left: 12px"
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="采购员"
+            prop="purchase_specialist"
+          />
+          <el-table-column
+            label="报价时间"
+            prop="create_time"
+            width="200px"
+          />
+          <el-table-column label="报价">
+            <template #default="scope">
+              ￥{{ scope.row.quote_amount_rmb }}
+            </template>
+          </el-table-column>
+          <el-table-column label="采购目标价">
+            <template #default="scope">
+              <el-button
+                type="text"
+                @click="showTargetPriceForm(scope.row.id)"
               >
-                <el-button @click="deleteQuote(scope.row.id)">
-                  删除
-                </el-button>
-                <el-button
-                  @click="
-                    showApplyForm(scope.row.id, scope.row.quote_amount_rmb)
-                  "
-                >
-                  申请调价
-                </el-button>
-                <el-button
-                  type="primary"
-                  @click="
-                    showQuotation(scope.row.id, scope.row.quote_amount_rmb)
-                  "
-                >
-                  提交报价
-                </el-button>
+                查看内容
+              </el-button>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="报价有效期"
+            prop="quote_validity"
+            width="200px"
+          />
+          <el-table-column label="状态">
+            <template #default="scope">
+              <div :class="changeCellColor(scope.row.state)">
+                {{ scope.row.state_desc }}
               </div>
-              <div
-                v-if="scope.row.state === 20"
-                style="margin-left: 12px"
-              >
-                <el-button
-                  @click="
-                    showEditForm(scope.row.id, scope.row.purchase_specialist_id)
-                  "
-                >
-                  编辑
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="最终确定定价时间"
+            width="200px"
+            prop="confirm_time"
+          />
+          <el-table-column
+            label="操作"
+            width="400px"
+          >
+            <template #default="scope">
+              <div style="display: flex">
+                <el-button @click="showViewQuotationForm(scope.row.id)">
+                  查看
                 </el-button>
-                <el-button
-                  type="danger"
-                  @click="showTerminateForm(scope.row.id)"
+                <div
+                  v-if="scope.row.state === 10"
+                  style="margin-left: 12px"
                 >
-                  终止定价
-                </el-button>
-                <el-button
-                  type="success"
-                  @click="showConfirmForm(scope.row.id)"
+                  <el-button
+                    type="danger"
+                    @click="showDeleteDialog(scope.row.id)"
+                  >
+                    删除
+                  </el-button>
+                  <el-button
+                    @click="
+                      showApplyForm(scope.row.id, scope.row.quote_amount_rmb)
+                    "
+                  >
+                    申请调价
+                  </el-button>
+                  <el-button
+                    type="primary"
+                    @click="
+                      showQuotation(scope.row.id, scope.row.quote_amount_rmb)
+                    "
+                  >
+                    提交报价
+                  </el-button>
+                </div>
+                <div
+                  v-if="scope.row.state === 20"
+                  style="margin-left: 12px"
                 >
-                  确定定价
-                </el-button>
+                  <el-button
+                    @click="
+                      showEditForm(
+                        scope.row.id,
+                        scope.row.purchase_specialist_id
+                      )
+                    "
+                  >
+                    编辑
+                  </el-button>
+                  <el-button
+                    type="danger"
+                    @click="showTerminateForm(scope.row.id)"
+                  >
+                    终止定价
+                  </el-button>
+                  <el-button
+                    type="success"
+                    @click="showConfirmForm(scope.row.id)"
+                  >
+                    确定定价
+                  </el-button>
+                </div>
               </div>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-      <base-pagination
-        :length="quotationList.total"
-        :get-list="getQuotationList"
-      />
+            </template>
+          </el-table-column>
+        </el-table>
+        <base-pagination
+          :length="quotationList.total"
+          :get-list="getQuotationList"
+        />
+      </div>
     </div>
+
+    <purchase-form
+      v-if="referenceFormVisible"
+      name="参考"
+      type="reference"
+      :market="market"
+      :product-id="prodId"
+      :dialog-visible="referenceFormVisible"
+      @hide-dialog="closeReferencePriceForm"
+    />
+    <purchase-form
+      v-if="targetFormVisible"
+      type="target"
+      name="目标"
+      :quotation-id="quotationId"
+      :dialog-visible="targetFormVisible"
+      @hide-dialog="closeTargetPriceForm"
+    />
+
+    <price-form
+      v-if="quotationFormVisible"
+      :id="priceId"
+      title="我要报价"
+      :product-id="prodId"
+      :market="market"
+      :get-list="getQuotationList"
+      :dialog-visible="quotationFormVisible"
+      @hide-dialog="closeQuotationForm"
+    />
+
+    <view-form
+      v-if="viewQuotationFormVisible"
+      :id="viewId"
+      title="查看"
+      :dialog-visible="viewQuotationFormVisible"
+      @hide-dialog="closeViewQuotationForm"
+    />
   </div>
-
-  <purchase-form
-    v-if="referenceFormVisible"
-    name="参考"
-    type="reference"
-    :market="market"
-    :product-id="productId"
-    :dialog-visible="referenceFormVisible"
-    @hide-dialog="closeReferencePriceForm"
-  />
-  <purchase-form
-    v-if="targetFormVisible"
-    type="target"
-    name="目标"
-    :quotation-id="quotationId"
-    :dialog-visible="targetFormVisible"
-    @hide-dialog="closeTargetPriceForm"
-  />
-
-  <price-form
-    v-if="quotationFormVisible"
-    :id="priceId"
-    title="我要报价"
-    :product-id="relatedProductId"
-    :get-list="getQuotationList"
-    :dialog-visible="quotationFormVisible"
-    @hide-dialog="closeQuotationForm"
-  />
-
-  <view-form
-    v-if="viewQuotationFormVisible"
-    :id="viewId"
-    title="查看"
-    :dialog-visible="viewQuotationFormVisible"
-    @hide-dialog="closeViewQuotationForm"
-  />
-
   <el-dialog
     v-model="terminateFormVisible"
     title="提示"
@@ -326,7 +335,7 @@
           clearable
         >
           <el-option
-            v-for="item in targetList"
+            v-for="item in platform"
             :key="item.platform"
             :label="item.platform_desc"
             :value="item.platform"
@@ -405,6 +414,31 @@
       </el-button>
     </div>
   </el-dialog>
+
+  <el-dialog
+    v-model="deleteDialog"
+    title="提示"
+    width="20%"
+  >
+    <div class="result-content">
+      确认要删除该报价吗
+    </div>
+    <div style="text-align: center">
+      <el-button
+        class="member-btn"
+        @click="closeDeleteDialog"
+      >
+        取消
+      </el-button>
+      <el-button
+        type="primary"
+        class="quote-btn"
+        @click="submitDeteleResult"
+      >
+        提交
+      </el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>
@@ -427,7 +461,6 @@ export default {
       market: 0,
       targetFormVisible: false,
       quotationId: 0,
-      productId: 0,
       quotationFormVisible: false,
       terminateFormVisible: false,
       terminateQuotationId: 0,
@@ -446,16 +479,18 @@ export default {
       lowVisible: false,
       highVisible: false,
       submitId: 0,
-      relatedProductId: 0
+      platform: [],
+      prodId: 0,
+      deleteDialog: false,
+      deleteId: 0
     };
   },
   mounted() {
     this.getQuotationList();
-    this.getReferencePrice();
-    this.getTargetPrice();
   },
   methods: {
     async getQuotationList(currentPage = 1, pageSize = 10) {
+      this.$store.commit('price/setQuotationLoading', true);
       let params = {
         price_id: +this.$route.params.id,
         current_page: currentPage,
@@ -464,16 +499,19 @@ export default {
       await this.$store.dispatch('price/getQuotationList', { params });
       this.quotationList = this.$store.state.price.quotationList;
       this.priceId = this.quotationList.pricing_id;
+      this.prodId = this.quotationList.related_product_id;
       this.market = this.quotationList.market;
       this.quotationList.list.forEach((item) => {
         item.create_time = formatterTime(item.create_time);
         item.quote_validity = formatterTime(item.quote_validity);
         item.confirm_time = formatterTime(item.confirm_time);
       });
+      this.getPlatform();
+      this.getReferencePrice();
     },
     async getReferencePrice() {
       let params = {
-        product_id: this.productId,
+        product_id: this.prodId,
         market: this.market
       };
       await this.$store.dispatch('price/getReferencePrice', { params });
@@ -506,6 +544,14 @@ export default {
         this.submitQuotation();
       }
     },
+    async getPlatform() {
+      let params = {
+        product_id: this.prodId,
+        pricing_id: this.priceId
+      };
+      await this.$store.dispatch('getPlatform', { params });
+      this.platform = this.$store.state.platform;
+    },
     changeCellColor(val) {
       if (val === 20 || val === 30) {
         return 'result-pass';
@@ -515,10 +561,8 @@ export default {
         return 'result-fail';
       }
     },
-    showReferencePriceForm(market, prodId) {
+    showReferencePriceForm() {
       this.referenceFormVisible = true;
-      this.market = market;
-      this.productId = prodId;
     },
     closeReferencePriceForm() {
       this.referenceFormVisible = false;
@@ -530,9 +574,8 @@ export default {
     closeTargetPriceForm() {
       this.targetFormVisible = false;
     },
-    showQuotationForm(id) {
+    showQuotationForm() {
       this.quotationFormVisible = true;
-      this.relatedProductId = id;
     },
     closeQuotationForm() {
       this.quotationFormVisible = false;
@@ -565,11 +608,22 @@ export default {
       this.confirmQuotationId = false;
       this.getQuotationList();
     },
+    submitDeteleResult() {
+      this.deleteQuote(this.deleteId);
+    },
     async deleteQuote(id) {
       await this.$store.dispatch('price/deleteQuote', {
         id
       });
+      this.deleteDialog = false;
       this.getQuotationList();
+    },
+    showDeleteDialog(id) {
+      this.deleteDialog = true;
+      this.deleteId = id;
+    },
+    closeDeleteDialog() {
+      this.deleteDialog = false;
     },
     showEditForm(id, purchaseSpecialist) {
       this.editSpecialistForm = {
@@ -641,6 +695,9 @@ export default {
     },
     closeHighForm() {
       this.highVisible = false;
+    },
+    toDetail(id) {
+      this.$router.push(`/supplier-list/${id}`);
     }
   }
 };

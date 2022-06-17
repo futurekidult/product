@@ -10,7 +10,10 @@
           <template #label>
             关联产品:
           </template>
-          <el-button type="text">
+          <el-button
+            type="text"
+            @click="toProduct(sampleBase.product_id)"
+          >
             查看
           </el-button>
         </el-descriptions-item>
@@ -24,7 +27,10 @@
           <template #label>
             供应商:
           </template>
-          <el-button type="text">
+          <el-button
+            type="text"
+            @click="toSupplier(sampleBase.supplier_id)"
+          >
             查看
           </el-button>
         </el-descriptions-item>
@@ -61,6 +67,12 @@ export default {
         }
       });
       this.sampleBase = this.$store.state.sample.sampleBase;
+    },
+    toSupplier(id) {
+      this.$router.push(`/supplier-list/${id}`);
+    },
+    toProduct(id) {
+      this.$router.push(`/product-list/${id}`);
     }
   }
 };

@@ -33,7 +33,9 @@ const store = createStore({
       attachmentState: false,
       organizationList: [],
       countryList: [],
-      userInfo: {}
+      userInfo: {},
+      activeTab: '',
+      entry: ''
     };
   },
   mutations: {
@@ -66,6 +68,12 @@ const store = createStore({
     },
     setUserInfo(state, payload) {
       state.userInfo = payload;
+    },
+    setActiveTab(state, payload) {
+      state.activeTab = payload;
+    },
+    setEntry(state, payload) {
+      state.entry = payload;
     }
   },
   actions: {

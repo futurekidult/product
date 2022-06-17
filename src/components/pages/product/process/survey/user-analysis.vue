@@ -150,6 +150,7 @@
           + 新增
         </el-button>
         <el-button
+          v-if="countryVisible"
           class="user-btn"
           type="danger"
           :disabled="isDisabled"
@@ -183,6 +184,7 @@
           + 新增
         </el-button>
         <el-button
+          v-if="scenarioVisible"
           class="user-btn"
           type="danger"
           :disabled="isDisabled"
@@ -325,18 +327,6 @@ export default {
             message: '请选择国家'
           }
         ],
-        // region: [
-        //   {
-        //     required: true,
-        //     message: '请选择州/大区'
-        //   }
-        // ],
-        // city: [
-        //   {
-        //     required: true,
-        //     message: '请选择城市'
-        //   }
-        // ],
         usage_scenario: [
           {
             required: true,
@@ -364,7 +354,9 @@ export default {
         value: 'id',
         label: 'name',
         children: 'children'
-      }
+      },
+      countryVisible: false,
+      scenarioVisible: false
     };
   },
   computed: {
@@ -379,10 +371,16 @@ export default {
     analysisForm(val) {
       this.form = val;
       if (this.form.usage_scenario.length === 0) {
-        this.form.usage_scenario = [['']];
+        this.form.usage_scenario.push([]);
+        this.scenarioVisible = false;
+      } else {
+        this.scenarioVisible = true;
       }
       if (this.form.country.length === 0) {
-        this.form.usage_scenario = [['']];
+        this.form.country.push([]);
+        this.countryVisible = false;
+      } else {
+        this.countryVisible = true;
       }
     }
   },
@@ -470,15 +468,27 @@ export default {
     },
     addStateCity() {
       this.form.country.push([]);
+      if (this.form.country.length > 1) {
+        this.countryVisible = true;
+      }
     },
     addUsageScenario() {
       this.form.usage_scenario.push([]);
+      if (this.form.usage_scenario.length > 1) {
+        this.scenarioVisible = true;
+      }
     },
     deleteStateCity() {
       this.form.country.pop();
+      if (this.form.country.length === 1) {
+        this.countryVisible = false;
+      }
     },
     deleteUsageScenario() {
       this.form.usage_scenario.pop();
+      if (this.form.usage_scenario.length === 1) {
+        this.scenarioVisible = false;
+      }
     }
   }
 };

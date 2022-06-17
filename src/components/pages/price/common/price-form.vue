@@ -17,7 +17,7 @@
       >
         <el-select
           v-model="quotationForm.supplier_id"
-          placeholder="请选择供应商"
+          placeholder="请选择供应商(输入搜索)"
           filterable
           remote
           :remote-method="remoteMethod"
@@ -405,7 +405,7 @@
 import { getFile, previewFile, timestamp } from '../../../../utils/index.js';
 
 export default {
-  props: ['dialogVisible', 'title', 'id', 'getList', 'productId'],
+  props: ['dialogVisible', 'title', 'id', 'getList', 'productId', 'market'],
   emits: ['hide-dialog'],
   data() {
     return {
@@ -603,7 +603,8 @@ export default {
         params: {
           price: this.quotationForm.quote_amount,
           currency: this.quotationForm.quote_currency,
-          product_id: this.productId
+          product_id: this.productId,
+          market: this.market
         }
       });
       this.quotationForm.quote_amount_rmb = this.$store.state.priceRmb;
@@ -690,8 +691,12 @@ export default {
       await this.$store.dispatch('getPriceRmb', {
         params: {
           price: this.quotationForm[`${val}_cost`],
-          currency: this.quotationForm[`${val}_cost_currency`],
-          product_id: this.productId
+          currency:
+            val === 'sea_freight'
+              ? this.quotationForm[`${val}_currency`]
+              : this.quotationForm[`${val}_cost_currency`],
+          product_id: this.productId,
+          market: this.market
         }
       });
       this.quotationForm[`${val}_cost_rmb`] = this.$store.state.priceRmb;

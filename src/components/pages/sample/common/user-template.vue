@@ -165,6 +165,7 @@
     v-if="viewUserVisible"
     :id="viewUserid"
     :dialog-visible="viewUserVisible"
+    @hide-dialog="closeViewUserForm"
   />
 </template>
 
@@ -184,6 +185,11 @@ export default {
     UserForm,
     SampleResult,
     ViewUser
+  },
+  provide() {
+    return {
+      getUser: this.getUserList
+    };
   },
   data() {
     return {

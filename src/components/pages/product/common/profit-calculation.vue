@@ -52,6 +52,17 @@
           >
             编辑
           </el-button>
+          <span
+            v-if="!isShow"
+            class="table-btn"
+          >|</span>
+          <el-button
+            v-if="!isShow"
+            type="text"
+            @click="ShowConfirmParamsDialog(scope.row.market)"
+          >
+            参数修改确认
+          </el-button>
           <span class="table-btn">|</span>
           <el-button
             v-if="isShow"
@@ -107,6 +118,15 @@
     type="edit"
     title="编辑核算利润"
     @hide-dialog="closeEditForm"
+  />
+
+  <profit-form
+    v-if="confirmDialog"
+    :id="marketId"
+    :dialog-visible="confirmDialog"
+    type="confirm"
+    title="确认核算利润"
+    @hide-dialog="closeConfirmDialog"
   />
 
   <profit-edit
@@ -178,7 +198,8 @@ export default {
       adjustment: {},
       adjustmentList: [],
       priceAdjustmentApplyId: 0,
-      noAdjustmentVisible: false
+      noAdjustmentVisible: false,
+      confirmDialog: false
     };
   },
   computed: {
@@ -270,6 +291,13 @@ export default {
         market: id
       };
       this.deleteItem(body);
+    },
+    ShowConfirmParamsDialog(id) {
+      this.confirmDialog = true;
+      this.marketId = id;
+    },
+    closeConfirmDialog() {
+      this.confirmDialog = false;
     }
   }
 };
