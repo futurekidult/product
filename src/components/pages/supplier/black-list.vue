@@ -117,12 +117,16 @@ export default {
         current_page: currentPage,
         page_size: pageSize
       };
-      await this.$store.dispatch('supplier/getBlackList', { params });
-      this.blackList = this.$store.state.supplier.blackList;
-      this.blackList.forEach((item) => {
-        item.create_time = formatterTime(item.create_time);
-        item.approval_time = formatterTime(item.approval_time);
-      });
+      try {
+        await this.$store.dispatch('supplier/getBlackList', { params });
+        this.blackList = this.$store.state.supplier.blackList;
+        this.blackList.forEach((item) => {
+          item.create_time = formatterTime(item.create_time);
+          item.approval_time = formatterTime(item.approval_time);
+        });
+      } catch (err) {
+        return;
+      }
     },
     changeColor(val) {
       if (val === 10) {

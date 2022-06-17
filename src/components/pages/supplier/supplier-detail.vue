@@ -61,21 +61,25 @@ export default {
   methods: {
     async getSupplierDetail() {
       this.$store.commit('supplier/setSupplierDetailLoading', true);
-      await this.$store.dispatch('supplier/getSupplierDetail', {
-        params: {
-          id: +this.$route.params.id
+      try {
+        await this.$store.dispatch('supplier/getSupplierDetail', {
+          params: {
+            id: +this.$route.params.id
+          }
+        });
+        this.supplierDetail = this.$store.state.supplier.supplierDetail;
+        this.supplierDetail.create_time = formatterTime(
+          this.supplierDetail.create_time
+        );
+        if (this.supplierDetail.state === 10) {
+          this.mode = 'warning';
+        } else if (this.supplierDetail.state === 20) {
+          this.mode = 'danger';
+        } else {
+          this.mode = 'success';
         }
-      });
-      this.supplierDetail = this.$store.state.supplier.supplierDetail;
-      this.supplierDetail.create_time = formatterTime(
-        this.supplierDetail.create_time
-      );
-      if (this.supplierDetail.state === 10) {
-        this.mode = 'warning';
-      } else if (this.supplierDetail.state === 20) {
-        this.mode = 'danger';
-      } else {
-        this.mode = 'success';
+      } catch (err) {
+        return;
       }
     },
     async approvalSupplier(val) {
@@ -83,8 +87,12 @@ export default {
         id: +this.$route.params.id,
         approval_result: val
       };
-      await this.$store.dispatch('supplier/approvalSupplier', body);
-      this.getSupplierDetail();
+      try {
+        await this.$store.dispatch('supplier/approvalSupplier', body);
+        this.getSupplierDetail();
+      } catch (err) {
+        return;
+      }
     }
   }
 };

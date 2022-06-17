@@ -64,12 +64,16 @@ export default {
   },
   methods: {
     async getContent() {
-      await this.$store.dispatch('product/getContent', {
-        params: {
-          id: this.id
-        }
-      });
-      this.reasonForm.content = this.$store.state.product.content.content;
+      try {
+        await this.$store.dispatch('product/getContent', {
+          params: {
+            id: this.id
+          }
+        });
+        this.reasonForm.content = this.$store.state.product.content.content;
+      } catch (err) {
+        return;
+      }
     },
     cancel() {
       this.visible = false;

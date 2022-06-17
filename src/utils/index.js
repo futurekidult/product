@@ -132,3 +132,10 @@ export const getTask = (val) => {
   let value = task[val].split('_');
   return value;
 };
+
+export const checkValid = (val) => {
+  return {
+    max: val,
+    message: `长度不超过${val}个字符`
+  };
+};

@@ -126,17 +126,25 @@ export default {
   },
   methods: {
     async confirmPackageResult(id) {
-      await this.$store.dispatch('product/confirmPackageResult', {
-        id
-      });
-      this.getPackage();
+      try {
+        await this.$store.dispatch('product/confirmPackageResult', {
+          id
+        });
+        this.getPackage();
+      } catch (err) {
+        return;
+      }
     },
     async createPackageResult(val) {
       let body = val;
       body.id = this.packageId;
-      await this.$store.dispatch('product/createPackageResult', body);
-      this.resultFormVisible = false;
-      this.getPackage();
+      try {
+        await this.$store.dispatch('product/createPackageResult', body);
+        this.resultFormVisible = false;
+        this.getPackage();
+      } catch (err) {
+        return;
+      }
     },
     showResultForm(id) {
       this.resultFormVisible = true;

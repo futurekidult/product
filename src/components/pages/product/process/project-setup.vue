@@ -37,12 +37,14 @@
           <el-button
             :class="progress.state === 40 ? 'hide' : ''"
             class="close-btn"
+            @click="approvalProject(0)"
           >
             不通过
           </el-button>
           <el-button
             type="primary"
-            :disabled="isDisabled"
+            :disabled="progress.state === 40"
+            @click="approvalProject(1)"
           >
             通过
           </el-button>
@@ -66,13 +68,14 @@
           v-model="form.review_result"
           placeholder="请选择评审结果"
           clearable
-          :disabled="progress.state === 40"
+          :disabled="isDisabled"
         >
           <el-option
             v-for="item in options"
             :key="item.value"
             :label="item.label"
             :value="item.value"
+            :disabled="item.disabled"
           />
         </el-select>
       </el-form-item>
@@ -217,6 +220,11 @@ export default {
       },
       options: [
         {
+          value: -1,
+          label: '请选择',
+          disabled: true
+        },
+        {
           value: 1,
           label: '通过'
         },
@@ -232,14 +240,12 @@ export default {
   },
   computed: {
     projectRules() {
-      if (this.projectForm.review_result === 1) {
-        return this.passRules;
-      } else {
-        return this.failRules;
-      }
+      return this.projectForm.review_result === 1
+        ? this.passRules
+        : this.failRules;
     },
     isDisabled() {
-      return this.progress.state === 10 ? false : true;
+      return this.progress.review_state === 10 ? false : true;
     }
   },
   watch: {
@@ -254,34 +260,50 @@ export default {
     async reviewProject(val) {
       let body = val;
       body['product_id'] = +this.$route.params.productId;
-      await this.$store.dispatch('product/project/reviewProject', body);
-      this.getProject();
+      try {
+        await this.$store.dispatch('product/project/reviewProject', body);
+        this.getProject();
+      } catch (err) {
+        return;
+      }
     },
     async handleFileSuccess(e) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.show = true;
-        this.file = {
-          id: this.$store.state.fileRes.id,
-          name: this.$store.state.fileRes.file_name,
-          type: this.$store.state.fileRes.type
-        };
+      try {
+        await this.$store.dispatch('uploadFile', form);
+        if (this.$store.state.uploadState) {
+          this.show = true;
+          this.file = {
+            id: this.$store.state.fileRes.id,
+            name: this.$store.state.fileRes.file_name,
+            type: this.$store.state.fileRes.type
+          };
+        }
+      } catch (err) {
+        return;
       }
     },
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        downloadFile(this.$store.state.viewLink, name);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          downloadFile(this.$store.state.viewLink, name);
+        }
+      } catch (err) {
+        return;
       }
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        previewFile(this.$store.state.viewLink);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          previewFile(this.$store.state.viewLink);
+        }
+      } catch (err) {
+        return;
       }
     },
     handleAttachment(file) {
@@ -323,6 +345,18 @@ export default {
         return 'result-pass';
       } else {
         return 'result-fail';
+      }
+    },
+    async approvalProject(val) {
+      let body = {
+        product_id: +this.$route.params.productId,
+        approval_result: val
+      };
+      try {
+        await this.$store.dispatch('product/project/approvalProject', body);
+        this.getProject();
+      } catch (err) {
+        return;
       }
     }
   }

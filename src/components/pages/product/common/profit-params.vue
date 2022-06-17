@@ -61,8 +61,14 @@ export default {
         platform: this.platform,
         product_id: +this.$route.params.productId
       };
-      await this.$store.dispatch('product/project/getProfitParams', { params });
-      this.profitParams = this.$store.state.product.project.profitParams;
+      try {
+        await this.$store.dispatch('product/project/getProfitParams', {
+          params
+        });
+        this.profitParams = this.$store.state.product.project.profitParams;
+      } catch (err) {
+        return;
+      }
     }
   }
 };

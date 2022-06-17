@@ -190,24 +190,24 @@
             :rules="profitRules.operations_specialist_id"
           >
             <el-tree-select
-              v-model="profitForm.operations_specialist_id"
+              v-model="item.operations_specialist_id"
               :data="memberList"
               clearable
+              show-checkbox
               :props="defaultProps"
               :disabled="isDisabled"
             />
           </el-form-item>
         </div>
-        <el-form-item>
+        <el-form-item v-if="!isDisabled">
           <el-button
-            v-if="!isDisabled"
             style="margin: 15px 0"
             @click="addRow"
           >
             + 新增平台
           </el-button>
           <el-button
-            v-if="!isDisabled"
+            v-if="profitForm.list.length > 1"
             style="margin: 15px"
             type="danger"
             @click="deleteRow"
@@ -328,11 +328,7 @@ export default {
   },
   computed: {
     isDisabled() {
-      if (this.type === 'view' || this.type === 'confirm') {
-        return true;
-      } else {
-        return false;
-      }
+      return this.type === 'view' || this.type === 'confirm' ? true : false;
     },
     getRelatedPlatform() {
       return this.profitForm.market;
@@ -359,10 +355,14 @@ export default {
   },
   methods: {
     async getOrganizationList() {
-      await this.$store.dispatch('getOrganizationList');
-      this.memberList = this.$store.state.organizationList;
-      for (let key in this.memberList) {
-        this.childrenFunc(this.memberList[key]);
+      try {
+        await this.$store.dispatch('getOrganizationList');
+        this.memberList = this.$store.state.organizationList;
+        for (let key in this.memberList) {
+          this.childrenFunc(this.memberList[key]);
+        }
+      } catch (err) {
+        return;
       }
     },
     childrenFunc(data) {
@@ -378,37 +378,53 @@ export default {
         let { demand } = JSON.parse(localStorage.getItem('params'));
         this.currency = demand.currency;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getParams();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getParams();
+        } catch (err) {
+          return;
+        }
       }
     },
     async getMarket() {
-      await this.$store.dispatch('product/project/getMarketList', {
-        params: {
-          id: +this.$route.params.productId
-        }
-      });
-      this.marketList = this.$store.state.product.project.marketList;
+      try {
+        await this.$store.dispatch('product/project/getMarketList', {
+          params: {
+            id: +this.$route.params.productId
+          }
+        });
+        this.marketList = this.$store.state.product.project.marketList;
+      } catch (err) {
+        return;
+      }
     },
     async getProfitCalculation() {
       let params = {
         product_id: +this.$route.params.productId,
         market: this.id
       };
-      await this.$store.dispatch('product/project/getProfitCalculation', {
-        params
-      });
-      if (this.type !== 'add') {
-        this.profitForm = this.$store.state.product.project.profitCalculation;
+      try {
+        await this.$store.dispatch('product/project/getProfitCalculation', {
+          params
+        });
+        if (this.type !== 'add') {
+          this.profitForm = this.$store.state.product.project.profitCalculation;
+        }
+      } catch (err) {
+        return;
       }
     },
     async getRate(market) {
-      await this.$store.dispatch('product/project/getRate', {
-        params: {
-          market
-        }
-      });
-      this.rate = this.$store.state.product.project.rate;
+      try {
+        await this.$store.dispatch('product/project/getRate', {
+          params: {
+            market
+          }
+        });
+        this.rate = this.$store.state.product.project.rate;
+      } catch (err) {
+        return;
+      }
     },
     cancel() {
       this.visible = false;
@@ -423,16 +439,24 @@ export default {
     async createProfit(val) {
       let body = val;
       body['product_id'] = this.$route.params.paroductId;
-      await this.$store.dispatch('product/project/createProfit', body);
-      this.visible = false;
-      this.getProfitCalcaulation();
+      try {
+        await this.$store.dispatch('product/project/createProfit', body);
+        this.visible = false;
+        this.getProfitCalcaulation();
+      } catch (err) {
+        return;
+      }
     },
     async updateProfit(val) {
       let body = val;
       body['product_id'] = this.$route.params.paroductId;
-      await this.$store.dispatch('product/project/updateProfit', body);
-      this.visible = false;
-      this.getProfitCalcaulation();
+      try {
+        await this.$store.dispatch('product/project/updateProfit', body);
+        this.visible = false;
+        this.getProfitCalcaulation();
+      } catch (err) {
+        return;
+      }
     },
     submitProfitForm() {
       this.$refs.profitForm.validate((valid) => {
@@ -446,31 +470,40 @@ export default {
       });
     },
     async getPrice(market, platform, price, index) {
-      await this.$store.dispatch('product/project/getReferencePrice', {
-        params: {
-          market,
-          platform,
-          product_id: +this.$route.params.productId,
-          price
-        }
-      });
-      this.calculationResult = this.$store.state.product.project.referencePrice;
-      this.profitForm.list[index].selling_price_rmb =
-        this.calculationResult.selling_price_rmb;
-      this.profitForm.list[index].reference_price =
-        this.calculationResult.reference_price;
+      try {
+        await this.$store.dispatch('product/project/getReferencePrice', {
+          params: {
+            market,
+            platform,
+            product_id: +this.$route.params.productId,
+            price
+          }
+        });
+        this.calculationResult =
+          this.$store.state.product.project.referencePrice;
+        this.profitForm.list[index].selling_price_rmb =
+          this.calculationResult.selling_price_rmb;
+        this.profitForm.list[index].reference_price =
+          this.calculationResult.reference_price;
+      } catch (err) {
+        return;
+      }
     },
     async updateProfitCalculationCoefficient() {
       let body = {
         product_id: +this.$route.params.productId,
         market: this.id
       };
-      await this.$store.dispatch(
-        'product/project/updateProfitCalculationCoefficient',
-        body
-      );
-      this.visible = false;
-      this.getProfitCalcaulation();
+      try {
+        await this.$store.dispatch(
+          'product/project/updateProfitCalculationCoefficient',
+          body
+        );
+        this.visible = false;
+        this.getProfitCalcaulation();
+      } catch (err) {
+        return;
+      }
     }
   }
 };

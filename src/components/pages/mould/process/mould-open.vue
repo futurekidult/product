@@ -151,8 +151,12 @@ export default {
         id,
         approval_result: result
       };
-      await this.$store.dispatch('mould/approvalMakingMould', body);
-      this.getMould();
+      try {
+        await this.$store.dispatch('mould/approvalMakingMould', body);
+        this.getMould();
+      } catch (err) {
+        return;
+      }
     }
   }
 };

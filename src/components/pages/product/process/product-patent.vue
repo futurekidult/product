@@ -198,13 +198,17 @@ export default {
   },
   methods: {
     async getReport() {
-      await this.$store.dispatch('product/patent/getReport', {
-        params: { product_id: this.$route.params.productId }
-      });
-      this.report = this.$store.state.product.patent.report;
-      this.report.actual_finish_time = formatterTime(
-        this.report.actual_finish_time
-      );
+      try {
+        await this.$store.dispatch('product/patent/getReport', {
+          params: { product_id: this.$route.params.productId }
+        });
+        this.report = this.$store.state.product.patent.report;
+        this.report.actual_finish_time = formatterTime(
+          this.report.actual_finish_time
+        );
+      } catch (err) {
+        return;
+      }
     },
     showPatentForm() {
       this.patentVisible = true;
@@ -216,10 +220,16 @@ export default {
       let params = {
         patent_apply_id: id
       };
-      await this.$store.dispatch('product/patent/viewPatentReview', { params });
-      this.applyId = id;
-      this.reviewForm = this.$store.state.product.patent.singlePatent.patent;
-      this.patentReviewVisible = true;
+      try {
+        await this.$store.dispatch('product/patent/viewPatentReview', {
+          params
+        });
+        this.applyId = id;
+        this.reviewForm = this.$store.state.product.patent.singlePatent.patent;
+        this.patentReviewVisible = true;
+      } catch (err) {
+        return;
+      }
     },
     closePatentReview() {
       this.patentReviewVisible = false;
@@ -228,11 +238,17 @@ export default {
       let params = {
         patent_apply_id: id
       };
-      await this.$store.dispatch('product/patent/viewPatentReview', { params });
-      this.viewForm = this.$store.state.product.patent.singlePatent.patent;
-      this.viewForm['review_result'] =
-        this.$store.state.product.patent.singlePatent.review_result;
-      this.viewReviewVisible = true;
+      try {
+        await this.$store.dispatch('product/patent/viewPatentReview', {
+          params
+        });
+        this.viewForm = this.$store.state.product.patent.singlePatent.patent;
+        this.viewForm['review_result'] =
+          this.$store.state.product.patent.singlePatent.review_result;
+        this.viewReviewVisible = true;
+      } catch (err) {
+        return;
+      }
     },
     closeViewReview() {
       this.viewReviewVisible = false;
@@ -241,8 +257,12 @@ export default {
       let params = {
         product_id: +this.$route.params.productId
       };
-      await this.$store.dispatch('product/patent/confirmPatent', params);
-      this.getPatentProgress();
+      try {
+        await this.$store.dispatch('product/patent/confirmPatent', params);
+        this.getPatentProgress();
+      } catch (err) {
+        return;
+      }
     },
     changeColor(val) {
       if (val === 10) {

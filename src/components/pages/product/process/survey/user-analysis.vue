@@ -61,8 +61,6 @@
           <el-input
             v-model="form.profession"
             placeholder="请输入职业"
-            maxlength="15"
-            show-word-limit
             :disabled="isDisabled"
             clearable
           />
@@ -169,8 +167,6 @@
         <el-input
           v-model="form.usage_scenario[index]"
           placeholder="请输入使用场景"
-          maxlength="15"
-          show-word-limit
           clearable
           :disabled="isDisabled"
         />
@@ -273,7 +269,12 @@
 </template>
 
 <script>
-import { downloadFile, getFile, previewFile } from '../../../../../utils';
+import {
+  downloadFile,
+  getFile,
+  previewFile,
+  checkValid
+} from '../../../../../utils';
 import SurveySchedule from '../../common/survey- schedule.vue';
 
 export default {
@@ -301,7 +302,8 @@ export default {
           {
             required: true,
             message: '请输入职业'
-          }
+          },
+          checkValid(15)
         ],
         diploma: [
           {
@@ -331,7 +333,8 @@ export default {
           {
             required: true,
             message: '请输入使用场景'
-          }
+          },
+          checkValid(15)
         ],
         attachment: [
           {
@@ -400,24 +403,36 @@ export default {
         this.annualHouseholdIncome = userAnalysis.annual_household_income;
         this.maritalStatus = userAnalysis.marital_status;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getParams();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getParams();
+        } catch (err) {
+          return;
+        }
       }
     },
     async getCountryList() {
-      await this.$store.dispatch('getCountry');
-      this.countryOption = this.$store.state.countryList;
+      try {
+        await this.$store.dispatch('getCountry');
+        this.countryOption = this.$store.state.countryList;
+      } catch (err) {
+        return;
+      }
     },
     async updateAnalysis(val) {
       let body = val;
       body['survey_schedule_id'] = this.progress.id;
       body['product_id'] = +this.$route.params.productId;
       body['attachment'] = this.file.id;
-      await this.$store.dispatch(
-        'product/survey/userAnalysis/submitAnalysis',
-        body
-      );
-      this.getList();
+      try {
+        await this.$store.dispatch(
+          'product/survey/userAnalysis/submitAnalysis',
+          body
+        );
+        this.getList();
+      } catch (err) {
+        return;
+      }
     },
     handleAttachment(file) {
       if (file === undefined) {
@@ -437,14 +452,18 @@ export default {
     async handleFileSuccess(e) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.show = true;
-        this.file = {
-          id: this.$store.state.fileRes.id,
-          name: this.$store.state.fileRes.file_name,
-          type: this.$store.state.fileRes.type
-        };
+      try {
+        await this.$store.dispatch('uploadFile', form);
+        if (this.$store.state.uploadState) {
+          this.show = true;
+          this.file = {
+            id: this.$store.state.fileRes.id,
+            name: this.$store.state.fileRes.file_name,
+            type: this.$store.state.fileRes.type
+          };
+        }
+      } catch (err) {
+        return;
       }
     },
     deleteFile() {
@@ -454,16 +473,24 @@ export default {
     },
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        downloadFile(this.$store.state.viewLink, name);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          downloadFile(this.$store.state.viewLink, name);
+        }
+      } catch (err) {
+        return;
       }
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        previewFile(this.$store.state.viewLink);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          previewFile(this.$store.state.viewLink);
+        }
+      } catch (err) {
+        return;
       }
     },
     addStateCity() {

@@ -54,12 +54,16 @@ export default {
   props: ['notificationList', 'getList'],
   methods: {
     async noticationRead(id) {
-      await this.$store.dispatch('workbench/noticationRead', {
-        params: {
-          id
-        }
-      });
-      this.getList();
+      try {
+        await this.$store.dispatch('workbench/noticationRead', {
+          params: {
+            id
+          }
+        });
+        this.getList();
+      } catch (err) {
+        return;
+      }
     }
   }
 };

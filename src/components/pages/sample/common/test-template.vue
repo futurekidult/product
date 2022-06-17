@@ -51,13 +51,20 @@
     </el-table-column>
   </el-table>
 
-  <el-button
-    style="margin: 15px 0"
-    :disabled="state === 1"
-    @click="showAddQuestions"
-  >
-    + 新增测试问题
-  </el-button>
+  <div class="sample-item">
+    <el-button
+      style="margin: 15px 0"
+      :disabled="state === 1"
+      @click="showAddQuestions"
+    >
+      + 新增测试问题
+    </el-button>
+
+    <base-pagination
+      :length="questionList.length"
+      :get-list="getTestQuestion"
+    />
+  </div>
 
   <question-form
     v-if="addQuestionsVisible"
@@ -105,27 +112,40 @@ export default {
     this.getTestQuestion();
   },
   methods: {
-    async getTestQuestion() {
+    async getTestQuestion(currentPage = 1, pageSize = 10) {
       let params = {
         sample_id: +this.$route.params.id,
-        current_page: 1,
-        page_size: 10
+        current_page: currentPage,
+        page_size: pageSize
       };
       if (this.type === 'quality') {
-        await this.$store.dispatch('sample/quality/getTestQuestion', {
-          params
-        });
-        this.questionList = this.$store.state.sample.quality.testQuestion.list;
+        try {
+          await this.$store.dispatch('sample/quality/getTestQuestion', {
+            params
+          });
+          this.questionList =
+            this.$store.state.sample.quality.testQuestion.list;
+        } catch (err) {
+          return;
+        }
       } else if (this.type === 'agency') {
-        await this.$store.dispatch('sample/agency/getTestQuestion', {
-          params
-        });
-        this.questionList = this.$store.state.sample.agency.testQuestion.list;
+        try {
+          await this.$store.dispatch('sample/agency/getTestQuestion', {
+            params
+          });
+          this.questionList = this.$store.state.sample.agency.testQuestion.list;
+        } catch (err) {
+          return;
+        }
       } else {
-        await this.$store.dispatch('sample/user/getTestQuestion', {
-          params
-        });
-        this.questionList = this.$store.state.sample.user.testQuestion.list;
+        try {
+          await this.$store.dispatch('sample/user/getTestQuestion', {
+            params
+          });
+          this.questionList = this.$store.state.sample.user.testQuestion.list;
+        } catch (err) {
+          return;
+        }
       }
       this.questionList.forEach((item) => {
         item.create_time = formatterTime(item.create_time);
@@ -135,7 +155,11 @@ export default {
       let body = {
         problem_id: id
       };
-      await this.$store.dispatch('sample/recordTestProblem', body);
+      try {
+        await this.$store.dispatch('sample/recordTestProblem', body);
+      } catch (err) {
+        return;
+      }
     },
     showAddQuestions() {
       this.addQuestionsVisible = true;

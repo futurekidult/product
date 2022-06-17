@@ -113,10 +113,14 @@ export default {
   methods: {
     async showViewDialog(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        this.viewImgDialog = true;
-        this.imgLink = this.$store.state.viewLink;
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          this.viewImgDialog = true;
+          this.imgLink = this.$store.state.viewLink;
+        }
+      } catch (err) {
+        return;
       }
     },
     closeViewDialog() {

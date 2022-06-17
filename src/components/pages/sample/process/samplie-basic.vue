@@ -120,9 +120,13 @@ export default {
         id: +this.$route.params.id,
         result: val
       };
-      await this.$store.dispatch('sample/confirmTestResult', body);
-      this.confirmVisible = false;
-      this.getList();
+      try {
+        await this.$store.dispatch('sample/confirmTestResult', body);
+        this.confirmVisible = false;
+        this.getList();
+      } catch (err) {
+        return;
+      }
     },
     confirmResult() {
       this.confirmVisible = true;

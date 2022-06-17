@@ -496,52 +496,64 @@ export default {
         current_page: currentPage,
         page_size: pageSize
       };
-      await this.$store.dispatch('price/getQuotationList', { params });
-      this.quotationList = this.$store.state.price.quotationList;
-      this.priceId = this.quotationList.pricing_id;
-      this.prodId = this.quotationList.related_product_id;
-      this.market = this.quotationList.market;
-      this.quotationList.list.forEach((item) => {
-        item.create_time = formatterTime(item.create_time);
-        item.quote_validity = formatterTime(item.quote_validity);
-        item.confirm_time = formatterTime(item.confirm_time);
-      });
-      this.getPlatform();
-      this.getReferencePrice();
+      try {
+        await this.$store.dispatch('price/getQuotationList', { params });
+        this.quotationList = this.$store.state.price.quotationList;
+        this.priceId = this.quotationList.pricing_id;
+        this.prodId = this.quotationList.related_product_id;
+        this.market = this.quotationList.market;
+        this.quotationList.list.forEach((item) => {
+          item.create_time = formatterTime(item.create_time);
+          item.quote_validity = formatterTime(item.quote_validity);
+          item.confirm_time = formatterTime(item.confirm_time);
+        });
+        this.getPlatform();
+        this.getReferencePrice();
+      } catch (err) {
+        return;
+      }
     },
     async getReferencePrice() {
       let params = {
         product_id: this.prodId,
         market: this.market
       };
-      await this.$store.dispatch('price/getReferencePrice', { params });
-      this.referenceList = this.$store.state.price.referencePrice;
+      try {
+        await this.$store.dispatch('price/getReferencePrice', { params });
+        this.referenceList = this.$store.state.price.referencePrice;
+      } catch (err) {
+        return;
+      }
     },
     async getTargetPrice(id, val) {
       let price = val;
-      await this.$store.dispatch('price/getTargetPrice', {
-        params: {
-          quote_id: id
+      try {
+        await this.$store.dispatch('price/getTargetPrice', {
+          params: {
+            quote_id: id
+          }
+        });
+        this.targetList = this.$store.state.price.targetPrice;
+        let low = this.referenceList.some((item) => {
+          return +item.reference_price > +price;
+        });
+        if (low) {
+          this.lowVisible = true;
         }
-      });
-      this.targetList = this.$store.state.price.targetPrice;
-      let low = this.referenceList.some((item) => {
-        return +item.reference_price > +price;
-      });
-      if (low) {
-        this.lowVisible = true;
-      }
-      let high = this.targetList.every((item) => {
-        return +item.target_price < +price;
-      });
-      if (high) {
-        this.highVisible = true;
-      }
-      let equal = this.targetList.every((item) => {
-        return +item.target_price === +price;
-      });
-      if (equal) {
-        this.submitQuotation();
+        let high = this.targetList.every((item) => {
+          return +item.target_price < +price;
+        });
+        if (high) {
+          this.highVisible = true;
+        }
+        let equal = this.targetList.every((item) => {
+          return +item.target_price === +price;
+        });
+        if (equal) {
+          this.submitQuotation();
+        }
+      } catch (err) {
+        return;
       }
     },
     async getPlatform() {
@@ -549,8 +561,12 @@ export default {
         product_id: this.prodId,
         pricing_id: this.priceId
       };
-      await this.$store.dispatch('getPlatform', { params });
-      this.platform = this.$store.state.platform;
+      try {
+        await this.$store.dispatch('getPlatform', { params });
+        this.platform = this.$store.state.platform;
+      } catch (err) {
+        return;
+      }
     },
     changeCellColor(val) {
       if (val === 20 || val === 30) {
@@ -588,11 +604,15 @@ export default {
       this.terminateFormVisible = false;
     },
     async terminateQuotation() {
-      await this.$store.dispatch('price/terminateQuotation', {
-        id: this.terminateQuotationId
-      });
-      this.terminateFormVisible = false;
-      this.getQuotationList();
+      try {
+        await this.$store.dispatch('price/terminateQuotation', {
+          id: this.terminateQuotationId
+        });
+        this.terminateFormVisible = false;
+        this.getQuotationList();
+      } catch (err) {
+        return;
+      }
     },
     showConfirmForm(id) {
       this.confirmFormVisible = true;
@@ -602,21 +622,29 @@ export default {
       this.confirmFormVisible = false;
     },
     async confirmQuotation() {
-      await this.$store.dispatch('price/confirmQuotation', {
-        id: this.confirmQuotationId
-      });
-      this.confirmQuotationId = false;
-      this.getQuotationList();
+      try {
+        await this.$store.dispatch('price/confirmQuotation', {
+          id: this.confirmQuotationId
+        });
+        this.confirmQuotationId = false;
+        this.getQuotationList();
+      } catch (err) {
+        return;
+      }
     },
     submitDeteleResult() {
       this.deleteQuote(this.deleteId);
     },
     async deleteQuote(id) {
-      await this.$store.dispatch('price/deleteQuote', {
-        id
-      });
-      this.deleteDialog = false;
-      this.getQuotationList();
+      try {
+        await this.$store.dispatch('price/deleteQuote', {
+          id
+        });
+        this.deleteDialog = false;
+        this.getQuotationList();
+      } catch (err) {
+        return;
+      }
     },
     showDeleteDialog(id) {
       this.deleteDialog = true;
@@ -636,12 +664,16 @@ export default {
       this.editSpecialistFormVisible = false;
     },
     async updatePurchaseSpecialist() {
-      await this.$store.dispatch(
-        'price/updatePurchaseSpecialist',
-        this.editSpecialistForm
-      );
-      this.editSpecialistFormVisible = false;
-      this.getQuotationList();
+      try {
+        await this.$store.dispatch(
+          'price/updatePurchaseSpecialist',
+          this.editSpecialistForm
+        );
+        this.editSpecialistFormVisible = false;
+        this.getQuotationList();
+      } catch (err) {
+        return;
+      }
     },
     submitPurchaseSpecialist() {
       this.$refs.editSpecialistForm.validate((valid) => {
@@ -661,9 +693,13 @@ export default {
     async applyAdjustment(val) {
       let body = val;
       body['quote_id'] = this.quoteId;
-      await this.$store.dispatch('price/applyAdjustment', body);
-      this.applyAdjustmentFormVisible = false;
-      this.getQuotationList();
+      try {
+        await this.$store.dispatch('price/applyAdjustment', body);
+        this.applyAdjustmentFormVisible = false;
+        this.getQuotationList();
+      } catch (err) {
+        return;
+      }
     },
     submitApplyAdjustment() {
       this.$refs.applyAdjustmentForm.validate((valid) => {
@@ -684,11 +720,15 @@ export default {
       this.getTargetPrice(id, price);
     },
     async submitQuotation() {
-      await this.$store.dispatch('price/submitQuotation', {
-        id: this.submitId
-      });
-      this.lowVisible = false;
-      this.getQuotationList();
+      try {
+        await this.$store.dispatch('price/submitQuotation', {
+          id: this.submitId
+        });
+        this.lowVisible = false;
+        this.getQuotationList();
+      } catch (err) {
+        return;
+      }
     },
     closeLowForm() {
       this.lowVisible = false;

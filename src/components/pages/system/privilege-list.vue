@@ -31,8 +31,12 @@ export default {
   methods: {
     async getPrivilegeList() {
       this.$store.commit('system/setPrivilegeLoading', true);
-      await this.$store.dispatch('system/getPrivilegeList');
-      this.privilegeList = this.$store.state.system.privilegeList;
+      try {
+        await this.$store.dispatch('system/getPrivilegeList');
+        this.privilegeList = this.$store.state.system.privilegeList;
+      } catch (err) {
+        return;
+      }
     }
   }
 };

@@ -184,6 +184,7 @@
           v-model="editForm.quality_specialist_id"
           :data="memberList"
           clearable
+          show-checkbox
           :props="defaultProps"
         />
       </el-form-item>
@@ -265,10 +266,14 @@ export default {
   },
   methods: {
     async getOrganizationList() {
-      await this.$store.dispatch('getOrganizationList');
-      this.memberList = this.$store.state.organizationList;
-      for (let key in this.memberList) {
-        this.childrenFunc(this.memberList[key]);
+      try {
+        await this.$store.dispatch('getOrganizationList');
+        this.memberList = this.$store.state.organizationList;
+        for (let key in this.memberList) {
+          this.childrenFunc(this.memberList[key]);
+        }
+      } catch (err) {
+        return;
       }
     },
     childrenFunc(data) {
@@ -281,87 +286,111 @@ export default {
     },
     async getQualityDetail() {
       this.$store.commit('sample/quality/setQualityLoading', true);
-      await this.$store.dispatch('sample/quality/getQualityDetail', {
-        params: {
-          sample_id: +this.$route.params.id
-        }
-      });
-      this.qualityProgress =
-        this.$store.state.sample.quality.qualityDetail.test_schedule;
-      this.qualityProgress.actual_finish_time = formatterTime(
-        this.qualityProgress.actual_finish_time
-      );
-      this.qualityAttachment =
-        this.$store.state.sample.quality.qualityDetail.test_result_file;
-      this.qualitySubmitState =
-        this.$store.state.sample.quality.qualityDetail.is_submit;
-      this.qualityId =
-        this.$store.state.sample.quality.qualityDetail.test_apply_id;
-      this.qualityTestId = this.$store.state.sample.quality.qualityDetail.id;
+      try {
+        await this.$store.dispatch('sample/quality/getQualityDetail', {
+          params: {
+            sample_id: +this.$route.params.id
+          }
+        });
+        this.qualityProgress =
+          this.$store.state.sample.quality.qualityDetail.test_schedule;
+        this.qualityProgress.actual_finish_time = formatterTime(
+          this.qualityProgress.actual_finish_time
+        );
+        this.qualityAttachment =
+          this.$store.state.sample.quality.qualityDetail.test_result_file;
+        this.qualitySubmitState =
+          this.$store.state.sample.quality.qualityDetail.is_submit;
+        this.qualityId =
+          this.$store.state.sample.quality.qualityDetail.test_apply_id;
+        this.qualityTestId = this.$store.state.sample.quality.qualityDetail.id;
+      } catch (err) {
+        return;
+      }
     },
     async getAgencyTest() {
       this.$store.commit('sample/agency/setAgencyLoading', true);
-      await this.$store.dispatch('sample/agency/getAgencyTest', {
-        params: {
-          sample_id: +this.$route.params.id
-        }
-      });
-      this.agencyProgress =
-        this.$store.state.sample.agency.agencyTest.test_schedule;
-      this.agencyProgress.actual_finish_time = formatterTime(
-        this.agencyProgress.actual_finish_time
-      );
-      this.agencyAttachment =
-        this.$store.state.sample.agency.agencyTest.test_result_file;
-      this.agencySubmitState =
-        this.$store.state.sample.agency.agencyTest.is_submit;
-      this.agencyId = this.$store.state.sample.agency.agencyTest.test_apply_id;
-      this.isAgency = this.$store.state.sample.agency.agencyTest.is_agency;
-      this.agencyValue = this.$store.state.sample.agency.agencyTest.is_agency;
-      this.agencyTestId = this.$store.state.sample.agency.agencyTest.id;
+      try {
+        await this.$store.dispatch('sample/agency/getAgencyTest', {
+          params: {
+            sample_id: +this.$route.params.id
+          }
+        });
+        this.agencyProgress =
+          this.$store.state.sample.agency.agencyTest.test_schedule;
+        this.agencyProgress.actual_finish_time = formatterTime(
+          this.agencyProgress.actual_finish_time
+        );
+        this.agencyAttachment =
+          this.$store.state.sample.agency.agencyTest.test_result_file;
+        this.agencySubmitState =
+          this.$store.state.sample.agency.agencyTest.is_submit;
+        this.agencyId =
+          this.$store.state.sample.agency.agencyTest.test_apply_id;
+        this.isAgency = this.$store.state.sample.agency.agencyTest.is_agency;
+        this.agencyValue = this.$store.state.sample.agency.agencyTest.is_agency;
+        this.agencyTestId = this.$store.state.sample.agency.agencyTest.id;
+      } catch (err) {
+        return;
+      }
     },
     async getUserTest() {
       this.$store.commit('sample/user/setUserLoading', true);
-      await this.$store.dispatch('sample/user/getUserTest', {
-        params: {
-          sample_id: +this.$route.params.id
-        }
-      });
-      this.userProgress = this.$store.state.sample.user.userTest.test_schedule;
-      this.userProgress.actual_finish_time = formatterTime(
-        this.userProgress.actual_finish_time
-      );
-      this.userApplyList =
-        this.$store.state.sample.user.userTest.user_test_apply;
-      this.userApplyList.forEach((item) => {
-        item.estimated_finish_time = formatterTime(item.estimated_finish_time);
-        item.submit_time = formatterTime(item.submit_time);
-        item.review_finish_time = formatterTime(item.review_finish_time);
-        item.user_experience_duration = `${item.user_experience_duration}天`;
-      });
-      this.userButtonState =
-        this.$store.state.sample.user.userTest.button_state;
-      this.userId = this.$store.state.sample.user.userTest.test_apply_id;
-      this.userSubmitState = this.$store.state.sample.user.userTest.is_submit;
-      this.userAttachment =
-        this.$store.state.sample.user.userTest.test_result_file;
-      this.userTestId = this.$store.state.sample.user.userTest.id;
+      try {
+        await this.$store.dispatch('sample/user/getUserTest', {
+          params: {
+            sample_id: +this.$route.params.id
+          }
+        });
+        this.userProgress =
+          this.$store.state.sample.user.userTest.test_schedule;
+        this.userProgress.actual_finish_time = formatterTime(
+          this.userProgress.actual_finish_time
+        );
+        this.userApplyList =
+          this.$store.state.sample.user.userTest.user_test_apply;
+        this.userApplyList.forEach((item) => {
+          item.estimated_finish_time = formatterTime(
+            item.estimated_finish_time
+          );
+          item.submit_time = formatterTime(item.submit_time);
+          item.review_finish_time = formatterTime(item.review_finish_time);
+          item.user_experience_duration = `${item.user_experience_duration}天`;
+        });
+        this.userButtonState =
+          this.$store.state.sample.user.userTest.button_state;
+        this.userId = this.$store.state.sample.user.userTest.test_apply_id;
+        this.userSubmitState = this.$store.state.sample.user.userTest.is_submit;
+        this.userAttachment =
+          this.$store.state.sample.user.userTest.test_result_file;
+        this.userTestId = this.$store.state.sample.user.userTest.id;
+      } catch (err) {
+        return;
+      }
     },
     async getQualitySpecialist(id) {
-      await this.$store.dispatch('sample/getQualitySpecialist', {
-        params: {
-          id
-        }
-      });
-      this.editForm.quality_specialist_id =
-        this.$store.state.sample.qualitySpecialist.quality_specialist_id;
+      try {
+        await this.$store.dispatch('sample/getQualitySpecialist', {
+          params: {
+            id
+          }
+        });
+        this.editForm.quality_specialist_id =
+          this.$store.state.sample.qualitySpecialist.quality_specialist_id;
+      } catch (err) {
+        return;
+      }
     },
     async updateQualitySpecialist(val) {
       let body = val;
       body['id'] = this.testId;
-      await this.$store.dispatch('sample/updateQualitySpecialist', body);
-      this.editSpecialistVisible = false;
-      this.getTest();
+      try {
+        await this.$store.dispatch('sample/updateQualitySpecialist', body);
+        this.editSpecialistVisible = false;
+        this.getTest();
+      } catch (err) {
+        return;
+      }
     },
     showApplyForm() {
       this.testApplyVisible = true;

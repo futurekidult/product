@@ -104,16 +104,20 @@ export default {
   },
   methods: {
     async getDemandDetail() {
-      this.$store.commit('demand/setDemandDetailLoading', true);
-      await this.$store.dispatch('demand/getDemandDetail', {
-        params: {
-          demand_id: +this.$route.params.id
-        }
-      });
-      this.demandDetail = this.$store.state.demand.demandDetail;
-      this.demandDetail.create_time = formatterTime(
-        this.demandDetail.create_time
-      );
+      try {
+        this.$store.commit('demand/setDemandDetailLoading', true);
+        await this.$store.dispatch('demand/getDemandDetail', {
+          params: {
+            demand_id: +this.$route.params.id
+          }
+        });
+        this.demandDetail = this.$store.state.demand.demandDetail;
+        this.demandDetail.create_time = formatterTime(
+          this.demandDetail.create_time
+        );
+      } catch (err) {
+        return;
+      }
     },
     toProductDetail(id) {
       this.$router.push(`/product-list/${id}`);

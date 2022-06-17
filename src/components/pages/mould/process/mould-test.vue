@@ -66,14 +66,22 @@ export default {
         id,
         approval_result: result
       };
-      await this.$store.dispatch('mould/approvalTestingMould', body);
-      this.getMould();
+      try {
+        await this.$store.dispatch('mould/approvalTestingMould', body);
+        this.getMould();
+      } catch (err) {
+        return;
+      }
     },
     async confirmTestingMould(id) {
-      await this.$store.dispatch('mould/confirmTestingMould', {
-        mould_id: id
-      });
-      this.getMould();
+      try {
+        await this.$store.dispatch('mould/confirmTestingMould', {
+          mould_id: id
+        });
+        this.getMould();
+      } catch (err) {
+        return;
+      }
     }
   }
 };

@@ -207,19 +207,23 @@ export default {
   },
   methods: {
     async getUserList(currentPage = 1, pageSize = 10) {
-      await this.$store.dispatch('sample/user/getUserList', {
-        params: {
-          sample_id: +this.$route.params.id,
-          current_page: currentPage,
-          page_size: pageSize
-        }
-      });
-      this.userList = this.$store.state.sample.user.userList;
-      this.userList.forEach((item) => {
-        item.create_time = formatterTime(item.create_time);
-        item.delivery_time = formatterTime(item.delivery_time);
-        item.upload_time = formatterTime(item.upload_time);
-      });
+      try {
+        await this.$store.dispatch('sample/user/getUserList', {
+          params: {
+            sample_id: +this.$route.params.id,
+            current_page: currentPage,
+            page_size: pageSize
+          }
+        });
+        this.userList = this.$store.state.sample.user.userList;
+        this.userList.forEach((item) => {
+          item.create_time = formatterTime(item.create_time);
+          item.delivery_time = formatterTime(item.delivery_time);
+          item.upload_time = formatterTime(item.upload_time);
+        });
+      } catch (err) {
+        return;
+      }
     },
     async deliverSample(testId, userId) {
       let body = {
@@ -227,35 +231,51 @@ export default {
         is_delivered: 1,
         user_id: userId
       };
-      await this.$store.dispatch('sample/user/deliverSample', body);
-      this.getUserList();
+      try {
+        await this.$store.dispatch('sample/user/deliverSample', body);
+        this.getUserList();
+      } catch (err) {
+        return;
+      }
     },
     async handleFileSuccess(e) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.show = true;
-        this.file = {
-          id: this.$store.state.fileRes.id,
-          name: this.$store.state.fileRes.file_name,
-          type: this.$store.state.fileRes.type
-        };
-        this.getUserList();
+      try {
+        await this.$store.dispatch('uploadFile', form);
+        if (this.$store.state.uploadState) {
+          this.show = true;
+          this.file = {
+            id: this.$store.state.fileRes.id,
+            name: this.$store.state.fileRes.file_name,
+            type: this.$store.state.fileRes.type
+          };
+          this.getUserList();
+        }
+      } catch (err) {
+        return;
       }
     },
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        downloadFile(this.$store.state.viewLink, name);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          downloadFile(this.$store.state.viewLink, name);
+        }
+      } catch (err) {
+        return;
       }
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        previewFile(this.$store.state.viewLink);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          previewFile(this.$store.state.viewLink);
+        }
+      } catch (err) {
+        return;
       }
     },
     deleteFile() {

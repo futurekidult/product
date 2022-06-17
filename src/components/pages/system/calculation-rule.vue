@@ -345,8 +345,12 @@ export default {
         this.market = options.market;
         this.platform = options.platform;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getParams();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getParams();
+        } catch (err) {
+          return;
+        }
       }
     },
     async getCalculationRuleList(currentPage = 1, pageSize = 10) {
@@ -357,30 +361,47 @@ export default {
         market: this.selectedMarket,
         platform: this.selectedPlatform
       };
-      await this.$store.dispatch('system/getCalculationRuleList', { params });
-      this.calculationRuleList = this.$store.state.system.calculationRuleList;
-      this.calculationRuleList.forEach((item) => {
-        item.update_time = formatterTime(item.update_time);
-      });
+      try {
+        await this.$store.dispatch('system/getCalculationRuleList', { params });
+        this.calculationRuleList = this.$store.state.system.calculationRuleList;
+        this.calculationRuleList.forEach((item) => {
+          item.update_time = formatterTime(item.update_time);
+        });
+      } catch (err) {
+        return;
+      }
     },
     async getCategoryList() {
-      await this.$store.dispatch('demand/getCategoryList');
-      this.bigCategoryList = this.$store.state.demand.categoryList;
+      try {
+        await this.$store.dispatch('demand/getCategoryList');
+        this.bigCategoryList = this.$store.state.demand.categoryList;
+      } catch (err) {
+        return;
+      }
     },
     async getCalculationRuleDetail(id) {
-      await this.$store.dispatch('system/getCalculationRuleDetail', {
-        params: {
-          id
-        }
-      });
-      this.calculationRuleForm = this.$store.state.system.calculationRuleDetail;
+      try {
+        await this.$store.dispatch('system/getCalculationRuleDetail', {
+          params: {
+            id
+          }
+        });
+        this.calculationRuleForm =
+          this.$store.state.system.calculationRuleDetail;
+      } catch (err) {
+        return;
+      }
     },
     async updateCalculationRule(val) {
       let body = val;
       body['id'] = this.editId;
-      await this.$store.dispatch('system/updateCalculationRule', body);
-      this.editVisible = false;
-      this.getCalculationRuleList();
+      try {
+        await this.$store.dispatch('system/updateCalculationRule', body);
+        this.editVisible = false;
+        this.getCalculationRuleList();
+      } catch (err) {
+        return;
+      }
     },
     showEditForm(id) {
       this.editVisible = true;

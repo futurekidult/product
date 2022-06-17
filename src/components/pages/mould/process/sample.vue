@@ -143,11 +143,9 @@ export default {
   },
   computed: {
     isDisabled() {
-      if (this.progress.state === 10 || this.progress.state === 30) {
-        return false;
-      } else {
-        return true;
-      }
+      return this.progress.state === 10 || this.progress.state === 30
+        ? false
+        : true;
     }
   },
   watch: {
@@ -161,27 +159,39 @@ export default {
         mould_id: +this.$route.params.id,
         prototype_file: val
       };
-      await this.$store.dispatch('mould/createPrototype', body);
-      this.getList();
+      try {
+        await this.$store.dispatch('mould/createPrototype', body);
+        this.getList();
+      } catch (err) {
+        return;
+      }
     },
     async handleImgSuccess(e) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.res = this.$store.state.fileRes;
-        this.imgList.push({
-          id: this.res.id,
-          name: this.res.file_name
-        });
+      try {
+        await this.$store.dispatch('uploadFile', form);
+        if (this.$store.state.uploadState) {
+          this.res = this.$store.state.fileRes;
+          this.imgList.push({
+            id: this.res.id,
+            name: this.res.file_name
+          });
+        }
+      } catch (err) {
+        return;
       }
     },
     async showViewDialog(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        this.viewImgDialog = true;
-        this.imgLink = this.$store.state.viewLink;
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          this.viewImgDialog = true;
+          this.imgLink = this.$store.state.viewLink;
+        }
+      } catch (err) {
+        return;
       }
     },
     closeViewDialog() {
@@ -208,11 +218,15 @@ export default {
       });
     },
     async approvalPrototype(val) {
-      await this.$store.dispatch('mould/approvalPrototype', {
-        mould_id: +this.$route.params.id,
-        approval_result: val
-      });
-      this.getMould();
+      try {
+        await this.$store.dispatch('mould/approvalPrototype', {
+          mould_id: +this.$route.params.id,
+          approval_result: val
+        });
+        this.getMould();
+      } catch (err) {
+        return;
+      }
     }
   }
 };

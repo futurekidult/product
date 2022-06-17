@@ -243,20 +243,28 @@ export default {
     },
     async submitSheet() {
       this.followupForm['id'] = this.preProductSample.id;
-      await this.$store.dispatch(
-        'product/order/followupSheet',
-        this.followupForm
-      );
-      this.followupSheetDialog = true;
+      try {
+        await this.$store.dispatch(
+          'product/order/followupSheet',
+          this.followupForm
+        );
+        this.followupSheetDialog = true;
+      } catch (err) {
+        return;
+      }
     },
     async submitReceipt() {
       this.courierNumberForm['id'] = this.preProductSample.id;
-      await this.$store.dispatch(
-        'product/order/receiptSheet',
-        this.courierNumberForm
-      );
-      this.courierNumberDialog = false;
-      this.SampleSample();
+      try {
+        await this.$store.dispatch(
+          'product/order/receiptSheet',
+          this.courierNumberForm
+        );
+        this.courierNumberDialog = false;
+        this.SampleSample();
+      } catch (err) {
+        return;
+      }
     },
     submitFollowupForm() {
       this.$refs.followupForm.validate((valid) => {
@@ -284,11 +292,15 @@ export default {
       this.id = id;
     },
     async submitConfirm() {
-      await this.$store.dispatch('product/order/confirmPreProduct', {
-        id: this.id
-      });
-      this.confirmVisible = false;
-      this.SampleSample();
+      try {
+        await this.$store.dispatch('product/order/confirmPreProduct', {
+          id: this.id
+        });
+        this.confirmVisible = false;
+        this.SampleSample();
+      } catch (err) {
+        return;
+      }
     },
     closeConfirm() {
       this.confirmVisible = false;

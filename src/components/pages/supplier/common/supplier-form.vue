@@ -39,7 +39,10 @@
         <el-form-item
           label="供应商名称"
           prop="name"
-          :rules="[{ required: true, message: '请输入供应商名称' }]"
+          :rules="[
+            { required: true, message: '请输入供应商名称' },
+            checkValid(15)
+          ]"
         >
           <el-input
             v-model="supplierForm.name"
@@ -57,7 +60,10 @@
         <el-form-item
           :label="'联系人姓名' + (index + 1)"
           :prop="`contacts.${index}.contact`"
-          :rules="[{ required: true, message: '请输入联系人姓名' }]"
+          :rules="[
+            { required: true, message: '请输入联系人姓名' },
+            checkValid(15)
+          ]"
         >
           <el-input
             v-model="item.contact"
@@ -69,7 +75,7 @@
         <el-form-item
           :label="'手机号码' + (index + 1)"
           :prop="`contacts.${index}.tel`"
-          :rules="[{ required: true, message: '请输入手机号' }]"
+          :rules="[{ required: true, message: '请输入手机号' }, checkValid(15)]"
         >
           <el-input
             v-model="item.tel"
@@ -84,6 +90,8 @@
             placeholder="请输入座机号码"
             clearable
             :disabled="isDisabled"
+            maxlength="15"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item :label="'微信' + (index + 1)">
@@ -92,6 +100,8 @@
             placeholder="请输入微信"
             clearable
             :disabled="isDisabled"
+            maxlength="15"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item :label="'QQ号' + (index + 1)">
@@ -100,6 +110,9 @@
             placeholder="请输入QQ号"
             clearable
             :disabled="isDisabled"
+            maxlength="15"
+            show-word-limit
+            @change="checkEmail('qq', item.qq, index + 1)"
           />
         </el-form-item>
         <el-form-item :label="'电子邮件' + (index + 1)">
@@ -108,6 +121,9 @@
             placeholder="请输入电子邮件"
             clearable
             :disabled="isDisabled"
+            maxlength="30"
+            show-word-limit
+            @change="checkEmail('email', item.email, index + 1)"
           />
         </el-form-item>
       </div>
@@ -146,7 +162,10 @@
         <el-form-item
           :label="'详细地址' + (index + 1)"
           :prop="`addresses.${index}.detail`"
-          :rules="[{ required: true, message: '请输入详细地址' }]"
+          :rules="[
+            { required: true, message: '请输入详细地址' },
+            checkValid(30)
+          ]"
         >
           <el-input
             v-model="item.detail"
@@ -187,7 +206,10 @@
         <el-form-item
           label="公司主页链接"
           prop="site_link"
-          :rules="[{ required: true, message: '请输入公司主页链接' }]"
+          :rules="[
+            { required: true, message: '请输入公司主页链接' },
+            checkValid(30)
+          ]"
         >
           <el-input
             v-model="supplierForm.site_link"
@@ -218,7 +240,10 @@
         <el-form-item
           label="工厂规模(人)"
           prop="factory_scale"
-          :rules="[{ required: true, message: '请输入工厂规模' }]"
+          :rules="[
+            { required: true, message: '请输入工厂规模' },
+            checkValid(15)
+          ]"
         >
           <el-input
             v-model="supplierForm.factory_scale"
@@ -230,7 +255,10 @@
         <el-form-item
           label="供应商税号"
           prop="tax_id"
-          :rules="[{ required: true, message: '请输入供应商税号' }]"
+          :rules="[
+            { required: true, message: '请输入供应商税号' },
+            checkValid(20)
+          ]"
         >
           <el-input
             v-model="supplierForm.tax_id"
@@ -242,7 +270,10 @@
         <el-form-item
           label="注册资金(万元)"
           prop="registered_capital"
-          :rules="[{ required: true, message: '请输入注册资金' }]"
+          :rules="[
+            { required: true, message: '请输入注册资金' },
+            checkValid(15)
+          ]"
         >
           <el-input
             v-model="supplierForm.registered_capital"
@@ -341,12 +372,17 @@
             placeholder="请输入SWIFT CODE"
             clearable
             :disabled="isDisabled"
+            maxlength="15"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item
           label="开户银行户名"
           prop="bank_username"
-          :rules="[{ required: true, message: '请输入开户银行' }]"
+          :rules="[
+            { required: true, message: '请输入开户银行' },
+            checkValid(15)
+          ]"
         >
           <el-input
             v-model="supplierForm.bank_username"
@@ -358,7 +394,10 @@
         <el-form-item
           label="开户银行名称"
           prop="bank_name"
-          :rules="[{ required: true, message: '请输入开户银行名称' }]"
+          :rules="[
+            { required: true, message: '请输入开户银行名称' },
+            checkValid(15)
+          ]"
         >
           <el-input
             v-model="supplierForm.bank_name"
@@ -370,7 +409,10 @@
         <el-form-item
           label="开户银行账号"
           prop="bank_account"
-          :rules="[{ required: true, message: '请输入开户银行账号' }]"
+          :rules="[
+            { required: true, message: '请输入开户银行账号' },
+            checkValid(15)
+          ]"
         >
           <el-input
             v-model="supplierForm.bank_account"
@@ -385,6 +427,8 @@
             placeholder="请输入开户银行所在地"
             clearable
             :disabled="isDisabled"
+            maxlength="15"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item label="开户银行支行">
@@ -393,6 +437,8 @@
             placeholder="请输入开户银行支行"
             clearable
             :disabled="isDisabled"
+            maxlength="15"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item
@@ -436,7 +482,10 @@
         <el-form-item
           label="主营产品"
           prop="main_products"
-          :rules="[{ required: true, message: '请输入主营产品' }]"
+          :rules="[
+            { required: true, message: '请输入主营产品' },
+            checkValid(15)
+          ]"
         >
           <el-input
             v-model="supplierForm.main_products"
@@ -454,6 +503,7 @@
             v-model="supplierForm.purchase_specialist_id"
             :data="memberList"
             clearable
+            show-checkbox
             :props="defaultProps"
             :disabled="isDisabled"
           />
@@ -763,6 +813,8 @@
           :rows="6"
           placeholder="请输入内容"
           :disabled="isDisabled"
+          maxlength="200"
+          show-word-limit
         />
       </el-form-item>
       <el-form-item v-if="!isDisabled">
@@ -831,11 +883,7 @@ export default {
   },
   computed: {
     isDisabled() {
-      if (this.type === 'create' || this.type === 'update') {
-        return false;
-      } else {
-        return true;
-      }
+      return this.type === 'create' || this.type === 'update' ? false : true;
     }
   },
   mounted() {
@@ -848,10 +896,14 @@ export default {
   },
   methods: {
     async getOrganizationList() {
-      await this.$store.dispatch('getOrganizationList');
-      this.memberList = this.$store.state.organizationList;
-      for (let key in this.memberList) {
-        this.childrenFunc(this.memberList[key]);
+      try {
+        await this.$store.dispatch('getOrganizationList');
+        this.memberList = this.$store.state.organizationList;
+        for (let key in this.memberList) {
+          this.childrenFunc(this.memberList[key]);
+        }
+      } catch (err) {
+        return;
       }
     },
     async getParams() {
@@ -866,42 +918,59 @@ export default {
         this.interBank = supplier.inter_bank;
         this.territory = supplier.territory;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getParams();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getParams();
+        } catch (err) {
+          return;
+        }
       }
     },
     async createSupplier(body) {
-      await this.$store.dispatch('supplier/createSupplier', body);
-      if (this.$store.state.supplier.createPass) {
+      try {
+        await this.$store.dispatch('supplier/createSupplier', body);
         this.$router.push('/supplier-list');
+      } catch (err) {
+        return;
       }
     },
     async getSupplierDetail() {
       this.$store.commit('supplier/setSupplierDetailLoading', true);
-      await this.$store.dispatch('supplier/getSupplierDetail', {
-        params: {
-          id: +this.$route.params.id
-        }
-      });
-      this.supplierForm = this.$store.state.supplier.supplierDetail;
-      this.vatInvoiceFile = this.supplierForm.vat_invoice_file;
-      this.accountOpeningLicenseFile =
-        this.supplierForm.account_opening_license_file;
-      this.businessLicenseFile = this.supplierForm.business_license_file;
-      this.purchaseEvaluationFile = this.supplierForm.purchase_evaluation_file;
-      this.qualityEvaluationFile = this.supplierForm.quality_evaluation_file;
+      try {
+        await this.$store.dispatch('supplier/getSupplierDetail', {
+          params: {
+            id: +this.$route.params.id
+          }
+        });
+        this.supplierForm = this.$store.state.supplier.supplierDetail;
+        this.vatInvoiceFile = this.supplierForm.vat_invoice_file;
+        this.accountOpeningLicenseFile =
+          this.supplierForm.account_opening_license_file;
+        this.businessLicenseFile = this.supplierForm.business_license_file;
+        this.purchaseEvaluationFile =
+          this.supplierForm.purchase_evaluation_file;
+        this.qualityEvaluationFile = this.supplierForm.quality_evaluation_file;
+      } catch (err) {
+        return;
+      }
     },
     async updateSupplier(val) {
       let body = val;
       body.id = +this.$route.params.id;
-      await this.$store.dispatch('supplier/updateSupplier', body);
-      if (this.$store.state.supplier.updatePass) {
+      try {
+        await this.$store.dispatch('supplier/updateSupplier', body);
         this.$router.push('/supplier-list');
+      } catch (err) {
+        return;
       }
     },
     async getCityOption() {
-      await this.$store.dispatch('supplier/getCityOption');
-      this.cityOption = this.$store.state.supplier.cityOption;
+      try {
+        await this.$store.dispatch('supplier/getCityOption');
+        this.cityOption = this.$store.state.supplier.cityOption;
+      } catch (err) {
+        return;
+      }
     },
     addRow(val) {
       this.supplierForm[val].push({});
@@ -919,32 +988,44 @@ export default {
     },
     async showViewDialog(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        this.viewImgDialog = true;
-        this.imgLink = this.$store.state.viewLink;
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          this.viewImgDialog = true;
+          this.imgLink = this.$store.state.viewLink;
+        }
+      } catch (err) {
+        return;
       }
     },
     async handleFileArrSuccess(e, arr) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        arr.push({
-          id: this.$store.state.fileRes.id,
-          name: this.$store.state.fileRes.file_name,
-          type: this.$store.state.fileRes.type
-        });
+      try {
+        await this.$store.dispatch('uploadFile', form);
+        if (this.$store.state.uploadState) {
+          arr.push({
+            id: this.$store.state.fileRes.id,
+            name: this.$store.state.fileRes.file_name,
+            type: this.$store.state.fileRes.type
+          });
+        }
+      } catch (err) {
+        return;
       }
     },
     async handleFileSuccess(e, obj) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        obj['id'] = this.$store.state.fileRes.id;
-        obj['name'] = this.$store.state.fileRes.file_name;
-        obj['type'] = this.$store.state.fileRes.type;
+      try {
+        await this.$store.dispatch('uploadFile', form);
+        if (this.$store.state.uploadState) {
+          obj['id'] = this.$store.state.fileRes.id;
+          obj['name'] = this.$store.state.fileRes.file_name;
+          obj['type'] = this.$store.state.fileRes.type;
+        }
+      } catch (err) {
+        return;
       }
     },
     handleFileArr(oldArr, key) {
@@ -996,17 +1077,38 @@ export default {
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        previewFile(this.$store.state.viewLink);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          previewFile(this.$store.state.viewLink);
+        }
+      } catch (err) {
+        return;
       }
     },
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        downloadFile(this.$store.state.viewLink, name);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          downloadFile(this.$store.state.viewLink, name);
+        }
+      } catch (err) {
+        return;
       }
+    },
+    checkEmail(str, val, index) {
+      if (val) {
+        if (val.indexOf('@') === -1) {
+          this.$message.error(`第${index}个联系人的${str}必须包含@`);
+        }
+      }
+    },
+    checkValid(val) {
+      return {
+        max: val,
+        message: `长度不超过${val}个字符`
+      };
     }
   }
 };

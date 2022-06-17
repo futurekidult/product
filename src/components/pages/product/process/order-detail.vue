@@ -120,75 +120,93 @@ export default {
   },
   methods: {
     async getProgress() {
-      await this.$store.dispatch('product/order/getProgress', {
-        params: {
-          id: +this.$route.params.orderId
-        }
-      });
-      this.progress = this.$store.state.product.order.progress;
-      this.progress.actual_finish_time = formatterTime(
-        this.progress.actual_finish_time
-      );
-      this.progress.estimated_finish_time = formatterTime(
-        this.progress.estimated_finish_time
-      );
+      try {
+        await this.$store.dispatch('product/order/getProgress', {
+          params: {
+            id: +this.$route.params.orderId
+          }
+        });
+        this.progress = this.$store.state.product.order.progress;
+        this.progress.actual_finish_time = formatterTime(
+          this.progress.actual_finish_time
+        );
+        this.progress.estimated_finish_time = formatterTime(
+          this.progress.estimated_finish_time
+        );
+      } catch (err) {
+        return;
+      }
     },
     async getSku() {
       this.$store.commit('product/order/setSkuLoading', true);
-      await this.$store.dispatch('product/order/getSku', {
-        params: {
-          order_id: +this.$route.params.orderId
-        }
-      });
-      this.skuForm = this.$store.state.product.order.sku.sku_info;
-      this.skuId = this.$store.state.product.order.sku.id;
-      this.skuAttachment = this.skuForm.project_plan_file;
-      this.skuEntrySchedule =
-        this.$store.state.product.order.sku.sku_entry_schedule;
-      this.skuEntrySchedule.actual_finish_time = formatterTime(
-        this.skuEntrySchedule.actual_finish_time
-      );
-      this.skuSchedule = this.$store.state.product.order.sku.sku_name_schedule;
-      this.skuSchedule.actual_finish_time = formatterTime(
-        this.skuSchedule.actual_finish_time
-      );
+      try {
+        await this.$store.dispatch('product/order/getSku', {
+          params: {
+            order_id: +this.$route.params.orderId
+          }
+        });
+        this.skuForm = this.$store.state.product.order.sku.sku_info;
+        this.skuId = this.$store.state.product.order.sku.id;
+        this.skuAttachment = this.skuForm.project_plan_file;
+        this.skuEntrySchedule =
+          this.$store.state.product.order.sku.sku_entry_schedule;
+        this.skuEntrySchedule.actual_finish_time = formatterTime(
+          this.skuEntrySchedule.actual_finish_time
+        );
+        this.skuSchedule =
+          this.$store.state.product.order.sku.sku_name_schedule;
+        this.skuSchedule.actual_finish_time = formatterTime(
+          this.skuSchedule.actual_finish_time
+        );
+      } catch (err) {
+        return;
+      }
     },
     async getContract() {
       this.$store.commit('product/order/setContractLoading', true);
-      await this.$store.dispatch('product/order/getContract', {
-        params: {
-          order_id: +this.$route.params.orderId
-        }
-      });
-      this.contract = this.$store.state.product.order.contract;
-      this.exportContract = this.contract.export_contract;
-      this.exportContract.actual_finish_time = formatterTime(
-        this.exportContract.actual_finish_time
-      );
-      this.purchaseContract = this.contract.purchase_contract;
-      this.purchaseContract.actual_finish_time = formatterTime(
-        this.purchaseContract.actual_finish_time
-      );
-      this.manual = this.purchaseContract.product_manual_file;
-      this.diecuts = this.purchaseContract.diecuts_file;
+      try {
+        await this.$store.dispatch('product/order/getContract', {
+          params: {
+            order_id: +this.$route.params.orderId
+          }
+        });
+        this.contract = this.$store.state.product.order.contract;
+        this.exportContract = this.contract.export_contract;
+        this.exportContract.actual_finish_time = formatterTime(
+          this.exportContract.actual_finish_time
+        );
+        this.purchaseContract = this.contract.purchase_contract;
+        this.purchaseContract.actual_finish_time = formatterTime(
+          this.purchaseContract.actual_finish_time
+        );
+        this.manual = this.purchaseContract.product_manual_file;
+        this.diecuts = this.purchaseContract.diecuts_file;
+      } catch (err) {
+        return;
+      }
     },
     async getPreProductSample() {
       this.$store.commit('product/order/setPreProductLoading', true);
-      await this.$store.dispatch('product/order/getPreProduct', {
-        params: {
-          order_id: +this.$route.params.orderId
-        }
-      });
-      this.preProductSample = this.$store.state.product.order.preProductSample;
-      this.preProductSample.estimated_arrival_time = formatterTime(
-        this.preProductSample.estimated_arrival_time
-      );
-      this.preProductSample.actual_arrival_time = formatterTime(
-        this.preProductSample.actual_arrival_time
-      );
-      this.preProductSample.actual_finish_time = formatterTime(
-        this.preProductSample.actual_finish_time
-      );
+      try {
+        await this.$store.dispatch('product/order/getPreProduct', {
+          params: {
+            order_id: +this.$route.params.orderId
+          }
+        });
+        this.preProductSample =
+          this.$store.state.product.order.preProductSample;
+        this.preProductSample.estimated_arrival_time = formatterTime(
+          this.preProductSample.estimated_arrival_time
+        );
+        this.preProductSample.actual_arrival_time = formatterTime(
+          this.preProductSample.actual_arrival_time
+        );
+        this.preProductSample.actual_finish_time = formatterTime(
+          this.preProductSample.actual_finish_time
+        );
+      } catch (err) {
+        return;
+      }
     },
     handleClick(tab) {
       if (tab.props.name === 'sku') {

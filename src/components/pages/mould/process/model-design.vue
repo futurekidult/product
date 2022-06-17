@@ -93,9 +93,13 @@ export default {
     async createProductDesign(val) {
       let body = val;
       body['mould_id'] = +this.$route.params.id;
-      await this.$store.dispatch('mould/createProductDesign', body);
-      this.designFormVisible = false;
-      this.getList();
+      try {
+        await this.$store.dispatch('mould/createProductDesign', body);
+        this.designFormVisible = false;
+        this.getList();
+      } catch (err) {
+        return;
+      }
     },
     showDesignForm() {
       this.designFormVisible = true;

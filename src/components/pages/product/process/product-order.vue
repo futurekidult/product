@@ -70,12 +70,20 @@ export default {
   props: ['orderList'],
   methods: {
     async getSkuForm() {
-      await this.$store.dispatch('product/order/getSku');
+      try {
+        await this.$store.dispatch('product/order/getSku');
+      } catch (err) {
+        return;
+      }
     },
     async getOrderProgress() {
-      await this.$store.dispatch('product/order/getProgress', {
-        params: { id: this.$route.params.productId }
-      });
+      try {
+        await this.$store.dispatch('product/order/getProgress', {
+          params: { id: this.$route.params.productId }
+        });
+      } catch (err) {
+        return;
+      }
     },
     toDetail(id) {
       this.$router.push(`/product-list/${this.$route.params.productId}/${id}`);

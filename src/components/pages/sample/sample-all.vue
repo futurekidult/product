@@ -163,21 +163,33 @@ export default {
           localStorage.getItem('params')
         ).sample.state;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getSampleState();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getSampleState();
+        } catch (err) {
+          return;
+        }
       }
     },
     async getCategoryList() {
-      await this.$store.dispatch('demand/getCategoryList');
-      this.categoryList = this.$store.state.demand.categoryList;
+      try {
+        await this.$store.dispatch('demand/getCategoryList');
+        this.categoryList = this.$store.state.demand.categoryList;
+      } catch (err) {
+        return;
+      }
     },
     async getSampleList(currentPage = 1, pageSize = 10) {
       this.$store.commit('sample/setListLoading', true);
       let params = this.chooseForm;
       params['current_page'] = currentPage;
       params['page_size'] = pageSize;
-      await this.$store.dispatch('sample/getSampleList', { params });
-      this.sampleList = this.$store.state.sample.sampleList;
+      try {
+        await this.$store.dispatch('sample/getSampleList', { params });
+        this.sampleList = this.$store.state.sample.sampleList;
+      } catch (err) {
+        return;
+      }
     },
     resetForm() {
       this.chooseForm = {};

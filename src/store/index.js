@@ -144,6 +144,13 @@ const store = createStore({
           context.commit('setUserInfo', res.data);
         }
       });
+    },
+    async logoutSystem() {
+      await axios.get('/logout').then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
     }
   }
 });

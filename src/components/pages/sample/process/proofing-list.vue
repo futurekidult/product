@@ -127,14 +127,18 @@ export default {
   },
   methods: {
     async getProofingSheet() {
-      await this.$store.dispatch('sample/getProofingSheet', {
-        params: {
-          id: +this.$route.params.id
-        }
-      });
-      this.reviewForm = this.$store.state.sample.proofingSheet;
-      this.approvalForm = this.$store.state.sample.proofingSheet;
-      this.editForm = this.$store.state.sample.proofingSheet;
+      try {
+        await this.$store.dispatch('sample/getProofingSheet', {
+          params: {
+            id: +this.$route.params.id
+          }
+        });
+        this.reviewForm = this.$store.state.sample.proofingSheet;
+        this.approvalForm = this.$store.state.sample.proofingSheet;
+        this.editForm = this.$store.state.sample.proofingSheet;
+      } catch (err) {
+        return;
+      }
     },
     showProofingCreate() {
       this.proofingVisible = true;

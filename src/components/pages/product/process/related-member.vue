@@ -133,9 +133,13 @@ export default {
       let body = {
         id: this.deleteId
       };
-      await this.$store.dispatch('product/deleteProjectMember', body);
-      this.deleteDialog = false;
-      this.getMember();
+      try {
+        await this.$store.dispatch('product/deleteProjectMember', body);
+        this.deleteDialog = false;
+        this.getMember();
+      } catch (err) {
+        return;
+      }
     },
     showAddForm() {
       this.addDialog = true;

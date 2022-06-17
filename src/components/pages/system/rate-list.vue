@@ -182,16 +182,24 @@ export default {
         current_page: currentPage,
         page_size: pageSize
       };
-      await this.$store.dispatch('system/getRateList', { params });
-      this.rateList = this.$store.state.system.rateList;
-      this.rateList.forEach((item) => {
-        item.create_time = formatterTime(item.create_time);
-      });
+      try {
+        await this.$store.dispatch('system/getRateList', { params });
+        this.rateList = this.$store.state.system.rateList;
+        this.rateList.forEach((item) => {
+          item.create_time = formatterTime(item.create_time);
+        });
+      } catch (err) {
+        return;
+      }
     },
     async createRate(body) {
-      await this.$store.dispatch('system/createRate', body);
-      this.addVisible = false;
-      this.getRateList();
+      try {
+        await this.$store.dispatch('system/createRate', body);
+        this.addVisible = false;
+        this.getRateList();
+      } catch (err) {
+        return;
+      }
     },
     submitRateForm() {
       this.$refs.rateForm.validate((valid) => {
@@ -201,10 +209,14 @@ export default {
       });
     },
     async deleteRate(id) {
-      await this.$store.dispatch('system/deleteRate', {
-        id
-      });
-      this.getRateList();
+      try {
+        await this.$store.dispatch('system/deleteRate', {
+          id
+        });
+        this.getRateList();
+      } catch (err) {
+        return;
+      }
     },
     showAddForm() {
       this.addVisible = true;

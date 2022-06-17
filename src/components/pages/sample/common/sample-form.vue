@@ -233,19 +233,31 @@ export default {
     async createProofingSheet(val) {
       let body = val;
       body['sample_id'] = +this.$route.params.id;
-      await this.$store.dispatch('sample/createProofingSheet', body);
-      this.visible = false;
-      this.getProofing();
+      try {
+        await this.$store.dispatch('sample/createProofingSheet', body);
+        this.visible = false;
+        this.getProofing();
+      } catch (err) {
+        return;
+      }
     },
     async approvalProofingSheet(body) {
-      await this.$store.dispatch('sample/approvalProofingSheet', body);
-      this.visible = false;
-      this.getProofing();
+      try {
+        await this.$store.dispatch('sample/approvalProofingSheet', body);
+        this.visible = false;
+        this.getProofing();
+      } catch (err) {
+        return;
+      }
     },
     async updateProofingSheet(val) {
       let body = val;
-      await this.$store.dispatch('sample/updateProofingSheet', body);
-      this.getProofing();
+      try {
+        await this.$store.dispatch('sample/updateProofingSheet', body);
+        this.getProofing();
+      } catch (err) {
+        return;
+      }
     },
     getForm() {
       if (this.type !== 'create') {
@@ -256,14 +268,18 @@ export default {
     async handleFileSuccess(e) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.show = true;
-        this.attachment = {
-          id: this.$store.state.fileRes.id,
-          name: this.$store.state.fileRes.file_name,
-          type: this.$store.state.fileRes.type
-        };
+      try {
+        await this.$store.dispatch('uploadFile', form);
+        if (this.$store.state.uploadState) {
+          this.show = true;
+          this.attachment = {
+            id: this.$store.state.fileRes.id,
+            name: this.$store.state.fileRes.file_name,
+            type: this.$store.state.fileRes.type
+          };
+        }
+      } catch (err) {
+        return;
       }
     },
     cancel() {
@@ -303,16 +319,24 @@ export default {
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        previewFile(this.$store.state.viewLink);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          previewFile(this.$store.state.viewLink);
+        }
+      } catch (err) {
+        return;
       }
     },
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        downloadFile(this.$store.state.viewLink, name);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          downloadFile(this.$store.state.viewLink, name);
+        }
+      } catch (err) {
+        return;
       }
     },
     submitProofingSheetApproval(val) {

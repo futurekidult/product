@@ -198,46 +198,62 @@ export default {
   },
   methods: {
     async confirmExportContract(id) {
-      await this.$store.dispatch('product/order/confirmExportContract', {
-        id
-      });
-      this.getContract();
+      try {
+        await this.$store.dispatch('product/order/confirmExportContract', {
+          id
+        });
+        this.getContract();
+      } catch (err) {
+        return;
+      }
     },
     async confirmPurchaseContract(id) {
-      await this.$store.dispatch('product/order/confirmPurchaseContract', {
-        id,
-        product_manual_file: this.manualFile.id,
-        diecuts_file: this.diecutsFile.id
-      });
-      this.getContract();
+      try {
+        await this.$store.dispatch('product/order/confirmPurchaseContract', {
+          id,
+          product_manual_file: this.manualFile.id,
+          diecuts_file: this.diecutsFile.id
+        });
+        this.getContract();
+      } catch (err) {
+        return;
+      }
     },
     async handleFileSuccess(e, val) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.show = true;
-        if (val === 'manual') {
-          this.manualFile = {
-            id: this.$store.state.fileRes.id,
-            name: this.$store.state.fileRes.file_name,
-            type: this.$store.state.fileRes.type
-          };
-        } else {
-          this.diecutsFile = {
-            id: this.$store.state.fileRes.id,
-            name: this.$store.state.fileRes.file_name,
-            type: this.$store.state.fileRes.type
-          };
+      try {
+        await this.$store.dispatch('uploadFile', form);
+        if (this.$store.state.uploadState) {
+          this.show = true;
+          if (val === 'manual') {
+            this.manualFile = {
+              id: this.$store.state.fileRes.id,
+              name: this.$store.state.fileRes.file_name,
+              type: this.$store.state.fileRes.type
+            };
+          } else {
+            this.diecutsFile = {
+              id: this.$store.state.fileRes.id,
+              name: this.$store.state.fileRes.file_name,
+              type: this.$store.state.fileRes.type
+            };
+          }
         }
+        this.getContract();
+      } catch (err) {
+        return;
       }
-      this.getContract();
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        previewFile(this.$store.state.viewLink);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          previewFile(this.$store.state.viewLink);
+        }
+      } catch (err) {
+        return;
       }
     },
     deleteFile(val) {
@@ -249,9 +265,13 @@ export default {
     },
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        downloadFile(this.$store.state.viewLink, name);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          downloadFile(this.$store.state.viewLink, name);
+        }
+      } catch (err) {
+        return;
       }
     }
   }

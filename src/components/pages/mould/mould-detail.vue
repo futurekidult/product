@@ -75,19 +75,23 @@ export default {
   methods: {
     async getMould() {
       this.$store.commit('mould/setMouldLoading', true);
-      await this.$store.dispatch('mould/getMould', {
-        params: {
-          id: +this.$route.params.id
-        }
-      });
-      this.mould = this.$store.state.mould.mould;
-      this.progress = this.mould.mould_schedule;
-      this.progress.estimated_finish_time = formatterTime(
-        this.progress.estimated_finish_time
-      );
-      this.progress.actual_finish_time = formatterTime(
-        this.progress.actual_finish_time
-      );
+      try {
+        await this.$store.dispatch('mould/getMould', {
+          params: {
+            id: +this.$route.params.id
+          }
+        });
+        this.mould = this.$store.state.mould.mould;
+        this.progress = this.mould.mould_schedule;
+        this.progress.estimated_finish_time = formatterTime(
+          this.progress.estimated_finish_time
+        );
+        this.progress.actual_finish_time = formatterTime(
+          this.progress.actual_finish_time
+        );
+      } catch (err) {
+        return;
+      }
     },
     changeColor(val) {
       if (val === 40) {

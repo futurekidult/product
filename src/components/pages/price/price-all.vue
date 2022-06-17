@@ -171,21 +171,33 @@ export default {
           localStorage.getItem('params')
         ).pricing.state;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getPricingEnum();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getPricingEnum();
+        } catch (err) {
+          return;
+        }
       }
     },
     async getCategoryList() {
-      await this.$store.dispatch('demand/getCategoryList');
-      this.categoryList = this.$store.state.demand.categoryList;
+      try {
+        await this.$store.dispatch('demand/getCategoryList');
+        this.categoryList = this.$store.state.demand.categoryList;
+      } catch (err) {
+        return;
+      }
     },
     async getPriceList(currentPage = 1, pageSize = 10) {
       this.$store.commit('price/setPriceLoading', true);
       let params = this.chooseForm;
       params['current_page'] = currentPage;
       params['page_size'] = pageSize;
-      await this.$store.dispatch('price/getPriceList', { params });
-      this.priceList = this.$store.state.price.priceList;
+      try {
+        await this.$store.dispatch('price/getPriceList', { params });
+        this.priceList = this.$store.state.price.priceList;
+      } catch (err) {
+        return;
+      }
     },
     resetForm() {
       this.chooseForm = {};

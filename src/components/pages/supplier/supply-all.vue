@@ -224,8 +224,12 @@ export default {
           localStorage.getItem('params')
         ).supplier.state;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getState();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getState();
+        } catch (err) {
+          return;
+        }
       }
     },
     async getSupplierList(currentPage = 1, pageSize = 10) {
@@ -233,19 +237,21 @@ export default {
       let params = this.chooseForm;
       params['current_page'] = currentPage;
       params['page_size'] = pageSize;
-      await this.$store.dispatch('supplier/getSupplierList', { params });
-      this.supplierList = this.$store.state.supplier.supplierList;
-      this.supplierList.forEach((item) => {
-        item.create_time = formatterTime(item.create_time);
-        item.approval_time = formatterTime(item.approval_time);
-      });
+      try {
+        await this.$store.dispatch('supplier/getSupplierList', { params });
+        this.supplierList = this.$store.state.supplier.supplierList;
+        this.supplierList.forEach((item) => {
+          item.create_time = formatterTime(item.create_time);
+          item.approval_time = formatterTime(item.approval_time);
+        });
+      } catch (err) {
+        return;
+      }
     },
     toCreate() {
-      this.$store.commit('supplier/setCreateState', false);
       this.$router.push('/supplier-create');
     },
     toUpdate(id) {
-      this.$store.commit('supplier/setUpdateState', false);
       this.$store.commit('supplier/setSupplierDetailLoading', true);
       this.$router.push(`/supplist-list/supplier-update/${id}`);
     },
@@ -267,10 +273,14 @@ export default {
       this.getSupplierList();
     },
     async deleteSupplier(id) {
-      await this.$store.dispatch('supplier/deleteSupplier', {
-        id
-      });
-      this.getSupplierList();
+      try {
+        await this.$store.dispatch('supplier/deleteSupplier', {
+          id
+        });
+        this.getSupplierList();
+      } catch (err) {
+        return;
+      }
     },
     toBlackList() {
       this.$store.commit('supplier/setBlackLoading', true);

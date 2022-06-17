@@ -116,20 +116,32 @@ export default {
   methods: {
     async getRoleList() {
       this.$store.commit('system/setRoleLoading', true);
-      await this.$store.dispatch('system/getRoleList');
-      this.roleList = this.$store.state.system.roleList;
+      try {
+        await this.$store.dispatch('system/getRoleList');
+        this.roleList = this.$store.state.system.roleList;
+      } catch (err) {
+        return;
+      }
     },
     async getPrivilegeList() {
       this.$store.commit('system/setPrivilegeLoading', true);
-      await this.$store.dispatch('system/getPrivilegeList');
-      this.privilegeList = this.$store.state.system.privilegeList;
+      try {
+        await this.$store.dispatch('system/getPrivilegeList');
+        this.privilegeList = this.$store.state.system.privilegeList;
+      } catch (err) {
+        return;
+      }
     },
     async deleteRole() {
-      await this.$store.dispatch('system/deleteRole', {
-        id: this.deleteId
-      });
-      this.confirmDialog = false;
-      this.getRoleList();
+      try {
+        await this.$store.dispatch('system/deleteRole', {
+          id: this.deleteId
+        });
+        this.confirmDialog = false;
+        this.getRoleList();
+      } catch (err) {
+        return;
+      }
     },
     showCreateDialog() {
       this.createVisible = true;

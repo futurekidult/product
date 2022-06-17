@@ -363,7 +363,12 @@
 <script>
 import SurveySchedule from '../../common/survey- schedule.vue';
 import CompetitiveTable from '../../common/competitive-table.vue';
-import { downloadFile, getFile, previewFile } from '../../../../../utils';
+import {
+  downloadFile,
+  getFile,
+  previewFile,
+  checkValid
+} from '../../../../../utils';
 
 export default {
   components: {
@@ -378,73 +383,85 @@ export default {
           {
             required: true,
             message: '请输入使用场景'
-          }
+          },
+          checkValid(15)
         ],
         pain_spot: [
           {
             required: true,
             message: '请输入用户痛点'
-          }
+          },
+          checkValid(200)
         ],
         user_demand_analysis: [
           {
             required: true,
             message: '请输入用户需求分析'
-          }
+          },
+          checkValid(200)
         ],
         pointcut: [
           {
             required: true,
             message: '请输入产品切入点'
-          }
+          },
+          checkValid(200)
         ],
         inner_box_dimension_l: [
           {
             required: true,
             message: '请输入长度'
-          }
+          },
+          checkValid(15)
         ],
         inner_box_dimension_w: [
           {
             required: true,
             message: '请输入宽度'
-          }
+          },
+          checkValid(15)
         ],
         inner_box_dimension_h: [
           {
             required: true,
             message: '请输入高度'
-          }
+          },
+          checkValid(15)
         ],
         outer_box_dimension_l: [
           {
             required: true,
             message: '请输入长度'
-          }
+          },
+          checkValid(15)
         ],
         outer_box_dimension_w: [
           {
             required: true,
             message: '请输入宽度'
-          }
+          },
+          checkValid(15)
         ],
         outer_box_dimension_h: [
           {
             required: true,
             message: '请输入高度'
-          }
+          },
+          checkValid(15)
         ],
         inner_box_weight: [
           {
             required: true,
             message: '请输入内箱重量'
-          }
+          },
+          checkValid(15)
         ],
         outer_box_weight: [
           {
             required: true,
             message: '请输入外箱重量'
-          }
+          },
+          checkValid(15)
         ],
         head_cost_currency: [
           {
@@ -456,7 +473,8 @@ export default {
           {
             required: true,
             message: '请输入金额'
-          }
+          },
+          checkValid(15)
         ],
         tail_cost_currency: [
           {
@@ -468,19 +486,21 @@ export default {
           {
             required: true,
             message: '请输入金额'
-          }
+          },
+          checkValid(15)
         ],
         sea_freight_currency: [
           {
             required: true,
-            message: '请输入金额'
+            message: '请选择货币'
           }
         ],
         sea_freight_cost: [
           {
             required: true,
-            message: '请输入人民币'
-          }
+            message: '请输入金额'
+          },
+          checkValid(15)
         ],
         attachment: [
           {
@@ -525,8 +545,12 @@ export default {
           localStorage.getItem('params')
         ).demand.currency;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getCurrency();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getCurrency();
+        } catch (err) {
+          return;
+        }
       }
     },
     async updatePlan(val) {
@@ -534,8 +558,12 @@ export default {
       body['survey_schedule_id'] = this.progress.id;
       body['product_id'] = +this.$route.params.productId;
       body['attachment'] = this.file.id;
-      await this.$store.dispatch('product/survey/plan/submitPlan', body);
-      this.getList();
+      try {
+        await this.$store.dispatch('product/survey/plan/submitPlan', body);
+        this.getList();
+      } catch (err) {
+        return;
+      }
     },
     handleAttachment(file) {
       if (file === undefined) {
@@ -559,28 +587,40 @@ export default {
     async handleFileSuccess(e) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.show = true;
-        this.file = {
-          id: this.$store.state.fileRes.id,
-          name: this.$store.state.fileRes.file_name,
-          type: this.$store.state.fileRes.type
-        };
+      try {
+        await this.$store.dispatch('uploadFile', form);
+        if (this.$store.state.uploadState) {
+          this.show = true;
+          this.file = {
+            id: this.$store.state.fileRes.id,
+            name: this.$store.state.fileRes.file_name,
+            type: this.$store.state.fileRes.type
+          };
+        }
+      } catch (err) {
+        return;
       }
     },
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        downloadFile(this.$store.state.viewLink, name);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          downloadFile(this.$store.state.viewLink, name);
+        }
+      } catch (err) {
+        return;
       }
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        previewFile(this.$store.state.viewLink);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          previewFile(this.$store.state.viewLink);
+        }
+      } catch (err) {
+        return;
       }
     },
     clearCurrency(val) {

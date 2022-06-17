@@ -28,6 +28,7 @@ http.interceptors.response.use((res) => {
     } else {
       ElMessage.error(res.data.message);
     }
+    throw new Error();
   }
   return res.data;
 });

@@ -197,6 +197,7 @@
             v-model="demandForm.user_survey_specialist_id"
             :data="memberList"
             clearable
+            show-checkbox
             :props="defaultProps"
             :disabled="isViewDisabled"
           />
@@ -343,47 +344,67 @@ export default {
     async createTestApply(val) {
       let body = val;
       body['sample_id'] = +this.$route.params.id;
-      await this.$store.dispatch('sample/user/createTestApply', body);
-      this.visible = false;
-      this.getUser();
+      try {
+        await this.$store.dispatch('sample/user/createTestApply', body);
+        this.visible = false;
+        this.getUser();
+      } catch (err) {
+        return;
+      }
     },
     async getUserTestApply() {
-      await this.$store.dispatch('sample/user/getUserTestApply', {
-        params: {
-          id: this.id
+      try {
+        await this.$store.dispatch('sample/user/getUserTestApply', {
+          params: {
+            id: this.id
+          }
+        });
+        this.demandForm = this.$store.state.sample.user.applyDetail;
+        this.attachment = this.demandForm.demand_list_file;
+        this.show = true;
+        if (!this.demandForm.user_survey_specialist_id) {
+          this.demandForm.user_survey_specialist_id = '';
         }
-      });
-      this.demandForm = this.$store.state.sample.user.applyDetail;
-      this.attachment = this.demandForm.demand_list_file;
-      this.show = true;
-      if (!this.demandForm.user_survey_specialist_id) {
-        this.demandForm.user_survey_specialist_id = '';
+      } catch (err) {
+        return;
       }
     },
     async viewUserTestApply() {
-      await this.$store.dispatch('sample/user/viewUserTestApply', {
-        params: {
-          id: this.id
-        }
-      });
-      this.demandForm = this.$store.state.sample.user.viewApplyDetail;
-      this.attachment = this.demandForm.demand_list_file;
-      this.requiredAttachment = this.demandForm.user_requirement_file;
-      this.show = true;
-      this.requiredShow = true;
+      try {
+        await this.$store.dispatch('sample/user/viewUserTestApply', {
+          params: {
+            id: this.id
+          }
+        });
+        this.demandForm = this.$store.state.sample.user.viewApplyDetail;
+        this.attachment = this.demandForm.demand_list_file;
+        this.requiredAttachment = this.demandForm.user_requirement_file;
+        this.show = true;
+        this.requiredShow = true;
+      } catch (err) {
+        return;
+      }
     },
     async reviewTestApply(val) {
       let body = val;
       body.id = this.id;
-      await this.$store.dispatch('sample/user/reviewTestApply', body);
-      this.visible = false;
-      this.getUser();
+      try {
+        await this.$store.dispatch('sample/user/reviewTestApply', body);
+        this.visible = false;
+        this.getUser();
+      } catch (err) {
+        return;
+      }
     },
     async getOrganizationList() {
-      await this.$store.dispatch('getOrganizationList');
-      this.memberList = this.$store.state.organizationList;
-      for (let key in this.memberList) {
-        this.childrenFunc(this.memberList[key]);
+      try {
+        await this.$store.dispatch('getOrganizationList');
+        this.memberList = this.$store.state.organizationList;
+        for (let key in this.memberList) {
+          this.childrenFunc(this.memberList[key]);
+        }
+      } catch (err) {
+        return;
       }
     },
     cancel() {
@@ -393,15 +414,19 @@ export default {
     async handleRequirementFileSuccess(e) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.requiredShow = true;
-        this.requiredAttachment = {
-          id: this.$store.state.fileRes.id,
-          name: this.$store.state.fileRes.file_name,
-          type: this.$store.state.fileRes.type
-        };
-        this.demandForm.user_requirement_file = this.requiredAttachment.id;
+      try {
+        await this.$store.dispatch('uploadFile', form);
+        if (this.$store.state.uploadState) {
+          this.requiredShow = true;
+          this.requiredAttachment = {
+            id: this.$store.state.fileRes.id,
+            name: this.$store.state.fileRes.file_name,
+            type: this.$store.state.fileRes.type
+          };
+          this.demandForm.user_requirement_file = this.requiredAttachment.id;
+        }
+      } catch (err) {
+        return;
       }
     },
     submitForm() {
@@ -429,15 +454,19 @@ export default {
     async handleFileSuccess(e) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.show = true;
-        this.attachment = {
-          id: this.$store.state.fileRes.id,
-          name: this.$store.state.fileRes.file_name,
-          type: this.$store.state.fileRes.type
-        };
-        this.demandForm.demand_list_file = this.attachment.id;
+      try {
+        await this.$store.dispatch('uploadFile', form);
+        if (this.$store.state.uploadState) {
+          this.show = true;
+          this.attachment = {
+            id: this.$store.state.fileRes.id,
+            name: this.$store.state.fileRes.file_name,
+            type: this.$store.state.fileRes.type
+          };
+          this.demandForm.demand_list_file = this.attachment.id;
+        }
+      } catch (err) {
+        return;
       }
     },
     deleteFile() {
@@ -452,16 +481,24 @@ export default {
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        previewFile(this.$store.state.viewLink);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          previewFile(this.$store.state.viewLink);
+        }
+      } catch (err) {
+        return;
       }
     },
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        downloadFile(this.$store.state.viewLink, name);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          downloadFile(this.$store.state.viewLink, name);
+        }
+      } catch (err) {
+        return;
       }
     },
     childrenFunc(data) {

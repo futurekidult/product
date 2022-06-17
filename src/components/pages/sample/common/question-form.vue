@@ -108,11 +108,23 @@ export default {
         test_apply_id: this.id
       };
       if (this.type === 'quality') {
-        await this.$store.dispatch('sample/quality/createTestQuestion', body);
+        try {
+          await this.$store.dispatch('sample/quality/createTestQuestion', body);
+        } catch (err) {
+          return;
+        }
       } else if (this.type === 'agency') {
-        await this.$store.dispatch('sample/agency/createTestQuestion', body);
+        try {
+          await this.$store.dispatch('sample/agency/createTestQuestion', body);
+        } catch (err) {
+          return;
+        }
       } else {
-        await this.$store.dispatch('sample/user/createTestQuestion', body);
+        try {
+          await this.$store.dispatch('sample/user/createTestQuestion', body);
+        } catch (err) {
+          return;
+        }
       }
       this.visible = false;
       this.getList();

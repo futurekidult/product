@@ -24,6 +24,7 @@
           v-model="operator"
           :data="memberList"
           clearable
+          show-checkbox
           :props="defaultProps"
         />
         <el-button
@@ -107,6 +108,7 @@
           v-model="operatorForm.new_user_id"
           :data="memberList"
           clearable
+          show-checkbox
           :props="defaultProps"
         />
       </el-form-item>
@@ -160,21 +162,33 @@ export default {
         keyword: this.keyword,
         operator: this.operator
       };
-      await this.$store.dispatch('system/getTodoList', { params });
-      this.todoList = this.$store.state.system.todoList;
+      try {
+        await this.$store.dispatch('system/getTodoList', { params });
+        this.todoList = this.$store.state.system.todoList;
+      } catch (err) {
+        return;
+      }
     },
     async transferTodo(val) {
       let body = val;
       body['todo_id'] = this.todoId;
-      await this.$store.dispatch('system/transferTodo', body);
-      this.operatorVisible = false;
-      this.getTodoList();
+      try {
+        await this.$store.dispatch('system/transferTodo', body);
+        this.operatorVisible = false;
+        this.getTodoList();
+      } catch (err) {
+        return;
+      }
     },
     async getOrganizationList() {
-      await this.$store.dispatch('getOrganizationList');
-      this.memberList = this.$store.state.organizationList;
-      for (let key in this.memberList) {
-        this.childrenFunc(this.memberList[key]);
+      try {
+        await this.$store.dispatch('getOrganizationList');
+        this.memberList = this.$store.state.organizationList;
+        for (let key in this.memberList) {
+          this.childrenFunc(this.memberList[key]);
+        }
+      } catch (err) {
+        return;
       }
     },
     childrenFunc(data) {

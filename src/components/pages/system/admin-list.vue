@@ -108,28 +108,48 @@ export default {
   methods: {
     async getOrganizationList() {
       this.$store.commit('system/setOrganizationLoading', true);
-      await this.$store.dispatch('system/getOrganizationList');
-      this.organizationList = this.$store.state.system.organizationList;
+      try {
+        await this.$store.dispatch('system/getOrganizationList');
+        this.organizationList = this.$store.state.system.organizationList;
+      } catch (err) {
+        return;
+      }
     },
     async getAdminList() {
       this.$store.commit('system/setAdminLoading', true);
-      await this.$store.dispatch('system/getAdminList');
-      this.adminList = this.$store.state.system.adminList;
+      try {
+        await this.$store.dispatch('system/getAdminList');
+        this.adminList = this.$store.state.system.adminList;
+      } catch (err) {
+        return;
+      }
     },
     async getRoleList() {
       this.$store.commit('system/setRoleLoading', true);
-      await this.$store.dispatch('system/getRoleList');
-      this.roleList = this.$store.state.system.roleList;
+      try {
+        await this.$store.dispatch('system/getRoleList');
+        this.roleList = this.$store.state.system.roleList;
+      } catch (err) {
+        return;
+      }
     },
     async showRoleForm(id) {
-      await this.$store.dispatch('system/getAdminRole', { params: { id } });
-      this.roleForm = this.$store.state.system.adminRole;
-      this.roleVisible = true;
+      try {
+        await this.$store.dispatch('system/getAdminRole', { params: { id } });
+        this.roleForm = this.$store.state.system.adminRole;
+        this.roleVisible = true;
+      } catch (err) {
+        return;
+      }
     },
     async updateAdminRole(body) {
-      await this.$store.dispatch('system/updateAdminRole', body);
-      this.roleVisible = false;
-      this.getAdminList();
+      try {
+        await this.$store.dispatch('system/updateAdminRole', body);
+        this.roleVisible = false;
+        this.getAdminList();
+      } catch (err) {
+        return;
+      }
     },
     closeRoleForm() {
       this.roleVisible = false;

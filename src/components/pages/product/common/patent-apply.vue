@@ -126,9 +126,9 @@ export default {
   components: {
     CompetitiveTable
   },
+  inject: ['getPatent'],
   props: ['dialogVisible', 'formTitle', 'type', 'form', 'id', 'productForm'],
   emits: ['hide-dialog'],
-  injetc: ['getPatent'],
   data() {
     return {
       countries: [],
@@ -194,18 +194,10 @@ export default {
   },
   computed: {
     Rules() {
-      if (this.type === 'apply') {
-        return this.patentRules;
-      } else {
-        return this.reviewRules;
-      }
+      return this.type === 'apply' ? this.patentRules : this.reviewRules;
     },
     isDisabled() {
-      if (this.type === 'review' || this.type === 'view') {
-        return true;
-      } else {
-        return false;
-      }
+      return this.type === 'review' || this.type === 'view' ? true : false;
     }
   },
   mounted() {
@@ -218,8 +210,12 @@ export default {
         this.countries = patent.countries;
         this.patentType = patent.type;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getParams();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getParams();
+        } catch (err) {
+          return;
+        }
       }
     },
     cancel() {
@@ -229,18 +225,26 @@ export default {
     async patentApply(params) {
       let body = params;
       body['product_id'] = 1;
-      await this.$store.dispatch('product/patent/patentApply', body);
-      this.visible = false;
-      this.getPatent();
+      try {
+        await this.$store.dispatch('product/patent/patentApply', body);
+        this.visible = false;
+        this.getPatent();
+      } catch (err) {
+        return;
+      }
     },
     async patentReview(val) {
       let body = {
         id: this.id,
         review_result: val
       };
-      await this.$store.dispatch('product/patent/patentReview', body);
-      this.visible = false;
-      this.getPatent();
+      try {
+        await this.$store.dispatch('product/patent/patentReview', body);
+        this.visible = false;
+        this.getPatent();
+      } catch (err) {
+        return;
+      }
     },
     submitPatentApply() {
       this.$refs.patentForm.validate((valid) => {

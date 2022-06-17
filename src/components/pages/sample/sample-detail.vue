@@ -61,12 +61,16 @@ export default {
   },
   methods: {
     async getSampleBase() {
-      await this.$store.dispatch('sample/getSampleBase', {
-        params: {
-          id: +this.$route.params.id
-        }
-      });
-      this.sampleBase = this.$store.state.sample.sampleBase;
+      try {
+        await this.$store.dispatch('sample/getSampleBase', {
+          params: {
+            id: +this.$route.params.id
+          }
+        });
+        this.sampleBase = this.$store.state.sample.sampleBase;
+      } catch (err) {
+        return;
+      }
     },
     toSupplier(id) {
       this.$router.push(`/supplier-list/${id}`);

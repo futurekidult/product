@@ -148,15 +148,23 @@ export default {
         product_id: +this.$params.productId,
         mould_id: this.mouldIds
       };
-      await this.$store.dispatch('product/createMould', body);
-      this.mouldSelectedVisible = false;
-      this.getMould();
+      try {
+        await this.$store.dispatch('product/createMould', body);
+        this.mouldSelectedVisible = false;
+        this.getMould();
+      } catch (err) {
+        return;
+      }
     },
     async deleteMould(id) {
-      await this.$store.dispatch('product/deleteMould', {
-        relation_id: id
-      });
-      this.getMould();
+      try {
+        await this.$store.dispatch('product/deleteMould', {
+          relation_id: id
+        });
+        this.getMould();
+      } catch (err) {
+        return;
+      }
     }
   }
 };

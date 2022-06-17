@@ -181,8 +181,12 @@ export default {
       if (val === 0) {
         body['ignore_reason_text'] = reason;
       }
-      await this.$store.dispatch('product/submitQuestionResult', body);
-      this.getQuestion();
+      try {
+        await this.$store.dispatch('product/submitQuestionResult', body);
+        this.getQuestion();
+      } catch (err) {
+        return;
+      }
     },
     showIgnoreForm(id) {
       this.ignoreFormVisible = true;

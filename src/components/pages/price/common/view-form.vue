@@ -328,19 +328,23 @@ export default {
       this.$emit('hide-dialog', false);
     },
     async getQuotation() {
-      await this.$store.dispatch('price/getQuotation', {
-        params: {
-          quote_id: this.id
-        }
-      });
-      this.quotationForm = this.$store.state.price.quotation;
-      this.quotationForm.quote_validity = formatterTime(
-        this.quotationForm.quote_validity
-      );
-      this.quotationForm.create_time = formatterTime(
-        this.quotationForm.create_time
-      );
-      this.attachment = this.quotationForm.quotation;
+      try {
+        await this.$store.dispatch('price/getQuotation', {
+          params: {
+            quote_id: this.id
+          }
+        });
+        this.quotationForm = this.$store.state.price.quotation;
+        this.quotationForm.quote_validity = formatterTime(
+          this.quotationForm.quote_validity
+        );
+        this.quotationForm.create_time = formatterTime(
+          this.quotationForm.create_time
+        );
+        this.attachment = this.quotationForm.quotation;
+      } catch (err) {
+        return;
+      }
     },
     async getParams() {
       if (localStorage.getItem('params')) {
@@ -348,22 +352,34 @@ export default {
           localStorage.getItem('params')
         ).demand.currency;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getParams();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getParams();
+        } catch (err) {
+          return;
+        }
       }
     },
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        downloadFile(this.$store.state.viewLink, name);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          downloadFile(this.$store.state.viewLink, name);
+        }
+      } catch (err) {
+        return;
       }
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        previewFile(this.$store.state.viewLink);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          previewFile(this.$store.state.viewLink);
+        }
+      } catch (err) {
+        return;
       }
     }
   }

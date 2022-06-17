@@ -257,13 +257,21 @@ export default {
           localStorage.getItem('params')
         ).product.state;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getPorductState();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getPorductState();
+        } catch (err) {
+          return;
+        }
       }
     },
     async getCategoryList() {
-      await this.$store.dispatch('demand/getCategoryList');
-      this.categoryList = this.$store.state.demand.categoryList;
+      try {
+        await this.$store.dispatch('demand/getCategoryList');
+        this.categoryList = this.$store.state.demand.categoryList;
+      } catch (err) {
+        return;
+      }
     },
     toDetail(id) {
       this.productId = id;
@@ -272,14 +280,18 @@ export default {
     },
     async showEditForm(id) {
       this.productId = id;
-      await this.$store.dispatch('product/getSingleDetailMsg', {
-        params: {
-          id
-        }
-      });
-      this.editForm.name = this.$store.state.product.singleProductDetail.name;
-      this.imgList = this.$store.state.product.singleProductDetail.images;
-      this.editVisible = true;
+      try {
+        await this.$store.dispatch('product/getSingleDetailMsg', {
+          params: {
+            id
+          }
+        });
+        this.editForm.name = this.$store.state.product.singleProductDetail.name;
+        this.imgList = this.$store.state.product.singleProductDetail.images;
+        this.editVisible = true;
+      } catch (err) {
+        return;
+      }
     },
     handleFileSuccess(file, fileList) {
       this.imgList.push({
@@ -292,17 +304,25 @@ export default {
       let params = this.chooseForm;
       params['current_page'] = currentPage;
       params['page_size'] = pageSize;
-      await this.$store.dispatch('product/getProductList', { params });
-      this.productList = this.$store.state.product.productList;
+      try {
+        await this.$store.dispatch('product/getProductList', { params });
+        this.productList = this.$store.state.product.productList;
+      } catch (err) {
+        return;
+      }
     },
     async updateProductMsg() {
-      await this.$store.dispatch('product/updateSingleProductMsg', {
-        id: this.productId,
-        name: this.editForm.name,
-        images: this.editForm.images
-      });
-      this.editVisible = false;
-      this.getProductList();
+      try {
+        await this.$store.dispatch('product/updateSingleProductMsg', {
+          id: this.productId,
+          name: this.editForm.name,
+          images: this.editForm.images
+        });
+        this.editVisible = false;
+        this.getProductList();
+      } catch (err) {
+        return;
+      }
     },
     submitEditForm() {
       this.editForm.images = [];
