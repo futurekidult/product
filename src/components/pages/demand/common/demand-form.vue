@@ -127,7 +127,7 @@
       >
         <el-form-item
           :label="'竞品图片' + (index + 1)"
-          :prop="`competitive_product.${index}. `"
+          :prop="`competitive_product.${index}.images `"
         >
           <el-upload
             action
