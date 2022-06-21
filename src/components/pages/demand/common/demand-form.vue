@@ -29,7 +29,6 @@
       <el-upload
         action
         :show-file-list="false"
-        :limit="9"
         :http-request="handleProductImageSuccess"
       >
         <el-button
@@ -128,13 +127,12 @@
       >
         <el-form-item
           :label="'竞品图片' + (index + 1)"
-          :prop="`competitive_product.${index}.images`"
+          :prop="`competitive_product.${index}. `"
         >
           <el-upload
             action
             :show-file-list="false"
             :http-request="(e) => handleCProductImageSuccess(e, index)"
-            :limit="9"
           >
             <el-button
               type="primary"
@@ -734,7 +732,7 @@ export default {
   },
   computed: {
     getBigCategory() {
-      return this.demandForm.big_category;
+      return this.demandForm.big_category_id;
     }
   },
   watch: {
@@ -769,7 +767,7 @@ export default {
         });
         this.demandForm = this.$store.state.demand.demandDetail;
         this.bigCategoryList.map((item) => {
-          if (item.id === this.demandForm.big_category) {
+          if (item.id === this.demandForm.big_category_id) {
             this.smallCategoryList = item.children;
           }
         });
@@ -844,35 +842,45 @@ export default {
       this.attachment.pop();
     },
     async handleProductImageSuccess(e) {
-      this.$store.commit('setUploadState', false);
-      let form = getFile(e);
-      try {
-        await this.$store.dispatch('uploadFile', form);
-        if (this.$store.state.uploadState) {
-          this.res = this.$store.state.fileRes;
-          this.imagesList.push({
-            id: this.res.id,
-            name: this.res.file_name
-          });
+      if (this.imagesList.length > 8) {
+        this.$message.error('产品图片最多传9张');
+      } else {
+        this.$store.commit('setUploadState', false);
+        let form = getFile(e);
+        try {
+          await this.$store.dispatch('uploadFile', form);
+          if (this.$store.state.uploadState) {
+            this.res = this.$store.state.fileRes;
+            this.imagesList.push({
+              id: this.res.id,
+              name: this.res.file_name,
+              type: this.res.type
+            });
+          }
+        } catch (err) {
+          return;
         }
-      } catch (err) {
-        return;
       }
     },
     async handleCProductImageSuccess(e, index) {
-      this.$store.commit('setUploadState', false);
-      let form = getFile(e);
-      try {
-        await this.$store.dispatch('uploadFile', form);
-        if (this.$store.state.uploadState) {
-          this.CRes = this.$store.state.fileRes;
-          this.attachment[index].images.push({
-            id: this.CRes.id,
-            name: this.CRes.file_name
-          });
+      if (this.attachment[index].images.length > 0) {
+        this.$message.error(`第${index + 1}组竞品中的竞品图片最多传9张`);
+      } else {
+        this.$store.commit('setUploadState', false);
+        let form = getFile(e);
+        try {
+          await this.$store.dispatch('uploadFile', form);
+          if (this.$store.state.uploadState) {
+            this.CRes = this.$store.state.fileRes;
+            this.attachment[index].images.push({
+              id: this.CRes.id,
+              name: this.CRes.file_name,
+              type: this.CRes.type
+            });
+          }
+        } catch (err) {
+          return;
         }
-      } catch (err) {
-        return;
       }
     },
     deleteProductImg(id, arr) {

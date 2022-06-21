@@ -36,6 +36,8 @@
 
     <div v-loading="$store.state.system.calculationRuleListLoading">
       <el-table
+        stripe
+        border
         empty-text="无数据"
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
         :data="calculationRuleList"

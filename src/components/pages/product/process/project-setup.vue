@@ -33,7 +33,10 @@
         label="操作"
         width="300px"
       >
-        <div v-if="progress.state !== 10">
+        <div
+          v-if="progress.state !== 10"
+          :class="progress.state === undefined ? 'hide' : ''"
+        >
           <el-button
             :class="progress.state === 40 ? 'hide' : ''"
             class="close-btn"
@@ -113,7 +116,6 @@
             action
             :show-file-list="false"
             :http-request="handleFileSuccess"
-            :limit="1"
           >
             <el-button
               type="primary"
@@ -123,7 +125,7 @@
             </el-button>
           </el-upload>
           <div class="attachment">
-            支持office文档格式以及png/jpg/jpeg等图片格式,单个文件不能超过5MB
+            支持office文档格式,文件不能超过5MB(仅限一个)
           </div>
         </el-form-item>
         <el-form-item style="margin-bottom: 18px; width: 50%">
@@ -132,17 +134,16 @@
             class="attachment-list"
           >
             <div>
-              {{ handleAttachment(attachment.name) }}
+              {{ attachment.name }}
             </div>
             <div style="display: flex">
-              <div v-if="handleAttachment(file.type) === 12860">
+              <div v-if="file.type === 12860">
                 <el-button
                   type="text"
                   @click="showViewFile(file.id)"
                 >
                   预览
                 </el-button>
-
                 <span class="table-btn"> |</span>
               </div>
               <el-button
@@ -304,13 +305,6 @@ export default {
         }
       } catch (err) {
         return;
-      }
-    },
-    handleAttachment(file) {
-      if (file === undefined) {
-        return '';
-      } else {
-        return file;
       }
     },
     deleteFile() {

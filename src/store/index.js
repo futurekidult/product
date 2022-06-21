@@ -139,7 +139,7 @@ const store = createStore({
       });
     },
     async getUserInfo(context) {
-      await axios.get('/admin/get').then((res) => {
+      await axios.get('/admin/info').then((res) => {
         if (res.code === 200) {
           context.commit('setUserInfo', res.data);
         }
@@ -147,6 +147,13 @@ const store = createStore({
     },
     async logoutSystem() {
       await axios.get('/logout').then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
+    },
+    async blockAdmin(_, payload) {
+      await axios.post('/system/admin/block', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }

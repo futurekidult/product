@@ -76,6 +76,7 @@
 
       <el-table
         border
+        stripe
         empty-text="无数据"
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
         :data="mouldList"
@@ -83,6 +84,7 @@
         <el-table-column
           label="模具ID"
           prop="id"
+          width="80px"
         />
         <el-table-column
           label="模具名称"
@@ -95,19 +97,23 @@
         <el-table-column
           label="创建时间"
           prop="create_time"
+          width="200px"
+        />
         />
         <el-table-column
-          label="
-        创建人"
+          label="创建人"
           prop="creator"
         />
         <el-table-column
           label="计划完成时间"
           prop="estimated_finish_time"
+          width="200px"
         />
         <el-table-column
           label="实际完成时间"
           prop="actual_finish_time"
+          width="200px"
+        />
         />
         <el-table-column label="状态">
           <template #default="scope">

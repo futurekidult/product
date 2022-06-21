@@ -240,10 +240,7 @@
         <el-form-item
           label="工厂规模(人)"
           prop="factory_scale"
-          :rules="[
-            { required: true, message: '请输入工厂规模' },
-            checkValid(15)
-          ]"
+          :rules="[{ required: true, message: '请输入工厂规模' }]"
         >
           <el-input
             v-model="supplierForm.factory_scale"
@@ -270,10 +267,7 @@
         <el-form-item
           label="注册资金(万元)"
           prop="registered_capital"
-          :rules="[
-            { required: true, message: '请输入注册资金' },
-            checkValid(15)
-          ]"
+          :rules="[{ required: true, message: '请输入注册资金' }]"
         >
           <el-input
             v-model="supplierForm.registered_capital"
@@ -409,10 +403,7 @@
         <el-form-item
           label="开户银行账号"
           prop="bank_account"
-          :rules="[
-            { required: true, message: '请输入开户银行账号' },
-            checkValid(15)
-          ]"
+          :rules="[{ required: true, message: '请输入开户银行账号' }]"
         >
           <el-input
             v-model="supplierForm.bank_account"
@@ -517,8 +508,9 @@
         <el-upload
           action
           :show-file-list="false"
-          :http-request="(e) => handleFileArrSuccess(e, vatInvoiceFile)"
-          :limit="9"
+          :http-request="
+            (e) => handleFileArrSuccess(e, vatInvoiceFile, '增值税发票')
+          "
         >
           <el-button
             type="primary"
@@ -528,7 +520,7 @@
           </el-button>
         </el-upload>
         <div class="attachment">
-          只能上传jpg/png格式文件,文件不能超过5MB
+          请上传 jpg/png/jepg等图片格式, 单个文件不超过 5MB
         </div>
       </el-form-item>
       <el-form-item>
@@ -570,9 +562,9 @@
           action
           :show-file-list="false"
           :http-request="
-            (e) => handleFileArrSuccess(e, accountOpeningLicenseFile)
+            (e) =>
+              handleFileArrSuccess(e, accountOpeningLicenseFile, '开户许可证')
           "
-          :limit="9"
         >
           <el-button
             type="primary"
@@ -582,7 +574,7 @@
           </el-button>
         </el-upload>
         <div class="attachment">
-          只能上传jpg/png格式文件,文件不能超过5MB
+          请上传 jpg/png/jepg等图片格式, 单个文件不超过 5MB
         </div>
       </el-form-item>
       <el-form-item>
@@ -627,8 +619,9 @@
         <el-upload
           action
           :show-file-list="false"
-          :http-request="(e) => handleFileArrSuccess(e, businessLicenseFile)"
-          :limit="9"
+          :http-request="
+            (e) => handleFileArrSuccess(e, businessLicenseFile, '营业执照')
+          "
         >
           <el-button
             type="primary"
@@ -638,7 +631,7 @@
           </el-button>
         </el-upload>
         <div class="attachment">
-          只能上传jpg/png格式文件,文件不能超过5MB
+          请上传 jpg/png/jepg等图片格式, 单个文件不超过 5MB
         </div>
       </el-form-item>
       <el-form-item>
@@ -684,7 +677,6 @@
           action
           :show-file-list="false"
           :http-request="(e) => handleFileSuccess(e, purchaseEvaluationFile)"
-          :limit="1"
         >
           <el-button
             type="primary"
@@ -694,7 +686,7 @@
           </el-button>
         </el-upload>
         <div class="attachment">
-          请上传office文档格式
+          支持office文档格式,文件不能超过5MB(仅限一个)
         </div>
       </el-form-item>
       <el-form-item>
@@ -748,7 +740,6 @@
           action
           :show-file-list="false"
           :http-request="(e) => handleFileSuccess(e, qualityEvaluationFile)"
-          :limit="1"
         >
           <el-button
             type="primary"
@@ -758,7 +749,7 @@
           </el-button>
         </el-upload>
         <div class="attachment">
-          请上传office文档格式
+          支持office文档格式,文件不能超过5MB(仅限一个)
         </div>
       </el-form-item>
       <el-form-item>
@@ -998,20 +989,24 @@ export default {
         return;
       }
     },
-    async handleFileArrSuccess(e, arr) {
-      this.$store.commit('setUploadState', false);
-      let form = getFile(e);
-      try {
-        await this.$store.dispatch('uploadFile', form);
-        if (this.$store.state.uploadState) {
-          arr.push({
-            id: this.$store.state.fileRes.id,
-            name: this.$store.state.fileRes.file_name,
-            type: this.$store.state.fileRes.type
-          });
+    async handleFileArrSuccess(e, arr, str) {
+      if (arr.length > 8) {
+        this.$emssage.error(`${str}不能传超过9张`);
+      } else {
+        this.$store.commit('setUploadState', false);
+        let form = getFile(e);
+        try {
+          await this.$store.dispatch('uploadFile', form);
+          if (this.$store.state.uploadState) {
+            arr.push({
+              id: this.$store.state.fileRes.id,
+              name: this.$store.state.fileRes.file_name,
+              type: this.$store.state.fileRes.type
+            });
+          }
+        } catch (err) {
+          return;
         }
-      } catch (err) {
-        return;
       }
     },
     async handleFileSuccess(e, obj) {

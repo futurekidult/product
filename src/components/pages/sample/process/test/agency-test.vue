@@ -63,19 +63,21 @@
             label="操作"
             width="300px"
           >
-            <el-button
-              v-if="progress.state === 10"
-              @click="showFailReason"
-            >
-              测试不通过
-            </el-button>
-            <el-button
-              type="primary"
-              :disabled="progress.state !== 10"
-              @click="confirmResult"
-            >
-              测试通过
-            </el-button>
+            <div :class="progress.state === undefined ? 'hide' : ''">
+              <el-button
+                v-if="progress.state === 10"
+                @click="showFailReason"
+              >
+                测试不通过
+              </el-button>
+              <el-button
+                type="primary"
+                :disabled="progress.state !== 10"
+                @click="confirmResult"
+              >
+                测试通过
+              </el-button>
+            </div>
           </el-descriptions-item>
         </el-descriptions>
 
@@ -103,7 +105,6 @@
               action
               :show-file-list="false"
               :http-request="handleFileSuccess"
-              :limit="1"
             >
               <el-button
                 type="primary"
@@ -113,7 +114,7 @@
               </el-button>
             </el-upload>
             <div class="attachment">
-              支持office文档格式以及png/jpg/jpeg等图片格式,单个文件不能超过5MB
+              支持office文档格式,文件不能超过5MB(仅限一个)
             </div>
           </el-form-item>
           <el-form-item>
@@ -365,3 +366,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.hide {
+  display: none;
+}
+</style>

@@ -1,6 +1,7 @@
 <template>
   <el-table
     border
+    stripe
     empty-text="无数据"
     :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
     :data="userList"
@@ -8,7 +9,7 @@
     <el-table-column
       label="序号"
       type="index"
-      width="80px"
+      width="60px"
     />
     <el-table-column
       label="创建人"
@@ -55,7 +56,6 @@
             action
             :show-file-list="false"
             :http-request="handleFileSuccess"
-            :limit="1"
           >
             <el-button
               v-if="

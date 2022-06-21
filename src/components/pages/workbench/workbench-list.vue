@@ -14,7 +14,7 @@
         label="待办事项"
         name="todolist"
       >
-        <div class="border">
+        <div>
           <div class="select-title todo-title">
             <div><span class="line">|</span> 待办列表</div>
             <div style="display: flex">

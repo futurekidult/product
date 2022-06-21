@@ -17,7 +17,7 @@
         {{ progress.product_id }}
       </el-descriptions-item>
       <el-descriptions-item label="最终定价">
-        ￥{{ progress.final_price }}
+        {{ progress.final_price }}
       </el-descriptions-item>
       <el-descriptions-item label="供应商ID">
         {{ progress.supplier_id }}
@@ -133,6 +133,7 @@ export default {
         this.progress.estimated_finish_time = formatterTime(
           this.progress.estimated_finish_time
         );
+        this.progress.final_price = `￥${this.progress.final_price}`;
       } catch (err) {
         return;
       }

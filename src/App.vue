@@ -159,7 +159,8 @@ body {
 }
 
 .el-button--primary,
-.el-button--success {
+.el-button--success,
+.el-button--danger {
   width: 100px;
 }
 

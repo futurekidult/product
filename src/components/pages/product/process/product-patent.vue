@@ -18,6 +18,8 @@
 
     <el-table
       border
+      stripe
+      empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       :data="patent.patent_list"
     >
@@ -96,6 +98,7 @@
         <el-descriptions-item label="操作">
           <el-button
             :disabled="progress.state !== 10"
+            :class="progress.state === undefined ? 'hide' : ''"
             @click="confirmPatent"
           >
             专利排查完成
@@ -289,5 +292,9 @@ export default {
 <style scoped>
 .patent-tabs {
   margin: 30px 0;
+}
+
+.hide {
+  display: none;
 }
 </style>

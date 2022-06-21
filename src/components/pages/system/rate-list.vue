@@ -15,6 +15,8 @@
     </div>
     <div v-loading="$store.state.system.rateListLoading">
       <el-table
+        stripe
+        border
         empty-text="无数据"
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
         :data="rateList"
@@ -22,6 +24,7 @@
         <el-table-column
           label="ID"
           prop="id"
+          width="60px"
         />
         <el-table-column
           label="美元"

@@ -76,6 +76,7 @@
       </div>
       <el-table
         border
+        stripe
         empty-text="无数据"
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
         :data="sampleList"
@@ -83,15 +84,22 @@
         <el-table-column
           label="样品ID"
           prop="id"
+          width="80px"
         />
         <el-table-column
           label="关联产品名称"
           prop="product_name"
         />
-        <el-table-column
-          label="关联产品ID"
-          prop="product_id"
-        />
+        <el-table-column label="关联产品ID">
+          <template #default="scope">
+            <el-button
+              type="text"
+              @click="toRelatedProduct(scope.row.product_id)"
+            >
+              {{ scope.row.product_id }}
+            </el-button>
+          </template>
+        </el-table-column>
         <el-table-column
           label="关联定价ID"
           prop="pricing_id"
@@ -103,10 +111,12 @@
         <el-table-column
           label="计划完成时间"
           prop="estimated_finish_time"
+          width="200px"
         />
         <el-table-column
           label="实际完成时间"
           prop="actual_finish_time"
+          width="200px"
         />
         <el-table-column
           label="采购员"
@@ -142,6 +152,7 @@
 </template>
 
 <script>
+import { formatterTime } from '../../../utils';
 export default {
   data() {
     return {
@@ -187,6 +198,12 @@ export default {
       try {
         await this.$store.dispatch('sample/getSampleList', { params });
         this.sampleList = this.$store.state.sample.sampleList;
+        this.sampleList.forEach((item) => {
+          item.estimated_finish_time = formatterTime(
+            item.estimated_finish_time
+          );
+          item.actual_finish_time = formatterTime(item.actual_finish_time);
+        });
       } catch (err) {
         return;
       }
@@ -207,6 +224,9 @@ export default {
       } else {
         return 'result-ignore';
       }
+    },
+    toRelatedProduct(id) {
+      this.$router.push(`/product-list/${id}`);
     }
   }
 };

@@ -90,7 +90,6 @@
           action
           :show-file-list="false"
           :http-request="handleFileSuccess"
-          :limit="1"
         >
           <el-button
             type="primary"
@@ -100,7 +99,7 @@
           </el-button>
         </el-upload>
         <div class="attachment">
-          支持office文档格式以及png/jpg/jpeg等图片格式,单个文件不能超过5MB
+          支持office文档格式,文件不能超过5MB(仅限一个)
         </div>
       </el-form-item>
       <el-form-item
@@ -109,10 +108,10 @@
       >
         <div class="attachment-list">
           <div>
-            {{ handleAttachment(attachment.name) }}
+            {{ attachment.name }}
           </div>
           <div style="display: flex">
-            <div v-if="handleAttachment(file.type) === 12860">
+            <div v-if="file.type === 12860">
               <el-button
                 type="text"
                 @click="showViewFile(file.id)"
@@ -172,6 +171,7 @@
       <el-descriptions-item label="操作">
         <el-button
           :disabled="skuEntrySchedule.state !== 10"
+          :class="skuEntrySchedule.state === undefined ? 'hide' : ''"
           @click="completeEntry"
         >
           已完成SKU录入甲骨文
@@ -301,13 +301,6 @@ export default {
       this.form.project_plan_file = '';
       this.show = false;
     },
-    handleAttachment(file) {
-      if (file === undefined) {
-        return '';
-      } else {
-        return file;
-      }
-    },
     submitSkuForm() {
       this.form.project_plan_file = this.file.id;
       this.$refs.skuForm.validate((valid) => {
@@ -341,3 +334,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.hide {
+  display: none;
+}
+</style>

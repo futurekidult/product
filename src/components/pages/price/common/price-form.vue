@@ -348,14 +348,13 @@
           action
           :show-file-list="false"
           :http-request="handleFileSuccess"
-          :limit="1"
         >
           <el-button type="primary">
             点击上传
           </el-button>
         </el-upload>
         <div class="attachment">
-          只能上传jpg/png格式文件,单个文件不能超过5MB
+          支持office文档格式,文件不能超过5MB(仅限一个)
         </div>
       </el-form-item>
       <el-form-item>
@@ -363,7 +362,7 @@
           v-if="show"
           class="attachment-list"
         >
-          <div>{{ handleAttachment(attachment.name) }}</div>
+          <div>{{ attachment.name }}</div>
           <div style="display: flex">
             <el-button
               type="text"
@@ -588,7 +587,7 @@ export default {
       isHigh: 0,
       attachment: {},
       currency: [],
-      show: false
+      show: true
     };
   },
   mounted() {
@@ -674,13 +673,6 @@ export default {
         }
       } catch (err) {
         return;
-      }
-    },
-    handleAttachment(file) {
-      if (file === undefined) {
-        return '';
-      } else {
-        return file;
       }
     },
     deleteFile() {

@@ -25,6 +25,11 @@ http.interceptors.response.use((res) => {
       window.location.href = res.data.auth_url;
     } else if (code === 403) {
       ElMessage.error('no permission to access it');
+    } else if (code === 405) {
+      http.get('/csrftoken/get').then((res) => {
+        localStorage.setItem('token', res.data);
+      });
+      http.request(res.config);
     } else {
       ElMessage.error(res.data.message);
     }

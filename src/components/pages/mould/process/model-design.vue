@@ -26,7 +26,10 @@
         </div>
       </el-descriptions-item>
       <el-descriptions-item label="操作">
-        <el-button @click="showDesignForm">
+        <el-button
+          :class="progress.state === undefined ? 'hide' : ''"
+          @click="showDesignForm"
+        >
           上传设计图
         </el-button>
       </el-descriptions-item>
@@ -117,3 +120,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.hide {
+  display: none;
+}
+</style>

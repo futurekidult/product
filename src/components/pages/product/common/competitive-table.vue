@@ -17,8 +17,6 @@
               <el-upload
                 action
                 :show-file-list="false"
-                :http-request="(e) => handleCProductImageSuccess(e, index)"
-                :limit="9"
               >
                 <el-button
                   type="primary"

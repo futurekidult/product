@@ -8,6 +8,8 @@
 
     <div v-loading="$store.state.system.adminLoading">
       <el-table
+        stripe
+        border
         :data="adminList"
         empty-text="无数据"
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
@@ -22,8 +24,11 @@
         />
         <el-table-column label="操作">
           <template #default="scope">
-            <el-button :type="scope.row.state === 1 ? 'danger' : 'primary'">
-              {{ scope.row.state === 1 ? '封禁账号' : '解除封禁' }}
+            <el-button
+              :type="scope.row.state === 2 ? 'danger' : 'primary'"
+              @click="blockAdmin(scope.row.id)"
+            >
+              {{ scope.row.state === 2 ? '封禁账号' : '解除封禁' }}
             </el-button>
             <el-button
               type="warning"
@@ -160,6 +165,14 @@ export default {
           this.updateAdminRole(this.roleForm);
         }
       });
+    },
+    async blockAdmin(id) {
+      try {
+        await this.$store.dispatch('blockAdmin', { id });
+        this.getAdminList();
+      } catch (err) {
+        return;
+      }
     }
   }
 };

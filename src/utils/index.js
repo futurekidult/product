@@ -139,3 +139,10 @@ export const checkValid = (val) => {
     message: `长度不超过${val}个字符`
   };
 };
+
+export const checkFile = (val) => {
+  return {
+    max: val,
+    message: `不能超过${val}个`
+  };
+};

@@ -33,7 +33,10 @@
         </div>
       </el-descriptions-item>
       <el-descriptions-item label="操作">
-        <div style="display: flex">
+        <div
+          style="display: flex"
+          :class="preProductSample.state === undefined ? 'hide' : ''"
+        >
           <el-button
             v-if="preProductSample.state === 10"
             class="pre-product_btn"
@@ -316,5 +319,8 @@ export default {
 
 .pre-product {
   text-align: center;
+}
+.hide {
+  display: none;
 }
 </style>

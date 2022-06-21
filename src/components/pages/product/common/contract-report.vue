@@ -81,6 +81,7 @@
         <el-button
           v-if="JSON.stringify(data) !== '{}'"
           :disabled="data.state !== 10"
+          :class="data.state === undefined ? 'hide' : ''"
           @click="uploadAttachment"
         >
           完成
@@ -189,3 +190,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.hide {
+  display: none;
+}
+</style>

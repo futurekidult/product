@@ -48,6 +48,7 @@
         </div>
         <el-table
           border
+          stripe
           empty-text="无数据"
           :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
           :data="quotationList.list"
@@ -55,7 +56,7 @@
           <el-table-column
             label="序号"
             type="index"
-            width="80px"
+            width="60px"
           />
           <el-table-column label="供应商名称">
             <template #default="scope">
@@ -114,7 +115,10 @@
           >
             <template #default="scope">
               <div style="display: flex">
-                <el-button @click="showViewQuotationForm(scope.row.id)">
+                <el-button
+                  style="width: 80px"
+                  @click="showViewQuotationForm(scope.row.id)"
+                >
                   查看
                 </el-button>
                 <div
@@ -123,11 +127,13 @@
                 >
                   <el-button
                     type="danger"
+                    style="width: 80px"
                     @click="showDeleteDialog(scope.row.id)"
                   >
                     删除
                   </el-button>
                   <el-button
+                    style="width: 80px"
                     @click="
                       showApplyForm(scope.row.id, scope.row.quote_amount_rmb)
                     "
@@ -136,6 +142,7 @@
                   </el-button>
                   <el-button
                     type="primary"
+                    style="width: 80px"
                     @click="
                       showQuotation(scope.row.id, scope.row.quote_amount_rmb)
                     "
@@ -148,6 +155,7 @@
                   style="margin-left: 12px"
                 >
                   <el-button
+                    style="width: 80px"
                     @click="
                       showEditForm(
                         scope.row.id,
@@ -159,12 +167,14 @@
                   </el-button>
                   <el-button
                     type="danger"
+                    style="width: 80px"
                     @click="showTerminateForm(scope.row.id)"
                   >
                     终止定价
                   </el-button>
                   <el-button
                     type="success"
+                    style="width: 80px"
                     @click="showConfirmForm(scope.row.id)"
                   >
                     确定定价

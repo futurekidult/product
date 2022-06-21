@@ -42,6 +42,7 @@
 
     <div v-loading="$store.state.system.todoLoading">
       <el-table
+        stripe
         :data="todoList"
         empty-text="无数据"
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"

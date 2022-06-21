@@ -77,12 +77,14 @@
       <el-table
         :data="demandList"
         border
+        stripe
         empty-text="无数据"
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       >
         <el-table-column
           prop="id"
           label="需求ID"
+          width="80px"
         />
         <el-table-column
           prop="name"

@@ -409,6 +409,7 @@ export default {
         this.questionList = this.$store.state.product.questionList;
         this.questionList.forEach((item) => {
           item.resolve_time = formatterTime(item.resolve_time);
+          item.record_time = formatterTime(item.record_time);
         });
       } catch (err) {
         return;
@@ -450,6 +451,7 @@ export default {
             item.estimated_finish_time
           );
           item.actual_finish_time = formatterTime(item.actual_finish_time);
+          item.final_price = `￥${item.final_price}`;
         });
       } catch (err) {
         return;

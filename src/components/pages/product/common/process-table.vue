@@ -5,13 +5,14 @@
   <div class="profit-plan_title">
     <el-table
       border
+      stripe
+      empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       :data="getSchedule.list"
     >
       <el-table-column
         label="序号"
-        width="80px"
-        align="center"
+        width="60px"
         type="index"
       />
       <el-table-column

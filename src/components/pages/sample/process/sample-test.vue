@@ -1,6 +1,6 @@
 <template>
   <div v-loading="$store.state.sample.testLoading">
-    <div class="border">
+    <div>
       <div class="select-title">
         <span class="line">|</span> 测试申请
       </div>
@@ -19,6 +19,7 @@
       </div>
       <el-table
         border
+        stripe
         empty-text="无数据"
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
         :data="applyList"
@@ -35,10 +36,12 @@
         <el-table-column
           label="提交时间"
           prop="submit_time"
+          width="200px"
         />
         <el-table-column
           label="评审完成时间"
           prop="review_finish_time"
+          width="200px"
         />
         <el-table-column label="状态">
           <template #default="scope">
@@ -80,7 +83,7 @@
       </el-table>
     </div>
 
-    <div class="border">
+    <div style="margin-top: 20px">
       <div class="select-title">
         <span class="line">|</span> 测试详情
       </div>

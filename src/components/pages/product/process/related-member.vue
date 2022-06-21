@@ -13,6 +13,7 @@
     </div>
     <el-table
       border
+      stripe
       empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       :data="projectMember"
@@ -20,7 +21,7 @@
       <el-table-column
         label="序号"
         type="index"
-        width="80px"
+        width="60px"
       />
       <el-table-column
         label="成员名称"

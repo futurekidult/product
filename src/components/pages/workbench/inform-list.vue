@@ -1,20 +1,19 @@
 <template>
-  <div
-    v-loading="$store.state.workbench.notificationListLoading"
-    class="border"
-  >
+  <div v-loading="$store.state.workbench.notificationListLoading">
     <div class="select-title">
       <span class="line">|</span> 通知
     </div>
     <el-table
       :data="notificationList"
       border
+      stripe
       empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
     >
       <el-table-column
         prop="id"
         label="序号"
+        width="60px"
       />
       <el-table-column
         label="通知标题"

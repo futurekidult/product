@@ -15,6 +15,8 @@
 
       <el-table
         border
+        stripe
+        empty-text="无数据"
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
         :data="surveyApply"
       >
@@ -172,6 +174,8 @@
         </div>
         <el-table
           border
+          stripe
+          empty-text="无数据"
           :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
           :data="planList"
         >
@@ -282,7 +286,6 @@
                     :http-request="
                       (e) => handleFileSuccess(e, scope.row.attachment)
                     "
-                    :limit="1"
                   >
                     <el-button type="text">
                       上传

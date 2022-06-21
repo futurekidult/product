@@ -6,6 +6,8 @@
   <div class="profit-plan_title">
     <el-table
       border
+      stripe
+      empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       class="profit-plan_table"
       :data="getProfit.list"
@@ -13,7 +15,7 @@
       <el-table-column
         label="序号"
         type="index"
-        width="100px"
+        width="60px"
       />
       <el-table-column
         label="市场"

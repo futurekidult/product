@@ -6,6 +6,7 @@
 
     <el-table
       border
+      stripe
       empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       :data="pricingList"
@@ -13,6 +14,7 @@
       <el-table-column
         label="定价ID"
         prop="id"
+        width="80px"
       />
       <el-table-column
         label="市场"

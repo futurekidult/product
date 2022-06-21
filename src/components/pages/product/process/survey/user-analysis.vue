@@ -207,7 +207,6 @@
           action
           :show-file-list="false"
           :http-request="handleFileSuccess"
-          :limit="1"
         >
           <el-button
             type="primary"
@@ -217,7 +216,7 @@
           </el-button>
         </el-upload>
         <div class="attachment">
-          支持office文档格式,文档不超过5MB
+          支持office文档格式,文档不超过5MB(仅限一个)
         </div>
       </el-form-item>
       <el-form-item>
@@ -226,10 +225,10 @@
           class="attachment-list"
         >
           <div>
-            {{ handleAttachment(file.name) }}
+            {{ file.name }}
           </div>
           <div style="display: flex">
-            <div v-if="handleAttachment(file.type) === 12860">
+            <div v-if="file.type === 12860">
               <el-button
                 type="text"
                 @click="showViewFile(file.id)"
@@ -432,13 +431,6 @@ export default {
         this.getList();
       } catch (err) {
         return;
-      }
-    },
-    handleAttachment(file) {
-      if (file === undefined) {
-        return '';
-      } else {
-        return file;
       }
     },
     submitAnalysisForm() {

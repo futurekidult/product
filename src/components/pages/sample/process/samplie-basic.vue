@@ -36,6 +36,7 @@
       <el-descriptions-item label="操作">
         <el-button
           type="text"
+          :class="sampleDetail.state === undefined ? 'hide' : ''"
           @click="confirmResult"
         >
           样品测试结果确认
@@ -148,3 +149,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.hide {
+  display: none;
+}
+</style>

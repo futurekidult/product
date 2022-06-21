@@ -14,6 +14,7 @@
 
     <el-table
       border
+      stripe
       empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       :data="mouldList"
@@ -66,6 +67,7 @@
   >
     <el-table
       border
+      stripe
       empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       :data="allList"
@@ -145,7 +147,7 @@ export default {
     },
     async submitResult() {
       let body = {
-        product_id: +this.$params.productId,
+        product_id: +this.$route.params.productId,
         mould_id: this.mouldIds
       };
       try {

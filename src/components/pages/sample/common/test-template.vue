@@ -1,12 +1,14 @@
 <template>
   <el-table
     border
+    stripe
+    empty-text="无数据"
     :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
     :data="questionList"
   >
     <el-table-column
       label="序号"
-      width="100px"
+      width="60px"
       type="index"
     />
     <el-table-column

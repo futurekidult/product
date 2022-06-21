@@ -84,6 +84,7 @@
 
       <el-table
         border
+        stripe
         empty-text="无数据"
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
         :data="supplierList"
@@ -91,6 +92,7 @@
         <el-table-column
           label="供应商ID"
           prop="id"
+          width="100px"
         />
         <el-table-column
           label="供应商名称"
@@ -111,10 +113,12 @@
         <el-table-column
           label="创建时间"
           prop="create_time"
+          width="200px"
         />
         <el-table-column
           label="审批完成时间"
           prop="approval_time"
+          width="200px"
         />
         <el-table-column label="状态">
           <template #default="scope">

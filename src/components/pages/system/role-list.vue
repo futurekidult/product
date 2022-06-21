@@ -16,6 +16,8 @@
 
     <div v-loading="$store.state.system.roleLoading">
       <el-table
+        stripe
+        border
         :data="roleList"
         empty-text="无数据"
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
