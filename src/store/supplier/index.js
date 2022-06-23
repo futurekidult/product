@@ -9,8 +9,6 @@ export default {
       supplierLoading: true,
       blackList: [],
       blackLoading: true,
-      createPass: false,
-      updatePass: false,
       supplierDetail: {},
       supplierDetailLoading: true,
       cityOption: []
@@ -28,12 +26,6 @@ export default {
     },
     setBlackLoading(state, payload) {
       state.blackLoading = payload;
-    },
-    setCreateState(state, payload) {
-      state.createPass = payload;
-    },
-    setUpdateState(state, payload) {
-      state.updatePass = payload;
     },
     setSupplierDetail(state, payload) {
       state.supplierDetail = payload;
@@ -87,7 +79,6 @@ export default {
       await axios.post('/supplier/detail/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-          context.commit('setCreateState', true);
         }
       });
     },
@@ -103,7 +94,6 @@ export default {
       await axios.post('/supplier/detail/update', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-          context.commit('setUpdateState', true);
         }
       });
     },

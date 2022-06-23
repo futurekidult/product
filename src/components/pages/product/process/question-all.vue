@@ -6,6 +6,7 @@
 
     <el-table
       border
+      stripe
       empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       :data="questionList"
@@ -13,7 +14,7 @@
       <el-table-column
         label="序号"
         type="index"
-        width="80px"
+        width="60px"
       />
       <el-table-column label="关联样品ID">
         <template #default="scope">
@@ -46,6 +47,7 @@
       <el-table-column
         label="记录时间"
         prop="record_time"
+        width="200px"
       />
       <el-table-column
         label="问题来源"
@@ -58,6 +60,7 @@
       <el-table-column
         label="解決时间"
         prop="resolve_time"
+        width="200px"
       />
       <el-table-column label="状态">
         <template #default="scope">
@@ -181,8 +184,12 @@ export default {
       if (val === 0) {
         body['ignore_reason_text'] = reason;
       }
-      await this.$store.dispatch('product/submitQuestionResult', body);
-      this.getQuestion();
+      try {
+        await this.$store.dispatch('product/submitQuestionResult', body);
+        this.getQuestion();
+      } catch (err) {
+        return;
+      }
     },
     showIgnoreForm(id) {
       this.ignoreFormVisible = true;

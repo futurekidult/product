@@ -65,12 +65,16 @@ export default {
   },
   methods: {
     async getSimpleUserDetail() {
-      await this.$store.dispatch('sample/user/getSimpleUserDetail', {
-        params: {
-          id: this.id
-        }
-      });
-      this.userForm = this.$store.state.sample.user.simpleUserDetail;
+      try {
+        await this.$store.dispatch('sample/user/getSimpleUserDetail', {
+          params: {
+            id: this.id
+          }
+        });
+        this.userForm = this.$store.state.sample.user.simpleUserDetail;
+      } catch (err) {
+        return;
+      }
     },
     cancel() {
       this.visible = false;

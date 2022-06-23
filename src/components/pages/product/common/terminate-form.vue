@@ -61,12 +61,14 @@ export default {
   },
   methods: {
     async terminateProject() {
-      await this.$store.dispatch('product/terminateProject', {
-        params: {
+      try {
+        await this.$store.dispatch('product/terminateProject', {
           id: +this.$route.params.productId,
           reason: this.terminateForm.reason
-        }
-      });
+        });
+      } catch (err) {
+        return;
+      }
     },
     cancel() {
       this.visible = false;

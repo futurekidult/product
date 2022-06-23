@@ -193,7 +193,7 @@ import MouldMessage from './process/mould-message.vue';
 import QuestionAll from './process/question-all.vue';
 import ProductOrder from './process/product-order.vue';
 import ProductPackage from './process/product-package.vue';
-import { formatterTime } from '../../../utils';
+import { changeTimestamp } from '../../../utils';
 import TerminateForm from './common/terminate-form.vue';
 
 export default {
@@ -269,47 +269,59 @@ export default {
     if (this.$store.state.entry !== 'workbench') {
       this.$store.commit('setActiveTab', 'basic');
     }
-    this.getResquest(this.$store.state.activeTab);
+    this.getRequest(this.$store.state.activeTab);
   },
   methods: {
     async getProductBase() {
-      await this.$store.dispatch('product/getProductBase', {
-        params: {
-          id: +this.$route.params.productId
+      try {
+        await this.$store.dispatch('product/getProductBase', {
+          params: {
+            id: +this.$route.params.productId
+          }
+        });
+        this.productBase = this.$store.state.product.productBase;
+        if (this.productBase.state === 90) {
+          this.mode = 'info';
+        } else if (this.productBase.state === 80) {
+          this.mode = 'success';
+        } else {
+          this.mode = 'warning';
         }
-      });
-      this.productBase = this.$store.state.product.productBase;
-      if (this.productBase.state === 90) {
-        this.mode = 'info';
-      } else if (this.productBase.state === 80) {
-        this.mode = 'success';
-      } else {
-        this.mode = 'warning';
+      } catch (err) {
+        return;
       }
     },
     async getProductDetail() {
       this.$store.commit('product/setDetailLoading', true);
-      await this.$store.dispatch('product/getProductDetail', {
-        params: {
-          id: +this.$route.params.productId
-        }
-      });
-      this.productForm = this.$store.state.product.productDetail;
-      this.productAttachment = this.productForm.images;
+      try {
+        await this.$store.dispatch('product/getProductDetail', {
+          params: {
+            id: +this.$route.params.productId
+          }
+        });
+        this.productForm = this.$store.state.product.productDetail;
+        this.productAttachment = this.productForm.images;
+      } catch (err) {
+        return;
+      }
     },
     async getProjectMember(currentPage = 1, pageSize = 10) {
       this.$store.commit('product/setMemberLoading', true);
-      await this.$store.dispatch('product/getProjectMember', {
-        params: {
-          id: +this.$route.params.productId,
-          page_size: pageSize,
-          current_page: currentPage
-        }
-      });
-      this.projectMember = this.$store.state.product.projectMember;
-      this.projectMember.forEach((item) => {
-        item.create_time = formatterTime(item.create_time);
-      });
+      try {
+        await this.$store.dispatch('product/getProjectMember', {
+          params: {
+            id: +this.$route.params.productId,
+            page_size: pageSize,
+            current_page: currentPage
+          }
+        });
+        this.projectMember = this.$store.state.product.projectMember;
+        this.projectMember.forEach((item) => {
+          changeTimestamp(item, 'create_time');
+        });
+      } catch (err) {
+        return;
+      }
     },
     async getPricingList(currentPage = 1, pageSize = 10) {
       this.$store.commit('product/setPricingLoading', true);
@@ -318,13 +330,17 @@ export default {
         page_size: pageSize,
         product_id: +this.$route.params.productId
       };
-      await this.$store.dispatch('product/getPricingList', { params });
-      this.pricingList = this.$store.state.product.pricingList;
-      this.pricingList.forEach((item) => {
-        item.estimated_finish_time = formatterTime(item.estimated_finish_time);
-        item.first_submit_time = formatterTime(item.first_submit_time);
-        item.confirm_time = formatterTime(item.confirm_time);
-      });
+      try {
+        await this.$store.dispatch('product/getPricingList', { params });
+        this.pricingList = this.$store.state.product.pricingList;
+        this.pricingList.forEach((item) => {
+          changeTimestamp(item, 'estimated_finish_time');
+          changeTimestamp(item, 'first_submit_time');
+          changeTimestamp(item, 'confirm_time');
+        });
+      } catch (err) {
+        return;
+      }
     },
     async getMouldList(currentPage = 1, pageSize = 10) {
       this.$store.commit('product/setMouldLoading', true);
@@ -333,22 +349,30 @@ export default {
         current_page: currentPage,
         product_id: +this.$route.params.productId
       };
-      await this.$store.dispatch('product/getMouldList', { params });
-      this.mouldList = this.$store.state.product.mouldList;
-      this.mouldList.forEach((item) => {
-        item.create_time = formatterTime(item.create_time);
-      });
+      try {
+        await this.$store.dispatch('product/getMouldList', { params });
+        this.mouldList = this.$store.state.product.mouldList;
+        this.mouldList.forEach((item) => {
+          changeTimestamp(item, 'create_time');
+        });
+      } catch (err) {
+        return;
+      }
     },
     async getAllMouldList(currentPage = 1, pageSize = 10) {
       let params = {
         page_size: pageSize,
         current_page: currentPage
       };
-      await this.$store.dispatch('mould/getMouldList', { params });
-      this.allMouldList = this.$store.state.mould.mouldList;
-      this.allMouldList.forEach((item) => {
-        item.create_time = formatterTime(item.create_time);
-      });
+      try {
+        await this.$store.dispatch('mould/getMouldList', { params });
+        this.allMouldList = this.$store.state.mould.mouldList;
+        this.allMouldList.forEach((item) => {
+          changeTimestamp(item, 'create_time');
+        });
+      } catch (err) {
+        return;
+      }
     },
     async getSampleList(currentPage = 1, pageSize = 10) {
       this.$store.commit('product/setSampleLoading', true);
@@ -357,13 +381,17 @@ export default {
         current_page: currentPage,
         page_size: pageSize
       };
-      await this.$store.dispatch('product/getSampleList', { params });
-      this.sampleList = this.$store.state.product.sampleList;
-      this.sampleList.forEach((item) => {
-        item.estimated_finish_time = formatterTime(item.estimated_finish_time);
-        item.actual_finish_time = formatterTime(item.actual_finish_time);
-        item.demand_time = formatterTime(item.demand_time);
-      });
+      try {
+        await this.$store.dispatch('product/getSampleList', { params });
+        this.sampleList = this.$store.state.product.sampleList;
+        this.sampleList.forEach((item) => {
+          changeTimestamp(item, 'estimated_finish_time');
+          changeTimestamp(item, 'actual_finish_time');
+          changeTimestamp(item, 'demand_time');
+        });
+      } catch (err) {
+        return;
+      }
     },
     async getQuestionList(currentPage = 1, pageSize = 10) {
       this.$store.commit('product/setQuestionLoading', true);
@@ -372,11 +400,16 @@ export default {
         current_page: currentPage,
         page_size: pageSize
       };
-      await this.$store.dispatch('product/getQuestionList', { params });
-      this.questionList = this.$store.state.product.questionList;
-      this.questionList.forEach((item) => {
-        item.resolve_time = formatterTime(item.resolve_time);
-      });
+      try {
+        await this.$store.dispatch('product/getQuestionList', { params });
+        this.questionList = this.$store.state.product.questionList;
+        this.questionList.forEach((item) => {
+          changeTimestamp(item, 'resolve_time');
+          changeTimestamp(item, 'record_time');
+        });
+      } catch (err) {
+        return;
+      }
     },
     async getPackageList(currentPage = 1, pageSize = 10) {
       this.$store.commit('product/setPackageLoading', true);
@@ -385,88 +418,114 @@ export default {
         current_page: currentPage,
         page_size: pageSize
       };
-      await this.$store.dispatch('product/getPackageList', { params });
-      this.packageList = this.$store.state.product.packageList;
-      this.packageList.forEach((item) => {
-        item.estimated_finish_time = formatterTime(item.estimated_finish_time);
-        item.actual_finish_time = formatterTime(item.actual_finish_time);
-      });
+      try {
+        await this.$store.dispatch('product/getPackageList', { params });
+        this.packageList = this.$store.state.product.packageList;
+        this.packageList.forEach((item) => {
+          changeTimestamp(item, 'estimated_finish_time');
+          changeTimestamp(item, 'actual_finish_time');
+        });
+      } catch (err) {
+        return;
+      }
     },
     async getOrderList(currentPage = 1, pageSize = 10) {
       this.$store.commit('product/order/setOrderLoading', true);
-      await this.$store.dispatch('product/order/getOrderList', {
-        params: {
-          product_id: +this.$route.params.productId,
-          current_page: currentPage,
-          page_size: pageSize
-        }
-      });
-      this.orderList = this.$store.state.product.order.orderList;
-      this.orderList.forEach((item) => {
-        item.estimated_finish_time = formatterTime(item.estimated_finish_time);
-        item.actual_finish_time = formatterTime(item.actual_finish_time);
-      });
+      try {
+        await this.$store.dispatch('product/order/getOrderList', {
+          params: {
+            product_id: +this.$route.params.productId,
+            current_page: currentPage,
+            page_size: pageSize
+          }
+        });
+        this.orderList = this.$store.state.product.order.orderList;
+        this.orderList.forEach((item) => {
+          changeTimestamp(item, 'estimated_finish_time');
+          changeTimestamp(item, 'actual_finish_time');
+          item.final_price = `￥${item.final_price}`;
+        });
+      } catch (err) {
+        return;
+      }
     },
     async getProject() {
       this.$store.commit('product/project/setProjectLoading', true);
-      await this.$store.dispatch('product/project/getProject', {
-        params: { product_id: this.$route.params.productId }
-      });
-      this.projectProgress = this.$store.state.product.project.project.schedule;
-      this.projectForm = this.$store.state.product.project.project.form;
-      this.projectAttachment = this.projectForm.sale_plan;
-      this.projectProgress.actual_finish_time = formatterTime(
-        this.projectProgress.actual_finish_time
-      );
+      try {
+        await this.$store.dispatch('product/project/getProject', {
+          params: { product_id: this.$route.params.productId }
+        });
+        let { project } = this.$store.state.product.project;
+        this.projectProgress = project.schedule;
+        this.projectForm = project.form;
+        this.projectAttachment = this.projectForm.sale_plan;
+        changeTimestamp(this.projectProgress, 'actual_finish_time');
+      } catch (err) {
+        return;
+      }
     },
     async getProfit() {
-      await this.$store.dispatch('product/project/getProfit', {
-        params: { product_id: this.$route.params.productId }
-      });
-      this.projectProfit = this.$store.state.product.project.profit;
+      try {
+        await this.$store.dispatch('product/project/getProfit', {
+          params: { product_id: this.$route.params.productId }
+        });
+        this.projectProfit = this.$store.state.product.project.profit;
+      } catch (err) {
+        return;
+      }
     },
     async getSchedule() {
-      await this.$store.dispatch('product/project/getSchedule', {
-        params: { product_id: this.$route.params.productId }
-      });
-      this.projectSchedule = this.$store.state.product.project.schedule;
-      this.projectSchedule.list.forEach((item) => {
-        item.estimated_finish_time = formatterTime(item.estimated_finish_time);
-        item.actual_finish_time = formatterTime(item.actual_finish_time);
-      });
+      try {
+        await this.$store.dispatch('product/project/getSchedule', {
+          params: { product_id: this.$route.params.productId }
+        });
+        this.projectSchedule = this.$store.state.product.project.schedule;
+        this.projectSchedule.list.forEach((item) => {
+          changeTimestamp(item, 'estimated_finish_time');
+          changeTimestamp(item, 'actual_finish_time');
+        });
+      } catch (err) {
+        return;
+      }
     },
     async getPatent() {
       this.$store.commit('product/patent/setPatentLoading', true);
-      await this.$store.dispatch('product/patent/getPatent', {
-        params: { product_id: this.$route.params.productId }
-      });
-      this.patent = this.$store.state.product.patent.patent;
-      this.patent.patent_list.forEach((item) => {
-        item.submit_time = formatterTime(item.submit_time);
-        item.review_time = formatterTime(item.review_time);
-      });
-      this.applyForm.product_name_cn = this.patent.product_name_cn;
+      try {
+        await this.$store.dispatch('product/patent/getPatent', {
+          params: { product_id: this.$route.params.productId }
+        });
+        this.patent = this.$store.state.product.patent.patent;
+        this.patent.patent_list.forEach((item) => {
+          changeTimestamp(item, 'submit_time');
+          changeTimestamp(item, 'review_time');
+        });
+        this.applyForm.product_name_cn = this.patent.product_name_cn;
+      } catch (err) {
+        return;
+      }
     },
     async getPatentProgress() {
-      await this.$store.dispatch('product/patent/getProgress', {
-        params: { product_id: +this.$route.params.productId }
-      });
-      this.patentProgress = this.$store.state.product.patent.progress;
-      this.patentProgress.actual_finish_time = formatterTime(
-        this.patentProgress.actual_finish_time
-      );
-      this.patentProgress.estimated_finish_time = formatterTime(
-        this.patentProgress.estimated_finish_time
-      );
+      try {
+        await this.$store.dispatch('product/patent/getProgress', {
+          params: { product_id: +this.$route.params.productId }
+        });
+        this.patentProgress = this.$store.state.product.patent.progress;
+        changeTimestamp(this.patentProgress, 'actual_finish_time');
+        changeTimestamp(this.patentProgress, 'estimated_finish_time');
+      } catch (err) {
+        return;
+      }
     },
     async getContract() {
-      await this.$store.dispatch('product/patent/getContract', {
-        params: { product_id: this.$route.params.productId }
-      });
-      this.patentContract = this.$store.state.product.patent.contract;
-      this.patentContract.actual_finish_time = formatterTime(
-        this.patentContract.actual_finish_time
-      );
+      try {
+        await this.$store.dispatch('product/patent/getContract', {
+          params: { product_id: this.$route.params.productId }
+        });
+        this.patentContract = this.$store.state.product.patent.contract;
+        changeTimestamp(this.patentContract, 'actual_finish_time');
+      } catch (err) {
+        return;
+      }
     },
     changeCellColor(val) {
       if (val <= 20) {
@@ -475,7 +534,7 @@ export default {
         return 'result-pass';
       }
     },
-    getResquest(val) {
+    getRequest(val) {
       switch (val) {
         case 'basic':
           this.getProductDetail();
@@ -516,7 +575,7 @@ export default {
       }
     },
     handleClick(tab) {
-      this.getResquest(tab.props.name);
+      this.getRequest(tab.props.name);
     },
     toRelatedDemand(id) {
       this.$router.push(`/demand-list/${id}`);

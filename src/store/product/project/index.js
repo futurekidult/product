@@ -188,7 +188,7 @@ export default {
       });
     },
     async submitPricingAdjustment(_, payload) {
-      await axios.post('/pricing/adjust', payload).then((res) => {
+      await axios.post('/pricing/selling/adjust', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }
@@ -248,6 +248,13 @@ export default {
             ElMessage.success(res.configmessage);
           }
         });
+    },
+    async approvalProject(_, payload) {
+      await axios.post('/project/entry/approve', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
     }
   }
 };

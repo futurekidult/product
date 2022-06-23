@@ -115,14 +115,22 @@ export default {
     async createMakingMould(val) {
       let body = val;
       body['mould_id'] = +this.$route.params.id;
-      await this.$store.dispatch('mould/createMakingMould', body);
-      this.visible = false;
-      this.getList();
+      try {
+        await this.$store.dispatch('mould/createMakingMould', body);
+        this.visible = false;
+        this.getList();
+      } catch (err) {
+        return;
+      }
     },
     async updateMakingMould(body) {
-      await this.$store.dispatch('mould/updateMakingMould', body);
-      this.visible = false;
-      this.getList();
+      try {
+        await this.$store.dispatch('mould/updateMakingMould', body);
+        this.visible = false;
+        this.getList();
+      } catch (err) {
+        return;
+      }
     },
     cancel() {
       this.visible = false;

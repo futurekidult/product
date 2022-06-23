@@ -15,6 +15,8 @@
     </div>
     <div v-loading="$store.state.system.rateListLoading">
       <el-table
+        stripe
+        border
         empty-text="无数据"
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
         :data="rateList"
@@ -22,6 +24,7 @@
         <el-table-column
           label="ID"
           prop="id"
+          width="60px"
         />
         <el-table-column
           label="美元"
@@ -182,16 +185,24 @@ export default {
         current_page: currentPage,
         page_size: pageSize
       };
-      await this.$store.dispatch('system/getRateList', { params });
-      this.rateList = this.$store.state.system.rateList;
-      this.rateList.forEach((item) => {
-        item.create_time = formatterTime(item.create_time);
-      });
+      try {
+        await this.$store.dispatch('system/getRateList', { params });
+        this.rateList = this.$store.state.system.rateList;
+        this.rateList.forEach((item) => {
+          item.create_time = formatterTime(item.create_time);
+        });
+      } catch (err) {
+        return;
+      }
     },
     async createRate(body) {
-      await this.$store.dispatch('system/createRate', body);
-      this.addVisible = false;
-      this.getRateList();
+      try {
+        await this.$store.dispatch('system/createRate', body);
+        this.addVisible = false;
+        this.getRateList();
+      } catch (err) {
+        return;
+      }
     },
     submitRateForm() {
       this.$refs.rateForm.validate((valid) => {
@@ -201,10 +212,14 @@ export default {
       });
     },
     async deleteRate(id) {
-      await this.$store.dispatch('system/deleteRate', {
-        id
-      });
-      this.getRateList();
+      try {
+        await this.$store.dispatch('system/deleteRate', {
+          id
+        });
+        this.getRateList();
+      } catch (err) {
+        return;
+      }
     },
     showAddForm() {
       this.addVisible = true;

@@ -47,37 +47,39 @@
         </div>
       </el-descriptions-item>
       <el-descriptions-item label="操作">
-        <div v-if="progress.state === 20 || progress.state === 40">
-          <el-button
-            v-if="progress.state !== 40"
-            class="close-btn"
-            @click="approvalMakingMould(progress.id, 0)"
-          >
-            不通过
-          </el-button>
-          <el-button
-            type="success"
-            :disabled="progress.state === 40"
-            @click="approvalMakingMould(progress.id, 1)"
-          >
-            通过
-          </el-button>
-        </div>
-        <div v-if="progress.state === 30">
-          <el-button
-            type="text"
-            @click="
-              editMakingMould(
-                progress.id,
-                progress.cost,
-                progress.mould_factory,
-                progress.estimated_finish_time,
-                progress.illustration_text
-              )
-            "
-          >
-            编辑
-          </el-button>
+        <div :class="progress.state === undefined ? 'hide' : ''">
+          <div v-if="progress.state === 20 || progress.state === 40">
+            <el-button
+              v-if="progress.state !== 40"
+              class="close-btn"
+              @click="approvalMakingMould(progress.id, 0)"
+            >
+              不通过
+            </el-button>
+            <el-button
+              type="success"
+              :disabled="progress.state === 40"
+              @click="approvalMakingMould(progress.id, 1)"
+            >
+              通过
+            </el-button>
+          </div>
+          <div v-if="progress.state === 30">
+            <el-button
+              type="text"
+              @click="
+                editMakingMould(
+                  progress.id,
+                  progress.cost,
+                  progress.mould_factory,
+                  progress.estimated_finish_time,
+                  progress.illustration_text
+                )
+              "
+            >
+              编辑
+            </el-button>
+          </div>
         </div>
       </el-descriptions-item>
     </el-descriptions>
@@ -105,7 +107,6 @@
 
 <script>
 import MouldForm from '../common/mould-form.vue';
-import { formatterTime } from '../../../../utils/index.js';
 
 export default {
   components: {
@@ -139,7 +140,7 @@ export default {
         id,
         cost,
         mould_factory: mouldFactory,
-        estimated_finish_time: formatterTime(estimatedFinishTime),
+        estimated_finish_time: estimatedFinishTime,
         illustration_text: illustrationText
       };
     },
@@ -151,9 +152,19 @@ export default {
         id,
         approval_result: result
       };
-      await this.$store.dispatch('mould/approvalMakingMould', body);
-      this.getMould();
+      try {
+        await this.$store.dispatch('mould/approvalMakingMould', body);
+        this.getMould();
+      } catch (err) {
+        return;
+      }
     }
   }
 };
 </script>
+
+<style scoped>
+.hide {
+  display: none;
+}
+</style>

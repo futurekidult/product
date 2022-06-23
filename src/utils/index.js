@@ -132,3 +132,21 @@ export const getTask = (val) => {
   let value = task[val].split('_');
   return value;
 };
+
+export const checkValid = (val) => {
+  return {
+    max: val,
+    message: `长度不超过${val}个字符`
+  };
+};
+
+export const checkFile = (val) => {
+  return {
+    max: val,
+    message: `不能超过${val}个`
+  };
+};
+
+export const changeTimestamp = (obj, str) => {
+  obj[str] = formatterTime(obj[str]);
+};

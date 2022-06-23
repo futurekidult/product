@@ -6,6 +6,8 @@
   <div class="profit-plan_title">
     <el-table
       border
+      stripe
+      empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       class="profit-plan_table"
       :data="getProfit.list"
@@ -13,7 +15,7 @@
       <el-table-column
         label="序号"
         type="index"
-        width="100px"
+        width="60px"
       />
       <el-table-column
         label="市场"
@@ -175,7 +177,7 @@ import ProfitForm from './profit-form.vue';
 import PricingAdjust from './pricing-adjust.vue';
 import PricingLog from './pricing-log.vue';
 import ProfitEdit from './profit-edit.vue';
-import { formatterTime } from '../../../../utils';
+import { changeTimestamp } from '../../../../utils';
 
 export default {
   components: {
@@ -213,31 +215,36 @@ export default {
         product_id: this.$route.params.productId,
         market: this.marketId
       };
-      await this.$store.dispatch('product/project/getAdjustment', { params });
-      let result = this.$store.state.product.project.adjustment;
-      if (JSON.stringify(result) !== '{}') {
-        this.adjustment = result;
-        this.adjustment.submit_time = formatterTime(
-          this.adjustment.submit_time
-        );
-        this.adjustment.apply_approve_time = formatterTime(
-          this.adjustment.apply_approve_time
-        );
-        this.priceAdjustmentApplyId = this.adjustment.price_adjustment_apply_id;
-        this.adjustPriceVisible = true;
-      } else {
-        this.noAdjustmentVisible = true;
+      try {
+        await this.$store.dispatch('product/project/getAdjustment', { params });
+        let result = this.$store.state.product.project.adjustment;
+        if (JSON.stringify(result) !== '{}') {
+          this.adjustment = result;
+          changeTimestamp(this.adjustment, 'submit_time');
+          changeTimestamp(this.adjustment, 'apply_approve_time');
+          this.priceAdjustmentApplyId =
+            this.adjustment.price_adjustment_apply_id;
+          this.adjustPriceVisible = true;
+        } else {
+          this.noAdjustmentVisible = true;
+        }
+      } catch (err) {
+        return;
       }
     },
     async getAdjustmentList() {
-      await this.$store.dispatch('product/project/getAdjustmentList');
-      this.adjustmentList = this.$store.state.product.project.adjustmentList;
-      this.adjustmentList.forEach((item) => {
-        item.submit_time = formatterTime(item.submit_time);
-        item.apply_approve_time = formatterTime(item.apply_approve_time);
-        item.adjust_approve_time = formatterTime(item.adjust_approve_time);
-      });
-      this.getPricingVisible = true;
+      try {
+        await this.$store.dispatch('product/project/getAdjustmentList');
+        this.adjustmentList = this.$store.state.product.project.adjustmentList;
+        this.adjustmentList.forEach((item) => {
+          changeTimestamp(item, 'submit_time');
+          changeTimestamp(item, 'apply_approve_time');
+          changeTimestamp(item, 'adjust_approve_time');
+        });
+        this.getPricingVisible = true;
+      } catch (err) {
+        return;
+      }
     },
     addProfitCalculation() {
       this.addProfitVisible = true;
@@ -282,8 +289,12 @@ export default {
       this.editFormVisible = false;
     },
     async deleteItem(val) {
-      await this.$store.dispatch('product/project/deleteProfitItem', val);
-      this.getProfitCalcaulation();
+      try {
+        await this.$store.dispatch('product/project/deleteProfitItem', val);
+        this.getProfitCalcaulation();
+      } catch (err) {
+        return;
+      }
     },
     deleteProfitItem(id) {
       let body = {

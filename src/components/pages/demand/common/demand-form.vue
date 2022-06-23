@@ -10,7 +10,10 @@
     <el-form-item
       label="产品名称"
       prop="name"
-      :rules="[{ required: true, message: '请输入产品名称' }]"
+      :rules="[
+        { required: true, message: '请输入产品名称' },
+        { max: 15, message: '长度不超过 15个字符' }
+      ]"
     >
       <el-input
         v-model="demandForm.name"
@@ -26,7 +29,6 @@
       <el-upload
         action
         :show-file-list="false"
-        :limit="9"
         :http-request="handleProductImageSuccess"
       >
         <el-button
@@ -50,7 +52,7 @@
           {{ item.name }}
         </div>
         <div style="display: flex">
-          <div v-if="type === 'create'">
+          <div v-if="type !== 'detail'">
             <el-button
               type="text"
               @click="deleteProductImg(item.id, imagesList)"
@@ -125,13 +127,12 @@
       >
         <el-form-item
           :label="'竞品图片' + (index + 1)"
-          :prop="`competitive_product.${index}.images`"
+          :prop="`competitive_product.${index}.images `"
         >
           <el-upload
             action
             :show-file-list="false"
             :http-request="(e) => handleCProductImageSuccess(e, index)"
-            :limit="9"
           >
             <el-button
               type="primary"
@@ -154,7 +155,7 @@
               {{ image.name }}
             </div>
             <div style="display: flex">
-              <div v-if="type === 'create'">
+              <div v-if="type !== 'detail'">
                 <el-button
                   type="text"
                   @click="deleteProductImg(image.id, attachment[index].images)"
@@ -197,6 +198,8 @@
             :rows="6"
             :disabled="isDisabled"
             clearable
+            maxlength="200"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item
@@ -515,7 +518,7 @@
 </template>
 
 <script>
-import { getFile } from '../../../../utils';
+import { getFile, checkValid } from '../../../../utils';
 import ViewDialog from '../../../common/view-dialog.vue';
 
 export default {
@@ -550,7 +553,8 @@ export default {
           {
             required: true,
             message: '请输入品牌'
-          }
+          },
+          checkValid(15)
         ]
       },
       imagesList: [],
@@ -560,13 +564,15 @@ export default {
           {
             required: true,
             message: '请输入产品链接'
-          }
+          },
+          checkValid(200)
         ],
         benchmarking_reason: [
           {
             required: true,
             message: '请输入对标理由'
-          }
+          },
+          checkValid(200)
         ]
       },
       supplyChainDepartment: {
@@ -580,7 +586,8 @@ export default {
           {
             required: true,
             message: '请输入出货量'
-          }
+          },
+          checkValid(15)
         ],
         purchase_price_currency: [
           {
@@ -610,55 +617,64 @@ export default {
           {
             required: true,
             message: '请输入特别卖点'
-          }
+          },
+          checkValid(200)
         ],
         product_dimension_l: [
           {
             required: true,
             message: '请输入长度'
-          }
+          },
+          checkValid(15)
         ],
         product_dimension_w: [
           {
             required: true,
             message: '请输入宽度'
-          }
+          },
+          checkValid(15)
         ],
         product_dimension_h: [
           {
             required: true,
             message: '请输入高度'
-          }
+          },
+          checkValid(15)
         ],
         packing_dimension_l: [
           {
             required: true,
             message: '请输入长度'
-          }
+          },
+          checkValid(15)
         ],
         packing_dimension_w: [
           {
             required: true,
             message: '请输入宽度'
-          }
+          },
+          checkValid(15)
         ],
         packing_dimension_h: [
           {
             required: true,
             message: '请输入高度'
-          }
+          },
+          checkValid(15)
         ],
         rough_weight: [
           {
             required: true,
             message: '请输入毛重'
-          }
+          },
+          checkValid(15)
         ],
         parameter: [
           {
             required: true,
             message: '请输入核心参数'
-          }
+          },
+          checkValid(50)
         ]
       },
       saleDepartment: {
@@ -678,19 +694,22 @@ export default {
           {
             required: true,
             message: '请输入痛点'
-          }
+          },
+          checkValid(200)
         ],
         demand_point: [
           {
             required: true,
             message: '请输入需求点'
-          }
+          },
+          checkValid(200)
         ],
         information: [
           {
             required: true,
             message: '请输入产品信息'
-          }
+          },
+          checkValid(200)
         ]
       },
       isDisabled: false,
@@ -713,7 +732,7 @@ export default {
   },
   computed: {
     getBigCategory() {
-      return this.demandForm.big_category;
+      return this.demandForm.big_category_id;
     }
   },
   watch: {
@@ -740,34 +759,48 @@ export default {
   },
   methods: {
     async getDetail() {
-      await this.$store.dispatch('demand/getDemandDetail', {
-        params: {
-          demand_id: +this.$route.params.id
-        }
-      });
-      this.demandForm = this.$store.state.demand.demandDetail;
-      this.bigCategoryList.map((item) => {
-        if (item.id === this.demandForm.big_category) {
-          this.smallCategoryList = item.children;
-        }
-      });
-      this.imagesList = this.demandForm.images;
-      this.attachment = this.demandForm.competitive_product;
+      try {
+        await this.$store.dispatch('demand/getDemandDetail', {
+          params: {
+            demand_id: +this.$route.params.id
+          }
+        });
+        this.demandForm = this.$store.state.demand.demandDetail;
+        this.bigCategoryList.map((item) => {
+          if (item.id === this.demandForm.big_category_id) {
+            this.smallCategoryList = item.children;
+          }
+        });
+        this.imagesList = this.demandForm.images;
+        this.attachment = this.demandForm.competitive_product;
+      } catch (err) {
+        return;
+      }
     },
     async getDepartment() {
-      await this.$store.dispatch('getToken');
-      await this.$store.dispatch('getUserInfo');
-      this.department = this.$store.state.userInfo.center_group;
-      this.isRequired = this.department.indexOf(20) > -1;
+      try {
+        await this.$store.dispatch('getToken');
+        await this.$store.dispatch('getUserInfo');
+        this.department = this.$store.state.userInfo.center_group;
+        this.isRequired = this.department.indexOf(20) > -1;
+      } catch (err) {
+        return;
+      }
     },
     async getCategoryList() {
-      await this.$store.dispatch('demand/getCategoryList');
-      this.bigCategoryList = this.$store.state.demand.categoryList;
+      try {
+        await this.$store.dispatch('demand/getCategoryList');
+        this.bigCategoryList = this.$store.state.demand.categoryList;
+      } catch (err) {
+        return;
+      }
     },
     async createDemandForm(body) {
-      await this.$store.dispatch('demand/createDemandForm', body);
-      if (this.$store.state.demand.isSuccess) {
+      try {
+        await this.$store.dispatch('demand/createDemandForm', body);
         this.$router.push('/demand-list');
+      } catch (err) {
+        return;
       }
     },
     getRules() {
@@ -809,27 +842,45 @@ export default {
       this.attachment.pop();
     },
     async handleProductImageSuccess(e) {
-      this.$store.commit('setUploadState', false);
-      let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.res = this.$store.state.fileRes;
-        this.imagesList.push({
-          id: this.res.id,
-          name: this.res.file_name
-        });
+      if (this.imagesList.length > 8) {
+        this.$message.error('产品图片最多传9张');
+      } else {
+        this.$store.commit('setUploadState', false);
+        let form = getFile(e);
+        try {
+          await this.$store.dispatch('uploadFile', form);
+          if (this.$store.state.uploadState) {
+            this.res = this.$store.state.fileRes;
+            this.imagesList.push({
+              id: this.res.id,
+              name: this.res.file_name,
+              type: this.res.type
+            });
+          }
+        } catch (err) {
+          return;
+        }
       }
     },
     async handleCProductImageSuccess(e, index) {
-      this.$store.commit('setUploadState', false);
-      let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.CRes = this.$store.state.fileRes;
-        this.attachment[index].images.push({
-          id: this.CRes.id,
-          name: this.CRes.file_name
-        });
+      if (this.attachment[index].images.length > 0) {
+        this.$message.error(`第${index + 1}组竞品中的竞品图片最多传9张`);
+      } else {
+        this.$store.commit('setUploadState', false);
+        let form = getFile(e);
+        try {
+          await this.$store.dispatch('uploadFile', form);
+          if (this.$store.state.uploadState) {
+            this.CRes = this.$store.state.fileRes;
+            this.attachment[index].images.push({
+              id: this.CRes.id,
+              name: this.CRes.file_name,
+              type: this.CRes.type
+            });
+          }
+        } catch (err) {
+          return;
+        }
       }
     },
     deleteProductImg(id, arr) {
@@ -871,29 +922,41 @@ export default {
         this.currency = demand.currency;
         this.resource = demand.resource;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getParams();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getParams();
+        } catch (err) {
+          return;
+        }
       }
     },
     async showViewDialog(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        this.viewImgDialog = true;
-        this.imgLink = this.$store.state.viewLink;
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          this.viewImgDialog = true;
+          this.imgLink = this.$store.state.viewLink;
+        }
+      } catch (err) {
+        return;
       }
     },
     closeViewDialog() {
       this.viewImgDialog = false;
     },
     async getRmb(val) {
-      await this.$store.dispatch('getPriceRmb', {
-        params: {
-          price: this.demandForm[`${val}_price`],
-          currency: this.demandForm[`${val}_price_currency`]
-        }
-      });
-      this.demandForm[`${val}_price_rmb`] = this.$store.state.priceRmb;
+      try {
+        await this.$store.dispatch('getPriceRmb', {
+          params: {
+            price: this.demandForm[`${val}_price`],
+            currency: this.demandForm[`${val}_price_currency`]
+          }
+        });
+        this.demandForm[`${val}_price_rmb`] = this.$store.state.priceRmb;
+      } catch (err) {
+        return;
+      }
     },
     clearMoney(val) {
       this.demandForm[`${val}_price_rmb`] = '';

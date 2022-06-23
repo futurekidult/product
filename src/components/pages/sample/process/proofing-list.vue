@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-loading="$store.state.sample.proofingLoading"
-    class="border"
-  >
+  <div v-loading="$store.state.sample.proofingLoading">
     <div class="select-title">
       <span class="line">|</span> 打样信息
     </div>
@@ -42,27 +39,29 @@
         label="操作"
         width="200px"
       >
-        <el-button
-          v-if="progress.state === 20"
-          type="text"
-          @click="showProofingApproval"
-        >
-          打样单审批
-        </el-button>
-        <el-button
-          v-if="progress.state === 30"
-          type="text"
-          @click="showProofingEdit"
-        >
-          重新编辑
-        </el-button>
-        <el-button
-          v-if="progress.state === 40"
-          type="text"
-          @click="showProofingView"
-        >
-          查看
-        </el-button>
+        <div :class="progress.state === undefined ? 'hide' : ''">
+          <el-button
+            v-if="progress.state === 20"
+            type="text"
+            @click="showProofingApproval"
+          >
+            打样单审批
+          </el-button>
+          <el-button
+            v-if="progress.state === 30"
+            type="text"
+            @click="showProofingEdit"
+          >
+            重新编辑
+          </el-button>
+          <el-button
+            v-if="progress.state === 40"
+            type="text"
+            @click="showProofingView"
+          >
+            查看
+          </el-button>
+        </div>
       </el-descriptions-item>
     </el-descriptions>
   </div>
@@ -127,14 +126,19 @@ export default {
   },
   methods: {
     async getProofingSheet() {
-      await this.$store.dispatch('sample/getProofingSheet', {
-        params: {
-          id: +this.$route.params.id
-        }
-      });
-      this.reviewForm = this.$store.state.sample.proofingSheet;
-      this.approvalForm = this.$store.state.sample.proofingSheet;
-      this.editForm = this.$store.state.sample.proofingSheet;
+      try {
+        await this.$store.dispatch('sample/getProofingSheet', {
+          params: {
+            id: +this.$route.params.id
+          }
+        });
+        let { sample } = this.$store.state;
+        this.reviewForm = sample.proofingSheet;
+        this.approvalForm = sample.proofingSheet;
+        this.editForm = sample.proofingSheet;
+      } catch (err) {
+        return;
+      }
     },
     showProofingCreate() {
       this.proofingVisible = true;
@@ -172,3 +176,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.hide {
+  display: none;
+}
+</style>

@@ -15,14 +15,26 @@ export default {
       }, 3600 * 1000 * 24);
     },
     async getSystemParamters() {
-      await this.$store.dispatch('getSystemParameters');
+      try {
+        await this.$store.dispatch('getSystemParameters');
+      } catch (err) {
+        return;
+      }
     },
     async getToken() {
-      await this.$store.dispatch('getToken');
+      try {
+        await this.$store.dispatch('getToken');
+      } catch (err) {
+        return;
+      }
     },
     async getUserInfo() {
-      this.getToken();
-      await this.$store.dispatch('getUserInfo');
+      try {
+        this.getToken();
+        await this.$store.dispatch('getUserInfo');
+      } catch (err) {
+        return;
+      }
     }
   }
 };
@@ -36,7 +48,7 @@ body {
 
 .el-main {
   position: relative;
-  background: rgba(240, 246, 247, 1);
+  background: #f0f6f7;
   height: 100vh;
 }
 
@@ -147,7 +159,8 @@ body {
 }
 
 .el-button--primary,
-.el-button--success {
+.el-button--success,
+.el-button--danger {
   width: 100px;
 }
 
@@ -166,7 +179,8 @@ body {
 .user-item,
 .system-item,
 .todo-title,
-.select-item {
+.select-item,
+.sample-item {
   display: flex;
   justify-content: space-between;
 }

@@ -69,6 +69,7 @@
               v-model="item.email"
               placeholder="请输入邮箱"
               clearable
+              @change="checkValid(item.email, index + 1)"
             />
           </el-form-item>
         </div>
@@ -153,9 +154,13 @@ export default {
         sample_id: +this.$route.params.id,
         data: val
       };
-      await this.$store.dispatch('sample/user/createUserTest', body);
-      this.visible = false;
-      this.getUser();
+      try {
+        await this.$store.dispatch('sample/user/createUserTest', body);
+        this.visible = false;
+        this.getUser();
+      } catch (err) {
+        return;
+      }
     },
     cancel() {
       this.visible = false;
@@ -173,6 +178,13 @@ export default {
           this.createUser(this.userForm.list);
         }
       });
+    },
+    checkValid(val, index) {
+      if (val) {
+        if (val.indexOf('@') === -1) {
+          this.$message.error(`第${index}个联系人的邮箱必须包含@`);
+        }
+      }
     }
   }
 };

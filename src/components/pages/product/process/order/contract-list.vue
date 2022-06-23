@@ -24,6 +24,7 @@
         <el-button
           type="primary"
           :disabled="exportContract.state !== 10"
+          :class="exportContract.state === undefined ? 'hide' : ''"
           @click="confirmExportContract(exportContract.id)"
         >
           已完成
@@ -49,12 +50,14 @@
         {{ purchaseContract.actual_finish_time }}
       </el-descriptions-item>
       <el-descriptions-item label="产品说明书">
-        <div style="display: flex">
+        <div
+          v-if="JSON.stringify(purchaseContract) !== '{}'"
+          style="display: flex"
+        >
           <el-upload
             action
             :show-file-list="false"
             :http-request="(e) => handleFileSuccess(e, 'manual')"
-            :limit="1"
           >
             <el-button
               v-if="
@@ -65,7 +68,7 @@
               上传
             </el-button>
           </el-upload>
-          <div v-if="manualFile.type === 12860">
+          <div v-if="manualFile !== undefined && manualFile.type === 12860">
             <el-button
               type="text"
               @click="showViewFile(manualFile.id)"
@@ -73,9 +76,12 @@
               预览
             </el-button>
           </div>
-          <div v-if="purchaseContract.state !== 10">
+          <div
+            v-if="purchaseContract.state !== 10"
+            :class="purchaseContract.state === undefined ? 'hide' : ''"
+          >
             <span
-              v-if="manualFile.type === 12860"
+              v-if="manualFile !== undefined && manualFile.type === 12860"
               class="table-btn"
             >|</span>
             <el-button
@@ -92,7 +98,7 @@
             "
           >
             <span
-              v-if="manualFile.type === 12860"
+              v-if="manualFile !== undefined && manualFile.type === 12860"
               class="table-btn"
             >|</span>
             <el-button
@@ -105,12 +111,14 @@
         </div>
       </el-descriptions-item>
       <el-descriptions-item label="刀模附件">
-        <div style="display: flex">
+        <div
+          v-if="JSON.stringify(purchaseContract) !== '{}'"
+          style="display: flex"
+        >
           <el-upload
             action
             :show-file-list="false"
             :http-request="(e) => handleFileSuccess(e, 'diecuts')"
-            :limit="1"
           >
             <el-button
               v-if="JSON.stringify(purchaseContract.diecuts_file) === '{}'"
@@ -119,7 +127,7 @@
               上传
             </el-button>
           </el-upload>
-          <div v-if="diecutsFile.type === 12860">
+          <div v-if="diecutsFile !== undefined && diecutsFile.type === 12860">
             <el-button
               type="text"
               @click="showViewFile(diecutsFile.id)"
@@ -127,9 +135,12 @@
               预览
             </el-button>
           </div>
-          <div v-if="purchaseContract.state !== 10">
+          <div
+            v-if="purchaseContract.state !== 10"
+            :class="purchaseContract.state === undefined ? 'hide' : ''"
+          >
             <span
-              v-if="diecutsFile.type === 12860"
+              v-if="diecutsFile !== undefined && diecutsFile.type === 12860"
               class="table-btn"
             >|</span>
             <el-button
@@ -146,7 +157,7 @@
             "
           >
             <span
-              v-if="diecutsFile.type === 12860"
+              v-if="diecutsFile !== undefined && diecutsFile.type === 12860"
               class="table-btn"
             >|</span>
             <el-button
@@ -162,6 +173,7 @@
         <el-button
           type="primary"
           :disabled="purchaseContract.state !== 10"
+          :class="purchaseContract.state === undefined ? 'hide' : ''"
           @click="confirmPurchaseContract(purchaseContract.id)"
         >
           提交
@@ -198,46 +210,59 @@ export default {
   },
   methods: {
     async confirmExportContract(id) {
-      await this.$store.dispatch('product/order/confirmExportContract', {
-        id
-      });
-      this.getContract();
+      try {
+        await this.$store.dispatch('product/order/confirmExportContract', {
+          id
+        });
+        this.getContract();
+      } catch (err) {
+        return;
+      }
     },
     async confirmPurchaseContract(id) {
-      await this.$store.dispatch('product/order/confirmPurchaseContract', {
-        id,
-        product_manual_file: this.manualFile.id,
-        diecuts_file: this.diecutsFile.id
-      });
-      this.getContract();
+      try {
+        await this.$store.dispatch('product/order/confirmPurchaseContract', {
+          id,
+          product_manual_file: this.manualFile.id,
+          diecuts_file: this.diecutsFile.id
+        });
+        this.getContract();
+      } catch (err) {
+        return;
+      }
     },
     async handleFileSuccess(e, val) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.show = true;
-        if (val === 'manual') {
-          this.manualFile = {
+      try {
+        await this.$store.dispatch('uploadFile', form);
+        if (this.$store.state.uploadState) {
+          let file = {
             id: this.$store.state.fileRes.id,
             name: this.$store.state.fileRes.file_name,
             type: this.$store.state.fileRes.type
           };
-        } else {
-          this.diecutsFile = {
-            id: this.$store.state.fileRes.id,
-            name: this.$store.state.fileRes.file_name,
-            type: this.$store.state.fileRes.type
-          };
+          this.show = true;
+          if (val === 'manual') {
+            this.manualFile = file;
+          } else {
+            this.diecutsFile = file;
+          }
         }
+        this.getContract();
+      } catch (err) {
+        return;
       }
-      this.getContract();
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        previewFile(this.$store.state.viewLink);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          previewFile(this.$store.state.viewLink);
+        }
+      } catch (err) {
+        return;
       }
     },
     deleteFile(val) {
@@ -249,11 +274,21 @@ export default {
     },
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        downloadFile(this.$store.state.viewLink, name);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          downloadFile(this.$store.state.viewLink, name);
+        }
+      } catch (err) {
+        return;
       }
     }
   }
 };
 </script>
+
+<style scoped>
+.hide {
+  display: none;
+}
+</style>

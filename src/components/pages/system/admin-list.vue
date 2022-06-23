@@ -8,6 +8,8 @@
 
     <div v-loading="$store.state.system.adminLoading">
       <el-table
+        stripe
+        border
         :data="adminList"
         empty-text="无数据"
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
@@ -22,8 +24,11 @@
         />
         <el-table-column label="操作">
           <template #default="scope">
-            <el-button :type="scope.row.state === 1 ? 'danger' : 'primary'">
-              {{ scope.row.state === 1 ? '封禁账号' : '解除封禁' }}
+            <el-button
+              :type="scope.row.state === 2 ? 'danger' : 'primary'"
+              @click="blockAdmin(scope.row.id)"
+            >
+              {{ scope.row.state === 2 ? '封禁账号' : '解除封禁' }}
             </el-button>
             <el-button
               type="warning"
@@ -108,28 +113,48 @@ export default {
   methods: {
     async getOrganizationList() {
       this.$store.commit('system/setOrganizationLoading', true);
-      await this.$store.dispatch('system/getOrganizationList');
-      this.organizationList = this.$store.state.system.organizationList;
+      try {
+        await this.$store.dispatch('system/getOrganizationList');
+        this.organizationList = this.$store.state.system.organizationList;
+      } catch (err) {
+        return;
+      }
     },
     async getAdminList() {
       this.$store.commit('system/setAdminLoading', true);
-      await this.$store.dispatch('system/getAdminList');
-      this.adminList = this.$store.state.system.adminList;
+      try {
+        await this.$store.dispatch('system/getAdminList');
+        this.adminList = this.$store.state.system.adminList;
+      } catch (err) {
+        return;
+      }
     },
     async getRoleList() {
       this.$store.commit('system/setRoleLoading', true);
-      await this.$store.dispatch('system/getRoleList');
-      this.roleList = this.$store.state.system.roleList;
+      try {
+        await this.$store.dispatch('system/getRoleList');
+        this.roleList = this.$store.state.system.roleList;
+      } catch (err) {
+        return;
+      }
     },
     async showRoleForm(id) {
-      await this.$store.dispatch('system/getAdminRole', { params: { id } });
-      this.roleForm = this.$store.state.system.adminRole;
-      this.roleVisible = true;
+      try {
+        await this.$store.dispatch('system/getAdminRole', { params: { id } });
+        this.roleForm = this.$store.state.system.adminRole;
+        this.roleVisible = true;
+      } catch (err) {
+        return;
+      }
     },
     async updateAdminRole(body) {
-      await this.$store.dispatch('system/updateAdminRole', body);
-      this.roleVisible = false;
-      this.getAdminList();
+      try {
+        await this.$store.dispatch('system/updateAdminRole', body);
+        this.roleVisible = false;
+        this.getAdminList();
+      } catch (err) {
+        return;
+      }
     },
     closeRoleForm() {
       this.roleVisible = false;
@@ -140,6 +165,14 @@ export default {
           this.updateAdminRole(this.roleForm);
         }
       });
+    },
+    async blockAdmin(id) {
+      try {
+        await this.$store.dispatch('blockAdmin', { id });
+        this.getAdminList();
+      } catch (err) {
+        return;
+      }
     }
   }
 };

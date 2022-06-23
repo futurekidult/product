@@ -202,6 +202,7 @@
             :data="memberList"
             clearable
             :props="defaultProps"
+            show-checkbox
             style="width: 339px"
           />
         </el-form-item>
@@ -213,6 +214,7 @@
             v-model="reviewForm.coo_id"
             :data="memberList"
             clearable
+            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -225,6 +227,7 @@
             v-model="reviewForm.cmo_id"
             :data="memberList"
             clearable
+            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -237,6 +240,7 @@
             v-model="reviewForm.cpo_id"
             :data="memberList"
             clearable
+            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -249,6 +253,7 @@
             v-model="reviewForm.project_manager_id"
             :data="memberList"
             clearable
+            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -261,6 +266,7 @@
             v-model="reviewForm.project_administrator_id"
             :data="memberList"
             clearable
+            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -273,6 +279,7 @@
             v-model="reviewForm.operations_principal_id"
             :data="memberList"
             clearable
+            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -285,6 +292,7 @@
             v-model="reviewForm.product_principal_id"
             :data="memberList"
             clearable
+            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -297,6 +305,7 @@
             v-model="reviewForm.purchase_principal_id"
             :data="memberList"
             clearable
+            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -312,6 +321,7 @@
             v-model="reviewForm.market_survey_principal_id"
             :data="memberList"
             clearable
+            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -327,6 +337,7 @@
             v-model="reviewForm.user_survey_principal_id"
             :data="memberList"
             clearable
+            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -340,6 +351,7 @@
             v-model="reviewForm.user_test_principal_id"
             :data="memberList"
             clearable
+            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -352,6 +364,7 @@
             v-model="reviewForm.quality_principal_id"
             :data="memberList"
             clearable
+            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -649,8 +662,12 @@ export default {
     async reviewDemandForm(val) {
       let body = val;
       body['demand_id'] = +this.$route.params.id;
-      await this.$store.dispatch('demand/reviewDemandForm', body);
-      this.getDetail();
+      try {
+        await this.$store.dispatch('demand/reviewDemandForm', body);
+        this.getDetail();
+      } catch (err) {
+        return;
+      }
     },
     submitDemandForm() {
       for (let item of Object.keys(this.reviewForm)) {
@@ -665,10 +682,14 @@ export default {
       });
     },
     async getOrganizationList() {
-      await this.$store.dispatch('getOrganizationList');
-      this.memberList = this.$store.state.organizationList;
-      for (let key in this.memberList) {
-        this.childrenFunc(this.memberList[key]);
+      try {
+        await this.$store.dispatch('getOrganizationList');
+        this.memberList = this.$store.state.organizationList;
+        for (let key in this.memberList) {
+          this.childrenFunc(this.memberList[key]);
+        }
+      } catch (err) {
+        return;
       }
     },
     childrenFunc(data) {
@@ -691,8 +712,12 @@ export default {
         this.market = demand.market;
         this.platform = demand.platform;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getMarket();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getMarket();
+        } catch (err) {
+          return;
+        }
       }
     }
   }

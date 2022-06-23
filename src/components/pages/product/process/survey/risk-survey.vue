@@ -62,8 +62,6 @@
         <el-input
           v-model="form.design_patent"
           type="textarea"
-          maxlength="200"
-          show-word-limit
           placeholder="请输入外观专利"
           :disabled="isDisabled"
           clearable
@@ -76,8 +74,6 @@
         <el-input
           v-model="form.legal_regulation"
           type="textarea"
-          maxlength="200"
-          show-word-limit
           placeholder="请输入法律法规"
           :disabled="isDisabled"
           clearable
@@ -90,8 +86,6 @@
         <el-input
           v-model="form.other_risk"
           type="textarea"
-          maxlength="200"
-          show-word-limit
           placeholder="请输入其它风险"
           :disabled="isDisabled"
           clearable
@@ -106,7 +100,6 @@
           action
           :show-file-list="false"
           :http-request="handleFileSuccess"
-          :limit="1"
         >
           <el-button
             type="primary"
@@ -116,7 +109,7 @@
           </el-button>
         </el-upload>
         <div class="attachment">
-          支持office文档格式以及png/jpg/jpeg等图片格式,单个文件不能超过5MB
+          支持office文档格式,文件不能超过5MB(仅限一个)
         </div>
       </el-form-item>
       <el-form-item style="margin-bottom: 18px">
@@ -125,10 +118,10 @@
           class="attachment-list"
         >
           <div>
-            {{ handleAttachment(file.name) }}
+            {{ file.name }}
           </div>
           <div style="display: flex">
-            <div v-if="handleAttachment(file.type) === 12860">
+            <div v-if="file.type === 12860">
               <el-button
                 type="text"
                 @click="showViewFile(file.id)"
@@ -168,7 +161,12 @@
 </template>
 
 <script>
-import { downloadFile, getFile, previewFile } from '../../../../../utils';
+import {
+  downloadFile,
+  getFile,
+  previewFile,
+  checkValid
+} from '../../../../../utils';
 import SurveySchedule from '../../common/survey- schedule.vue';
 
 export default {
@@ -196,19 +194,22 @@ export default {
           {
             required: true,
             message: '请输入外观专利'
-          }
+          },
+          checkValid(200)
         ],
         legal_regulation: [
           {
             required: true,
             message: '请输入法律法规'
-          }
+          },
+          checkValid(200)
         ],
         other_risk: [
           {
             required: true,
             message: '请输入其它风险'
-          }
+          },
+          checkValid(200)
         ],
         attachment: [
           {
@@ -256,8 +257,12 @@ export default {
           localStorage.getItem('params')
         ).risk_survey.inventive_patent;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getParams();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getParams();
+        } catch (err) {
+          return;
+        }
       }
     },
     async updateRisk(val) {
@@ -265,14 +270,11 @@ export default {
       body['survey_schedule_id'] = this.progress.id;
       body['product_id'] = +this.$route.params.productId;
       body['attachment'] = this.attachment.id;
-      await this.$store.dispatch('product/survey/risk/submitRisk', body);
-      this.getList();
-    },
-    handleAttachment(file) {
-      if (file === undefined) {
-        return '';
-      } else {
-        return file;
+      try {
+        await this.$store.dispatch('product/survey/risk/submitRisk', body);
+        this.getList();
+      } catch (err) {
+        return;
       }
     },
     submitRiskForm() {
@@ -286,21 +288,29 @@ export default {
     async handleFileSuccess(e) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.show = true;
-        this.file = {
-          id: this.$store.state.fileRes.id,
-          name: this.$store.state.fileRes.file_name,
-          type: this.$store.state.fileRes.type
-        };
+      try {
+        await this.$store.dispatch('uploadFile', form);
+        if (this.$store.state.uploadState) {
+          this.show = true;
+          this.file = {
+            id: this.$store.state.fileRes.id,
+            name: this.$store.state.fileRes.file_name,
+            type: this.$store.state.fileRes.type
+          };
+        }
+      } catch (err) {
+        return;
       }
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        previewFile(this.$store.state.viewLink);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          previewFile(this.$store.state.viewLink);
+        }
+      } catch (err) {
+        return;
       }
     },
     deleteFile() {
@@ -310,9 +320,13 @@ export default {
     },
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        downloadFile(this.$store.state.viewLink, name);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          downloadFile(this.$store.state.viewLink, name);
+        }
+      } catch (err) {
+        return;
       }
     }
   }

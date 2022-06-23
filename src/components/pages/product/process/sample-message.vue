@@ -6,6 +6,7 @@
 
     <el-table
       border
+      stripe
       empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       :data="sampleList"
@@ -13,6 +14,7 @@
       <el-table-column
         label="样品ID"
         prop="id"
+        width="80px"
       />
       <el-table-column
         label="关联定价ID"
@@ -29,6 +31,7 @@
       <el-table-column
         label="需求日期"
         prop="demand_time"
+        width="200px"
       />
       <el-table-column
         label="有无认证"
@@ -45,10 +48,12 @@
       <el-table-column
         label="计划完成时间"
         prop="estimated_finish_time"
+        width="200px"
       />
       <el-table-column
         label="实际完成时间"
         prop="actual_finish_time"
+        width="200px"
       />
       <el-table-column label="状态">
         <template #default="scope">

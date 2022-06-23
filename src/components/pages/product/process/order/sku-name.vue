@@ -90,7 +90,6 @@
           action
           :show-file-list="false"
           :http-request="handleFileSuccess"
-          :limit="1"
         >
           <el-button
             type="primary"
@@ -100,7 +99,7 @@
           </el-button>
         </el-upload>
         <div class="attachment">
-          支持office文档格式以及png/jpg/jpeg等图片格式,单个文件不能超过5MB
+          支持office文档格式,文件不能超过5MB(仅限一个)
         </div>
       </el-form-item>
       <el-form-item
@@ -109,10 +108,10 @@
       >
         <div class="attachment-list">
           <div>
-            {{ handleAttachment(attachment.name) }}
+            {{ attachment.name }}
           </div>
           <div style="display: flex">
-            <div v-if="handleAttachment(file.type) === 12860">
+            <div v-if="file.type === 12860">
               <el-button
                 type="text"
                 @click="showViewFile(file.id)"
@@ -172,6 +171,7 @@
       <el-descriptions-item label="操作">
         <el-button
           :disabled="skuEntrySchedule.state !== 10"
+          :class="skuEntrySchedule.state === undefined ? 'hide' : ''"
           @click="completeEntry"
         >
           已完成SKU录入甲骨文
@@ -237,8 +237,12 @@ export default {
         product_id: +this.$route.params.productId,
         pricing_id: +this.$route.params.orderId
       };
-      await this.$store.dispatch('getPlatform', { params });
-      this.platform = this.$store.state.platform;
+      try {
+        await this.$store.dispatch('getPlatform', { params });
+        this.platform = this.$store.state.platform;
+      } catch (err) {
+        return;
+      }
     },
     async updateSkuname(val) {
       let body = {};
@@ -246,47 +250,56 @@ export default {
       body['sku_info']['sku'] = val.sku;
       body['order_id'] = +this.$route.params.orderId;
       body['sku_info']['project_plan_file'] = this.attachment.id;
-      await this.$store.dispatch('product/order/submitSkuname', body);
-      this.getSku();
+      try {
+        await this.$store.dispatch('product/order/submitSkuname', body);
+        this.getSku();
+      } catch (err) {
+        return;
+      }
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        previewFile(this.$store.state.viewLink);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          previewFile(this.$store.state.viewLink);
+        }
+      } catch (err) {
+        return;
       }
     },
     async handleFileSuccess(e) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.show = true;
-        this.file = {
-          id: this.$store.state.fileRes.id,
-          name: this.$store.state.fileRes.file_name,
-          type: this.$store.state.fileRes.type
-        };
+      try {
+        await this.$store.dispatch('uploadFile', form);
+        if (this.$store.state.uploadState) {
+          this.show = true;
+          this.file = {
+            id: this.$store.state.fileRes.id,
+            name: this.$store.state.fileRes.file_name,
+            type: this.$store.state.fileRes.type
+          };
+        }
+      } catch (err) {
+        return;
       }
     },
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        downloadFile(this.$store.state.viewLink, name);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          downloadFile(this.$store.state.viewLink, name);
+        }
+      } catch (err) {
+        return;
       }
     },
     deleteFile() {
       this.file = {};
       this.form.project_plan_file = '';
       this.show = false;
-    },
-    handleAttachment(file) {
-      if (file === undefined) {
-        return '';
-      } else {
-        return file;
-      }
     },
     submitSkuForm() {
       this.form.project_plan_file = this.file.id;
@@ -297,10 +310,14 @@ export default {
       });
     },
     async completeEntry() {
-      await this.$store.dispatch('product/order/completeSkuEntry', {
-        id: this.skuId
-      });
-      this.getSku();
+      try {
+        await this.$store.dispatch('product/order/completeSkuEntry', {
+          id: this.skuId
+        });
+        this.getSku();
+      } catch (err) {
+        return;
+      }
     },
     addSku() {
       this.form.sku.push({});
@@ -317,3 +334,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.hide {
+  display: none;
+}
+</style>

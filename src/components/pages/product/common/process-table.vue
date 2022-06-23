@@ -5,13 +5,14 @@
   <div class="profit-plan_title">
     <el-table
       border
+      stripe
+      empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       :data="getSchedule.list"
     >
       <el-table-column
         label="序号"
-        width="80px"
-        align="center"
+        width="60px"
         type="index"
       />
       <el-table-column
@@ -247,6 +248,7 @@
 </template>
 
 <script>
+import { formatterTime, timestamp } from '../../../../utils';
 export default {
   inject: ['getProcessTable'],
   props: ['getSchedule', 'changeColor'],
@@ -347,27 +349,42 @@ export default {
         id: this.estimatedStageCode,
         estimated_finish_time: val
       };
-      await this.$store.dispatch('product/project/updateEstimatedTime', body);
-      this.editStageVisible = false;
-      this.getProcessTable();
+      try {
+        await this.$store.dispatch('product/project/updateEstimatedTime', body);
+        this.editStageVisible = false;
+        this.getProcessTable();
+      } catch (err) {
+        return;
+      }
     },
     async updateActualTime(val) {
       let body = {
         id: this.actualSatgeCode,
         actual_finish_time: val
       };
-      await this.$store.dispatch('product/project/updateActualTime', body);
-      this.actualTimeVisible = false;
-      this.getProcessTable();
+      try {
+        await this.$store.dispatch('product/project/updateActualTime', body);
+        this.actualTimeVisible = false;
+        this.getProcessTable();
+      } catch (err) {
+        return;
+      }
     },
     async setStageTime(val) {
       let body = val;
-      body['product_id'] = this.$route.params.productId;
-      await this.$store.dispatch('product/project/setStageTime', body);
-      this.setStageVisible = false;
-      this.getProcessTable();
+      body['product_id'] = +this.$route.params.productId;
+      try {
+        await this.$store.dispatch('product/project/setStageTime', body);
+        this.setStageVisible = false;
+        this.getProcessTable();
+      } catch (err) {
+        return;
+      }
     },
     submitStageForm() {
+      this.stageForm.estimated_finish_time = timestamp(
+        this.stageForm.estimated_finish_time
+      );
       this.$refs.stageForm.validate((valid) => {
         if (valid) {
           this.updateEstimatedTime(this.stageForm.estimated_finish_time);
@@ -375,6 +392,9 @@ export default {
       });
     },
     submitSetStageForm() {
+      for (let key in this.setStageForm) {
+        this.setStageForm[key] = formatterTime(this.setStageForm[key]);
+      }
       this.$refs.setStageForm.validate((valid) => {
         if (valid) {
           this.setStageTime(this.setStageForm);

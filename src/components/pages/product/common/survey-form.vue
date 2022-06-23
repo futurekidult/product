@@ -69,7 +69,15 @@
           v-model="userSurveyForm.result"
           placeholder="请选择评审结果"
           clearable
-        />
+        >
+          <el-option
+            v-for="item in reviewOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+            :disabled="disabled"
+          />
+        </el-select>
       </el-form-item>
       <div
         v-if="type !== 'view'"
@@ -93,7 +101,9 @@
 </template>
 
 <script>
+import { formatterTime } from '../../../../utils';
 export default {
+  inject: ['getUserSurvey'],
   props: ['dialogVisible', 'formTitle', 'type', 'id'],
   emits: ['hide-dialog'],
   data() {
@@ -133,16 +143,27 @@ export default {
             message: '请选择评审结果'
           }
         ]
-      }
+      },
+      reviewOptions: [
+        {
+          label: '请选择',
+          value: -1,
+          disabled: true
+        },
+        {
+          label: '通过',
+          value: 1
+        },
+        {
+          label: '不通过',
+          value: 0
+        }
+      ]
     };
   },
   computed: {
     isApply() {
-      if (this.type === 'apply') {
-        return this.applyRules;
-      } else {
-        return this.reviewRules;
-      }
+      return this.type === 'apply' ? this.applyRules : this.reviewRules;
     },
     isDisabled() {
       if (this.type === 'apply') {
@@ -158,40 +179,54 @@ export default {
     }
   },
   methods: {
-    async getUserSurvey() {
-      await this.$store.dispatch('product/survey/user/getUserSurveyData');
-    },
     async createApply(val) {
       let body = val;
       body['product_id'] = +this.$route.params.productId;
       body['survey_schedule_id'] = this.id;
-      await this.$store.dispatch(
-        'product/survey/user/createUserSurveyApply',
-        body
-      );
-      this.visible = false;
+      try {
+        await this.$store.dispatch(
+          'product/survey/user/createUserSurveyApply',
+          body
+        );
+        this.visible = false;
+        this.getUserSurvey();
+      } catch (err) {
+        return;
+      }
     },
     async applyReview(val) {
       let body = {
         result: val
       };
       body['apply_id'] = this.id;
-      await this.$store.dispatch(
-        'product/survey/user/createUserSurveyApply',
-        body
-      );
-      this.visible = false;
+      try {
+        await this.$store.dispatch(
+          'product/survey/user/createUserSurveyApply',
+          body
+        );
+        this.visible = false;
+        this.getUserSurvey();
+      } catch (err) {
+        return;
+      }
     },
     async getUserSurveyDetail() {
       let params = {
         id: +this.$route.params.productId
       };
-      await this.$store.dispatch(
-        'product/survey/user/viewUserSurveyDetail',
-        params
-      );
-      this.userSurveyForm =
-        this.$store.state.product.survey.user.userSurveyDetail;
+      try {
+        await this.$store.dispatch(
+          'product/survey/user/viewUserSurveyDetail',
+          params
+        );
+        this.userSurveyForm =
+          this.$store.state.product.survey.user.userSurveyDetail;
+        this.userSurveyForm.expected_finish_time = formatterTime(
+          this.userSurveyForm.expected_finish_time
+        );
+      } catch (err) {
+        return;
+      }
     },
     cancel() {
       this.visible = false;
@@ -205,7 +240,6 @@ export default {
           } else {
             this.applyReview(this.userSurveyForm.result);
           }
-          this.getUserSurvey();
         }
       });
     }

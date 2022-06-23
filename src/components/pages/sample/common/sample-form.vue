@@ -78,17 +78,16 @@
           action
           :show-file-list="false"
           :http-request="handleFileSuccess"
-          :limit="1"
         >
           <el-button
             type="primary"
             :disabled="disabled"
           >
-            上传
+            点击上传
           </el-button>
         </el-upload>
         <div class="attachment">
-          支持office文档格式以及png/jpg/jpeg等图片格式,单个文件不能超过5MB
+          支持office文档格式,文件不能超过5MB(仅限一个)
         </div>
       </el-form-item>
       <el-form-item>
@@ -233,19 +232,31 @@ export default {
     async createProofingSheet(val) {
       let body = val;
       body['sample_id'] = +this.$route.params.id;
-      await this.$store.dispatch('sample/createProofingSheet', body);
-      this.visible = false;
-      this.getProofing();
+      try {
+        await this.$store.dispatch('sample/createProofingSheet', body);
+        this.visible = false;
+        this.getProofing();
+      } catch (err) {
+        return;
+      }
     },
     async approvalProofingSheet(body) {
-      await this.$store.dispatch('sample/approvalProofingSheet', body);
-      this.visible = false;
-      this.getProofing();
+      try {
+        await this.$store.dispatch('sample/approvalProofingSheet', body);
+        this.visible = false;
+        this.getProofing();
+      } catch (err) {
+        return;
+      }
     },
     async updateProofingSheet(val) {
       let body = val;
-      await this.$store.dispatch('sample/updateProofingSheet', body);
-      this.getProofing();
+      try {
+        await this.$store.dispatch('sample/updateProofingSheet', body);
+        this.getProofing();
+      } catch (err) {
+        return;
+      }
     },
     getForm() {
       if (this.type !== 'create') {
@@ -256,14 +267,18 @@ export default {
     async handleFileSuccess(e) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.show = true;
-        this.attachment = {
-          id: this.$store.state.fileRes.id,
-          name: this.$store.state.fileRes.file_name,
-          type: this.$store.state.fileRes.type
-        };
+      try {
+        await this.$store.dispatch('uploadFile', form);
+        if (this.$store.state.uploadState) {
+          this.show = true;
+          this.attachment = {
+            id: this.$store.state.fileRes.id,
+            name: this.$store.state.fileRes.file_name,
+            type: this.$store.state.fileRes.type
+          };
+        }
+      } catch (err) {
+        return;
       }
     },
     cancel() {
@@ -303,16 +318,24 @@ export default {
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        previewFile(this.$store.state.viewLink);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          previewFile(this.$store.state.viewLink);
+        }
+      } catch (err) {
+        return;
       }
     },
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        downloadFile(this.$store.state.viewLink, name);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          downloadFile(this.$store.state.viewLink, name);
+        }
+      } catch (err) {
+        return;
       }
     },
     submitProofingSheetApproval(val) {

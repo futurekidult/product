@@ -54,7 +54,7 @@ import MouldDesign from './model-design.vue';
 import SampleMould from './sample.vue';
 import MouldOpen from './mould-open.vue';
 import MouldTest from './mould-test.vue';
-import { formatterTime } from '../../../../utils/index';
+import { changeTimestamp } from '../../../../utils/index';
 
 export default {
   components: {
@@ -82,55 +82,61 @@ export default {
   methods: {
     async getProductDesign() {
       this.$store.commit('mould/setDesignLoading', true);
-      await this.$store.dispatch('mould/getProductDesign', {
-        params: {
-          mould_id: +this.$route.params.id
-        }
-      });
-      this.designProgress = this.$store.state.mould.designProgress;
-      this.designProgress.actual_finish_time = formatterTime(
-        this.designProgress.actual_finish_time
-      );
+      try {
+        await this.$store.dispatch('mould/getProductDesign', {
+          params: {
+            mould_id: +this.$route.params.id
+          }
+        });
+        this.designProgress = this.$store.state.mould.designProgress;
+        changeTimestamp(this.designProgress, 'actual_finish_time');
+      } catch (err) {
+        return;
+      }
     },
     async getPrototype() {
       this.$store.commit('mould/setPrototypeLoading', true);
-      await this.$store.dispatch('mould/getPrototype', {
-        params: {
-          mould_id: +this.$route.params.id
-        }
-      });
-      this.prototypeProgress = this.$store.state.mould.prototypeProgress;
-      this.prototypeProgress.actual_finish_time = formatterTime(
-        this.prototypeProgress.actual_finish_time
-      );
-      this.attachment = this.prototypeProgress.prototype_file;
+      try {
+        await this.$store.dispatch('mould/getPrototype', {
+          params: {
+            mould_id: +this.$route.params.id
+          }
+        });
+        this.prototypeProgress = this.$store.state.mould.prototypeProgress;
+        changeTimestamp(this.prototypeProgress, 'actual_finish_time');
+        this.attachment = this.prototypeProgress.prototype_file;
+      } catch (err) {
+        return;
+      }
     },
     async getMakingMould() {
       this.$store.commit('mould/setMakingMouldLoading', true);
-      await this.$store.dispatch('mould/getMakingMould', {
-        params: {
-          mould_id: +this.$route.params.id
-        }
-      });
-      this.makingMould = this.$store.state.mould.makingMouldProgress;
-      this.makingMould.actual_finish_time = formatterTime(
-        this.makingMould.actual_finish_time
-      );
-      this.makingMould.estimated_finish_time = formatterTime(
-        this.makingMould.estimated_finish_time
-      );
+      try {
+        await this.$store.dispatch('mould/getMakingMould', {
+          params: {
+            mould_id: +this.$route.params.id
+          }
+        });
+        this.makingMould = this.$store.state.mould.makingMouldProgress;
+        changeTimestamp(this.makingMould, 'actual_finish_time');
+        changeTimestamp(this.makingMould, 'estimated_finish_time');
+      } catch (err) {
+        return;
+      }
     },
     async getTestingMould() {
       this.$store.commit('mould/setTestingMouldLoading', true);
-      await this.$store.dispatch('mould/getTestingMould', {
-        params: {
-          mould_id: +this.$route.params.id
-        }
-      });
-      this.testingMould = this.$store.state.mould.testingMouldProgress;
-      this.testingMould.actual_finish_time = formatterTime(
-        this.testingMould.actual_finish_time
-      );
+      try {
+        await this.$store.dispatch('mould/getTestingMould', {
+          params: {
+            mould_id: +this.$route.params.id
+          }
+        });
+        this.testingMould = this.$store.state.mould.testingMouldProgress;
+        changeTimestamp(this.testingMould, 'actual_finish_time');
+      } catch (err) {
+        return;
+      }
     },
     getRequest(val) {
       switch (val) {

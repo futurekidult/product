@@ -14,6 +14,7 @@
 
     <el-table
       border
+      stripe
       empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       :data="mouldList"
@@ -46,6 +47,7 @@
           >
             删除
           </el-button>
+          <span class="table-btn">|</span>
           <el-button type="text">
             查看
           </el-button>
@@ -66,6 +68,7 @@
   >
     <el-table
       border
+      stripe
       empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       :data="allList"
@@ -145,18 +148,26 @@ export default {
     },
     async submitResult() {
       let body = {
-        product_id: +this.$params.productId,
+        product_id: +this.$route.params.productId,
         mould_id: this.mouldIds
       };
-      await this.$store.dispatch('product/createMould', body);
-      this.mouldSelectedVisible = false;
-      this.getMould();
+      try {
+        await this.$store.dispatch('product/createMould', body);
+        this.mouldSelectedVisible = false;
+        this.getMould();
+      } catch (err) {
+        return;
+      }
     },
     async deleteMould(id) {
-      await this.$store.dispatch('product/deleteMould', {
-        relation_id: id
-      });
-      this.getMould();
+      try {
+        await this.$store.dispatch('product/deleteMould', {
+          relation_id: id
+        });
+        this.getMould();
+      } catch (err) {
+        return;
+      }
     }
   }
 };

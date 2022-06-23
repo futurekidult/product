@@ -35,7 +35,7 @@
 import SampleBasic from './samplie-basic.vue';
 import ProofingList from './proofing-list.vue';
 import SampleTest from './sample-test.vue';
-import { formatterTime } from '../../../../utils/index.js';
+import { changeTimestamp } from '../../../../utils/index.js';
 
 export default {
   components: {
@@ -66,47 +66,52 @@ export default {
   methods: {
     async getSampleDetail() {
       this.$store.commit('sample/setBaseLoading', true);
-      await this.$store.dispatch('sample/getSampleDetail', {
-        params: {
-          id: +this.$route.params.id
-        }
-      });
-      this.sampleDetail = this.$store.state.sample.sampleDetail;
-      this.sampleDetail.estimated_finish_time = formatterTime(
-        this.sampleDetail.estimated_finish_time
-      );
-      this.sampleDetail.actual_finish_time = formatterTime(
-        this.sampleDetail.actual_finish_time
-      );
+      try {
+        await this.$store.dispatch('sample/getSampleDetail', {
+          params: {
+            id: +this.$route.params.id
+          }
+        });
+        this.sampleDetail = this.$store.state.sample.sampleDetail;
+        changeTimestamp(this.sampleDetail, 'estimated_finish_time');
+        changeTimestamp(this.sampleDetail, 'actual_finish_time');
+      } catch (err) {
+        return;
+      }
     },
     async getProofingProgress() {
       this.$store.commit('sample/setProofingLoading', true);
-      await this.$store.dispatch('sample/getProofingProgress', {
-        params: {
-          sample_id: +this.$route.params.id
-        }
-      });
-      this.proofingProgress = this.$store.state.sample.proofingProgress;
-      this.proofingProgress.submit_time = formatterTime(
-        this.proofingProgress.submit_time
-      );
-      this.proofingProgress.actual_finish_time = formatterTime(
-        this.proofingProgress.actual_finish_time
-      );
+      try {
+        await this.$store.dispatch('sample/getProofingProgress', {
+          params: {
+            sample_id: +this.$route.params.id
+          }
+        });
+        this.proofingProgress = this.$store.state.sample.proofingProgress;
+        changeTimestamp(this.proofingProgress, 'submit_time');
+        changeTimestamp(this.proofingProgress, 'actual_finish_time');
+      } catch (err) {
+        return;
+      }
     },
     async getTestProgress() {
       this.$store.commit('sample/setTestLoading', true);
-      await this.$store.dispatch('sample/getTestProgress', {
-        params: {
-          sample_id: +this.$route.params.id
-        }
-      });
-      this.applyList = this.$store.state.sample.testProgress.list;
-      this.buttonState = this.$store.state.sample.testProgress.button_state;
-      this.applyList.forEach((item) => {
-        item.submit_time = formatterTime(item.submit_time);
-        item.review_finish_time = formatterTime(item.review_finish_time);
-      });
+      try {
+        await this.$store.dispatch('sample/getTestProgress', {
+          params: {
+            sample_id: +this.$route.params.id
+          }
+        });
+        let { testProgress } = this.$store.state.sample;
+        this.applyList = testProgress.list;
+        this.buttonState = testProgress.button_state;
+        this.applyList.forEach((item) => {
+          changeTimestamp(item, 'submit_time');
+          changeTimestamp(item, 'review_finish_time');
+        });
+      } catch (err) {
+        return;
+      }
     },
     getRequest(val) {
       switch (val) {

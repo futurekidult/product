@@ -33,7 +33,10 @@
         </div>
       </el-descriptions-item>
       <el-descriptions-item label="操作">
-        <div style="display: flex">
+        <div
+          style="display: flex"
+          :class="preProductSample.state === undefined ? 'hide' : ''"
+        >
           <el-button
             v-if="preProductSample.state === 10"
             class="pre-product_btn"
@@ -243,20 +246,28 @@ export default {
     },
     async submitSheet() {
       this.followupForm['id'] = this.preProductSample.id;
-      await this.$store.dispatch(
-        'product/order/followupSheet',
-        this.followupForm
-      );
-      this.followupSheetDialog = true;
+      try {
+        await this.$store.dispatch(
+          'product/order/followupSheet',
+          this.followupForm
+        );
+        this.followupSheetDialog = true;
+      } catch (err) {
+        return;
+      }
     },
     async submitReceipt() {
       this.courierNumberForm['id'] = this.preProductSample.id;
-      await this.$store.dispatch(
-        'product/order/receiptSheet',
-        this.courierNumberForm
-      );
-      this.courierNumberDialog = false;
-      this.SampleSample();
+      try {
+        await this.$store.dispatch(
+          'product/order/receiptSheet',
+          this.courierNumberForm
+        );
+        this.courierNumberDialog = false;
+        this.SampleSample();
+      } catch (err) {
+        return;
+      }
     },
     submitFollowupForm() {
       this.$refs.followupForm.validate((valid) => {
@@ -284,11 +295,15 @@ export default {
       this.id = id;
     },
     async submitConfirm() {
-      await this.$store.dispatch('product/order/confirmPreProduct', {
-        id: this.id
-      });
-      this.confirmVisible = false;
-      this.SampleSample();
+      try {
+        await this.$store.dispatch('product/order/confirmPreProduct', {
+          id: this.id
+        });
+        this.confirmVisible = false;
+        this.SampleSample();
+      } catch (err) {
+        return;
+      }
     },
     closeConfirm() {
       this.confirmVisible = false;
@@ -304,5 +319,8 @@ export default {
 
 .pre-product {
   text-align: center;
+}
+.hide {
+  display: none;
 }
 </style>

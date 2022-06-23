@@ -19,7 +19,6 @@
           action
           :show-file-list="false"
           :http-request="handleFileSuccess"
-          :limit="1"
         >
           <el-button
             type="primary"
@@ -29,7 +28,7 @@
           </el-button>
         </el-upload>
         <div class="attachment">
-          只能上传jpg/png格式文件,单个文件不能超过5MB
+          支持office文档格式,文件不能超过5MB(仅限一个)
         </div>
       </el-form-item>
       <el-form-item>
@@ -116,36 +115,52 @@ export default {
   },
   methods: {
     async getTemplate() {
-      await this.$store.dispatch('sample/user/getTemplate', {
-        params: {
-          user_test_apply_id: this.id
-        }
-      });
-      this.templateForm = this.$store.state.sample.user.templateFile;
-      this.attchement = this.templateForm.user_template_file;
-      this.show = true;
+      try {
+        await this.$store.dispatch('sample/user/getTemplate', {
+          params: {
+            user_test_apply_id: this.id
+          }
+        });
+        this.templateForm = this.$store.state.sample.user.templateFile;
+        this.attchement = this.templateForm.user_template_file;
+        this.show = true;
+      } catch (err) {
+        return;
+      }
     },
     async createTemplate(val) {
       let body = {
         user_test_apply_id: this.id,
         user_template_file: val
       };
-      await this.$store.dispatch('sample/user/createTemplate', body);
-      this.visible = false;
-      this.getUser();
+      try {
+        await this.$store.dispatch('sample/user/createTemplate', body);
+        this.visible = false;
+        this.getUser();
+      } catch (err) {
+        return;
+      }
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        previewFile(this.$store.state.viewLink);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          previewFile(this.$store.state.viewLink);
+        }
+      } catch (err) {
+        return;
       }
     },
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        downloadFile(this.$store.state.viewLink, name);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          downloadFile(this.$store.state.viewLink, name);
+        }
+      } catch (err) {
+        return;
       }
     },
     cancel() {
@@ -155,14 +170,18 @@ export default {
     async handleFileSuccess(e) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.show = true;
-        this.attachment = {
-          id: this.$store.state.fileRes.id,
-          name: this.$store.state.fileRes.file_name,
-          type: this.$store.state.fileRes.type
-        };
+      try {
+        await this.$store.dispatch('uploadFile', form);
+        if (this.$store.state.uploadState) {
+          this.show = true;
+          this.attachment = {
+            id: this.$store.state.fileRes.id,
+            name: this.$store.state.fileRes.file_name,
+            type: this.$store.state.fileRes.type
+          };
+        }
+      } catch (err) {
+        return;
       }
     },
     deleteFile() {

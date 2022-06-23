@@ -42,6 +42,8 @@
           placeholder="请选择"
           :disabled="disabled"
           clearable
+          maxlength="15"
+          show-word-limit
         />
       </el-form-item>
       <el-form-item
@@ -122,6 +124,7 @@
           v-model="applyForm.quality_specialist_id"
           :data="memberList"
           clearable
+          show-checkbox
           :props="defaultProps"
           :disabled="type === 'view'"
         />
@@ -149,7 +152,7 @@
 </template>
 
 <script>
-import { timestamp } from '../../../../utils';
+import { timestamp, checkValid } from '../../../../utils';
 export default {
   inject: ['getTest'],
   props: ['dialogVisible', 'title', 'type', 'id'],
@@ -163,7 +166,8 @@ export default {
           {
             required: true,
             message: '请输入样品总数'
-          }
+          },
+          checkValid(15)
         ],
         is_pre_production: [
           {
@@ -259,45 +263,65 @@ export default {
       }
     },
     async getSampleMarketList() {
-      await this.$store.dispatch('sample/getSampleMarketList', {
-        params: {
-          sample_id: +this.$route.params.id
-        }
-      });
-      this.applyForm.sample_model =
-        this.$store.state.sample.sampleMarketList.sample_model;
-      this.applyForm.market = this.$store.state.sample.sampleMarketList.market;
+      try {
+        await this.$store.dispatch('sample/getSampleMarketList', {
+          params: {
+            sample_id: +this.$route.params.id
+          }
+        });
+        let { sampleMarketList } = this.$store.state.sample;
+        this.applyForm.sample_model = sampleMarketList.sample_model;
+        this.applyForm.market = sampleMarketList.market;
+      } catch (err) {
+        return;
+      }
     },
     async createTestApply(val) {
       let body = val;
       body['sample_id'] = +this.$route.params.id;
-      await this.$store.dispatch('sample/createTestApply', body);
-      this.visible = false;
-      this.getTest();
+      try {
+        await this.$store.dispatch('sample/createTestApply', body);
+        this.visible = false;
+        this.getTest();
+      } catch (err) {
+        return;
+      }
     },
     async getSampleTestApply() {
-      await this.$store.dispatch('sample/getSampleTestApply', {
-        params: {
-          id: this.id
+      try {
+        await this.$store.dispatch('sample/getSampleTestApply', {
+          params: {
+            id: this.id
+          }
+        });
+        this.applyForm = this.$store.state.sample.sampleTestApply;
+        if (!this.applyForm.quality_specialist_id) {
+          this.applyForm.quality_specialist_id = '';
         }
-      });
-      this.applyForm = this.$store.state.sample.sampleTestApply;
-      if (!this.applyForm.quality_specialist_id) {
-        this.applyForm.quality_specialist_id = '';
+      } catch (err) {
+        return;
       }
     },
     async reviewTestApply(val) {
       let body = val;
       body.id = this.id;
-      await this.$store.dispatch('sample/reviewTestApply', body);
-      this.visible = false;
-      this.getTest();
+      try {
+        await this.$store.dispatch('sample/reviewTestApply', body);
+        this.visible = false;
+        this.getTest();
+      } catch (err) {
+        return;
+      }
     },
     async getOrganizationList() {
-      await this.$store.dispatch('getOrganizationList');
-      this.memberList = this.$store.state.organizationList;
-      for (let key in this.memberList) {
-        this.childrenFunc(this.memberList[key]);
+      try {
+        await this.$store.dispatch('getOrganizationList');
+        this.memberList = this.$store.state.organizationList;
+        for (let key in this.memberList) {
+          this.childrenFunc(this.memberList[key]);
+        }
+      } catch (err) {
+        return;
       }
     },
     childrenFunc(data) {

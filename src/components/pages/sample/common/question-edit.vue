@@ -81,11 +81,23 @@ export default {
       let body = val;
       body.id = this.id;
       if (this.type === 'quality') {
-        await this.$store.dispatch('sample/quality/updateTestQuestion', body);
+        try {
+          await this.$store.dispatch('sample/quality/updateTestQuestion', body);
+        } catch (err) {
+          return;
+        }
       } else if (this.type === 'agency') {
-        await this.$store.dispatch('sample/agency/updateTestQuestion', body);
+        try {
+          await this.$store.dispatch('sample/agency/updateTestQuestion', body);
+        } catch (err) {
+          return;
+        }
       } else {
-        await this.$store.dispatch('sample/user/updateTestQuestion', body);
+        try {
+          await this.$store.dispatch('sample/user/updateTestQuestion', body);
+        } catch (err) {
+          return;
+        }
       }
       this.visible = false;
       this.getList();

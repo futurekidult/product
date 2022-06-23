@@ -18,6 +18,7 @@
           v-model="memberForm.user_id"
           :data="memberList"
           clearable
+          show-checkbox
           :props="defaultProps"
         />
       </el-form-item>
@@ -88,29 +89,45 @@ export default {
       if (localStorage.getItem('params')) {
         this.role = JSON.parse(localStorage.getItem('params')).product.role;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getRole();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getRole();
+        } catch (err) {
+          return;
+        }
       }
     },
     async createProjectMember(val) {
       let body = val;
       body['product_id'] = +this.$route.params.productId;
-      await this.$store.dispatch('product/createProjectMember', body);
-      this.visible = false;
-      this.getMember();
+      try {
+        await this.$store.dispatch('product/createProjectMember', body);
+        this.visible = false;
+        this.getMember();
+      } catch (err) {
+        return;
+      }
     },
     async updateProjectMember(val) {
       let body = val;
       body.id = this.id;
-      await this.$store.dispatch('product/updateProjectMember', body);
-      this.visible = false;
-      this.getMember();
+      try {
+        await this.$store.dispatch('product/updateProjectMember', body);
+        this.visible = false;
+        this.getMember();
+      } catch (err) {
+        return;
+      }
     },
     async getOrganizationList() {
-      await this.$store.dispatch('getOrganizationList');
-      this.memberList = this.$store.state.organizationList;
-      for (let key in this.memberList) {
-        this.childrenFunc(this.memberList[key]);
+      try {
+        await this.$store.dispatch('getOrganizationList');
+        this.memberList = this.$store.state.organizationList;
+        for (let key in this.memberList) {
+          this.childrenFunc(this.memberList[key]);
+        }
+      } catch (err) {
+        return;
       }
     },
     childrenFunc(data) {

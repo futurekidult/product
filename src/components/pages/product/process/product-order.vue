@@ -1,14 +1,12 @@
 <template>
-  <div
-    v-loading="$store.state.product.order.orderLoading"
-    class="border"
-  >
+  <div v-loading="$store.state.product.order.orderLoading">
     <div class="select-title">
       <span class="line">|</span> 下单信息
     </div>
 
     <el-table
       border
+      stripe
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       :data="orderList"
     >
@@ -16,6 +14,7 @@
       <el-table-column
         label="序号"
         type="index"
+        width="60px"
       />
       <el-table-column
         label="关联定价ID"
@@ -32,10 +31,12 @@
       <el-table-column
         label="计划完成时间"
         prop="estimated_finish_time"
+        width="200px"
       />
       <el-table-column
         label="实际完成时间"
         prop="actual_finish_time"
+        width="200px"
       />
       <el-table-column
         label="大货样套数"
@@ -70,12 +71,20 @@ export default {
   props: ['orderList'],
   methods: {
     async getSkuForm() {
-      await this.$store.dispatch('product/order/getSku');
+      try {
+        await this.$store.dispatch('product/order/getSku');
+      } catch (err) {
+        return;
+      }
     },
     async getOrderProgress() {
-      await this.$store.dispatch('product/order/getProgress', {
-        params: { id: this.$route.params.productId }
-      });
+      try {
+        await this.$store.dispatch('product/order/getProgress', {
+          params: { id: this.$route.params.productId }
+        });
+      } catch (err) {
+        return;
+      }
     },
     toDetail(id) {
       this.$router.push(`/product-list/${this.$route.params.productId}/${id}`);

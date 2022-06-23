@@ -10,7 +10,8 @@ export default {
       surveyApply: [],
       planList: [],
       userSurveyDetail: {},
-      userLoading: true
+      userLoading: true,
+      userId: 0
     };
   },
   mutations: {
@@ -31,6 +32,9 @@ export default {
     },
     setUserLoading(state, payload) {
       state.userLoading = payload;
+    },
+    setUserId(state, payload) {
+      state.userId = payload;
     }
   },
   actions: {
@@ -41,6 +45,7 @@ export default {
           context.commit('setProgressData', res.data.progress);
           context.commit('setSurveyApply', res.data.survey_apply);
           context.commit('setPlanList', res.data.plan_list);
+          context.commit('setUserId', res.data.user_survey_principal_id);
           context.commit('setUserLoading', false);
         }
       });

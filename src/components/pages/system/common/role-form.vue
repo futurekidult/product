@@ -85,24 +85,36 @@ export default {
   },
   methods: {
     async createRole(body) {
-      await this.$store.dispatch('system/createRole', body);
-      this.visible = false;
-      this.getList();
+      try {
+        await this.$store.dispatch('system/createRole', body);
+        this.visible = false;
+        this.getList();
+      } catch (err) {
+        return;
+      }
     },
     async updateRole(val) {
       let body = val;
       body['id'] = this.id;
-      await this.$store.dispatch('system/updateRole', body);
-      this.visible = false;
-      this.getList();
+      try {
+        await this.$store.dispatch('system/updateRole', body);
+        this.visible = false;
+        this.getList();
+      } catch (err) {
+        return;
+      }
     },
     async getRole() {
-      await this.$store.dispatch('system/getRole', {
-        params: {
-          id: this.id
-        }
-      });
-      this.roleForm = this.$store.state.system.role;
+      try {
+        await this.$store.dispatch('system/getRole', {
+          params: {
+            id: this.id
+          }
+        });
+        this.roleForm = this.$store.state.system.role;
+      } catch (err) {
+        return;
+      }
     },
     cancel() {
       this.visible = false;

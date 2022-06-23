@@ -9,7 +9,6 @@ export default {
       demandLoading: true,
       reasonText: '',
       categoryList: [],
-      isSuccess: false,
       demandDetail: {},
       demandDetailLoading: true,
       optionLoading: true,
@@ -67,9 +66,6 @@ export default {
       await axios.post('/demand/detail/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-          context.state.isSuccess = true;
-        } else {
-          context.state.isSuccess = false;
         }
       });
     },

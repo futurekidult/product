@@ -77,12 +77,14 @@
       <el-table
         :data="demandList"
         border
+        stripe
         empty-text="无数据"
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       >
         <el-table-column
           prop="id"
           label="需求ID"
+          width="80px"
         />
         <el-table-column
           prop="name"
@@ -202,8 +204,12 @@ export default {
           localStorage.getItem('params')
         ).demand.state;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getParams();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getParams();
+        } catch (err) {
+          return;
+        }
       }
     },
     async getDemandList(currentPage = 1, pageSize = 10) {
@@ -211,18 +217,26 @@ export default {
       let params = this.chooseForm;
       params['current_page'] = currentPage;
       params['page_size'] = pageSize;
-      await this.$store.dispatch('demand/getDemandList', {
-        params
-      });
-      this.demandList = this.$store.state.demand.demandList;
-      this.demandList.forEach((item) => {
-        item.create_time = formatterTime(item.create_time);
-        item.review_finish_time = formatterTime(item.review_finish_time);
-      });
+      try {
+        await this.$store.dispatch('demand/getDemandList', {
+          params
+        });
+        this.demandList = this.$store.state.demand.demandList;
+        this.demandList.forEach((item) => {
+          item.create_time = formatterTime(item.create_time);
+          item.review_finish_time = formatterTime(item.review_finish_time);
+        });
+      } catch (err) {
+        return;
+      }
     },
     async getReason(id) {
-      await this.$store.dispatch('demand/getReasonText', { params: { id } });
-      this.reasonForm.content = this.$store.state.demand.reasonText;
+      try {
+        await this.$store.dispatch('demand/getReasonText', { params: { id } });
+        this.reasonForm.content = this.$store.state.demand.reasonText;
+      } catch (err) {
+        return;
+      }
     },
     reasonDialog(id) {
       this.reasonFormVisible = true;

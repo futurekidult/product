@@ -81,13 +81,14 @@
         :plan-list="planList"
         :length="length"
         :get-list="getUserSurvey"
+        :user-id="userSurveyPrincipalId"
       />
     </el-tab-pane>
   </el-tabs>
 </template>
 
 <script>
-import { formatterTime } from '../../../../utils';
+import { changeTimestamp } from '../../../../utils';
 import MarketSurvey from './survey/market-survey.vue';
 import PlatformSurvey from './survey/platform-survey.vue';
 import UserAnalysis from './survey/user-analysis.vue';
@@ -103,6 +104,11 @@ export default {
     ProductPlan,
     RiskSurvey,
     UserSurvey
+  },
+  provide() {
+    return {
+      getUserSurvey: this.getUserSurvey
+    };
   },
   props: ['id'],
   data() {
@@ -130,7 +136,8 @@ export default {
       length: 0,
       isNewCategory: false,
       isNewProduct: false,
-      isNewCategoryProduct: false
+      isNewCategoryProduct: false,
+      userSurveyPrincipalId: 0
     };
   },
   mounted() {
@@ -143,38 +150,38 @@ export default {
       let params = {
         id: +this.$route.params.productId
       };
-      await this.$store.dispatch('product/survey/platform/getPlatform', {
-        params
-      });
-      this.platformProgress =
-        this.$store.state.product.survey.platform.platform.progress;
-      this.platformProgress.estimated_finish_time = formatterTime(
-        this.platformProgress.estimated_finish_time
-      );
-      this.platformProgress.actual_finish_time = formatterTime(
-        this.platformProgress.actual_finish_time
-      );
-      this.platformForm =
-        this.$store.state.product.survey.platform.platform.report;
-      this.productImages = this.platformForm.images;
-      this.platformAttachment = this.platformForm.attachment;
+      try {
+        await this.$store.dispatch('product/survey/platform/getPlatform', {
+          params
+        });
+        let { platform } = this.$store.state.product.survey.platform;
+        this.platformProgress = platform.progress;
+        this.platformForm = platform.report;
+        this.productImages = this.platformForm.images;
+        this.platformAttachment = this.platformForm.attachment;
+        changeTimestamp(this.platformProgress, 'estimated_finish_time');
+        changeTimestamp(this.platformProgress, 'actual_finish_time');
+      } catch (err) {
+        return;
+      }
     },
     async getMarket() {
       this.$store.commit('product/survey/market/setMarketLoading', true);
       let params = {
         product_id: +this.$route.params.productId
       };
-      await this.$store.dispatch('product/survey/market/getMarket', { params });
-      this.marketProgress =
-        this.$store.state.product.survey.market.market.progress;
-      this.marketProgress.estimated_finish_time = formatterTime(
-        this.marketProgress.estimated_finish_time
-      );
-      this.marketProgress.actual_finish_time = formatterTime(
-        this.marketProgress.actual_finish_time
-      );
-      this.markeAttachment =
-        this.$store.state.product.survey.market.market.report;
+      try {
+        await this.$store.dispatch('product/survey/market/getMarket', {
+          params
+        });
+        let { market } = this.$store.state.product.survey.market;
+        this.marketProgress = market.progress;
+        this.markeAttachment = market.report;
+        changeTimestamp(this.marketProgress, 'estimated_finish_time');
+        changeTimestamp(this.marketProgress, 'actual_finish_time');
+      } catch (err) {
+        return;
+      }
     },
     async getAnalysis() {
       this.$store.commit(
@@ -184,83 +191,84 @@ export default {
       let params = {
         id: +this.$route.params.productId
       };
-      await this.$store.dispatch('product/survey/userAnalysis/getAnalysis', {
-        params
-      });
-      this.analysisProgress =
-        this.$store.state.product.survey.userAnalysis.userAnalysis.progress;
-      this.analysisProgress.estimated_finish_time = formatterTime(
-        this.analysisProgress.estimated_finish_time
-      );
-      this.analysisProgress.actual_finish_time = formatterTime(
-        this.analysisProgress.actual_finish_time
-      );
-      this.analysisForm =
-        this.$store.state.product.survey.userAnalysis.userAnalysis.report;
-      this.analysisAttachment = this.analysisForm.attachment;
+      try {
+        await this.$store.dispatch('product/survey/userAnalysis/getAnalysis', {
+          params
+        });
+        let { userAnalysis } = this.$store.state.product.survey.userAnalysis;
+        this.analysisProgress = userAnalysis.progress;
+        changeTimestamp(this.analysisProgress, 'estimated_finish_time');
+        changeTimestamp(this.analysisProgress, 'actual_finish_time');
+        this.analysisForm = userAnalysis.report;
+        this.analysisAttachment = this.analysisForm.attachment;
+      } catch (err) {
+        return;
+      }
     },
     async getPlan() {
       this.$store.commit('product/survey/plan/setPlanLoading', true);
       let params = {
         id: +this.$route.params.productId
       };
-      await this.$store.dispatch('product/survey/plan/getPlan', { params });
-      this.planProgress = this.$store.state.product.survey.plan.plan.progress;
-      this.planProgress.estimated_finish_time = formatterTime(
-        this.planProgress.estimated_finish_time
-      );
-      this.planProgress.actual_finish_time = formatterTime(
-        this.planProgress.actual_finish_time
-      );
-      this.planForm = this.$store.state.product.survey.plan.plan.report;
-      this.planAttachment = this.planForm.attachment;
+      try {
+        await this.$store.dispatch('product/survey/plan/getPlan', { params });
+        let { plan } = this.$store.state.product.survey.plan;
+        this.planProgress = plan.progress;
+        changeTimestamp(this.platformProgress, 'estimated_finish_time');
+        changeTimestamp(this.platformProgress, 'actual_finish_time');
+        this.planForm = plan.report;
+        this.planAttachment = this.planForm.attachment;
+      } catch (err) {
+        return;
+      }
     },
     async getRisk() {
       this.$store.commit('product/survey/risk/setRiskLoading', true);
       let params = {
         id: +this.$route.params.productId
       };
-      await this.$store.dispatch('product/survey/risk/getRisk', { params });
-      this.riskProgress = this.$store.state.product.survey.risk.risk.progress;
-      this.riskProgress.estimated_finish_time = formatterTime(
-        this.riskProgress.estimated_finish_time
-      );
-      this.riskProgress.actual_finish_time = formatterTime(
-        this.riskProgress.actual_finish_time
-      );
-      this.riskForm = this.$store.state.product.survey.risk.risk.report;
-      this.riskAttachment = this.riskForm.attachment;
+      try {
+        await this.$store.dispatch('product/survey/risk/getRisk', { params });
+        let { risk } = this.$store.state.product.survey.risk;
+        this.riskProgress = risk.progress;
+        changeTimestamp(this.riskProgress, 'estimated_finish_time');
+        changeTimestamp(this.riskProgress, 'actual_finish_time');
+        this.riskForm = risk.report;
+        this.riskAttachment = this.riskForm.attachment;
+      } catch (err) {
+        return;
+      }
     },
     async getUserSurvey() {
       this.$store.commit('product/survey/user/setUserLoading', true);
       let params = {
         id: +this.$route.params.productId
       };
-      await this.$store.dispatch('product/survey/user/getUserSurveyData', {
-        params
-      });
-      this.buttonState = this.$store.state.product.survey.user.buttonState;
-      this.surveyApply = this.$store.state.product.survey.user.surveyApply;
-      this.surveyApply.forEach((item) => {
-        item.create_time = formatterTime(item.create_time);
-        item.review_finish_time = formatterTime(item.review_finish_time);
-      });
-      this.userProgress = this.$store.state.product.survey.user.progress;
-      this.userProgress.estimated_finish_time = formatterTime(
-        this.userProgress.estimated_finish_time
-      );
-      this.userProgress.actual_start_time = formatterTime(
-        this.userProgress.actual_start_time
-      );
-      this.userProgress.actual_finish_time = formatterTime(
-        this.userProgress.actual_finish_time
-      );
-      this.planList = this.$store.state.product.survey.user.planList;
-      this.planList.forEach((item) => {
-        item.estimated_finish_time = formatterTime(item.estimated_finish_time);
-        item.actual_finish_time = formatterTime(item.actual_finish_time);
-      });
-      this.length = this.$store.state.product.survey.user.planList.length;
+      try {
+        await this.$store.dispatch('product/survey/user/getUserSurveyData', {
+          params
+        });
+        let userSurvey = this.$store.state.product.survey.user;
+        this.userSurveyPrincipalId = userSurvey.userId;
+        this.buttonState = userSurvey.buttonState;
+        this.surveyApply = userSurvey.surveyApply;
+        this.userProgress = userSurvey.progress;
+        this.planList = userSurvey.planList;
+        this.surveyApply.forEach((item) => {
+          changeTimestamp(item, 'create_time');
+          changeTimestamp(item, 'review_finish_time');
+        });
+        changeTimestamp(this.userProgress, 'estimated_finish_time');
+        changeTimestamp(this.userProgress, 'actual_start_time');
+        changeTimestamp(this.userProgress, 'actual_finish_time');
+        this.planList.forEach((item) => {
+          changeTimestamp(item, 'estimated_finish_time');
+          changeTimestamp(item, 'actual_finish_time');
+        });
+        this.length = userSurvey.planList.length;
+      } catch (err) {
+        return;
+      }
     },
     changeColor(val) {
       if (val === 10 || val === 20) {

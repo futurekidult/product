@@ -19,14 +19,13 @@
           action
           :show-file-list="false"
           :http-request="handleFileSuccess"
-          :limit="1"
         >
           <el-button type="primary">
             点击上传
           </el-button>
         </el-upload>
         <div class="attachment">
-          只能上传jpg/png格式文件,单个文件不能超过5MB
+          支持office文档格式,文件不能超过5MB(仅限一个)
         </div>
       </el-form-item>
       <el-form-item>
@@ -100,9 +99,13 @@ export default {
         user_test_apply_id: this.id,
         user_template_file: val
       };
-      await this.$store.dispatch('sample/user/uploadFile', body);
-      this.visible = false;
-      this.getList();
+      try {
+        await this.$store.dispatch('sample/user/uploadFile', body);
+        this.visible = false;
+        this.getList();
+      } catch (err) {
+        return;
+      }
     },
     cancel() {
       this.visible = false;
@@ -111,21 +114,29 @@ export default {
     async handleFileSuccess(e) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.show = true;
-        this.attachment = {
-          id: this.$store.state.fileRes.id,
-          name: this.$store.state.fileRes.file_name,
-          type: this.$store.state.fileRes.type
-        };
+      try {
+        await this.$store.dispatch('uploadFile', form);
+        if (this.$store.state.uploadState) {
+          this.show = true;
+          this.attachment = {
+            id: this.$store.state.fileRes.id,
+            name: this.$store.state.fileRes.file_name,
+            type: this.$store.state.fileRes.type
+          };
+        }
+      } catch (err) {
+        return;
       }
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        previewFile(this.$store.state.viewLink);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          previewFile(this.$store.state.viewLink);
+        }
+      } catch (err) {
+        return;
       }
     },
     deleteFile() {

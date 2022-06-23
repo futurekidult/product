@@ -18,6 +18,8 @@
 
     <el-table
       border
+      stripe
+      empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       :data="patent.patent_list"
     >
@@ -96,6 +98,7 @@
         <el-descriptions-item label="操作">
           <el-button
             :disabled="progress.state !== 10"
+            :class="progress.state === undefined ? 'hide' : ''"
             @click="confirmPatent"
           >
             专利排查完成
@@ -198,13 +201,17 @@ export default {
   },
   methods: {
     async getReport() {
-      await this.$store.dispatch('product/patent/getReport', {
-        params: { product_id: this.$route.params.productId }
-      });
-      this.report = this.$store.state.product.patent.report;
-      this.report.actual_finish_time = formatterTime(
-        this.report.actual_finish_time
-      );
+      try {
+        await this.$store.dispatch('product/patent/getReport', {
+          params: { product_id: this.$route.params.productId }
+        });
+        this.report = this.$store.state.product.patent.report;
+        this.report.actual_finish_time = formatterTime(
+          this.report.actual_finish_time
+        );
+      } catch (err) {
+        return;
+      }
     },
     showPatentForm() {
       this.patentVisible = true;
@@ -216,10 +223,16 @@ export default {
       let params = {
         patent_apply_id: id
       };
-      await this.$store.dispatch('product/patent/viewPatentReview', { params });
-      this.applyId = id;
-      this.reviewForm = this.$store.state.product.patent.singlePatent.patent;
-      this.patentReviewVisible = true;
+      try {
+        await this.$store.dispatch('product/patent/viewPatentReview', {
+          params
+        });
+        this.applyId = id;
+        this.reviewForm = this.$store.state.product.patent.singlePatent.patent;
+        this.patentReviewVisible = true;
+      } catch (err) {
+        return;
+      }
     },
     closePatentReview() {
       this.patentReviewVisible = false;
@@ -228,11 +241,17 @@ export default {
       let params = {
         patent_apply_id: id
       };
-      await this.$store.dispatch('product/patent/viewPatentReview', { params });
-      this.viewForm = this.$store.state.product.patent.singlePatent.patent;
-      this.viewForm['review_result'] =
-        this.$store.state.product.patent.singlePatent.review_result;
-      this.viewReviewVisible = true;
+      try {
+        await this.$store.dispatch('product/patent/viewPatentReview', {
+          params
+        });
+        let { singlePatent } = this.$store.state.product.patent;
+        this.viewForm = singlePatent.patent;
+        this.viewForm['review_result'] = singlePatent.review_result;
+        this.viewReviewVisible = true;
+      } catch (err) {
+        return;
+      }
     },
     closeViewReview() {
       this.viewReviewVisible = false;
@@ -241,8 +260,12 @@ export default {
       let params = {
         product_id: +this.$route.params.productId
       };
-      await this.$store.dispatch('product/patent/confirmPatent', params);
-      this.getPatentProgress();
+      try {
+        await this.$store.dispatch('product/patent/confirmPatent', params);
+        this.getPatentProgress();
+      } catch (err) {
+        return;
+      }
     },
     changeColor(val) {
       if (val === 10) {
@@ -269,5 +292,9 @@ export default {
 <style scoped>
 .patent-tabs {
   margin: 30px 0;
+}
+
+.hide {
+  display: none;
 }
 </style>

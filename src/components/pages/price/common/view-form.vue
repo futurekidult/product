@@ -260,7 +260,6 @@
         <el-upload
           :show-file-list="false"
           action
-          :limit="1"
         >
           <el-button
             type="primary"
@@ -270,7 +269,7 @@
           </el-button>
         </el-upload>
         <div class="attachment">
-          只能上传jpg/png格式文件,单个文件不能超过5MB
+          支持office文档格式,文件不能超过5MB(仅限一个)
         </div>
       </el-form-item>
       <el-form-item>
@@ -328,19 +327,23 @@ export default {
       this.$emit('hide-dialog', false);
     },
     async getQuotation() {
-      await this.$store.dispatch('price/getQuotation', {
-        params: {
-          quote_id: this.id
-        }
-      });
-      this.quotationForm = this.$store.state.price.quotation;
-      this.quotationForm.quote_validity = formatterTime(
-        this.quotationForm.quote_validity
-      );
-      this.quotationForm.create_time = formatterTime(
-        this.quotationForm.create_time
-      );
-      this.attachment = this.quotationForm.quotation;
+      try {
+        await this.$store.dispatch('price/getQuotation', {
+          params: {
+            quote_id: this.id
+          }
+        });
+        this.quotationForm = this.$store.state.price.quotation;
+        this.quotationForm.quote_validity = formatterTime(
+          this.quotationForm.quote_validity
+        );
+        this.quotationForm.create_time = formatterTime(
+          this.quotationForm.create_time
+        );
+        this.attachment = this.quotationForm.quotation;
+      } catch (err) {
+        return;
+      }
     },
     async getParams() {
       if (localStorage.getItem('params')) {
@@ -348,22 +351,34 @@ export default {
           localStorage.getItem('params')
         ).demand.currency;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getParams();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getParams();
+        } catch (err) {
+          return;
+        }
       }
     },
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        downloadFile(this.$store.state.viewLink, name);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          downloadFile(this.$store.state.viewLink, name);
+        }
+      } catch (err) {
+        return;
       }
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        previewFile(this.$store.state.viewLink);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          previewFile(this.$store.state.viewLink);
+        }
+      } catch (err) {
+        return;
       }
     }
   }

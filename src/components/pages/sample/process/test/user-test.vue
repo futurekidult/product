@@ -11,6 +11,7 @@
 
     <el-table
       border
+      stripe
       empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       :data="applyList"
@@ -140,19 +141,21 @@
         label="操作"
         width="300px"
       >
-        <el-button
-          v-if="progress.state === 10"
-          @click="showFailReason"
-        >
-          测试不通过
-        </el-button>
-        <el-button
-          type="primary"
-          :disabled="progress.state !== 10"
-          @click="confirmResult"
-        >
-          测试通过
-        </el-button>
+        <div :class="progress.state === undefined ? 'hide' : ''">
+          <el-button
+            v-if="progress.state === 10"
+            @click="showFailReason"
+          >
+            测试不通过
+          </el-button>
+          <el-button
+            type="primary"
+            :disabled="progress.state !== 10"
+            @click="confirmResult"
+          >
+            测试通过
+          </el-button>
+        </div>
       </el-descriptions-item>
     </el-descriptions>
 
@@ -177,10 +180,9 @@
         :rules="[{ required: true, message: '请上传附件' }]"
       >
         <el-upload
-          action=""
+          action
           :show-file-list="false"
           :http-request="handleFileSuccess"
-          :limit="1"
         >
           <el-button
             type="primary"
@@ -190,7 +192,7 @@
           </el-button>
         </el-upload>
         <div class="attachment">
-          支持office文档格式以及png/jpg/jpeg等图片格式,单个文件不能超过5MB
+          支持office文档格式,文件不能超过5MB(仅限一个)
         </div>
       </el-form-item>
       <el-form-item>
@@ -317,6 +319,7 @@
           v-model="editForm.user_survey_specialist_id"
           :data="memberList"
           clearable
+          show-checkbox
           :props="defaultProps"
         />
       </el-form-item>
@@ -422,26 +425,38 @@ export default {
       body.id = this.testId;
       body['sample_id'] = +this.$route.params.id;
       body['test_apply_id'] = this.id;
-      await this.$store.dispatch('sample/user/confirmTestResult', body);
-      if (val.test_result === 0) {
-        this.failFormVisible = false;
+      try {
+        await this.$store.dispatch('sample/user/confirmTestResult', body);
+        if (val.test_result === 0) {
+          this.failFormVisible = false;
+        }
+        this.getProgress();
+      } catch (err) {
+        return;
       }
-      this.getProgress();
     },
     async getSpecialist(val) {
-      await this.$store.dispatch('sample/user/getSpecialist', {
-        params: {
-          id: val
-        }
-      });
-      this.editForm = this.$store.state.sample.user.specialist;
+      try {
+        await this.$store.dispatch('sample/user/getSpecialist', {
+          params: {
+            id: val
+          }
+        });
+        this.editForm = this.$store.state.sample.user.specialist;
+      } catch (err) {
+        return;
+      }
     },
     async updateSpecialist(val) {
       let body = val;
       body.id = this.id;
-      await this.$store.dispatch('sample/user/updateSpecialist', body);
-      this.specialistFormVisible = false;
-      this.getProgress();
+      try {
+        await this.$store.dispatch('sample/user/updateSpecialist', body);
+        this.specialistFormVisible = false;
+        this.getProgress();
+      } catch (err) {
+        return;
+      }
     },
     async submitTestResult(val) {
       let body = {
@@ -449,14 +464,22 @@ export default {
         sample_id: +this.$route.params.id,
         test_apply_id: this.id
       };
-      await this.$store.dispatch('sample/user/submitTestResult', body);
-      this.getProgress();
+      try {
+        await this.$store.dispatch('sample/user/submitTestResult', body);
+        this.getProgress();
+      } catch (err) {
+        return;
+      }
     },
     async getOrganizationList() {
-      await this.$store.dispatch('getOrganizationList');
-      this.memberList = this.$store.state.organizationList;
-      for (let key in this.memberList) {
-        this.childrenFunc(this.memberList[key]);
+      try {
+        await this.$store.dispatch('getOrganizationList');
+        this.memberList = this.$store.state.organizationList;
+        for (let key in this.memberList) {
+          this.childrenFunc(this.memberList[key]);
+        }
+      } catch (err) {
+        return;
       }
     },
     showApplyForm() {
@@ -513,28 +536,40 @@ export default {
     async handleFileSuccess(e) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.show = true;
-        this.file = {
-          id: this.$store.state.fileRes.id,
-          name: this.$store.state.fileRes.file_name,
-          type: this.$store.state.fileRes.type
-        };
+      try {
+        await this.$store.dispatch('uploadFile', form);
+        if (this.$store.state.uploadState) {
+          this.show = true;
+          this.file = {
+            id: this.$store.state.fileRes.id,
+            name: this.$store.state.fileRes.file_name,
+            type: this.$store.state.fileRes.type
+          };
+        }
+      } catch (err) {
+        return;
       }
     },
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        downloadFile(this.$store.state.viewLink, name);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          downloadFile(this.$store.state.viewLink, name);
+        }
+      } catch (err) {
+        return;
       }
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        previewFile(this.$store.state.viewLink);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          previewFile(this.$store.state.viewLink);
+        }
+      } catch (err) {
+        return;
       }
     },
     deleteFile() {
@@ -571,3 +606,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.hide {
+  display: none;
+}
+</style>

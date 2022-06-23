@@ -348,14 +348,13 @@
           action
           :show-file-list="false"
           :http-request="handleFileSuccess"
-          :limit="1"
         >
           <el-button type="primary">
             点击上传
           </el-button>
         </el-upload>
         <div class="attachment">
-          只能上传jpg/png格式文件,单个文件不能超过5MB
+          支持office文档格式,文件不能超过5MB(仅限一个)
         </div>
       </el-form-item>
       <el-form-item>
@@ -363,7 +362,7 @@
           v-if="show"
           class="attachment-list"
         >
-          <div>{{ handleAttachment(attachment.name) }}</div>
+          <div>{{ attachment.name }}</div>
           <div style="display: flex">
             <el-button
               type="text"
@@ -402,7 +401,12 @@
 </template>
 
 <script>
-import { getFile, previewFile, timestamp } from '../../../../utils/index.js';
+import {
+  getFile,
+  previewFile,
+  timestamp,
+  checkValid
+} from '../../../../utils/index.js';
 
 export default {
   props: ['dialogVisible', 'title', 'id', 'getList', 'productId', 'market'],
@@ -428,7 +432,8 @@ export default {
           {
             required: true,
             message: '请输入金额'
-          }
+          },
+          checkValid(15)
         ],
         quote_amount_rmb: [
           {
@@ -440,13 +445,15 @@ export default {
           {
             required: true,
             message: '请输入内容'
-          }
+          },
+          checkValid(200)
         ],
         beyond_reference_reason: [
           {
             required: true,
             message: '请输入内容'
-          }
+          },
+          checkValid(200)
         ],
         quote_validity: [
           {
@@ -458,49 +465,57 @@ export default {
           {
             required: true,
             message: '请输入长度'
-          }
+          },
+          checkValid(15)
         ],
         inner_w: [
           {
             required: true,
             message: '请输入宽度'
-          }
+          },
+          checkValid(15)
         ],
         inner_h: [
           {
             required: true,
             message: '请输入高度'
-          }
+          },
+          checkValid(15)
         ],
         inner_box_weight: [
           {
             required: true,
             message: '请输入重量'
-          }
+          },
+          checkValid(15)
         ],
         outer_l: [
           {
             required: true,
             message: '请输入长度'
-          }
+          },
+          checkValid(15)
         ],
         outer_w: [
           {
             required: true,
             message: '请输入宽度'
-          }
+          },
+          checkValid(15)
         ],
         outer_h: [
           {
             required: true,
             message: '请输入高度'
-          }
+          },
+          checkValid(15)
         ],
         outer_box_weight: [
           {
             required: true,
             message: '请输入重量'
-          }
+          },
+          checkValid(15)
         ],
         head_currency: [
           {
@@ -512,7 +527,8 @@ export default {
           {
             required: true,
             message: '请输入金额'
-          }
+          },
+          checkValid(15)
         ],
         head_cost_rmb: [
           {
@@ -530,7 +546,8 @@ export default {
           {
             required: true,
             message: '请输入金额'
-          }
+          },
+          checkValid(15)
         ],
         tail_cost_rmb: [
           {
@@ -548,7 +565,8 @@ export default {
           {
             required: true,
             message: '请输入金额'
-          }
+          },
+          checkValid(15)
         ],
         sea_freight_cost_rmb: [
           {
@@ -569,7 +587,7 @@ export default {
       isHigh: 0,
       attachment: {},
       currency: [],
-      show: false
+      show: true
     };
   },
   mounted() {
@@ -585,37 +603,49 @@ export default {
         supplier_id: val,
         pricing_id: this.id
       };
-      await this.$store.dispatch('price/getAddReason', {
-        params
-      });
-      this.hasAdd = this.$store.state.price.hasAdd;
+      try {
+        await this.$store.dispatch('price/getAddReason', {
+          params
+        });
+        this.hasAdd = this.$store.state.price.hasAdd;
+      } catch (err) {
+        return;
+      }
     },
     async getHighReason(val) {
       let params = {
         quote: val,
-        pricing_id: this.id,
-        currency: this.quotationForm.quote_currency
+        product_id: this.productId,
+        market: this.market
       };
-      await this.$store.dispatch('price/getHighReason', {
-        params
-      });
-      await this.$store.dispatch('getPriceRmb', {
-        params: {
-          price: this.quotationForm.quote_amount,
-          currency: this.quotationForm.quote_currency,
-          product_id: this.productId,
-          market: this.market
-        }
-      });
-      this.quotationForm.quote_amount_rmb = this.$store.state.priceRmb;
-      this.isHigh = this.$store.state.price.hasHigh;
+      try {
+        await this.$store.dispatch('price/getHighReason', {
+          params
+        });
+        await this.$store.dispatch('getPriceRmb', {
+          params: {
+            price: this.quotationForm.quote_amount,
+            currency: this.quotationForm.quote_currency,
+            product_id: this.productId,
+            market: this.market
+          }
+        });
+        this.quotationForm.quote_amount_rmb = this.$store.state.priceRmb;
+        this.isHigh = this.$store.state.price.hasHigh;
+      } catch (err) {
+        return;
+      }
     },
     async createQuotation(val) {
       let body = val;
       body['price_id'] = this.id;
-      await this.$store.dispatch('price/createQuotation', body);
-      this.visible = false;
-      this.getList();
+      try {
+        await this.$store.dispatch('price/createQuotation', body);
+        this.visible = false;
+        this.getList();
+      } catch (err) {
+        return;
+      }
     },
     submitForm() {
       this.quotationForm.quotation_file = this.attachment.id;
@@ -631,21 +661,18 @@ export default {
     async handleFileSuccess(e) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.show = true;
-        this.attachment = {
-          id: this.$store.state.fileRes.id,
-          name: this.$store.state.fileRes.file_name,
-          type: this.$store.state.fileRes.type
-        };
-      }
-    },
-    handleAttachment(file) {
-      if (file === undefined) {
-        return '';
-      } else {
-        return file;
+      try {
+        await this.$store.dispatch('uploadFile', form);
+        if (this.$store.state.uploadState) {
+          this.show = true;
+          this.attachment = {
+            id: this.$store.state.fileRes.id,
+            name: this.$store.state.fileRes.file_name,
+            type: this.$store.state.fileRes.type
+          };
+        }
+      } catch (err) {
+        return;
       }
     },
     deleteFile() {
@@ -655,9 +682,13 @@ export default {
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        previewFile(this.$store.state.viewLink);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          previewFile(this.$store.state.viewLink);
+        }
+      } catch (err) {
+        return;
       }
     },
     async getSupplier() {
@@ -666,8 +697,12 @@ export default {
         page_size: 10,
         state: 30
       };
-      await this.$store.dispatch('supplier/getSupplierList', { params });
-      this.supplierList = this.$store.state.supplier.supplierList;
+      try {
+        await this.$store.dispatch('supplier/getSupplierList', { params });
+        this.supplierList = this.$store.state.supplier.supplierList;
+      } catch (err) {
+        return;
+      }
     },
     remoteMethod(query) {
       if (query) {
@@ -683,23 +718,31 @@ export default {
           localStorage.getItem('params')
         ).demand.currency;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getParams();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getParams();
+        } catch (err) {
+          return;
+        }
       }
     },
     async getRmb(val) {
-      await this.$store.dispatch('getPriceRmb', {
-        params: {
-          price: this.quotationForm[`${val}_cost`],
-          currency:
-            val === 'sea_freight'
-              ? this.quotationForm[`${val}_currency`]
-              : this.quotationForm[`${val}_cost_currency`],
-          product_id: this.productId,
-          market: this.market
-        }
-      });
-      this.quotationForm[`${val}_cost_rmb`] = this.$store.state.priceRmb;
+      try {
+        await this.$store.dispatch('getPriceRmb', {
+          params: {
+            price: this.quotationForm[`${val}_cost`],
+            currency:
+              val === 'sea_freight'
+                ? this.quotationForm[`${val}_currency`]
+                : this.quotationForm[`${val}_cost_currency`],
+            product_id: this.productId,
+            market: this.market
+          }
+        });
+        this.quotationForm[`${val}_cost_rmb`] = this.$store.state.priceRmb;
+      } catch (err) {
+        return;
+      }
     },
     clearCurrency(val) {
       if (val === 'quote') {

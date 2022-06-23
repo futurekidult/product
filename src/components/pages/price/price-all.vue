@@ -75,6 +75,7 @@
       </div>
       <el-table
         border
+        stripe
         empty-text="无数据"
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
         :data="priceList"
@@ -82,6 +83,7 @@
         <el-table-column
           label="定价ID"
           prop="id"
+          width="80px"
         />
         <el-table-column
           label="关联产品名称"
@@ -109,10 +111,12 @@
         <el-table-column
           label="计划完成时间"
           prop="estimated_finish_time"
+          width="200px"
         />
         <el-table-column
           label="首次报价时间"
           prop="first_submit_time"
+          width="200px"
         />
         <el-table-column
           label="当前已有报价"
@@ -146,6 +150,7 @@
 </template>
 
 <script>
+import { formatterTime } from '../../../utils';
 export default {
   data() {
     return {
@@ -171,21 +176,39 @@ export default {
           localStorage.getItem('params')
         ).pricing.state;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getPricingEnum();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getPricingEnum();
+        } catch (err) {
+          return;
+        }
       }
     },
     async getCategoryList() {
-      await this.$store.dispatch('demand/getCategoryList');
-      this.categoryList = this.$store.state.demand.categoryList;
+      try {
+        await this.$store.dispatch('demand/getCategoryList');
+        this.categoryList = this.$store.state.demand.categoryList;
+      } catch (err) {
+        return;
+      }
     },
     async getPriceList(currentPage = 1, pageSize = 10) {
       this.$store.commit('price/setPriceLoading', true);
       let params = this.chooseForm;
       params['current_page'] = currentPage;
       params['page_size'] = pageSize;
-      await this.$store.dispatch('price/getPriceList', { params });
-      this.priceList = this.$store.state.price.priceList;
+      try {
+        await this.$store.dispatch('price/getPriceList', { params });
+        this.priceList = this.$store.state.price.priceList;
+        this.priceList.forEach((item) => {
+          item.estimated_finish_time = formatterTime(
+            item.estimated_finish_time
+          );
+          item.first_submit_time = formatterTime(item.first_submit_time);
+        });
+      } catch (err) {
+        return;
+      }
     },
     resetForm() {
       this.chooseForm = {};

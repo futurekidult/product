@@ -17,8 +17,6 @@
               <el-upload
                 action
                 :show-file-list="false"
-                :http-request="(e) => handleCProductImageSuccess(e, index)"
-                :limit="9"
               >
                 <el-button
                   type="primary"
@@ -113,10 +111,14 @@ export default {
   methods: {
     async showViewDialog(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        this.viewImgDialog = true;
-        this.imgLink = this.$store.state.viewLink;
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          this.viewImgDialog = true;
+          this.imgLink = this.$store.state.viewLink;
+        }
+      } catch (err) {
+        return;
       }
     },
     closeViewDialog() {

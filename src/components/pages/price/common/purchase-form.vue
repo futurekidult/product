@@ -9,6 +9,7 @@
       v-loading="loading"
       :data="priceList"
       border
+      stripe
       empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
     >
@@ -55,24 +56,32 @@ export default {
         product_id: this.productId,
         market: this.market
       };
-      await this.$store.dispatch('price/getReferencePrice', { params });
-      this.priceList = this.$store.state.price.referencePrice;
-      this.priceList.forEach((item) => {
-        item.reference_price = `￥${item.reference_price}`;
-      });
-      this.loading = this.$store.state.price.referenceLoading;
+      try {
+        await this.$store.dispatch('price/getReferencePrice', { params });
+        this.priceList = this.$store.state.price.referencePrice;
+        this.priceList.forEach((item) => {
+          item.reference_price = `￥${item.reference_price}`;
+        });
+        this.loading = this.$store.state.price.referenceLoading;
+      } catch (err) {
+        return;
+      }
     },
     async getTargetPrice() {
-      await this.$store.dispatch('price/getTargetPrice', {
-        params: {
-          quote_id: this.quotationId
-        }
-      });
-      this.priceList = this.$store.state.price.targetPrice;
-      this.priceList.forEach((item) => {
-        item.target_price = `￥${item.target_price}`;
-      });
-      this.loading = this.$store.state.price.targetLoading;
+      try {
+        await this.$store.dispatch('price/getTargetPrice', {
+          params: {
+            quote_id: this.quotationId
+          }
+        });
+        this.priceList = this.$store.state.price.targetPrice;
+        this.priceList.forEach((item) => {
+          item.target_price = `￥${item.target_price}`;
+        });
+        this.loading = this.$store.state.price.targetLoading;
+      } catch (err) {
+        return;
+      }
     },
     cancel() {
       this.visible = false;

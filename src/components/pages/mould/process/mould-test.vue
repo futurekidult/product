@@ -28,29 +28,31 @@
         </div>
       </el-descriptions-item>
       <el-descriptions-item label="操作">
-        <div v-if="progress.state === 20 || progress.state === 40">
+        <div :class="progress.state === undefined ? 'hide' : ''">
+          <div v-if="progress.state === 20 || progress.state === 40">
+            <el-button
+              v-if="progress.state !== 40"
+              class="close-btn"
+              @click="approvalTestingMould(progress.mould_id, 0)"
+            >
+              不通过
+            </el-button>
+            <el-button
+              :disabled="progress.state === 40"
+              type="success"
+              @click="approvalTestingMould(progress.mould_id, 1)"
+            >
+              通过
+            </el-button>
+          </div>
           <el-button
-            v-if="progress.state !== 40"
-            class="close-btn"
-            @click="approvalTestingMould(progress.mould_id, 0)"
+            v-if="progress.state === 30"
+            type="primary"
+            @click="confirmTestingMould(progress.mould_id)"
           >
-            不通过
-          </el-button>
-          <el-button
-            :disabled="progress.state === 40"
-            type="success"
-            @click="approvalTestingMould(progress.mould_id, 1)"
-          >
-            通过
+            完成
           </el-button>
         </div>
-        <el-button
-          v-if="progress.state === 30"
-          type="primary"
-          @click="confirmTestingMould(progress.mould_id)"
-        >
-          完成
-        </el-button>
       </el-descriptions-item>
     </el-descriptions>
   </section>
@@ -66,15 +68,29 @@ export default {
         id,
         approval_result: result
       };
-      await this.$store.dispatch('mould/approvalTestingMould', body);
-      this.getMould();
+      try {
+        await this.$store.dispatch('mould/approvalTestingMould', body);
+        this.getMould();
+      } catch (err) {
+        return;
+      }
     },
     async confirmTestingMould(id) {
-      await this.$store.dispatch('mould/confirmTestingMould', {
-        mould_id: id
-      });
-      this.getMould();
+      try {
+        await this.$store.dispatch('mould/confirmTestingMould', {
+          mould_id: id
+        });
+        this.getMould();
+      } catch (err) {
+        return;
+      }
     }
   }
 };
 </script>
+
+<style scoped>
+.hide {
+  display: none;
+}
+</style>

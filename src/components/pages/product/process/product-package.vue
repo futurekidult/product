@@ -6,6 +6,7 @@
 
     <el-table
       border
+      stripe
       empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       :data="packageList"
@@ -13,7 +14,7 @@
       <el-table-column
         label="序号"
         type="index"
-        width="80px"
+        width="60px"
       />
       <el-table-column
         label="关联定价ID"
@@ -126,17 +127,25 @@ export default {
   },
   methods: {
     async confirmPackageResult(id) {
-      await this.$store.dispatch('product/confirmPackageResult', {
-        id
-      });
-      this.getPackage();
+      try {
+        await this.$store.dispatch('product/confirmPackageResult', {
+          id
+        });
+        this.getPackage();
+      } catch (err) {
+        return;
+      }
     },
     async createPackageResult(val) {
       let body = val;
       body.id = this.packageId;
-      await this.$store.dispatch('product/createPackageResult', body);
-      this.resultFormVisible = false;
-      this.getPackage();
+      try {
+        await this.$store.dispatch('product/createPackageResult', body);
+        this.resultFormVisible = false;
+        this.getPackage();
+      } catch (err) {
+        return;
+      }
     },
     showResultForm(id) {
       this.resultFormVisible = true;

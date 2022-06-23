@@ -14,6 +14,14 @@
         </div>
       </div>
       <div class="header-right">
+        <div style="padding: 4px 0">
+          <el-avatar
+            :size="25"
+            style="padding: 5px"
+          >
+            <user-filled />
+          </el-avatar>
+        </div>
         <div>欢迎您，{{ $store.state.userInfo.name }}</div>
         <el-divider
           direction="vertical"
@@ -22,13 +30,14 @@
         <el-button
           type="text"
           class="exit-btn"
+          @click="logout"
         >
           退出
         </el-button>
       </div>
     </el-header>
     <el-container>
-      <el-aside width="250px">
+      <el-aside width="240px">
         <el-menu
           background-color="#545c64"
           text-color="#ffffff"
@@ -106,7 +115,7 @@
           </el-sub-menu>
         </el-menu>
       </el-aside>
-      <el-main>
+      <el-main style="padding: 10px">
         <router-view />
       </el-main>
     </el-container>
@@ -114,11 +123,22 @@
 </template>
 
 <script>
+import { UserFilled } from '@element-plus/icons-vue';
 export default {
+  components: {
+    UserFilled
+  },
   computed: {
     defaultActive() {
       const { path } = this.$route;
       return path;
+    }
+  },
+  methods: {
+    async logout() {
+      await this.$store.dispatch('logoutSystem');
+      localStorage.removeItem('token');
+      window.location.href = '/';
     }
   }
 };
@@ -127,8 +147,8 @@ export default {
 <style scoped>
 .el-header {
   background-color: #3a3f4d;
-  padding: 20px;
-  height: 80px;
+  padding: 8px;
+  height: 60px;
   display: flex;
   justify-content: space-between;
 }

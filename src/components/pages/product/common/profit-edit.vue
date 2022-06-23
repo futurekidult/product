@@ -82,19 +82,27 @@ export default {
         product_id: this.$route.params.productId,
         market: this.id
       };
-      await this.$store.dispatch('product/project/getOperationsSpecialist', {
-        params
-      });
-      this.editForm = this.$store.state.product.project.specialist;
+      try {
+        await this.$store.dispatch('product/project/getOperationsSpecialist', {
+          params
+        });
+        this.editForm = this.$store.state.product.project.specialist;
+      } catch (err) {
+        return;
+      }
     },
     async updateOperationsSpecialist(val) {
       let body = val;
       body['product_id'] = this.$route.params.productId;
       body['market'] = this.id;
-      await this.$store.dispatch('product/project/getOperationsSpecialist', {
-        body
-      });
-      this.visible = false;
+      try {
+        await this.$store.dispatch('product/project/getOperationsSpecialist', {
+          body
+        });
+        this.visible = false;
+      } catch (err) {
+        return;
+      }
     },
     cancel() {
       this.visible = false;

@@ -8,6 +8,13 @@ import BaseTag from './components/common/base-tag.vue';
 import 'element-plus/dist/index.css';
 import ElementPlus from 'element-plus';
 
+let version = process.env.VERSION;
+let localVersion = localStorage.getItem('projectVersion');
+if (!localVersion || version !== localVersion) {
+  localStorage.removeItem('params');
+  localStorage.setItem('projectVersion', version);
+}
+
 const app = createApp(App);
 
 app.component('BaseBreadcrumb', BaseBreadcrumb);

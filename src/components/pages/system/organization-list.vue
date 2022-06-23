@@ -31,8 +31,12 @@ export default {
   methods: {
     async getOrganizationList() {
       this.$store.commit('system/setOrganizationLoading', true);
-      await this.$store.dispatch('system/getOrganizationList');
-      this.organizationList = this.$store.state.system.organizationList;
+      try {
+        await this.$store.dispatch('system/getOrganizationList');
+        this.organizationList = this.$store.state.system.organizationList;
+      } catch (err) {
+        return;
+      }
     }
   }
 };

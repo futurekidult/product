@@ -3,12 +3,14 @@
     <el-table
       :data="todoList"
       border
+      stripe
       empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
     >
       <el-table-column
         prop="id"
         label="序号"
+        width="60px"
       />
       <el-table-column
         label="待办名称"

@@ -50,7 +50,6 @@
           action
           :show-file-list="false"
           :http-request="handleImgSuccess"
-          :limit="9"
         >
           <el-button
             type="primary"
@@ -347,7 +346,6 @@
           action
           :show-file-list="false"
           :http-request="handleFileSuccess"
-          :limit="1"
         >
           <el-button
             type="primary"
@@ -357,7 +355,7 @@
           </el-button>
         </el-upload>
         <div class="attachment">
-          支持office文档格式,文档不超过5MB
+          支持office文档格式,文档不超过5MB(仅限一个)
         </div>
       </el-form-item>
       <el-form-item>
@@ -366,7 +364,7 @@
           class="attachment-list"
         >
           <div>
-            {{ handleAttachment(file.name) }}
+            {{ file.name }}
           </div>
           <div style="display: flex">
             <div v-if="file.type === 12860">
@@ -585,8 +583,12 @@ export default {
         this.trafficRichness = platform.traffic_richness;
         this.keywordDegree = platform.keyword_bidding_degree;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getParams();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getParams();
+        } catch (err) {
+          return;
+        }
       }
     },
     async updatePlatform(val) {
@@ -594,50 +596,63 @@ export default {
       body['attachment'] = this.file.id;
       body['survey_schedule_id'] = this.progress.id;
       body['product_id'] = +this.$route.params.productId;
-      await this.$store.dispatch(
-        'product/survey/platform/submitPlatform',
-        body
-      );
-      this.getList();
-    },
-    handleAttachment(file) {
-      if (file === undefined) {
-        return '';
-      } else {
-        return file;
+      try {
+        await this.$store.dispatch(
+          'product/survey/platform/submitPlatform',
+          body
+        );
+        this.getList();
+      } catch (err) {
+        return;
       }
     },
     async handleImgSuccess(e) {
-      this.$store.commit('setUploadState', false);
-      let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.res = this.$store.state.fileRes;
-        this.productImages.push({
-          id: this.res.id,
-          name: this.res.file_name
-        });
+      if (this.productImages.length > 8) {
+        this.$message.error('产品图片不能传超过9张');
+      } else {
+        this.$store.commit('setUploadState', false);
+        let form = getFile(e);
+        try {
+          await this.$store.dispatch('uploadFile', form);
+          if (this.$store.state.uploadState) {
+            this.res = this.$store.state.fileRes;
+            this.productImages.push({
+              id: this.res.id,
+              name: this.res.file_name
+            });
+          }
+        } catch (err) {
+          return;
+        }
       }
     },
     async handleFileSuccess(e) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.show = true;
-        this.file = {
-          id: this.$store.state.fileRes.id,
-          name: this.$store.state.fileRes.file_name,
-          type: this.$store.state.fileRes.type
-        };
+      try {
+        await this.$store.dispatch('uploadFile', form);
+        if (this.$store.state.uploadState) {
+          this.show = true;
+          this.file = {
+            id: this.$store.state.fileRes.id,
+            name: this.$store.state.fileRes.file_name,
+            type: this.$store.state.fileRes.type
+          };
+        }
+      } catch (err) {
+        return;
       }
     },
     async showViewDialog(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        this.viewImgDialog = true;
-        this.imgLink = this.$store.state.viewLink;
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          this.viewImgDialog = true;
+          this.imgLink = this.$store.state.viewLink;
+        }
+      } catch (err) {
+        return;
       }
     },
     closeViewDialog() {
@@ -671,16 +686,24 @@ export default {
     },
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        downloadFile(this.$store.state.viewLink, name);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          downloadFile(this.$store.state.viewLink, name);
+        }
+      } catch (err) {
+        return;
       }
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        previewFile(this.$store.state.viewLink);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          previewFile(this.$store.state.viewLink);
+        }
+      } catch (err) {
+        return;
       }
     }
   }

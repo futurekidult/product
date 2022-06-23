@@ -13,6 +13,28 @@
           新品开发系统1.0.0
         </div>
       </div>
+      <div class="header-right">
+        <div style="padding: 4px 0">
+          <el-avatar
+            :size="25"
+            style="padding: 5px"
+          >
+            <user-filled />
+          </el-avatar>
+        </div>
+        <div>欢迎您，{{ $store.state.userInfo.name }}</div>
+        <el-divider
+          direction="vertical"
+          class="header-right_divider"
+        />
+        <el-button
+          type="text"
+          class="exit-btn"
+          @click="logout"
+        >
+          退出
+        </el-button>
+      </div>
     </el-header>
   </el-container>
   <div class="not-found">
@@ -28,10 +50,20 @@
 </template>
 
 <script>
+import { UserFilled } from '@element-plus/icons-vue';
+
 export default {
+  components: {
+    UserFilled
+  },
   methods: {
     toIndex() {
       this.$router.push('/');
+    },
+    async logout() {
+      await this.$store.dispatch('logoutSystem');
+      localStorage.removeItem('token');
+      window.location.href = '/';
     }
   }
 };
@@ -40,8 +72,10 @@ export default {
 <style scoped>
 .el-header {
   background-color: #3a3f4d;
-  padding: 20px;
-  height: 80px;
+  padding: 8px;
+  height: 60px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .header-left {
@@ -71,5 +105,23 @@ export default {
 .not-found div {
   font-size: 20px;
   margin: 20px 0 40px 0;
+}
+
+.header-right {
+  color: #fff;
+  display: flex;
+  height: 43px;
+  line-height: 43px;
+}
+
+.header-right > div {
+  margin-left: 10px;
+}
+
+.header-right_divider,
+.exit-btn {
+  height: 20px;
+  margin: 12px 5px;
+  color: #fff;
 }
 </style>

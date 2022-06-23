@@ -27,19 +27,21 @@
         label="操作"
         width="300px"
       >
-        <el-button
-          v-if="progress.state === 10"
-          @click="showFailReason"
-        >
-          测试不通过
-        </el-button>
-        <el-button
-          type="primary"
-          :disabled="progress.state !== 10"
-          @click="confirmResult"
-        >
-          测试通过
-        </el-button>
+        <div :class="progress.state === undefined ? 'hide' : ''">
+          <el-button
+            v-if="progress.state === 10"
+            @click="showFailReason"
+          >
+            测试不通过
+          </el-button>
+          <el-button
+            type="primary"
+            :disabled="progress.state !== 10"
+            @click="confirmResult"
+          >
+            测试通过
+          </el-button>
+        </div>
       </el-descriptions-item>
     </el-descriptions>
 
@@ -67,7 +69,6 @@
           action
           :show-file-list="false"
           :http-request="handleFileSuccess"
-          :limit="1"
         >
           <el-button
             type="primary"
@@ -77,7 +78,7 @@
           </el-button>
         </el-upload>
         <div class="attachment">
-          支持office文档格式以及png/jpg/jpeg等图片格式,单个文件不能超过5MB
+          支持office文档格式,文件不能超过5MB(仅限一个)
         </div>
       </el-form-item>
       <el-form-item>
@@ -199,11 +200,15 @@ export default {
       body.id = this.testId;
       body['sample_id'] = +this.$route.params.id;
       body['test_apply_id'] = this.id;
-      await this.$store.dispatch('sample/quality/confirmTestResult', body);
-      if (val.test_result === 0) {
-        this.failFormVisible = false;
+      try {
+        await this.$store.dispatch('sample/quality/confirmTestResult', body);
+        if (val.test_result === 0) {
+          this.failFormVisible = false;
+        }
+        this.getProgress();
+      } catch (err) {
+        return;
       }
-      this.getProgress();
     },
     async submitTestResult(val) {
       let body = {
@@ -211,8 +216,12 @@ export default {
         sample_id: +this.$route.params.id,
         test_apply_id: this.id
       };
-      await this.$store.dispatch('sample/quality/submitTestResult', body);
-      this.getProgress();
+      try {
+        await this.$store.dispatch('sample/quality/submitTestResult', body);
+        this.getProgress();
+      } catch (err) {
+        return;
+      }
     },
     confirmResult() {
       this.confirmTestResult({
@@ -222,28 +231,40 @@ export default {
     async handleFileSuccess(e) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.show = true;
-        this.file = {
-          id: this.$store.state.fileRes.id,
-          name: this.$store.state.fileRes.file_name,
-          type: this.$store.state.fileRes.type
-        };
+      try {
+        await this.$store.dispatch('uploadFile', form);
+        if (this.$store.state.uploadState) {
+          this.show = true;
+          this.file = {
+            id: this.$store.state.fileRes.id,
+            name: this.$store.state.fileRes.file_name,
+            type: this.$store.state.fileRes.type
+          };
+        }
+      } catch (err) {
+        return;
       }
     },
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        downloadFile(this.$store.state.viewLink, name);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          downloadFile(this.$store.state.viewLink, name);
+        }
+      } catch (err) {
+        return;
       }
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        previewFile(this.$store.state.viewLink);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          previewFile(this.$store.state.viewLink);
+        }
+      } catch (err) {
+        return;
       }
     },
     deleteFile() {
@@ -271,3 +292,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.hide {
+  display: none;
+}
+</style>

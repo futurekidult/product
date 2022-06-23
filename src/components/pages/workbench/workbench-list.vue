@@ -14,7 +14,7 @@
         label="待办事项"
         name="todolist"
       >
-        <div class="border">
+        <div>
           <div class="select-title todo-title">
             <div><span class="line">|</span> 待办列表</div>
             <div style="display: flex">
@@ -101,8 +101,12 @@ export default {
           localStorage.getItem('params')
         ).workbench.state;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getParams();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getParams();
+        } catch (err) {
+          return;
+        }
       }
     },
     async getTodoList(currentPage = 1, pageSize = 10) {
@@ -110,30 +114,37 @@ export default {
       let params = this.chooseForm;
       params['current_page'] = currentPage;
       params['page_size'] = pageSize;
-      await this.$store.dispatch('workbench/getTodoList', { params });
-      this.todoList = this.$store.state.workbench.todoList;
-      this.todoList.forEach((item) => {
-        item.create_time = formatterTime(item.create_time);
-        item.finish_time = formatterTime(item.finish_time);
-      });
+      try {
+        await this.$store.dispatch('workbench/getTodoList', { params });
+        this.todoList = this.$store.state.workbench.todoList;
+        this.todoList.forEach((item) => {
+          item.create_time = formatterTime(item.create_time);
+          item.finish_time = formatterTime(item.finish_time);
+        });
+      } catch (err) {
+        return;
+      }
     },
     async getNotificationList(currentPage = 1, pageSize = 10) {
+      this.$store.commit('workbench/setNotificationListLoading', true);
       let params = {
         current_page: currentPage,
         page_size: pageSize
       };
-      await this.$store.dispatch('workbench/getNotificationList', { params });
-      this.notificationList = this.$store.state.workbench.notificationList;
-      this.notificationList.forEach((item) => {
-        item.create_time = formatterTime(item.create_time);
-      });
+      try {
+        await this.$store.dispatch('workbench/getNotificationList', { params });
+        this.notificationList = this.$store.state.workbench.notificationList;
+        this.notificationList.forEach((item) => {
+          item.create_time = formatterTime(item.create_time);
+        });
+      } catch (err) {
+        return;
+      }
     },
     handleClick(tab) {
       if (tab.props.name === 'todolist') {
-        this.$store.commit('workbench/setTodoListLoading', true);
         this.getTodoList();
       } else {
-        this.$store.commit('workbench/setNotificationListLoading', true);
         this.getNotificationList();
       }
     }
@@ -144,7 +155,7 @@ export default {
 <style scoped>
 .el-badge {
   position: absolute;
-  left: 98px;
-  top: 115px;
+  left: 85px;
+  top: 105px;
 }
 </style>

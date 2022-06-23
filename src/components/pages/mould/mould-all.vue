@@ -76,6 +76,7 @@
 
       <el-table
         border
+        stripe
         empty-text="无数据"
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
         :data="mouldList"
@@ -83,6 +84,7 @@
         <el-table-column
           label="模具ID"
           prop="id"
+          width="80px"
         />
         <el-table-column
           label="模具名称"
@@ -95,19 +97,23 @@
         <el-table-column
           label="创建时间"
           prop="create_time"
+          width="200px"
+        />
         />
         <el-table-column
-          label="
-        创建人"
+          label="创建人"
           prop="creator"
         />
         <el-table-column
           label="计划完成时间"
           prop="estimated_finish_time"
+          width="200px"
         />
         <el-table-column
           label="实际完成时间"
           prop="actual_finish_time"
+          width="200px"
+        />
         />
         <el-table-column label="状态">
           <template #default="scope">
@@ -221,8 +227,12 @@ export default {
           localStorage.getItem('params')
         ).mould.state;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getState();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getState();
+        } catch (err) {
+          return;
+        }
       }
     },
     async getMouldList(currentPage = 1, pageSize = 10) {
@@ -230,18 +240,28 @@ export default {
       let params = this.chooseForm;
       params['current_page'] = currentPage;
       params['page_size'] = pageSize;
-      await this.$store.dispatch('mould/getMouldList', { params });
-      this.mouldList = this.$store.state.mould.mouldList;
-      this.mouldList.map((item) => {
-        item.create_time = formatterTime(item.create_time);
-        item.estimated_finish_time = formatterTime(item.estimated_finish_time);
-        item.actual_finish_time = formatterTime(item.actual_finish_time);
-      });
+      try {
+        await this.$store.dispatch('mould/getMouldList', { params });
+        this.mouldList = this.$store.state.mould.mouldList;
+        this.mouldList.map((item) => {
+          item.create_time = formatterTime(item.create_time);
+          item.estimated_finish_time = formatterTime(
+            item.estimated_finish_time
+          );
+          item.actual_finish_time = formatterTime(item.actual_finish_time);
+        });
+      } catch (err) {
+        return;
+      }
     },
     async createMould(body) {
-      await this.$store.dispatch('mould/createMould', body);
-      this.mouldFormVisible = false;
-      this.getMouldList();
+      try {
+        await this.$store.dispatch('mould/createMould', body);
+        this.mouldFormVisible = false;
+        this.getMouldList();
+      } catch (err) {
+        return;
+      }
     },
     toDetail(id) {
       this.$router.push(`/mould-list/${id}`);

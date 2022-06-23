@@ -35,20 +35,30 @@ export default {
   },
   methods: {
     async setBlackSupplier() {
-      await this.$store.dispatch('supplier/setBlackSupplier', { id: this.id });
-      this.visible = false;
-      this.$store.commit('supplier/setSupplierLoading', true);
-      this.getList();
+      try {
+        await this.$store.dispatch('supplier/setBlackSupplier', {
+          id: this.id
+        });
+        this.visible = false;
+        this.$store.commit('supplier/setSupplierLoading', true);
+        this.getList();
+      } catch (err) {
+        return;
+      }
     },
     async setWhiteSupplier() {
-      await this.$store.dispatch('supplier/setWhiteSupplier', {
-        params: {
-          id: this.id
-        }
-      });
-      this.visible = false;
-      this.$store.commit('supplier/setBlackLoading', true);
-      this.getList();
+      try {
+        await this.$store.dispatch('supplier/setWhiteSupplier', {
+          params: {
+            id: this.id
+          }
+        });
+        this.visible = false;
+        this.$store.commit('supplier/setBlackLoading', true);
+        this.getList();
+      } catch (err) {
+        return;
+      }
     },
     async setSupplier() {
       if (this.type === 'black') {

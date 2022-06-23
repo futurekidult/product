@@ -72,6 +72,7 @@
       </div>
       <el-table
         border
+        stripe
         empty-text="无数据"
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
         :data="productList"
@@ -170,9 +171,9 @@
             prop="images"
           >
             <el-upload
-              action=""
+              action
               :show-file-list="false"
-              :on-success="handleFileSuccess"
+              :http-request="handleFileSuccess"
             >
               <el-button type="primary">
                 点击上传
@@ -191,12 +192,21 @@
               <div>
                 {{ img.name }}
               </div>
-              <el-button
-                type="text"
-                @click="deleteImg(img.id)"
-              >
-                删除
-              </el-button>
+              <div style="display: flex">
+                <el-button
+                  type="text"
+                  @click="deleteImg(img.id)"
+                >
+                  删除
+                </el-button>
+                <span class="table-btn">|</span>
+                <el-button
+                  type="text"
+                  @click="showViewDialog(img.id)"
+                >
+                  预览
+                </el-button>
+              </div>
             </div>
           </el-form-item>
           <el-divider />
@@ -212,10 +222,23 @@
       </el-dialog>
     </div>
   </div>
+
+  <view-dialog
+    v-if="viewImgDialog"
+    :link="imgLink"
+    :visible="viewImgDialog"
+    @hide-dialog="closeViewDialog"
+  />
 </template>
 
 <script>
+import { formatterTime, getFile } from '../../../utils';
+import ViewDialog from '../../common/view-dialog.vue';
+
 export default {
+  components: {
+    ViewDialog
+  },
   data() {
     return {
       chooseForm: {},
@@ -242,7 +265,8 @@ export default {
       productId: 0,
       productList: [],
       categoryList: [],
-      productState: []
+      productState: [],
+      viewImgDialog: false
     };
   },
   mounted() {
@@ -257,13 +281,21 @@ export default {
           localStorage.getItem('params')
         ).product.state;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getPorductState();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getPorductState();
+        } catch (err) {
+          return;
+        }
       }
     },
     async getCategoryList() {
-      await this.$store.dispatch('demand/getCategoryList');
-      this.categoryList = this.$store.state.demand.categoryList;
+      try {
+        await this.$store.dispatch('demand/getCategoryList');
+        this.categoryList = this.$store.state.demand.categoryList;
+      } catch (err) {
+        return;
+      }
     },
     toDetail(id) {
       this.productId = id;
@@ -272,37 +304,68 @@ export default {
     },
     async showEditForm(id) {
       this.productId = id;
-      await this.$store.dispatch('product/getSingleDetailMsg', {
-        params: {
-          id
-        }
-      });
-      this.editForm.name = this.$store.state.product.singleProductDetail.name;
-      this.imgList = this.$store.state.product.singleProductDetail.images;
-      this.editVisible = true;
+      try {
+        await this.$store.dispatch('product/getSingleDetailMsg', {
+          params: {
+            id
+          }
+        });
+        let { singleProductDetail } = this.$store.state.product;
+        this.editForm.name = singleProductDetail.name;
+        this.imgList = singleProductDetail.images;
+        this.editVisible = true;
+      } catch (err) {
+        return;
+      }
     },
-    handleFileSuccess(file, fileList) {
-      this.imgList.push({
-        id: file.id,
-        name: fileList.name
-      });
+    async handleFileSuccess(e) {
+      if (this.imgList.length > 8) {
+        this.$message.error('产品图片最多传9张');
+      } else {
+        this.$store.commit('setUploadState', false);
+        let form = getFile(e);
+        try {
+          await this.$store.dispatch('uploadFile', form);
+          if (this.$store.state.uploadState) {
+            this.res = this.$store.state.fileRes;
+            this.imgList.push({
+              id: this.res.id,
+              name: this.res.file_name,
+              type: this.res.type
+            });
+          }
+        } catch (err) {
+          return;
+        }
+      }
     },
     async getProductList(currentPage = 1, pageSize = 10) {
       this.$store.commit('product/setListLoading', true);
       let params = this.chooseForm;
       params['current_page'] = currentPage;
       params['page_size'] = pageSize;
-      await this.$store.dispatch('product/getProductList', { params });
-      this.productList = this.$store.state.product.productList;
+      try {
+        await this.$store.dispatch('product/getProductList', { params });
+        this.productList = this.$store.state.product.productList;
+        this.productList.forEach((item) => {
+          item.create_time = formatterTime(item.create_time);
+        });
+      } catch (err) {
+        return;
+      }
     },
     async updateProductMsg() {
-      await this.$store.dispatch('product/updateSingleProductMsg', {
-        id: this.productId,
-        name: this.editForm.name,
-        images: this.editForm.images
-      });
-      this.editVisible = false;
-      this.getProductList();
+      try {
+        await this.$store.dispatch('product/updateSingleProductMsg', {
+          id: this.productId,
+          name: this.editForm.name,
+          images: this.editForm.images
+        });
+        this.editVisible = false;
+        this.getProductList();
+      } catch (err) {
+        return;
+      }
     },
     submitEditForm() {
       this.editForm.images = [];
@@ -339,6 +402,23 @@ export default {
     resetForm() {
       this.chooseForm = {};
       this.getProductList();
+    },
+    async showViewDialog(id) {
+      this.$store.commit('setAttachmentState', false);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          this.viewImgDialog = true;
+          this.editVisible = false;
+          this.imgLink = this.$store.state.viewLink;
+        }
+      } catch (err) {
+        return;
+      }
+    },
+    closeViewDialog() {
+      this.viewImgDialog = false;
+      this.editVisible = true;
     }
   }
 };

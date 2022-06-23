@@ -28,7 +28,10 @@
         </div>
       </el-descriptions-item>
       <el-descriptions-item label="操作">
-        <div v-if="progress.state === 20 || progress.state === 40">
+        <div
+          v-if="progress.state === 20 || progress.state === 40"
+          :class="progress.state === undefined ? 'hide' : ''"
+        >
           <el-button
             v-if="progress.state !== 40"
             class="close-btn"
@@ -62,7 +65,6 @@
           action
           :show-file-list="false"
           :http-request="handleImgSuccess"
-          :limit="9"
         >
           <el-button
             type="primary"
@@ -143,11 +145,9 @@ export default {
   },
   computed: {
     isDisabled() {
-      if (this.progress.state === 10 || this.progress.state === 30) {
-        return false;
-      } else {
-        return true;
-      }
+      return this.progress.state === 10 || this.progress.state === 30
+        ? false
+        : true;
     }
   },
   watch: {
@@ -161,27 +161,44 @@ export default {
         mould_id: +this.$route.params.id,
         prototype_file: val
       };
-      await this.$store.dispatch('mould/createPrototype', body);
-      this.getList();
+      try {
+        await this.$store.dispatch('mould/createPrototype', body);
+        this.getList();
+      } catch (err) {
+        return;
+      }
     },
     async handleImgSuccess(e) {
-      this.$store.commit('setUploadState', false);
-      let form = getFile(e);
-      await this.$store.dispatch('uploadFile', form);
-      if (this.$store.state.uploadState) {
-        this.res = this.$store.state.fileRes;
-        this.imgList.push({
-          id: this.res.id,
-          name: this.res.file_name
-        });
+      if (this.imgList.length > 8) {
+        this.$message.error('附件最多传9张');
+      } else {
+        this.$store.commit('setUploadState', false);
+        let form = getFile(e);
+        try {
+          await this.$store.dispatch('uploadFile', form);
+          if (this.$store.state.uploadState) {
+            this.res = this.$store.state.fileRes;
+            this.imgList.push({
+              id: this.res.id,
+              name: this.res.file_name,
+              type: this.res.type
+            });
+          }
+        } catch (err) {
+          return;
+        }
       }
     },
     async showViewDialog(id) {
       this.$store.commit('setAttachmentState', false);
-      await this.$store.dispatch('getViewLink', { params: { id } });
-      if (this.$store.state.attachmentState) {
-        this.viewImgDialog = true;
-        this.imgLink = this.$store.state.viewLink;
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          this.viewImgDialog = true;
+          this.imgLink = this.$store.state.viewLink;
+        }
+      } catch (err) {
+        return;
       }
     },
     closeViewDialog() {
@@ -208,12 +225,22 @@ export default {
       });
     },
     async approvalPrototype(val) {
-      await this.$store.dispatch('mould/approvalPrototype', {
-        mould_id: +this.$route.params.id,
-        approval_result: val
-      });
-      this.getMould();
+      try {
+        await this.$store.dispatch('mould/approvalPrototype', {
+          mould_id: +this.$route.params.id,
+          approval_result: val
+        });
+        this.getMould();
+      } catch (err) {
+        return;
+      }
     }
   }
 };
 </script>
+
+<style scoped>
+.hide {
+  display: none;
+}
+</style>

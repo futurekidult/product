@@ -92,6 +92,7 @@
               placeholder="请输入金额"
               :disabled="adjustMsg.state === 30"
               clearable
+              @change="getPriceRmb"
             />
           </el-form-item>
           <el-form-item>
@@ -170,9 +171,10 @@ export default {
       currency: []
     };
   },
-
   mounted() {
-    this.getPriceRmb();
+    if (this.adjustMsg.state === 30) {
+      this.getPriceRmb();
+    }
     this.getCurrency();
   },
   methods: {
@@ -182,8 +184,12 @@ export default {
           localStorage.getItem('params')
         ).demand.currency;
       } else {
-        await this.$store.dispatch('getSystemParameters');
-        this.getCurrency();
+        try {
+          await this.$store.dispatch('getSystemParameters');
+          this.getCurrency();
+        } catch (err) {
+          return;
+        }
       }
     },
     async getPriceRmb() {
@@ -192,24 +198,39 @@ export default {
         currency: this.adjustForm.currency,
         product_id: +this.$route.params.productId
       };
-      await this.$store.dispatch('getPriceRmb', { params });
-      this.adjustForm.adjusted_selling_price_rmb =
-        this.$store.state.product.project.priceRmb;
+      try {
+        await this.$store.dispatch('getPriceRmb', { params });
+        this.adjustForm.adjusted_selling_price_rmb = this.$store.state.priceRmb;
+      } catch (err) {
+        return;
+      }
     },
     async applyPricing(val) {
-      await this.$store.dispatch('product/project/applyPricing', val);
-      this.visible = false;
+      try {
+        await this.$store.dispatch('product/project/applyPricing', val);
+        this.visible = false;
+      } catch (err) {
+        return;
+      }
     },
     async approvalPricing(val) {
-      await this.$store.dispatch('product/project/approvalPricing', val);
-      this.visible = false;
+      try {
+        await this.$store.dispatch('product/project/approvalPricing', val);
+        this.visible = false;
+      } catch (err) {
+        return;
+      }
     },
     async submitAdjust(val) {
-      await this.$store.dispatch(
-        'product/project/submitPricingAdjustment',
-        val
-      );
-      this.visible = false;
+      try {
+        await this.$store.dispatch(
+          'product/project/submitPricingAdjustment',
+          val
+        );
+        this.visible = false;
+      } catch (err) {
+        return;
+      }
     },
     passApproval() {
       let body = {
