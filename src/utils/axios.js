@@ -22,12 +22,12 @@ http.interceptors.response.use((res) => {
   if (code !== 200) {
     if (code === 401) {
       localStorage.removeItem('token');
-      window.location.href = res.data.auth_url;
+      window.location.href = res.data.data.auth_url;
     } else if (code === 403) {
       ElMessage.error('no permission to access it');
     } else if (code === 405) {
       http.get('/csrftoken/get').then((res) => {
-        localStorage.setItem('token', res.data);
+        localStorage.setItem('token', res.data.data.csrftoken);
       });
       http.request(res.config);
     } else {
