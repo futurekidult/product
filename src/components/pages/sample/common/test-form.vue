@@ -269,10 +269,9 @@ export default {
             sample_id: +this.$route.params.id
           }
         });
-        this.applyForm.sample_model =
-          this.$store.state.sample.sampleMarketList.sample_model;
-        this.applyForm.market =
-          this.$store.state.sample.sampleMarketList.market;
+        let { sampleMarketList } = this.$store.state.sample;
+        this.applyForm.sample_model = sampleMarketList.sample_model;
+        this.applyForm.market = sampleMarketList.market;
       } catch (err) {
         return;
       }

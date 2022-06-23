@@ -47,6 +47,7 @@
           >
             删除
           </el-button>
+          <span class="table-btn">|</span>
           <el-button type="text">
             查看
           </el-button>

@@ -245,9 +245,9 @@ export default {
         await this.$store.dispatch('product/patent/viewPatentReview', {
           params
         });
-        this.viewForm = this.$store.state.product.patent.singlePatent.patent;
-        this.viewForm['review_result'] =
-          this.$store.state.product.patent.singlePatent.review_result;
+        let { singlePatent } = this.$store.state.product.patent;
+        this.viewForm = singlePatent.patent;
+        this.viewForm['review_result'] = singlePatent.review_result;
         this.viewReviewVisible = true;
       } catch (err) {
         return;

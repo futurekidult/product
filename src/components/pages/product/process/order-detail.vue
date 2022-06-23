@@ -79,7 +79,7 @@
 import SkuName from './order/sku-name.vue';
 import ContractList from './order/contract-list.vue';
 import ProductionSample from './order/pre-production-sample.vue';
-import { formatterTime } from '../../../../utils';
+import { changeTimestamp } from '../../../../utils';
 
 export default {
   components: {
@@ -127,13 +127,9 @@ export default {
           }
         });
         this.progress = this.$store.state.product.order.progress;
-        this.progress.actual_finish_time = formatterTime(
-          this.progress.actual_finish_time
-        );
-        this.progress.estimated_finish_time = formatterTime(
-          this.progress.estimated_finish_time
-        );
         this.progress.final_price = `￥${this.progress.final_price}`;
+        changeTimestamp(this.progress, 'actual_finish_time');
+        changeTimestamp(this.progress, 'estimated_finish_time');
       } catch (err) {
         return;
       }
@@ -146,19 +142,14 @@ export default {
             order_id: +this.$route.params.orderId
           }
         });
-        this.skuForm = this.$store.state.product.order.sku.sku_info;
-        this.skuId = this.$store.state.product.order.sku.id;
+        let { sku } = this.$store.state.product.order;
+        this.skuForm = sku.sku_info;
+        this.skuId = sku.id;
         this.skuAttachment = this.skuForm.project_plan_file;
-        this.skuEntrySchedule =
-          this.$store.state.product.order.sku.sku_entry_schedule;
-        this.skuEntrySchedule.actual_finish_time = formatterTime(
-          this.skuEntrySchedule.actual_finish_time
-        );
-        this.skuSchedule =
-          this.$store.state.product.order.sku.sku_name_schedule;
-        this.skuSchedule.actual_finish_time = formatterTime(
-          this.skuSchedule.actual_finish_time
-        );
+        this.skuEntrySchedule = sku.sku_entry_schedule;
+        this.skuSchedule = sku.sku_name_schedule;
+        changeTimestamp(this.skuSchedule, 'actual_finish_time');
+        changeTimestamp(this.skuEntrySchedule, 'actual_finish_time');
       } catch (err) {
         return;
       }
@@ -173,15 +164,11 @@ export default {
         });
         this.contract = this.$store.state.product.order.contract;
         this.exportContract = this.contract.export_contract;
-        this.exportContract.actual_finish_time = formatterTime(
-          this.exportContract.actual_finish_time
-        );
         this.purchaseContract = this.contract.purchase_contract;
-        this.purchaseContract.actual_finish_time = formatterTime(
-          this.purchaseContract.actual_finish_time
-        );
         this.manual = this.purchaseContract.product_manual_file;
         this.diecuts = this.purchaseContract.diecuts_file;
+        changeTimestamp(this.exportContract, 'actual_finish_time');
+        changeTimestamp(this.purchaseContract, 'actual_finish_time');
       } catch (err) {
         return;
       }
@@ -196,15 +183,9 @@ export default {
         });
         this.preProductSample =
           this.$store.state.product.order.preProductSample;
-        this.preProductSample.estimated_arrival_time = formatterTime(
-          this.preProductSample.estimated_arrival_time
-        );
-        this.preProductSample.actual_arrival_time = formatterTime(
-          this.preProductSample.actual_arrival_time
-        );
-        this.preProductSample.actual_finish_time = formatterTime(
-          this.preProductSample.actual_finish_time
-        );
+        changeTimestamp(this.preProductSample, 'estimated_arrival_time');
+        changeTimestamp(this.preProductSample, 'actual_arrival_time');
+        changeTimestamp(this.preProductSample, 'actual_finish_time');
       } catch (err) {
         return;
       }

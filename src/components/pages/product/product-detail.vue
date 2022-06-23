@@ -193,7 +193,7 @@ import MouldMessage from './process/mould-message.vue';
 import QuestionAll from './process/question-all.vue';
 import ProductOrder from './process/product-order.vue';
 import ProductPackage from './process/product-package.vue';
-import { formatterTime } from '../../../utils';
+import { changeTimestamp } from '../../../utils';
 import TerminateForm from './common/terminate-form.vue';
 
 export default {
@@ -317,7 +317,7 @@ export default {
         });
         this.projectMember = this.$store.state.product.projectMember;
         this.projectMember.forEach((item) => {
-          item.create_time = formatterTime(item.create_time);
+          changeTimestamp(item, 'create_time');
         });
       } catch (err) {
         return;
@@ -334,11 +334,9 @@ export default {
         await this.$store.dispatch('product/getPricingList', { params });
         this.pricingList = this.$store.state.product.pricingList;
         this.pricingList.forEach((item) => {
-          item.estimated_finish_time = formatterTime(
-            item.estimated_finish_time
-          );
-          item.first_submit_time = formatterTime(item.first_submit_time);
-          item.confirm_time = formatterTime(item.confirm_time);
+          changeTimestamp(item, 'estimated_finish_time');
+          changeTimestamp(item, 'first_submit_time');
+          changeTimestamp(item, 'confirm_time');
         });
       } catch (err) {
         return;
@@ -355,7 +353,7 @@ export default {
         await this.$store.dispatch('product/getMouldList', { params });
         this.mouldList = this.$store.state.product.mouldList;
         this.mouldList.forEach((item) => {
-          item.create_time = formatterTime(item.create_time);
+          changeTimestamp(item, 'create_time');
         });
       } catch (err) {
         return;
@@ -370,7 +368,7 @@ export default {
         await this.$store.dispatch('mould/getMouldList', { params });
         this.allMouldList = this.$store.state.mould.mouldList;
         this.allMouldList.forEach((item) => {
-          item.create_time = formatterTime(item.create_time);
+          changeTimestamp(item, 'create_time');
         });
       } catch (err) {
         return;
@@ -387,11 +385,9 @@ export default {
         await this.$store.dispatch('product/getSampleList', { params });
         this.sampleList = this.$store.state.product.sampleList;
         this.sampleList.forEach((item) => {
-          item.estimated_finish_time = formatterTime(
-            item.estimated_finish_time
-          );
-          item.actual_finish_time = formatterTime(item.actual_finish_time);
-          item.demand_time = formatterTime(item.demand_time);
+          changeTimestamp(item, 'estimated_finish_time');
+          changeTimestamp(item, 'actual_finish_time');
+          changeTimestamp(item, 'demand_time');
         });
       } catch (err) {
         return;
@@ -408,8 +404,8 @@ export default {
         await this.$store.dispatch('product/getQuestionList', { params });
         this.questionList = this.$store.state.product.questionList;
         this.questionList.forEach((item) => {
-          item.resolve_time = formatterTime(item.resolve_time);
-          item.record_time = formatterTime(item.record_time);
+          changeTimestamp(item, 'resolve_time');
+          changeTimestamp(item, 'record_time');
         });
       } catch (err) {
         return;
@@ -426,10 +422,8 @@ export default {
         await this.$store.dispatch('product/getPackageList', { params });
         this.packageList = this.$store.state.product.packageList;
         this.packageList.forEach((item) => {
-          item.estimated_finish_time = formatterTime(
-            item.estimated_finish_time
-          );
-          item.actual_finish_time = formatterTime(item.actual_finish_time);
+          changeTimestamp(item, 'estimated_finish_time');
+          changeTimestamp(item, 'actual_finish_time');
         });
       } catch (err) {
         return;
@@ -447,10 +441,8 @@ export default {
         });
         this.orderList = this.$store.state.product.order.orderList;
         this.orderList.forEach((item) => {
-          item.estimated_finish_time = formatterTime(
-            item.estimated_finish_time
-          );
-          item.actual_finish_time = formatterTime(item.actual_finish_time);
+          changeTimestamp(item, 'estimated_finish_time');
+          changeTimestamp(item, 'actual_finish_time');
           item.final_price = `￥${item.final_price}`;
         });
       } catch (err) {
@@ -463,13 +455,11 @@ export default {
         await this.$store.dispatch('product/project/getProject', {
           params: { product_id: this.$route.params.productId }
         });
-        this.projectProgress =
-          this.$store.state.product.project.project.schedule;
-        this.projectForm = this.$store.state.product.project.project.form;
+        let { project } = this.$store.state.product.project;
+        this.projectProgress = project.schedule;
+        this.projectForm = project.form;
         this.projectAttachment = this.projectForm.sale_plan;
-        this.projectProgress.actual_finish_time = formatterTime(
-          this.projectProgress.actual_finish_time
-        );
+        changeTimestamp(this.projectProgress, 'actual_finish_time');
       } catch (err) {
         return;
       }
@@ -491,10 +481,8 @@ export default {
         });
         this.projectSchedule = this.$store.state.product.project.schedule;
         this.projectSchedule.list.forEach((item) => {
-          item.estimated_finish_time = formatterTime(
-            item.estimated_finish_time
-          );
-          item.actual_finish_time = formatterTime(item.actual_finish_time);
+          changeTimestamp(item, 'estimated_finish_time');
+          changeTimestamp(item, 'actual_finish_time');
         });
       } catch (err) {
         return;
@@ -508,8 +496,8 @@ export default {
         });
         this.patent = this.$store.state.product.patent.patent;
         this.patent.patent_list.forEach((item) => {
-          item.submit_time = formatterTime(item.submit_time);
-          item.review_time = formatterTime(item.review_time);
+          changeTimestamp(item, 'submit_time');
+          changeTimestamp(item, 'review_time');
         });
         this.applyForm.product_name_cn = this.patent.product_name_cn;
       } catch (err) {
@@ -522,12 +510,8 @@ export default {
           params: { product_id: +this.$route.params.productId }
         });
         this.patentProgress = this.$store.state.product.patent.progress;
-        this.patentProgress.actual_finish_time = formatterTime(
-          this.patentProgress.actual_finish_time
-        );
-        this.patentProgress.estimated_finish_time = formatterTime(
-          this.patentProgress.estimated_finish_time
-        );
+        changeTimestamp(this.patentProgress, 'actual_finish_time');
+        changeTimestamp(this.patentProgress, 'estimated_finish_time');
       } catch (err) {
         return;
       }
@@ -538,9 +522,7 @@ export default {
           params: { product_id: this.$route.params.productId }
         });
         this.patentContract = this.$store.state.product.patent.contract;
-        this.patentContract.actual_finish_time = formatterTime(
-          this.patentContract.actual_finish_time
-        );
+        changeTimestamp(this.patentContract, 'actual_finish_time');
       } catch (err) {
         return;
       }

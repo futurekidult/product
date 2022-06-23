@@ -232,7 +232,7 @@
 </template>
 
 <script>
-import { getFile } from '../../../utils';
+import { formatterTime, getFile } from '../../../utils';
 import ViewDialog from '../../common/view-dialog.vue';
 
 export default {
@@ -310,8 +310,9 @@ export default {
             id
           }
         });
-        this.editForm.name = this.$store.state.product.singleProductDetail.name;
-        this.imgList = this.$store.state.product.singleProductDetail.images;
+        let { singleProductDetail } = this.$store.state.product;
+        this.editForm.name = singleProductDetail.name;
+        this.imgList = singleProductDetail.images;
         this.editVisible = true;
       } catch (err) {
         return;
@@ -346,6 +347,9 @@ export default {
       try {
         await this.$store.dispatch('product/getProductList', { params });
         this.productList = this.$store.state.product.productList;
+        this.productList.forEach((item) => {
+          item.create_time = formatterTime(item.create_time);
+        });
       } catch (err) {
         return;
       }

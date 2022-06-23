@@ -177,7 +177,7 @@ import ProfitForm from './profit-form.vue';
 import PricingAdjust from './pricing-adjust.vue';
 import PricingLog from './pricing-log.vue';
 import ProfitEdit from './profit-edit.vue';
-import { formatterTime } from '../../../../utils';
+import { changeTimestamp } from '../../../../utils';
 
 export default {
   components: {
@@ -220,12 +220,8 @@ export default {
         let result = this.$store.state.product.project.adjustment;
         if (JSON.stringify(result) !== '{}') {
           this.adjustment = result;
-          this.adjustment.submit_time = formatterTime(
-            this.adjustment.submit_time
-          );
-          this.adjustment.apply_approve_time = formatterTime(
-            this.adjustment.apply_approve_time
-          );
+          changeTimestamp(this.adjustment, 'submit_time');
+          changeTimestamp(this.adjustment, 'apply_approve_time');
           this.priceAdjustmentApplyId =
             this.adjustment.price_adjustment_apply_id;
           this.adjustPriceVisible = true;
@@ -241,9 +237,9 @@ export default {
         await this.$store.dispatch('product/project/getAdjustmentList');
         this.adjustmentList = this.$store.state.product.project.adjustmentList;
         this.adjustmentList.forEach((item) => {
-          item.submit_time = formatterTime(item.submit_time);
-          item.apply_approve_time = formatterTime(item.apply_approve_time);
-          item.adjust_approve_time = formatterTime(item.adjust_approve_time);
+          changeTimestamp(item, 'submit_time');
+          changeTimestamp(item, 'apply_approve_time');
+          changeTimestamp(item, 'adjust_approve_time');
         });
         this.getPricingVisible = true;
       } catch (err) {

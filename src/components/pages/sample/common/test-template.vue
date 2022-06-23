@@ -120,38 +120,30 @@ export default {
         current_page: currentPage,
         page_size: pageSize
       };
-      if (this.type === 'quality') {
-        try {
+      try {
+        if (this.type === 'quality') {
           await this.$store.dispatch('sample/quality/getTestQuestion', {
             params
           });
           this.questionList =
             this.$store.state.sample.quality.testQuestion.list;
-        } catch (err) {
-          return;
-        }
-      } else if (this.type === 'agency') {
-        try {
+        } else if (this.type === 'agency') {
           await this.$store.dispatch('sample/agency/getTestQuestion', {
             params
           });
           this.questionList = this.$store.state.sample.agency.testQuestion.list;
-        } catch (err) {
-          return;
-        }
-      } else {
-        try {
+        } else {
           await this.$store.dispatch('sample/user/getTestQuestion', {
             params
           });
           this.questionList = this.$store.state.sample.user.testQuestion.list;
-        } catch (err) {
-          return;
         }
+        this.questionList.forEach((item) => {
+          item.create_time = formatterTime(item.create_time);
+        });
+      } catch (err) {
+        return;
       }
-      this.questionList.forEach((item) => {
-        item.create_time = formatterTime(item.create_time);
-      });
     },
     async recordTestProblem(id) {
       let body = {

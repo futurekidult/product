@@ -146,3 +146,7 @@ export const checkFile = (val) => {
     message: `不能超过${val}个`
   };
 };
+
+export const changeTimestamp = (obj, str) => {
+  obj[str] = formatterTime(obj[str]);
+};

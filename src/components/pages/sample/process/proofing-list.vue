@@ -132,9 +132,10 @@ export default {
             id: +this.$route.params.id
           }
         });
-        this.reviewForm = this.$store.state.sample.proofingSheet;
-        this.approvalForm = this.$store.state.sample.proofingSheet;
-        this.editForm = this.$store.state.sample.proofingSheet;
+        let { sample } = this.$store.state;
+        this.reviewForm = sample.proofingSheet;
+        this.approvalForm = sample.proofingSheet;
+        this.editForm = sample.proofingSheet;
       } catch (err) {
         return;
       }

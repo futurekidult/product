@@ -54,7 +54,7 @@ import MouldDesign from './model-design.vue';
 import SampleMould from './sample.vue';
 import MouldOpen from './mould-open.vue';
 import MouldTest from './mould-test.vue';
-import { formatterTime } from '../../../../utils/index';
+import { changeTimestamp } from '../../../../utils/index';
 
 export default {
   components: {
@@ -89,9 +89,7 @@ export default {
           }
         });
         this.designProgress = this.$store.state.mould.designProgress;
-        this.designProgress.actual_finish_time = formatterTime(
-          this.designProgress.actual_finish_time
-        );
+        changeTimestamp(this.designProgress, 'actual_finish_time');
       } catch (err) {
         return;
       }
@@ -105,9 +103,7 @@ export default {
           }
         });
         this.prototypeProgress = this.$store.state.mould.prototypeProgress;
-        this.prototypeProgress.actual_finish_time = formatterTime(
-          this.prototypeProgress.actual_finish_time
-        );
+        changeTimestamp(this.prototypeProgress, 'actual_finish_time');
         this.attachment = this.prototypeProgress.prototype_file;
       } catch (err) {
         return;
@@ -122,12 +118,8 @@ export default {
           }
         });
         this.makingMould = this.$store.state.mould.makingMouldProgress;
-        this.makingMould.actual_finish_time = formatterTime(
-          this.makingMould.actual_finish_time
-        );
-        this.makingMould.estimated_finish_time = formatterTime(
-          this.makingMould.estimated_finish_time
-        );
+        changeTimestamp(this.makingMould, 'actual_finish_time');
+        changeTimestamp(this.makingMould, 'estimated_finish_time');
       } catch (err) {
         return;
       }
@@ -141,9 +133,7 @@ export default {
           }
         });
         this.testingMould = this.$store.state.mould.testingMouldProgress;
-        this.testingMould.actual_finish_time = formatterTime(
-          this.testingMould.actual_finish_time
-        );
+        changeTimestamp(this.testingMould, 'actual_finish_time');
       } catch (err) {
         return;
       }

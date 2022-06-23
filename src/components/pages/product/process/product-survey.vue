@@ -88,7 +88,7 @@
 </template>
 
 <script>
-import { formatterTime } from '../../../../utils';
+import { changeTimestamp } from '../../../../utils';
 import MarketSurvey from './survey/market-survey.vue';
 import PlatformSurvey from './survey/platform-survey.vue';
 import UserAnalysis from './survey/user-analysis.vue';
@@ -154,18 +154,13 @@ export default {
         await this.$store.dispatch('product/survey/platform/getPlatform', {
           params
         });
-        this.platformProgress =
-          this.$store.state.product.survey.platform.platform.progress;
-        this.platformProgress.estimated_finish_time = formatterTime(
-          this.platformProgress.estimated_finish_time
-        );
-        this.platformProgress.actual_finish_time = formatterTime(
-          this.platformProgress.actual_finish_time
-        );
-        this.platformForm =
-          this.$store.state.product.survey.platform.platform.report;
+        let { platform } = this.$store.state.product.survey.platform;
+        this.platformProgress = platform.progress;
+        this.platformForm = platform.report;
         this.productImages = this.platformForm.images;
         this.platformAttachment = this.platformForm.attachment;
+        changeTimestamp(this.platformProgress, 'estimated_finish_time');
+        changeTimestamp(this.platformProgress, 'actual_finish_time');
       } catch (err) {
         return;
       }
@@ -179,16 +174,11 @@ export default {
         await this.$store.dispatch('product/survey/market/getMarket', {
           params
         });
-        this.marketProgress =
-          this.$store.state.product.survey.market.market.progress;
-        this.marketProgress.estimated_finish_time = formatterTime(
-          this.marketProgress.estimated_finish_time
-        );
-        this.marketProgress.actual_finish_time = formatterTime(
-          this.marketProgress.actual_finish_time
-        );
-        this.markeAttachment =
-          this.$store.state.product.survey.market.market.report;
+        let { market } = this.$store.state.product.survey.market;
+        this.marketProgress = market.progress;
+        this.markeAttachment = market.report;
+        changeTimestamp(this.marketProgress, 'estimated_finish_time');
+        changeTimestamp(this.marketProgress, 'actual_finish_time');
       } catch (err) {
         return;
       }
@@ -207,12 +197,8 @@ export default {
         });
         let { userAnalysis } = this.$store.state.product.survey.userAnalysis;
         this.analysisProgress = userAnalysis.progress;
-        this.analysisProgress.estimated_finish_time = formatterTime(
-          this.analysisProgress.estimated_finish_time
-        );
-        this.analysisProgress.actual_finish_time = formatterTime(
-          this.analysisProgress.actual_finish_time
-        );
+        changeTimestamp(this.analysisProgress, 'estimated_finish_time');
+        changeTimestamp(this.analysisProgress, 'actual_finish_time');
         this.analysisForm = userAnalysis.report;
         this.analysisAttachment = this.analysisForm.attachment;
       } catch (err) {
@@ -228,12 +214,8 @@ export default {
         await this.$store.dispatch('product/survey/plan/getPlan', { params });
         let { plan } = this.$store.state.product.survey.plan;
         this.planProgress = plan.progress;
-        this.planProgress.estimated_finish_time = formatterTime(
-          this.planProgress.estimated_finish_time
-        );
-        this.planProgress.actual_finish_time = formatterTime(
-          this.planProgress.actual_finish_time
-        );
+        changeTimestamp(this.platformProgress, 'estimated_finish_time');
+        changeTimestamp(this.platformProgress, 'actual_finish_time');
         this.planForm = plan.report;
         this.planAttachment = this.planForm.attachment;
       } catch (err) {
@@ -249,12 +231,8 @@ export default {
         await this.$store.dispatch('product/survey/risk/getRisk', { params });
         let { risk } = this.$store.state.product.survey.risk;
         this.riskProgress = risk.progress;
-        this.riskProgress.estimated_finish_time = formatterTime(
-          this.riskProgress.estimated_finish_time
-        );
-        this.riskProgress.actual_finish_time = formatterTime(
-          this.riskProgress.actual_finish_time
-        );
+        changeTimestamp(this.riskProgress, 'estimated_finish_time');
+        changeTimestamp(this.riskProgress, 'actual_finish_time');
         this.riskForm = risk.report;
         this.riskAttachment = this.riskForm.attachment;
       } catch (err) {
@@ -271,30 +249,21 @@ export default {
           params
         });
         let userSurvey = this.$store.state.product.survey.user;
-        this.userSurveyPrincipalId =
-          this.$store.state.product.survey.user.userId;
+        this.userSurveyPrincipalId = userSurvey.userId;
         this.buttonState = userSurvey.buttonState;
         this.surveyApply = userSurvey.surveyApply;
-        this.surveyApply.forEach((item) => {
-          item.create_time = formatterTime(item.create_time);
-          item.review_finish_time = formatterTime(item.review_finish_time);
-        });
         this.userProgress = userSurvey.progress;
-        this.userProgress.estimated_finish_time = formatterTime(
-          this.userProgress.estimated_finish_time
-        );
-        this.userProgress.actual_start_time = formatterTime(
-          this.userProgress.actual_start_time
-        );
-        this.userProgress.actual_finish_time = formatterTime(
-          this.userProgress.actual_finish_time
-        );
         this.planList = userSurvey.planList;
+        this.surveyApply.forEach((item) => {
+          changeTimestamp(item, 'create_time');
+          changeTimestamp(item, 'review_finish_time');
+        });
+        changeTimestamp(this.userProgress, 'estimated_finish_time');
+        changeTimestamp(this.userProgress, 'actual_start_time');
+        changeTimestamp(this.userProgress, 'actual_finish_time');
         this.planList.forEach((item) => {
-          item.estimated_finish_time = formatterTime(
-            item.estimated_finish_time
-          );
-          item.actual_finish_time = formatterTime(item.actual_finish_time);
+          changeTimestamp(item, 'estimated_finish_time');
+          changeTimestamp(item, 'actual_finish_time');
         });
         this.length = userSurvey.planList.length;
       } catch (err) {

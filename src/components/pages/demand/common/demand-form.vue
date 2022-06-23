@@ -52,7 +52,7 @@
           {{ item.name }}
         </div>
         <div style="display: flex">
-          <div v-if="type === 'create'">
+          <div v-if="type !== 'detail'">
             <el-button
               type="text"
               @click="deleteProductImg(item.id, imagesList)"
@@ -155,7 +155,7 @@
               {{ image.name }}
             </div>
             <div style="display: flex">
-              <div v-if="type === 'create'">
+              <div v-if="type !== 'detail'">
                 <el-button
                   type="text"
                   @click="deleteProductImg(image.id, attachment[index].images)"

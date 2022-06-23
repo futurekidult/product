@@ -107,27 +107,19 @@ export default {
         problem: val,
         test_apply_id: this.id
       };
-      if (this.type === 'quality') {
-        try {
+      try {
+        if (this.type === 'quality') {
           await this.$store.dispatch('sample/quality/createTestQuestion', body);
-        } catch (err) {
-          return;
-        }
-      } else if (this.type === 'agency') {
-        try {
+        } else if (this.type === 'agency') {
           await this.$store.dispatch('sample/agency/createTestQuestion', body);
-        } catch (err) {
-          return;
-        }
-      } else {
-        try {
+        } else {
           await this.$store.dispatch('sample/user/createTestQuestion', body);
-        } catch (err) {
-          return;
         }
+        this.visible = false;
+        this.getList();
+      } catch (err) {
+        return;
       }
-      this.visible = false;
-      this.getList();
     },
     cancel() {
       this.visible = false;

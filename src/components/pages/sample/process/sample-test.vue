@@ -212,7 +212,7 @@ import QualityTest from './test/quality-test.vue';
 import AgencyTest from './test/agency-test.vue';
 import UserTest from './test/user-test.vue';
 import TestForm from '../common/test-form.vue';
-import { formatterTime } from '../../../../utils';
+import { changeTimestamp } from '../../../../utils';
 
 export default {
   components: {
@@ -295,18 +295,13 @@ export default {
             sample_id: +this.$route.params.id
           }
         });
-        this.qualityProgress =
-          this.$store.state.sample.quality.qualityDetail.test_schedule;
-        this.qualityProgress.actual_finish_time = formatterTime(
-          this.qualityProgress.actual_finish_time
-        );
-        this.qualityAttachment =
-          this.$store.state.sample.quality.qualityDetail.test_result_file;
-        this.qualitySubmitState =
-          this.$store.state.sample.quality.qualityDetail.is_submit;
-        this.qualityId =
-          this.$store.state.sample.quality.qualityDetail.test_apply_id;
-        this.qualityTestId = this.$store.state.sample.quality.qualityDetail.id;
+        let { qualityDetail } = this.$store.state.sample.quality;
+        this.qualityProgress = qualityDetail.test_schedule;
+        this.qualityAttachment = qualityDetail.test_result_file;
+        this.qualitySubmitState = qualityDetail.is_submit;
+        this.qualityId = qualityDetail.test_apply_id;
+        this.qualityTestId = qualityDetail.id;
+        changeTimestamp(this.qualityProgress, 'actual_finish_time');
       } catch (err) {
         return;
       }
@@ -319,20 +314,15 @@ export default {
             sample_id: +this.$route.params.id
           }
         });
-        this.agencyProgress =
-          this.$store.state.sample.agency.agencyTest.test_schedule;
-        this.agencyProgress.actual_finish_time = formatterTime(
-          this.agencyProgress.actual_finish_time
-        );
-        this.agencyAttachment =
-          this.$store.state.sample.agency.agencyTest.test_result_file;
-        this.agencySubmitState =
-          this.$store.state.sample.agency.agencyTest.is_submit;
-        this.agencyId =
-          this.$store.state.sample.agency.agencyTest.test_apply_id;
-        this.isAgency = this.$store.state.sample.agency.agencyTest.is_agency;
-        this.agencyValue = this.$store.state.sample.agency.agencyTest.is_agency;
-        this.agencyTestId = this.$store.state.sample.agency.agencyTest.id;
+        let { agencyTest } = this.$store.state.sample.agency;
+        this.agencyProgress = agencyTest.test_schedule;
+        this.agencyAttachment = agencyTest.test_result_file;
+        this.agencySubmitState = agencyTest.is_submit;
+        this.agencyId = agencyTest.test_apply_id;
+        this.isAgency = agencyTest.is_agency;
+        this.agencyValue = agencyTest.is_agency;
+        this.agencyTestId = agencyTest.id;
+        changeTimestamp(this.agencyProgress, 'actual_finish_time');
       } catch (err) {
         return;
       }
@@ -345,28 +335,21 @@ export default {
             sample_id: +this.$route.params.id
           }
         });
-        this.userProgress =
-          this.$store.state.sample.user.userTest.test_schedule;
-        this.userProgress.actual_finish_time = formatterTime(
-          this.userProgress.actual_finish_time
-        );
-        this.userApplyList =
-          this.$store.state.sample.user.userTest.user_test_apply;
+        let { userTest } = this.$store.state.sample.user;
+        this.userProgress = userTest.test_schedule;
+        this.userButtonState = userTest.button_state;
+        this.userId = userTest.test_apply_id;
+        this.userSubmitState = userTest.is_submit;
+        this.userAttachment = userTest.test_result_file;
+        this.userTestId = userTest.id;
+        this.userApplyList = userTest.user_test_apply;
         this.userApplyList.forEach((item) => {
-          item.estimated_finish_time = formatterTime(
-            item.estimated_finish_time
-          );
-          item.submit_time = formatterTime(item.submit_time);
-          item.review_finish_time = formatterTime(item.review_finish_time);
+          changeTimestamp(item, 'estimated_finish_time');
+          changeTimestamp(item, 'submit_time');
+          changeTimestamp(item, 'review_finish_time');
           item.user_experience_duration = `${item.user_experience_duration}天`;
         });
-        this.userButtonState =
-          this.$store.state.sample.user.userTest.button_state;
-        this.userId = this.$store.state.sample.user.userTest.test_apply_id;
-        this.userSubmitState = this.$store.state.sample.user.userTest.is_submit;
-        this.userAttachment =
-          this.$store.state.sample.user.userTest.test_result_file;
-        this.userTestId = this.$store.state.sample.user.userTest.id;
+        changeTimestamp(this.userProgress, 'actual_finish_time');
       } catch (err) {
         return;
       }
