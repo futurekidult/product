@@ -58,10 +58,6 @@
           prop="name"
         />
         <el-table-column
-          label="关联新品名称"
-          prop="product_name"
-        />
-        <el-table-column
           label="执行人"
           prop="user_name"
         />

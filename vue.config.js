@@ -3,7 +3,7 @@ module.exports = {
     proxy: {
       '/api': {
         target:
-          'https://94a8788c-11bb-45e8-98d6-38185e3cbd12.mock.pstmn.io/api',
+          'http://npd.test.heymenology.cn/api',
         ws: true,
         changeOrigin: true,
         pathRewrite: {
