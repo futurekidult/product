@@ -35,7 +35,7 @@
       >
         <el-tree-select
           v-model="roleForm.privileges"
-          :data="authList"
+          :data="privilegeList"
           multiple
           show-checkbox
           clearable
@@ -63,7 +63,7 @@
 
 <script>
 export default {
-  props: ['type', 'dialogVisible', 'id', 'authList', 'getList'],
+  props: ['type', 'dialogVisible', 'id', 'getList'],
   emits: ['hide-dialog'],
   data() {
     return {
@@ -75,15 +75,26 @@ export default {
       roleForm: {
         name: '',
         privileges: []
-      }
+      },
+      privilegeList:[]
     };
   },
   mounted() {
+    this.getPrivilegeList();
     if (this.type === 'edit') {
       this.getRole();
     }
   },
   methods: {
+    async getPrivilegeList() {
+      this.$store.commit('system/setPrivilegeLoading', true);
+      try {
+        await this.$store.dispatch('system/getPrivilegeList');
+        this.privilegeList = this.$store.state.system.privilegeList;
+      } catch (err) {
+        return;
+      }
+    },
     async createRole(body) {
       try {
         await this.$store.dispatch('system/createRole', body);

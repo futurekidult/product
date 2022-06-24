@@ -1,5 +1,64 @@
 <template>
   <base-breadcrumb />
+  <div class="border">
+    <div class="nav-title">
+      <span class="line">|</span> 搜索条件
+    </div>
+
+    <div class="select-item">
+      <el-form
+        label-width="60px"
+        style="display: flex"
+        :model="chooseForm"
+      >
+        <el-form-item label="姓名">
+          <el-input
+            v-model="chooseForm.name"
+            placeholder="请输入姓名"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="部门">
+          <el-tree-select
+            v-model="chooseForm.dept_id"
+            :data="$store.state.system.organizationList"
+            clearable
+            :props="defaultProps"
+            show-checkbox
+            @focus="getOrganizationList"
+          />
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-select
+            v-model="chooseForm.state"
+            placeholder="请选择状态"
+            clearable
+          >
+            <el-option
+              v-for="item in state"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div>
+        <el-button
+          type="primary"
+          @click="getAdminList"
+        >
+          查询
+        </el-button>
+        <el-button
+          class="reset-btn"
+          @click="resetForm"
+        >
+          重置
+        </el-button>
+      </div>
+    </div>
+  </div>
 
   <div class="border">
     <div class="nav-title">
@@ -39,6 +98,21 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <div 
+        v-if="adminList.length > 10"
+        class="pagination" 
+      >
+        <el-pagination
+          v-model:currentPage="page"
+          v-model:page-size="pageSize"
+          layout="total,sizes,prev,pager,next,jumper"
+          :total="adminList.length"
+          :page-sizes="[10, 20, 30, 50]"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </div>
     </div>
   </div>
   <el-dialog
@@ -100,30 +174,50 @@ export default {
       roleVisible: false,
       roleForm: {},
       adminId: 0,
-      organizationList: [],
       adminList: [],
-      roleList: []
+      roleList: [],
+      chooseForm: {},
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      },
+      page: 1,
+      pageSize: 10,
+      state: [
+        {
+          label: '启用状态',
+          value: 1
+        }, 
+        {
+          label: '禁用状态',
+          value: 2
+        }
+      ]
     };
   },
   mounted() {
     this.getAdminList();
-    this.getOrganizationList();
-    this.getRoleList();
   },
   methods: {
     async getOrganizationList() {
       this.$store.commit('system/setOrganizationLoading', true);
       try {
         await this.$store.dispatch('system/getOrganizationList');
-        this.organizationList = this.$store.state.system.organizationList;
       } catch (err) {
         return;
       }
     },
     async getAdminList() {
-      this.$store.commit('system/setAdminLoading', true);
+      let params = {
+        current_page: this.page,
+        page_size: this.pageSize,
+        nameL: this.chooseForm.name,
+        dept_id: this.chooseForm.dept_id,
+        state: this.chooseForm.state
+      }
       try {
-        await this.$store.dispatch('system/getAdminList');
+        this.$store.commit('system/setAdminLoading', true);
+        await this.$store.dispatch('system/getAdminList', {params});
         this.adminList = this.$store.state.system.adminList;
       } catch (err) {
         return;
@@ -140,6 +234,7 @@ export default {
     },
     async showRoleForm(id) {
       try {
+        this.getRoleList();
         await this.$store.dispatch('system/getAdminRole', { params: { id } });
         this.roleForm = this.$store.state.system.adminRole;
         this.roleVisible = true;
@@ -173,6 +268,18 @@ export default {
       } catch (err) {
         return;
       }
+    },
+    handleSizeChange(val) {
+      this.pageSize = val;
+      this.getAdminList(this.page, this.pageSize, this.chooseForm.name, this.chooseForm.dept_id, this.chooseForm.state);
+    },
+    handleCurrentChange(val) {
+      this.page = val;
+      this.getAdminList(this.page, this.pageSize, this.chooseForm.name, this.chooseForm.dept_id, this.chooseForm.state);
+    },
+    resetForm() {
+      this.chooseForm = {};
+      this.getAdminList();
     }
   }
 };
