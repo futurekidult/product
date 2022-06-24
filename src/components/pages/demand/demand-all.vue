@@ -128,6 +128,7 @@
         <el-table-column label="不通过原因">
           <template #default="scope">
             <div
+              v-if="scope.row.state === 40"
               class="reason"
               @click="reasonDialog(scope.row.failed_reason)"
             >

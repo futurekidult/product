@@ -72,7 +72,7 @@
         />
 
         <demand-review
-          v-if="demandDetail.state === 20"
+          v-if="demandDetail.state === 10"
           :get-detail="getDemandDetail"
         />
       </div>
@@ -123,7 +123,7 @@ export default {
       this.$router.push(`/product-list/${id}`);
     },
     changeColor(val) {
-      if (val === 20) {
+      if (val === 10) {
         return 'warning';
       } else if (val === 30) {
         return 'success';

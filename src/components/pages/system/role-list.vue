@@ -51,7 +51,6 @@
       title="新增角色"
       type="create"
       :dialog-visible="createVisible"
-      :auth-list="privilegeList"
       :get-list="getRoleList"
       @hide-dialog="closeCreateDialog"
     />
@@ -62,7 +61,6 @@
       title="编辑角色"
       type="edit"
       :dialog-visible="editVisible"
-      :auth-list="privilegeList"
       :get-list="getRoleList"
       @hide-dialog="closeEditDialog"
     />
@@ -113,7 +111,6 @@ export default {
   },
   mounted() {
     this.getRoleList();
-    this.getPrivilegeList();
   },
   methods: {
     async getRoleList() {
@@ -121,15 +118,6 @@ export default {
       try {
         await this.$store.dispatch('system/getRoleList');
         this.roleList = this.$store.state.system.roleList;
-      } catch (err) {
-        return;
-      }
-    },
-    async getPrivilegeList() {
-      this.$store.commit('system/setPrivilegeLoading', true);
-      try {
-        await this.$store.dispatch('system/getPrivilegeList');
-        this.privilegeList = this.$store.state.system.privilegeList;
       } catch (err) {
         return;
       }

@@ -338,7 +338,6 @@ export default {
   mounted() {
     this.getParams();
     this.getCalculationRuleList();
-    this.getCategoryList();
   },
   methods: {
     async getParams() {
@@ -408,6 +407,7 @@ export default {
     showEditForm(id) {
       this.editVisible = true;
       this.editId = id;
+      this.getCategoryList();
       this.getCalculationRuleDetail(id);
     },
     closeForm() {

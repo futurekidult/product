@@ -586,8 +586,7 @@ export default {
           {
             required: true,
             message: '请输入出货量'
-          },
-          checkValid(15)
+          }
         ],
         purchase_price_currency: [
           {
