@@ -26,16 +26,24 @@ http.interceptors.response.use((res) => {
     } else if (code === 403) {
       ElMessage.error('no permission to access it');
     } else if (code === 405) {
-      http.get('/csrftoken/get').then((res) => {
-        localStorage.setItem('token', res.data.data.csrftoken);
-      });
-      http.request(res.config);
+      getCsrftoken(res.config);
     } else {
       ElMessage.error(res.data.message);
     }
     throw new Error();
   }
   return res.data;
+}, (err) => {
+  if(err.response) {
+    ElMessage.error('服务器出错');
+  }
 });
+
+const getCsrftoken = async (config) => {
+  await http.get('/csrftoken/get').then((res) => {
+    localStorage.setItem('token', res.data.data.csrftoken);
+  });
+  http.request(config);
+}
 
 export default http;
