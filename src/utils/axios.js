@@ -27,8 +27,15 @@ http.interceptors.response.use((res) => {
     } else if (code === 403) {
       ElMessage.error('no permission to access it');
     } else if (code === 405) {
-      store.dispatch('getToken').then(() => {
-        return http(res.config);
+      return refreshToken().then((response) => {
+        let token = response.data.csrftoken;
+        http.setToken(token);
+        let { config } = res;
+        config.headers['X-CSRFToken'] = token;
+        config.baseURL = '';
+        return http(config);
+      }).catch(() => {
+        window.location.href = '/';
       })
     } else {
       ElMessage.error(res.data.message);
@@ -41,5 +48,14 @@ http.interceptors.response.use((res) => {
       ElMessage.error('服务器出错');
     }
 });
+
+http.setToken = (token) => {
+  http.defaults.headers['X-CSRFToken'] = token;
+  localStorage.setItem('token', token);
+ }
+
+const refreshToken = () => {
+  http.get('/csrftoken/get').then((res) => { return res.data; })
+ }
 
 export default http;
