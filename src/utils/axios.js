@@ -26,16 +26,7 @@ http.interceptors.response.use((res) => {
     } else if (code === 403) {
       ElMessage.error('no permission to access it');
     } else if (code === 405) {
-      return refreshToken().then((response) => {
-        let token = response.data.csrftoken;
-        http.setToken(token);
-        let { config } = res;
-        config.headers['X-CSRFToken'] = token;
-        config.baseURL = '';
-        return http(config);
-      }).catch(() => {
-        window.location.href = '/';
-      })
+      return refreshToken(res.config);
     } else {
       ElMessage.error(res.data.message);
     }
@@ -48,13 +39,14 @@ http.interceptors.response.use((res) => {
     }
 });
 
-http.setToken = (token) => {
-  http.defaults.headers['X-CSRFToken'] = token;
-  localStorage.setItem('token', token);
- }
-
-const refreshToken = () => {
-  http.get('/csrftoken/get').then((res) => { return res.data; })
+const refreshToken = async (config) => {
+  await http.get('/csrftoken/get').then((res) => {
+    let token = res.data.csrftoken;
+    localStorage.setItem('token', token);
+    config.headers['X-CSRFToken'] = token;
+    config.baseURL = '/api';
+    return http(config);
+    })
  }
 
 export default http;
