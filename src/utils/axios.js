@@ -30,6 +30,7 @@ http.interceptors.response.use((res) => {
     } else {
       ElMessage.error(res.data.message);
     }
+    console.log(res);
     throw new Error();
   }
   return res.data;
