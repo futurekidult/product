@@ -18,7 +18,7 @@ http.interceptors.request.use((config) => {
 });
 
 http.interceptors.response.use((res) => {
-  let { code } = res.data;
+  let { code } = res.data.code;
   if (code !== 200) {
     if (code === 401) {
       localStorage.removeItem('token');
@@ -41,7 +41,7 @@ http.interceptors.response.use((res) => {
 
 const getCsrftoken = async (config) => {
   await http.get('/csrftoken/get').then((res) => {
-    localStorage.setItem('token', res.data.data.csrftoken);
+    localStorage.setItem('token', res.data.csrftoken);
   });
   http.request(config);
 }
