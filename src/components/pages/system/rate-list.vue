@@ -192,17 +192,18 @@ export default {
           item.create_time = formatterTime(item.create_time);
         });
       } catch (err) {
+        this.$store.commit('system/setRateListLoading', false);
         return;
       }
     },
     async createRate(body) {
       try {
         await this.$store.dispatch('system/createRate', body);
-        this.addVisible = false;
-        this.getRateList();
       } catch (err) {
         return;
       }
+      this.addVisible = false;
+      this.getRateList();
     },
     submitRateForm() {
       this.$refs.rateForm.validate((valid) => {
