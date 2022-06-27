@@ -12,6 +12,7 @@ module.exports = {
       }
     }
   },
+  productionSourceMap: false,
   chainWebpack: (config) => {
     config.plugin('define').tap((args) => {
       args[0]['process.env'].VERSION = (function () {

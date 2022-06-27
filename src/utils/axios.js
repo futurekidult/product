@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
-import store from '../store/index'
 
 axios.defaults.withCredentials = true;
 
