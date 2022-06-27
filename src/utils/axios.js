@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
+import store from '../store/index'
 
 axios.defaults.withCredentials = true;
 
@@ -26,24 +27,19 @@ http.interceptors.response.use((res) => {
     } else if (code === 403) {
       ElMessage.error('no permission to access it');
     } else if (code === 405) {
-      getCsrftoken(res.config);
+      store.dispatch('getToken').then(() => {
+        return http(res.config);
+      })
     } else {
       ElMessage.error(res.data.message);
     }
     throw new Error();
   }
   return res.data;
-}, (err) => {
-  if(err.response) {
-    ElMessage.error('服务器出错');
-  }
+  }, (err) => {
+    if(err.response) {
+      ElMessage.error('服务器出错');
+    }
 });
-
-const getCsrftoken = async (config) => {
-  await http.get('/csrftoken/get').then((res) => {
-    localStorage.setItem('token', res.data.csrftoken);
-  });
-  http.request(config);
-}
 
 export default http;
