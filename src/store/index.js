@@ -130,7 +130,7 @@ const store = createStore({
     async getToken() {
       await axios.get('/csrftoken/get').then((res) => {
         if (res.code === 200) {
-          localStorage.setItem('token', res.data.csrftoken);
+          localStorage.setItem('token', JSON.stringify(res.data.csrftoken));
         }
       });
     },
