@@ -216,6 +216,20 @@ export default {
           ElMessage.success(res.message);
         }
       });
+    },
+    async blockAdmin(_, payload) {
+      await axios.post('/system/admin/block', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
+    },
+    async unblockAdmin(_, payload) {
+      await axios.post('/system/admin/unblock', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
     }
   }
 };

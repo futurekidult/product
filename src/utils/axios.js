@@ -26,11 +26,11 @@ http.interceptors.response.use((res) => {
     } else if (code === 403) {
       ElMessage.error('no permission to access it');
     } else if (code === 405) {
-      return refreshToken(res.config);
+      let response = refreshToken(res.config);
+      return response.data;
     } else {
       ElMessage.error(res.data.message);
     }
-    console.log(res);
     throw new Error();
   }
   return res.data;

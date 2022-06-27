@@ -199,12 +199,11 @@ export default {
     async createRate(body) {
       try {
         await this.$store.dispatch('system/createRate', body);
+        this.addVisible = false;
+        this.getRateList();
       } catch (err) {
         return;
       }
-      console.log(1);
-      this.addVisible = false;
-      this.getRateList();
     },
     submitRateForm() {
       this.$refs.rateForm.validate((valid) => {
