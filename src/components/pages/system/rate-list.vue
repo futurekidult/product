@@ -202,6 +202,7 @@ export default {
       } catch (err) {
         return;
       }
+      console.log(1);
       this.addVisible = false;
       this.getRateList();
     },
