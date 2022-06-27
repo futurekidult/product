@@ -18,7 +18,7 @@ http.interceptors.request.use((config) => {
 });
 
 http.interceptors.response.use((res) => {
-  let { code } = res.data.code;
+  let { code } = res.data;
   if (code !== 200) {
     if (code === 401) {
       localStorage.removeItem('token');
