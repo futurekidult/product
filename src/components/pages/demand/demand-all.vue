@@ -157,7 +157,7 @@
       </el-table>
 
       <base-pagination
-        :length="demandList.length"
+        :length="$store.state.demand.demandListLength"
         :get-list="getDemandList"
       />
     </div>
@@ -228,6 +228,7 @@ export default {
           item.review_finish_time = formatterTime(item.review_finish_time);
         });
       } catch (err) {
+        this.$store.commit('demand/setDemandLoading', false);
         return;
       }
     },

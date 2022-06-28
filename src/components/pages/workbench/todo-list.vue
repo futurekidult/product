@@ -52,7 +52,7 @@
     </el-table>
 
     <base-pagination
-      :length="todoList.length"
+      :length="$store.state.workbench.todoListLength"
       :get-list="getList"
     />
   </div>

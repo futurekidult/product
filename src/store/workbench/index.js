@@ -8,7 +8,9 @@ export default {
       todoList: [],
       todoListLoading: true,
       notificationList: [],
-      notificationListLoading: true
+      notificationListLoading: true,
+      todoListLength: 0,
+      notificationListLength: 0
     };
   },
   mutations: {
@@ -31,6 +33,7 @@ export default {
         if (res.code === 200) {
           context.commit('setTodoList', res.data.list);
           context.commit('setTodoListLoading', false);
+          context.state.todoListLength = res.data.total;
         }
       });
     },
@@ -39,6 +42,7 @@ export default {
         if (res.code === 200) {
           context.commit('setNotificationList', res.data.list);
           context.commit('setNotificationListLoading', false);
+          context.state.notificationListLength = res.data.total;
         }
       });
     },

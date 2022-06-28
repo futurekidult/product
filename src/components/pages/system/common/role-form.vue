@@ -25,7 +25,7 @@
       </el-form-item>
       <el-form-item
         label="权限"
-        prop="privileges"
+        prop="privilege_ids"
         :rules="[
           {
             required: true,
@@ -34,11 +34,11 @@
         ]"
       >
         <el-tree-select
-          v-model="roleForm.privileges"
+          v-model="roleForm.privilege_ids"
           :data="privilegeList"
           multiple
-          show-checkbox
           clearable
+          check-strictly
           :props="defaultProps"
         />
       </el-form-item>
@@ -74,7 +74,7 @@ export default {
       },
       roleForm: {
         name: '',
-        privileges: []
+        privilege_ids: []
       },
       privilegeList:[]
     };
@@ -92,6 +92,7 @@ export default {
         await this.$store.dispatch('system/getPrivilegeList');
         this.privilegeList = this.$store.state.system.privilegeList;
       } catch (err) {
+        this.$store.commit('system/setPrivilegeLoading', false);
         return;
       }
     },
@@ -99,10 +100,10 @@ export default {
       try {
         await this.$store.dispatch('system/createRole', body);
         this.visible = false;
-        this.getList();
       } catch (err) {
         return;
       }
+      this.getList();
     },
     async updateRole(val) {
       let body = val;

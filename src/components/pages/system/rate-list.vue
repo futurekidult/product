@@ -59,7 +59,7 @@
       </el-table>
 
       <base-pagination
-        :length="rateList.length"
+        :length="$store.state.system.rateListLength"
         :get-list="getRateList"
       />
     </div>

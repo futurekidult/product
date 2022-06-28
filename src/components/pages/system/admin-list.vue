@@ -20,9 +20,10 @@
         </el-form-item>
         <el-form-item label="部门">
           <el-tree-select
-            v-model="chooseForm.dept_id"
+            v-model="chooseForm.dept_ids"
             :data="$store.state.system.organizationList"
             clearable
+            multiple
             :props="defaultProps"
             show-checkbox
             @focus="getOrganizationList"
@@ -84,10 +85,10 @@
         <el-table-column label="操作">
           <template #default="scope">
             <el-button
-              :type="scope.row.state === 2 ? 'danger' : 'primary'"
-              @click="blockAdmin(scope.row.id)"
+              :type="scope.row.state === 1 ? 'danger' : 'primary'"
+              @click="scope.row.state === 1 ? blockAdmin(scope.row.id) : unblockAdmin(scope.row.id)"
             >
-              {{ scope.row.state === 2 ? '封禁账号' : '解除封禁' }}
+              {{ scope.row.state === 1 ? '封禁账号' : '解除封禁' }}
             </el-button>
             <el-button
               type="warning"
@@ -100,14 +101,13 @@
       </el-table>
 
       <div 
-        v-if="adminList.length > 10"
         class="pagination" 
       >
         <el-pagination
           v-model:currentPage="page"
           v-model:page-size="pageSize"
           layout="total,sizes,prev,pager,next,jumper"
-          :total="adminList.length"
+          :total="$store.state.system.adminListLength"
           :page-sizes="[10, 20, 30, 50]"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -208,11 +208,11 @@ export default {
       }
     },
     async getAdminList() {
-      let params = {
-        current_page: this.page,
+       let params = {
+        current_page:  this.page,
         page_size: this.pageSize,
-        nameL: this.chooseForm.name,
-        dept_id: this.chooseForm.dept_id,
+        name: this.chooseForm.name,
+        dept_ids: this.chooseForm.dept_ids.join(','),
         state: this.chooseForm.state
       }
       try {
@@ -220,6 +220,7 @@ export default {
         await this.$store.dispatch('system/getAdminList', {params});
         this.adminList = this.$store.state.system.adminList;
       } catch (err) {
+        this.$store.commit('system/setAdminLoading', false);
         return;
       }
     },
@@ -229,6 +230,7 @@ export default {
         await this.$store.dispatch('system/getRoleList');
         this.roleList = this.$store.state.system.roleList;
       } catch (err) {
+        this.$store.commit('system/setRoleLoading', false);
         return;
       }
     },
@@ -263,7 +265,15 @@ export default {
     },
     async blockAdmin(id) {
       try {
-        await this.$store.dispatch('blockAdmin', { id });
+        await this.$store.dispatch('system/blockAdmin', { id });
+        this.getAdminList();
+      } catch (err) {
+        return;
+      }
+    },
+    async unblockAdmin(id) {
+      try {
+        await this.$store.dispatch('system/unblockAdmin', { id });
         this.getAdminList();
       } catch (err) {
         return;
@@ -271,11 +281,11 @@ export default {
     },
     handleSizeChange(val) {
       this.pageSize = val;
-      this.getAdminList(this.page, this.pageSize, this.chooseForm.name, this.chooseForm.dept_id, this.chooseForm.state);
+      this.getAdminList(this.page, this.pageSize, this.chooseForm.name, this.chooseForm.dept_ids, this.chooseForm.state);
     },
     handleCurrentChange(val) {
       this.page = val;
-      this.getAdminList(this.page, this.pageSize, this.chooseForm.name, this.chooseForm.dept_id, this.chooseForm.state);
+      this.getAdminList(this.page, this.pageSize, this.chooseForm.name, this.chooseForm.dept_ids, this.chooseForm.state);
     },
     resetForm() {
       this.chooseForm = {};
@@ -302,5 +312,9 @@ export default {
 .el-tree {
   color: #999999 !important;
   font-weight: 500;
+}
+.pagination {
+  display: flex;
+  justify-content: right;
 }
 </style>

@@ -35,6 +35,7 @@ export default {
         await this.$store.dispatch('system/getOrganizationList');
         this.organizationList = this.$store.state.system.organizationList;
       } catch (err) {
+        this.$store.commit('system/setOrganizationLoading', false);
         return;
       }
     }

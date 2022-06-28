@@ -130,7 +130,7 @@ const store = createStore({
     async getToken() {
       await axios.get('/csrftoken/get').then((res) => {
         if (res.code === 200) {
-          localStorage.setItem('token', JSON.stringify(res.data.csrftoken));
+          localStorage.setItem('token', res.data.csrftoken);
         }
       });
     },
@@ -138,6 +138,11 @@ const store = createStore({
       await axios.get('/admin/info').then((res) => {
         if (res.code === 200) {
           context.commit('setUserInfo', res.data);
+          if(!localStorage.getItem('expiration')) {
+            let expiresIn = axios.defaults.timeout;
+            let expirationDate = new Date().getTime() + expiresIn;
+            localStorage.setItem('expiration', expirationDate);
+          }
         }
       });
     },

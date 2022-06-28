@@ -21,7 +21,11 @@ export default {
       calculationRuleListLoading: true,
       calculationRuleDetail: {},
       rateList: [],
-      rateListLoading: true
+      rateListLoading: true,
+      calculationRuleListLength: 0,
+      rateListLength: 0,
+      todoListLength: 0,
+      adminListLength: 0
     };
   },
   mutations: {
@@ -99,6 +103,7 @@ export default {
         if (res.code === 200) {
           context.commit('setAdminList', res.data.list);
           context.commit('setAdminLoading', false);
+          context.state.adminListLength = res.data.total;
         }
       });
     },
@@ -157,6 +162,7 @@ export default {
         if (res.code === 200) {
           context.commit('setTodoList', res.data.list);
           context.commit('setTodoLoading', false);
+          context.state.todoListLength = res.data.total;
         }
       });
     },
@@ -174,6 +180,7 @@ export default {
           if (res.code === 200) {
             context.commit('setCalculationRuleList', res.data.list);
             context.commit('setCalculationRuleListLoading', false);
+            context.state.calculationRuleListLength = res.data.total;
           }
         });
     },
@@ -200,6 +207,7 @@ export default {
         if (res.code === 200) {
           context.commit('setRateList', res.data.list);
           context.commit('setRateListLoading', false);
+          context.state.rateListLength = res.data.total;
         }
       });
     },

@@ -40,7 +40,6 @@ export default {
           id: this.id
         });
         this.visible = false;
-        this.$store.commit('supplier/setSupplierLoading', true);
         this.getList();
       } catch (err) {
         return;
@@ -54,7 +53,6 @@ export default {
           }
         });
         this.visible = false;
-        this.$store.commit('supplier/setBlackLoading', true);
         this.getList();
       } catch (err) {
         return;

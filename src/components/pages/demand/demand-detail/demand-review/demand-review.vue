@@ -405,7 +405,7 @@
   </el-form>
 </template>
 <script>
-import { timestamp } from '../../../../../utils';
+import { timestamp,getOrganizationList } from '../../../../../utils';
 
 export default {
   props: ['getDetail'],
@@ -656,7 +656,9 @@ export default {
   },
   mounted() {
     this.getMarket();
-    this.getOrganizationList();
+    getOrganizationList().then( (res) => {
+      this.memberList = res;
+    });
   },
   methods: {
     async reviewDemandForm(val) {
@@ -664,7 +666,7 @@ export default {
       body['demand_id'] = +this.$route.params.id;
       try {
         await this.$store.dispatch('demand/reviewDemandForm', body);
-        this.getDetail();
+        this.$router.push('/demand-list');
       } catch (err) {
         return;
       }
@@ -680,25 +682,6 @@ export default {
           this.reviewDemandForm(this.reviewForm);
         }
       });
-    },
-    async getOrganizationList() {
-      try {
-        await this.$store.dispatch('getOrganizationList');
-        this.memberList = this.$store.state.organizationList;
-        for (let key in this.memberList) {
-          this.childrenFunc(this.memberList[key]);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    childrenFunc(data) {
-      if (data.member_list) {
-        for (const item of data.member_list) {
-          data.children.push(item);
-        }
-      }
-      return data.children;
     },
     addRow() {
       this.reviewForm.market.push({});

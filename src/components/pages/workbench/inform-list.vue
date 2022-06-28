@@ -42,7 +42,7 @@
     </el-table>
 
     <base-pagination
-      :length="notificationList.length"
+      :length="$store.state.workbench.notificationListLength"
       :get-list="getList"
     />
   </div>

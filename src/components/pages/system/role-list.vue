@@ -119,6 +119,7 @@ export default {
         await this.$store.dispatch('system/getRoleList');
         this.roleList = this.$store.state.system.roleList;
       } catch (err) {
+        this.$store.commit('system/setRoleLoading', false);
         return;
       }
     },

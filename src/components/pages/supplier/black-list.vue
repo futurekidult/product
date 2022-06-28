@@ -126,6 +126,7 @@ export default {
           item.approval_time = formatterTime(item.approval_time);
         });
       } catch (err) {
+        this.$store.commit('supplier/setBlackLoading', false);
         return;
       }
     },
@@ -146,7 +147,6 @@ export default {
       this.whiteDialogVisible = false;
     },
     toDetail(id) {
-      this.$store.commit('supplier/setSupplierDetailLoading', true);
       this.$router.push(`/supplier-list/${id}`);
     }
   }
