@@ -3,7 +3,7 @@ module.exports = {
     proxy: {
       '/api': {
         target:
-          'http://npd.test.heymenology.cn/api',
+          'http://npd.dev.heymenology.cn/api',
         ws: true,
         changeOrigin: true,
         pathRewrite: {

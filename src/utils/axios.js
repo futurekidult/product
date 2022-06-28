@@ -18,7 +18,7 @@ http.interceptors.request.use((config) => {
   return config;
 });
 
-http.interceptors.response.use((res) => {
+http.interceptors.response.use(async (res) => {
   let { code } = res.data;
   if (code !== 200) {
     if (code === 401) {
@@ -27,7 +27,10 @@ http.interceptors.response.use((res) => {
     } else if (code === 403) {
       ElMessage.error('no permission to access it');
     } else if (code === 405) {
-       refreshToken();
+      let token = await refreshToken(res.config);
+      res.config.headers['X-CSRFToken'] = token;
+      res.config.baseURL = '/api';
+      return http(res.config);
     } else {
       ElMessage.error(res.data.message);
     }
@@ -42,8 +45,9 @@ http.interceptors.response.use((res) => {
 
 const refreshToken = async () => {
   await http.get('/csrftoken/get').then((res) => {
-    localStorage.setItem('token', res.data.csrftoken);
-    ElMessage.warning('token已过期,请重新执行操作');
+    let token = res.data.csrftoken;
+    localStorage.setItem('token', token);
+    return token;
     })
  }
 
