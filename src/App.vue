@@ -46,11 +46,11 @@ export default {
       }
     },
     refreshToken() {
-      let currencyTime = new Date().getTime();
-      let date = localStorage.getItem('expiration')
-      if(currencyTime - date < 1000) {
+      let currentTime = new Date().getTime();
+      let date = localStorage.getItem('expiration');
+      if(currentTime - date < 1000) {
         this.getToken();
-      }else {
+      } else {
         return ;
       }
     }

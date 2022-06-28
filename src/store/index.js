@@ -116,7 +116,7 @@ const store = createStore({
     async getOrganizationList() {
       await axios.get('/organization/list').then((res) => {
         if (res.code === 200) {
-          localStorage.setItem('organization', JSON.stringify(res.data.list))
+          localStorage.setItem('organization', JSON.stringify(res.data.list));
         }
       });
     },
