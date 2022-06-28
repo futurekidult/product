@@ -31,7 +31,6 @@ const store = createStore({
       fileRes: {},
       viewLink: '',
       attachmentState: false,
-      organizationList: [],
       countryList: [],
       userInfo: {},
       activeTab: '',
@@ -59,9 +58,6 @@ const store = createStore({
     },
     setAttachmentState(state, payload) {
       state.attachmentState = payload;
-    },
-    setOrganizationList(state, payload) {
-      state.organizationList = payload;
     },
     setCountry(state, payload) {
       state.countryList = payload;
@@ -117,10 +113,10 @@ const store = createStore({
         }
       });
     },
-    async getOrganizationList(context) {
+    async getOrganizationList() {
       await axios.get('/organization/list').then((res) => {
         if (res.code === 200) {
-          context.commit('setOrganizationList', res.data.list);
+          localStorage.setItem('organization', JSON.stringify(res.data.list));
         }
       });
     },
@@ -134,7 +130,7 @@ const store = createStore({
     async getToken() {
       await axios.get('/csrftoken/get').then((res) => {
         if (res.code === 200) {
-          localStorage.setItem('token', JSON.stringify(res.data.csrftoken));
+          localStorage.setItem('token', res.data.csrftoken);
         }
       });
     },
@@ -142,18 +138,16 @@ const store = createStore({
       await axios.get('/admin/info').then((res) => {
         if (res.code === 200) {
           context.commit('setUserInfo', res.data);
+          if(!localStorage.getItem('expiration')) {
+            let expiresIn = axios.defaults.timeout;
+            let expirationDate = new Date().getTime() + expiresIn;
+            localStorage.setItem('expiration', expirationDate);
+          }
         }
       });
     },
     async logoutSystem() {
       await axios.get('/logout').then((res) => {
-        if (res.code === 200) {
-          ElMessage.success(res.message);
-        }
-      });
-    },
-    async blockAdmin(_, payload) {
-      await axios.post('/system/admin/block', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }

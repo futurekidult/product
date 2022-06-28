@@ -45,7 +45,7 @@
         <div>
           <el-button
             type="primary"
-            @click="getSupplierList"
+            @click="getSupplierList()"
           >
             查询
           </el-button>
@@ -184,7 +184,7 @@
       </el-table>
 
       <base-pagination
-        :length="40"
+        :length="$store.state.supplier.supplierListLength"
         :get-list="getSupplierList"
       />
     </div>
@@ -249,6 +249,7 @@ export default {
           item.approval_time = formatterTime(item.approval_time);
         });
       } catch (err) {
+        this.$store.commit('supplier/setSupplierLoading', false);
         return;
       }
     },
@@ -256,11 +257,9 @@ export default {
       this.$router.push('/supplier-create');
     },
     toUpdate(id) {
-      this.$store.commit('supplier/setSupplierDetailLoading', true);
       this.$router.push(`/supplist-list/supplier-update/${id}`);
     },
     toDetail(id) {
-      this.$store.commit('supplier/setSupplierDetailLoading', true);
       this.$router.push(`/supplier-list/${id}`);
     },
     changeColor(val) {
@@ -287,7 +286,6 @@ export default {
       }
     },
     toBlackList() {
-      this.$store.commit('supplier/setBlackLoading', true);
       this.$router.push('/black-list');
     },
     showBlackDialog(id) {

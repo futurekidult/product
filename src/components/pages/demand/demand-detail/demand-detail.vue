@@ -72,7 +72,7 @@
         />
 
         <demand-review
-          v-if="demandDetail.state === 10"
+          v-if="demandDetail.state === 20"
           :get-detail="getDemandDetail"
         />
       </div>
@@ -116,6 +116,7 @@ export default {
           this.demandDetail.create_time
         );
       } catch (err) {
+        this.$store.commit('demand/setDemandDetailLoading', false);
         return;
       }
     },
@@ -123,7 +124,7 @@ export default {
       this.$router.push(`/product-list/${id}`);
     },
     changeColor(val) {
-      if (val === 10) {
+      if (val === 20) {
         return 'warning';
       } else if (val === 30) {
         return 'success';

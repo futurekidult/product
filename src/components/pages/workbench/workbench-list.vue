@@ -138,6 +138,7 @@ export default {
           item.create_time = formatterTime(item.create_time);
         });
       } catch (err) {
+        this.$store.commit('workbench/setNotificationListLoading', false);
         return;
       }
     },

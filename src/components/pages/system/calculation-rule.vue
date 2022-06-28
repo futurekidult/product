@@ -67,7 +67,7 @@
       </el-table>
 
       <base-pagination
-        :length="calculationRuleList.length"
+        :length="$store.state.system.calculationRuleListLength"
         :get-list="getCalculationRuleList"
       />
     </div>
@@ -369,6 +369,7 @@ export default {
           item.update_time = formatterTime(item.update_time);
         });
       } catch (err) {
+        this.$store.commit('system/setCalculationRuleListLoading', false);
         return;
       }
     },

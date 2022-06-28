@@ -781,7 +781,7 @@ export default {
         await this.$store.dispatch('getToken');
         await this.$store.dispatch('getUserInfo');
         this.department = this.$store.state.userInfo.center_group;
-        this.isRequired = this.department.indexOf(20) > -1;
+        this.isRequired = this.department.indexOf(30) > -1;
       } catch (err) {
         return;
       }
@@ -805,27 +805,18 @@ export default {
     getRules() {
       let map = {
         10: this.operationDepartment,
-        20: this.supplyChainDepartment,
-        30: this.saleDepartment
-      };
-      if (this.department.length === 1) {
-        this.demandRules = Object.assign(
-          map[this.department[0]],
-          this.commonRules
-        );
-      } else if (this.department.length === 2) {
-        this.demandRules = Object.assign(
-          map[this.department[0]],
-          map[this.department[1]],
-          this.commonRules
-        );
-      } else {
-        this.demandRules = Object.assign(
-          map[this.department[0]],
-          map[this.department[1]],
-          map[this.department[2]],
-          this.commonRules
-        );
+        20: this.operationDepartment,
+        30: this.supplyChainDepartment,
+        40: this.saleDepartment
+      }; 
+      for (let i = 0; i < this.department.length; i++) {
+        if (this.department[i] === 100) {
+          continue;
+        }
+        this.demandRules = Object.assign(this.demandRules,map[this.department[i]]);
+      }
+      if (Object.keys(this.demandRules).length > 0) {
+         Object.assign(this.demandRules, this.commonRules);
       }
     },
     addRow() {

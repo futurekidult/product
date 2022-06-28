@@ -12,7 +12,8 @@ export default {
       demandDetail: {},
       demandDetailLoading: true,
       optionLoading: true,
-      isDraft: false
+      isDraft: false,
+      demandListLength: 0
     };
   },
   mutations: {
@@ -44,6 +45,7 @@ export default {
         if (res.code === 200) {
           context.commit('setList', res.data.list);
           context.commit('setDemandLoading', false);
+          context.state.demandListLength = res.data.total;
         }
       });
     },

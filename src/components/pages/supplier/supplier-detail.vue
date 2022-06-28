@@ -79,6 +79,7 @@ export default {
           this.mode = 'success';
         }
       } catch (err) {
+        this.$store.commit('supplier/setSupplierDetailLoading', false);
         return;
       }
     },

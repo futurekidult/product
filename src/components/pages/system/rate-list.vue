@@ -59,7 +59,7 @@
       </el-table>
 
       <base-pagination
-        :length="rateList.length"
+        :length="$store.state.system.rateListLength"
         :get-list="getRateList"
       />
     </div>
@@ -192,6 +192,7 @@ export default {
           item.create_time = formatterTime(item.create_time);
         });
       } catch (err) {
+        this.$store.commit('system/setRateListLoading', false);
         return;
       }
     },

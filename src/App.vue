@@ -7,6 +7,8 @@ export default {
   mounted() {
     this.clearCache();
     this.getUserInfo();
+    this.getOrganizationList();
+    this.refreshToken();
   },
   methods: {
     clearCache() {
@@ -34,6 +36,22 @@ export default {
         await this.$store.dispatch('getUserInfo');
       } catch (err) {
         return;
+      }
+    },
+     async getOrganizationList() {
+      try {
+        await this.$store.dispatch('getOrganizationList');
+      } catch (err) {
+        return;
+      }
+    },
+    refreshToken() {
+      let currentTime = new Date().getTime();
+      let date = localStorage.getItem('expiration');
+      if(currentTime - date < 1000) {
+        this.getToken();
+      } else {
+        return ;
       }
     }
   }

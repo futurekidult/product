@@ -2,6 +2,7 @@ import axios from 'axios';
 import { ElMessage } from 'element-plus';
 
 axios.defaults.withCredentials = true;
+axios.defaults.timeout = 7128000;
 
 const http = axios.create({
   baseURL: '/api',
@@ -26,16 +27,24 @@ http.interceptors.response.use((res) => {
     } else if (code === 403) {
       ElMessage.error('no permission to access it');
     } else if (code === 405) {
-      http.get('/csrftoken/get').then((res) => {
-        localStorage.setItem('token', res.data.data.csrftoken);
-      });
-      http.request(res.config);
+       refreshToken();
     } else {
       ElMessage.error(res.data.message);
     }
     throw new Error();
   }
   return res.data;
+  }, (err) => {
+    if(err.response) {
+      ElMessage.error('服务器出错');
+    }
 });
+
+const refreshToken = async () => {
+  await http.get('/csrftoken/get').then((res) => {
+    localStorage.setItem('token', res.data.csrftoken);
+    ElMessage.warning('token已过期,请重新执行操作');
+    })
+ }
 
 export default http;

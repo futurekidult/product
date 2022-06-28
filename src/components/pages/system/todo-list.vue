@@ -74,7 +74,7 @@
       </el-table>
 
       <base-pagination
-        :length="todoList.length"
+        :length="$store.state.system.todoListLength"
         :get-list="getTodoList"
       />
     </div>
@@ -129,6 +129,7 @@
 </template>
 
 <script>
+import { getOrganizationList } from '../../../utils';
 export default {
   data() {
     return {
@@ -148,7 +149,9 @@ export default {
   },
   mounted() {
     this.getTodoList();
-    this.getOrganizationList();
+     getOrganizationList().then( (res) => {
+      this.memberList = res;
+    });
   },
   methods: {
     async getTodoList(currentPage = 1, pageSize = 10) {
@@ -163,6 +166,7 @@ export default {
         await this.$store.dispatch('system/getTodoList', { params });
         this.todoList = this.$store.state.system.todoList;
       } catch (err) {
+        this.$store.commit('system/setTodoLoading', false);
         return;
       }
     },
@@ -176,25 +180,6 @@ export default {
       } catch (err) {
         return;
       }
-    },
-    async getOrganizationList() {
-      try {
-        await this.$store.dispatch('getOrganizationList');
-        this.memberList = this.$store.state.organizationList;
-        for (let key in this.memberList) {
-          this.childrenFunc(this.memberList[key]);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    childrenFunc(data) {
-      if (data.member_list) {
-        for (const item of data.member_list) {
-          data.children.push(item);
-        }
-      }
-      return data.children;
     },
     showOperatorDialog(id, operator) {
       this.operatorVisible = true;

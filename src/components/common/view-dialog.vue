@@ -41,8 +41,6 @@ export default {
 
 img {
   position: fixed;
-  top: 30vh;
-  left: 35%;
   z-index: 100;
   border-radius: 12px;
   border: none;
@@ -51,5 +49,14 @@ img {
   margin: 0;
   overflow: hidden;
   background-color: white;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
 }
 </style>

@@ -828,7 +828,7 @@
 </template>
 
 <script>
-import { downloadFile, getFile, previewFile } from '../../../../utils';
+import { downloadFile, getFile, getOrganizationList, previewFile } from '../../../../utils';
 import ViewDialog from '../../../common/view-dialog.vue';
 export default {
   components: {
@@ -880,23 +880,14 @@ export default {
   mounted() {
     this.getCityOption();
     this.getParams();
-    this.getOrganizationList();
+     getOrganizationList().then( (res) => {
+      this.memberList = res;
+    });
     if (this.type !== 'create') {
       this.getSupplierDetail();
     }
   },
   methods: {
-    async getOrganizationList() {
-      try {
-        await this.$store.dispatch('getOrganizationList');
-        this.memberList = this.$store.state.organizationList;
-        for (let key in this.memberList) {
-          this.childrenFunc(this.memberList[key]);
-        }
-      } catch (err) {
-        return;
-      }
-    },
     async getParams() {
       if (localStorage.getItem('params')) {
         let { supplier } = JSON.parse(localStorage.getItem('params'));
@@ -942,6 +933,7 @@ export default {
           this.supplierForm.purchase_evaluation_file;
         this.qualityEvaluationFile = this.supplierForm.quality_evaluation_file;
       } catch (err) {
+        this.$store.commit('supplier/setSupplierDetailLoading', false);
         return;
       }
     },
@@ -968,14 +960,6 @@ export default {
     },
     deleteRow(val) {
       this.supplierForm[val].pop();
-    },
-    childrenFunc(data) {
-      if (data.member_list) {
-        for (const item of data.member_list) {
-          data.children.push(item);
-        }
-      }
-      return data.children;
     },
     async showViewDialog(id) {
       this.$store.commit('setAttachmentState', false);

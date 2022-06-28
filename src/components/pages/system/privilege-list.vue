@@ -35,6 +35,7 @@ export default {
         await this.$store.dispatch('system/getPrivilegeList');
         this.privilegeList = this.$store.state.system.privilegeList;
       } catch (err) {
+        this.$store.commit('system/setPrivilegeLoading', false);
         return;
       }
     }

@@ -150,3 +150,24 @@ export const checkFile = (val) => {
 export const changeTimestamp = (obj, str) => {
   obj[str] = formatterTime(obj[str]);
 };
+
+export const getOrganizationList = async () => {
+  let data = JSON.parse(localStorage.getItem('organization'));
+  if(data) {
+     for (let key in data) {
+      childrenFunc(data[key]);
+    }
+    return data;
+  } else {
+     await this.$store.dispatch('getOrganizationList');
+     getOrganizationList();
+  }
+}
+
+export const childrenFunc = (data) => {
+  if (data.member_list) {
+    for (const item of data.member_list) {
+      data.children.push(item);
+    }
+  }
+}
