@@ -27,6 +27,7 @@
       </el-descriptions-item>
       <el-descriptions-item label="操作">
         <el-button
+          :disabled="progress.state === 40"
           :class="progress.state === undefined ? 'hide' : ''"
           @click="showDesignForm"
         >

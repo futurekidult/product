@@ -19,10 +19,11 @@
             />
           </el-form-item>
           <el-form-item label="采购员">
-            <el-input
-              v-model="chooseForm.purchase_specialist"
+            <el-tree-select
+              v-model="chooseForm.purchase_specialist_id"
+              :data="memberList"
               clearable
-              placeholder="请输入采购员"
+              :props="defaultProps"
               @clear="getSupplierList()"
             />
           </el-form-item>
@@ -201,7 +202,7 @@
 </template>
 
 <script>
-import { formatterTime } from '../../../utils';
+import { formatterTime, getOrganizationList } from '../../../utils';
 import ConfirmDialog from './common/confirm-dialog.vue';
 
 export default {
@@ -214,12 +215,20 @@ export default {
       supplierList: [],
       supplierState: [],
       blackDialogVisible: false,
-      supplierBlackId: 0
+      supplierBlackId: 0,
+      memberList: [],
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      }
     };
   },
   mounted() {
     this.getState();
     this.getSupplierList();
+    getOrganizationList().then( (res) => {
+      this.memberList = res;
+    });
   },
   methods: {
     async getState() {

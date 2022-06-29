@@ -155,6 +155,7 @@ export default {
       try {
         await this.$store.dispatch('mould/approvalMakingMould', body);
         this.getMould();
+        this.getList();
       } catch (err) {
         return;
       }

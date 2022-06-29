@@ -112,7 +112,7 @@
       </div>
       <div class="form-item">
         <el-form-item
-          v-if="isNewProduct"
+          v-if="isNewCategory"
           label="市场调研"
           prop="market_survey_time"
         >
@@ -150,7 +150,7 @@
           />
         </el-form-item>
         <el-form-item
-          v-if="isNewCategory"
+          v-if="isNewProduct"
           label="产品方案"
           prop="product_solutions_time"
         >
@@ -175,7 +175,7 @@
           />
         </el-form-item>
         <el-form-item
-          v-if="isNewCategory"
+          v-if="isNewProduct"
           label="用户调研"
           prop="user_survey_time"
         >
@@ -202,7 +202,6 @@
             :data="memberList"
             clearable
             :props="defaultProps"
-            show-checkbox
             style="width: 339px"
           />
         </el-form-item>
@@ -214,7 +213,6 @@
             v-model="reviewForm.coo_id"
             :data="memberList"
             clearable
-            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -227,7 +225,6 @@
             v-model="reviewForm.cmo_id"
             :data="memberList"
             clearable
-            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -240,7 +237,6 @@
             v-model="reviewForm.cpo_id"
             :data="memberList"
             clearable
-            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -253,7 +249,6 @@
             v-model="reviewForm.project_manager_id"
             :data="memberList"
             clearable
-            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -266,7 +261,6 @@
             v-model="reviewForm.project_administrator_id"
             :data="memberList"
             clearable
-            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -279,7 +273,6 @@
             v-model="reviewForm.operations_principal_id"
             :data="memberList"
             clearable
-            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -292,7 +285,6 @@
             v-model="reviewForm.product_principal_id"
             :data="memberList"
             clearable
-            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -305,7 +297,6 @@
             v-model="reviewForm.purchase_principal_id"
             :data="memberList"
             clearable
-            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -321,7 +312,6 @@
             v-model="reviewForm.market_survey_principal_id"
             :data="memberList"
             clearable
-            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -337,7 +327,6 @@
             v-model="reviewForm.user_survey_principal_id"
             :data="memberList"
             clearable
-            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -351,7 +340,6 @@
             v-model="reviewForm.user_test_principal_id"
             :data="memberList"
             clearable
-            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />
@@ -364,7 +352,6 @@
             v-model="reviewForm.quality_principal_id"
             :data="memberList"
             clearable
-            show-checkbox
             :props="defaultProps"
             style="width: 339px"
           />

@@ -100,10 +100,10 @@ export default {
       try {
         await this.$store.dispatch('system/createRole', body);
         this.visible = false;
+        this.getList();
       } catch (err) {
         return;
       }
-      this.getList();
     },
     async updateRole(val) {
       let body = val;

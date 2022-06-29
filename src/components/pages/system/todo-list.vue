@@ -9,6 +9,7 @@
         <el-input
           v-model="keyword"
           clearable
+          @clear="getTodoList()"
         >
           <template #append>
             <el-button
@@ -24,8 +25,8 @@
           v-model="operator"
           :data="memberList"
           clearable
-          show-checkbox
           :props="defaultProps"
+          @clear="getTodoList()"
         />
         <el-button
           type="primary"
@@ -149,9 +150,10 @@ export default {
   },
   mounted() {
     this.getTodoList();
-     getOrganizationList().then( (res) => {
+    getOrganizationList().then( (res) => {
       this.memberList = res;
     });
+    
   },
   methods: {
     async getTodoList(currentPage = 1, pageSize = 10) {
@@ -196,6 +198,7 @@ export default {
     resetForm() {
       this.keyword = '';
       this.operator = '';
+      this.getTodoList();
     },
     closeForm() {
       this.operatorVisible = false;

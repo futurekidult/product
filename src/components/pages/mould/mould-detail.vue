@@ -5,10 +5,10 @@
         :title="mould.name"
         :column="2"
       >
-        <el-descriptions-item label="创建人">
+        <el-descriptions-item label="创建人:">
           {{ mould.creator }}
         </el-descriptions-item>
-        <el-descriptions-item label="开模工厂">
+        <el-descriptions-item label="开模工厂:">
           {{ mould.mould_factory }}
         </el-descriptions-item>
       </el-descriptions>
@@ -90,6 +90,7 @@ export default {
           this.progress.actual_finish_time
         );
       } catch (err) {
+        this.$store.commit('mould/setMouldLoading', false);
         return;
       }
     },
