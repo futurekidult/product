@@ -289,7 +289,7 @@ export default {
     },
     resetForm() {
       this.chooseForm = {};
-      this.getAdminList();
+      this.getAdminList(this.page, this.pageSize, this.chooseForm.name, this.chooseForm.dept_ids, this.chooseForm.state);
     }
   }
 };

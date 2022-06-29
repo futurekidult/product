@@ -494,7 +494,6 @@
             v-model="supplierForm.purchase_specialist_id"
             :data="memberList"
             clearable
-            show-checkbox
             :props="defaultProps"
             :disabled="isDisabled"
           />

@@ -157,7 +157,9 @@ export const getOrganizationList = async () => {
      for (let key in data) {
       childrenFunc(data[key]);
     }
-    return data;
+    localStorage.setItem('list', JSON.stringify(data));
+    let result = JSON.parse(localStorage.getItem('list'));
+    return result;
   } else {
      await this.$store.dispatch('getOrganizationList');
      getOrganizationList();
@@ -166,8 +168,12 @@ export const getOrganizationList = async () => {
 
 export const childrenFunc = (data) => {
   if (data.member_list) {
-    for (const item of data.member_list) {
-      data.children.push(item);
+    data.children = data.children.concat(data.member_list);
+    if(JSON.stringify(data.children) === '[]') {
+      data.disabled = true;
     }
+    for(let key in data.children) {
+      childrenFunc(data.children[key]);
+    } 
   }
 }

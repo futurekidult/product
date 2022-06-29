@@ -46,7 +46,7 @@
             </el-button>
           </div>
           <el-button
-            v-if="progress.state === 30"
+            v-else
             type="primary"
             @click="confirmTestingMould(progress.mould_id)"
           >
@@ -61,16 +61,17 @@
 <script>
 export default {
   inject: ['getMould'],
-  props: ['changeColor', 'progress'],
+  props: ['changeColor', 'progress','getList'],
   methods: {
     async approvalTestingMould(id, result) {
       let body = {
-        id,
+        mould_id: id,
         approval_result: result
       };
       try {
         await this.$store.dispatch('mould/approvalTestingMould', body);
         this.getMould();
+        this.getList();
       } catch (err) {
         return;
       }
@@ -81,6 +82,7 @@ export default {
           mould_id: id
         });
         this.getMould();
+        this.getList();
       } catch (err) {
         return;
       }

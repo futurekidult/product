@@ -1,4 +1,5 @@
 module.exports = {
+
   devServer: {
     proxy: {
       '/api': {
@@ -8,6 +9,9 @@ module.exports = {
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
+        },
+        cookieDomainRewrite: {
+          '.test.heymenology.cn': 'localhost'
         }
       }
     }

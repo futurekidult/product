@@ -20,10 +20,11 @@
             />
           </el-form-item>
           <el-form-item label="创建人">
-            <el-input
+            <el-tree-select
               v-model="chooseForm.creator_id"
+              :data="memberList"
               clearable
-              placeholder="请输入创建人"
+              :props="defaultProps"
               @clear="getDemandList()"
             />
           </el-form-item>
@@ -130,7 +131,7 @@
             <div
               v-if="scope.row.state === 40"
               class="reason"
-              @click="reasonDialog(scope.row.failed_reason)"
+              @click="reasonDialog(scope.row.review_failed_reason)"
             >
               查看原因
             </div>
@@ -182,7 +183,7 @@
 </template>
 
 <script>
-import { formatterTime } from '../../../utils';
+import { formatterTime, getOrganizationList } from '../../../utils';
 
 export default {
   data() {
@@ -191,12 +192,20 @@ export default {
       reasonFormVisible: false,
       demandList: [],
       reasonForm: {},
-      demandState: []
+      demandState: [],
+      memberList: [],
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      }
     };
   },
   mounted() {
     this.getDemandList();
     this.getParams();
+    getOrganizationList().then( (res) => {
+      this.memberList = res;
+    });
   },
   methods: {
     async getParams() {

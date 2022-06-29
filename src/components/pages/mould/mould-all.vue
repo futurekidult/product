@@ -19,10 +19,11 @@
             />
           </el-form-item>
           <el-form-item label="创建人">
-            <el-input
-              v-model="chooseForm.creator"
-              placeholder="请输入内容"
+            <el-tree-select
+              v-model="chooseForm.creator_id"
+              :data="memberList"
               clearable
+              :props="defaultProps"
               @clear="getMouldList()"
             />
           </el-form-item>
@@ -190,7 +191,7 @@
 </template>
 
 <script>
-import { formatterTime, timestamp } from '../../../utils/index.js';
+import { formatterTime, getOrganizationList, timestamp } from '../../../utils/index.js';
 
 export default {
   data() {
@@ -213,12 +214,20 @@ export default {
           }
         ]
       },
-      mouldState: []
+      mouldState: [],
+      memberList: [],
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      }
     };
   },
   mounted() {
     this.getMouldList();
     this.getState();
+    getOrganizationList().then( (res) => {
+      this.memberList = res;
+    });
   },
   methods: {
     async getState() {
@@ -251,6 +260,7 @@ export default {
           item.actual_finish_time = formatterTime(item.actual_finish_time);
         });
       } catch (err) {
+        this.$store.commit('mould/setListLoading', false);
         return;
       }
     },

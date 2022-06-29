@@ -231,6 +231,7 @@ export default {
           approval_result: val
         });
         this.getMould();
+        this.getList();
       } catch (err) {
         return;
       }

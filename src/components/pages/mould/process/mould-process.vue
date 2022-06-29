@@ -43,6 +43,7 @@
         <mould-test
           :change-color="changeColor"
           :progress="testingMould"
+          :get-list="getTestingMould"
         />
       </el-tab-pane>
     </el-tabs>
@@ -91,6 +92,7 @@ export default {
         this.designProgress = this.$store.state.mould.designProgress;
         changeTimestamp(this.designProgress, 'actual_finish_time');
       } catch (err) {
+        this.$store.commit('mould/setDesignLoading', false);
         return;
       }
     },
@@ -106,6 +108,7 @@ export default {
         changeTimestamp(this.prototypeProgress, 'actual_finish_time');
         this.attachment = this.prototypeProgress.prototype_file;
       } catch (err) {
+        this.$store.commit('mould/setPrototypeLoading', false);
         return;
       }
     },
@@ -121,6 +124,7 @@ export default {
         changeTimestamp(this.makingMould, 'actual_finish_time');
         changeTimestamp(this.makingMould, 'estimated_finish_time');
       } catch (err) {
+        this.$store.commit('mould/setMakingMouldLoading', false);
         return;
       }
     },
@@ -135,6 +139,7 @@ export default {
         this.testingMould = this.$store.state.mould.testingMouldProgress;
         changeTimestamp(this.testingMould, 'actual_finish_time');
       } catch (err) {
+        this.$store.commit('mould/setTestingMouldLoading', false);
         return;
       }
     },
