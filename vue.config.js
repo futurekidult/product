@@ -1,3 +1,9 @@
+const path = require('path');
+
+const resolve = (dir) => {
+  return path.join(__dirname, dir);
+}
+
 module.exports = {
   devServer: {
     proxy: {
@@ -30,7 +36,12 @@ module.exports = {
       })();
       return args;
     });
-  }
+    config.resolve.alias
+    .set('@', resolve('src'))
+    .set('assets', resolve('src/assets'));
+  },
+  publicPath: './',
+  assetsDir: 'static'
 };
 
 const format = (num) => {
