@@ -23,7 +23,10 @@ http.interceptors.response.use(async (res) => {
   if (code !== 200) {
     if (code === 401) {
       localStorage.removeItem('token');
-      window.location.href = res.data.data.auth_url;
+      // todo 开发和线上分开
+      // window.location.href = res.data.data.auth_url;
+      await devLogin(); 
+      return http(res.config);
     } else if (code === 403) {
       ElMessage.error('no permission to access it');
     } else if (code === 405) {
@@ -45,10 +48,25 @@ http.interceptors.response.use(async (res) => {
 
 const refreshToken = async () => {
   await http.get('/csrftoken/get').then((res) => {
-    let token = res.data.csrftoken;
-    localStorage.setItem('token', token);
-    return token;
-    })
- }
+    let { code } = res.data;
+    if (code === 200) {
+      let token = res.data.csrftoken;
+      localStorage.setItem('token', token);
+      return token;
+    } else {
+      ElMessage.error(res.data.message); 
+    } 
+    }, (err) => {
+      if(err.response) {
+        ElMessage.error('服务器出错');
+      }
+  })
+}
+
+const devLogin = async () => {
+  await http.get('/login?id=1').then((res) => {
+    return res.data;
+  })
+}
 
 export default http;

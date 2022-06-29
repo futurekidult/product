@@ -3,11 +3,14 @@ module.exports = {
     proxy: {
       '/api': {
         target:
-          'http://npd.dev.heymenology.cn/api',
+          'http://npd.test.heymenology.cn/api',
         ws: true,
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
+        },
+        cookieDomainRewrite: {
+          '.test.heymenology.cn': 'localhost'
         }
       }
     }
