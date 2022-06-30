@@ -179,7 +179,8 @@ export default {
       chooseForm: {},
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'name',
+        disabled: 'disabled'
       },
       page: 1,
       pageSize: 10,
@@ -204,6 +205,7 @@ export default {
       try {
         await this.$store.dispatch('system/getOrganizationList');
       } catch (err) {
+         this.$store.commit('system/setOrganizationLoading', false);
         return;
       }
     },

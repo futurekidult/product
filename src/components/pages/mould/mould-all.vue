@@ -218,7 +218,8 @@ export default {
       memberList: [],
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'name',
+        disabled: 'disabled'
       }
     };
   },
@@ -264,7 +265,11 @@ export default {
         return;
       }
     },
-    async createMould(body) {
+    async createMould(val) {
+      let body = {
+        name: val.name,
+        estimated_finish_time: timestamp(val.estimated_finish_time)
+      }
       try {
         await this.$store.dispatch('mould/createMould', body);
         this.mouldFormVisible = false;
@@ -297,9 +302,6 @@ export default {
     submitMouldForm() {
       this.$refs.mouldForm.validate((valid) => {
         if (valid) {
-          this.mouldForm.estimated_finish_time = timestamp(
-            this.mouldForm.estimated_finish_time
-          );
           this.createMould(this.mouldForm);
         }
       });

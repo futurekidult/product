@@ -286,4 +286,10 @@ body {
 .is-read {
   color: #ea1d1d;
 }
+
+.desc {
+  font-size: 10px;
+  color: #999999;
+}
+
 </style>
