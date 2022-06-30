@@ -2,7 +2,6 @@ import axios from 'axios';
 import { ElMessage } from 'element-plus';
 
 axios.defaults.withCredentials = true;
-axios.defaults.timeout = 7128000;
 
 const http = axios.create({
   baseURL: '/api',
@@ -30,7 +29,7 @@ http.interceptors.response.use(async (res) => {
         await devLogin(); 
         return http(res.config);
       } else {
-        window.location.href = res.data.data.auth_url
+        window.location.href = res.data.data.auth_url;
       }
     } else if (code === 403) {
       ElMessage.error('no permission to access it');
@@ -47,7 +46,7 @@ http.interceptors.response.use(async (res) => {
               requests = [];
               return http(config);
             }).catch(() => {
-             ElMessage.error('获取token有误!');
+              window.location.href = '/';
             }).finally(() => {
               isRefreshing = false;
             })
@@ -73,7 +72,7 @@ http.interceptors.response.use(async (res) => {
 });
 
 const refreshToken = async () => {
-  return await http.get('/csrftoken/get').then((res) => { return res.data } )
+  return await http.get('/csrftoken/get').then((res) => { return res.data });
 }
 
 const devLogin = async () => {

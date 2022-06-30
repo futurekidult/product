@@ -122,6 +122,7 @@ export default {
           item.finish_time = formatterTime(item.finish_time);
         });
       } catch (err) {
+        this.$store.commit('workbench/setTodoListLoading', false);
         return;
       }
     },

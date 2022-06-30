@@ -859,7 +859,8 @@ export default {
       memberList: [],
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'name',
+        disabled: 'disabled'
       },
       props: {
         value: 'code',

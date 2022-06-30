@@ -70,7 +70,8 @@ export default {
       visible: this.dialogVisible,
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'name',
+        disabled: 'disabled'
       },
       roleForm: {
         name: '',

@@ -106,7 +106,6 @@
           v-model="operatorForm.new_user_id"
           :data="memberList"
           clearable
-          show-checkbox
           :props="defaultProps"
         />
       </el-form-item>
@@ -143,14 +142,15 @@ export default {
       memberList: [],
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'name',
+        disabled: 'disabled'
       },
       operatorForm: {}
     };
   },
   mounted() {
     this.getTodoList();
-    getOrganizationList().then( (res) => {
+    getOrganizationList().then((res) => {
       this.memberList = res;
     });
     

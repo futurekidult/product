@@ -8,6 +8,7 @@
         开模确认进度表
       </div>
       <el-button
+        :disabled="JSON.stringify(progress) !== '{}'"
         type="primary"
         @click="showApplyForm"
       >
