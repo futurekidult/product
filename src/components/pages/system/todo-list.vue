@@ -25,6 +25,7 @@
           v-model="operator"
           :data="memberList"
           clearable
+          filterable
           :props="defaultProps"
           @clear="getTodoList()"
         />
@@ -106,6 +107,7 @@
           v-model="operatorForm.new_user_id"
           :data="memberList"
           clearable
+          filterable
           :props="defaultProps"
         />
       </el-form-item>

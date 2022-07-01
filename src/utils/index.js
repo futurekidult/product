@@ -5,7 +5,7 @@ export const formatterTime = (val) => {
     let month = `${
       date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
     }-`;
-    let day = `${date.getDay() < 10 ? `0${date.getDay()}` : date.getDay()}  `;
+    let day = `${date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()}  `;
     let hour = `${
       date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()
     }:`;

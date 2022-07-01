@@ -195,7 +195,7 @@
             v-model="demandForm.user_survey_specialist_id"
             :data="memberList"
             clearable
-            show-checkbox
+            filterable
             :props="defaultProps"
             :disabled="isViewDisabled"
           />
@@ -226,6 +226,7 @@
 import {
   downloadFile,
   getFile,
+  getOrganizationList,
   previewFile,
   timestamp
 } from '../../../../utils';
@@ -294,14 +295,15 @@ export default {
         ]
       },
       demandForm: {},
-      show: false,
+      show: true,
       attachment: {},
       requiredAttachment: {},
       requiredShow: false,
       memberList: [],
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'name',
+        disabled: 'disabled'
       }
     };
   },
@@ -331,7 +333,9 @@ export default {
     }
   },
   mounted() {
-    this.getOrganizationList();
+    getOrganizationList().then( (res) => {
+      this.memberList = res;
+    });
     if (this.type === 'review') {
       this.getUserTestApply();
     } else if (this.type === 'view') {
@@ -390,17 +394,6 @@ export default {
         await this.$store.dispatch('sample/user/reviewTestApply', body);
         this.visible = false;
         this.getUser();
-      } catch (err) {
-        return;
-      }
-    },
-    async getOrganizationList() {
-      try {
-        await this.$store.dispatch('getOrganizationList');
-        this.memberList = this.$store.state.organizationList;
-        for (let key in this.memberList) {
-          this.childrenFunc(this.memberList[key]);
-        }
       } catch (err) {
         return;
       }
@@ -498,14 +491,6 @@ export default {
       } catch (err) {
         return;
       }
-    },
-    childrenFunc(data) {
-      if (data.member_list) {
-        for (const item of data.member_list) {
-          data.children.push(item);
-        }
-      }
-      return data.children;
     }
   }
 };

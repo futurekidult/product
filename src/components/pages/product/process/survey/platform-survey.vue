@@ -618,7 +618,8 @@ export default {
             this.res = this.$store.state.fileRes;
             this.productImages.push({
               id: this.res.id,
-              name: this.res.file_name
+              name: this.res.file_name,
+              type: this.res.type
             });
           }
         } catch (err) {
@@ -678,6 +679,7 @@ export default {
         this.form.images.push(id);
       });
       this.form.attachment = this.file.id;
+      this.form.annual_sales = + this.form.annual_sales;
       this.$refs.form.validate((valid) => {
         if (valid) {
           this.updatePlatform(this.form);

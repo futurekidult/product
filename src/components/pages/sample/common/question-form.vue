@@ -15,6 +15,7 @@
         <div
           v-for="(item, index) in questionForm.list"
           :key="index"
+          style="width: 98%"
         >
           <el-form-item
             :label="'问题名称' + (index + 1)"

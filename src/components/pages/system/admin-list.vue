@@ -24,6 +24,7 @@
             :data="$store.state.system.organizationList"
             clearable
             multiple
+            collapse-tags
             :props="defaultProps"
             show-checkbox
             @focus="getOrganizationList"

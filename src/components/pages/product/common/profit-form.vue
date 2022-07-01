@@ -193,7 +193,7 @@
               v-model="item.operations_specialist_id"
               :data="memberList"
               clearable
-              show-checkbox
+              filterable
               :props="defaultProps"
               :disabled="isDisabled"
             />
@@ -252,6 +252,7 @@
 
 <script>
 import ProfitParams from './profit-params.vue';
+import { getOrganizationList } from '../../../../utils/index';
 
 export default {
   components: {
@@ -320,7 +321,8 @@ export default {
       memberList: [],
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'name',
+        disabled: 'disabled'
       },
       rate: '',
       calculationResult: {}
@@ -344,7 +346,9 @@ export default {
     }
   },
   mounted() {
-    this.getOrganizationList();
+     getOrganizationList().then( (res) => {
+      this.memberList = res;
+    });
     this.getParams();
     this.getProfitCalculation();
     this.getMarket();
@@ -354,25 +358,6 @@ export default {
     }
   },
   methods: {
-    async getOrganizationList() {
-      try {
-        await this.$store.dispatch('getOrganizationList');
-        this.memberList = this.$store.state.organizationList;
-        for (let key in this.memberList) {
-          this.childrenFunc(this.memberList[key]);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    childrenFunc(data) {
-      if (data.member_list) {
-        for (const item of data.member_list) {
-          data.children.push(item);
-        }
-      }
-      return data.children;
-    },
     async getParams() {
       if (localStorage.getItem('params')) {
         let { demand } = JSON.parse(localStorage.getItem('params'));

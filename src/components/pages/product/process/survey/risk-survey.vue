@@ -269,7 +269,6 @@ export default {
       let body = val;
       body['survey_schedule_id'] = this.progress.id;
       body['product_id'] = +this.$route.params.productId;
-      body['attachment'] = this.attachment.id;
       try {
         await this.$store.dispatch('product/survey/risk/submitRisk', body);
         this.getList();

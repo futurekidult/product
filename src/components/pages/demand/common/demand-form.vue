@@ -14,6 +14,7 @@
         { required: true, message: '请输入产品名称' },
         { max: 15, message: '长度不超过 15个字符' }
       ]"
+      class="form-item_width"
     >
       <el-input
         v-model="demandForm.name"
@@ -25,6 +26,7 @@
     <el-form-item
       label="产品图片"
       prop="images"
+      class="form-item_width"
     >
       <el-upload
         action
@@ -42,7 +44,10 @@
         请上传 jpg/png/jepg等图片格式, 单个文件不超过 5MB
       </div>
     </el-form-item>
-    <el-form-item v-if="demandForm.images !== []">
+    <el-form-item 
+      v-if="demandForm.images !== []"  
+      class="form-item_width"
+    >
       <div
         v-for="(item, index) in imagesList"
         :key="index"
@@ -70,7 +75,7 @@
         </div>
       </div>
     </el-form-item>
-    <div class="form-item">
+    <div class="form-item form-item_width">
       <el-form-item
         label="大品类"
         prop="big_category_id"
@@ -112,6 +117,7 @@
     <el-form-item
       label="品牌"
       prop="brand"
+      class="form-item_width"
     >
       <el-input
         v-model="demandForm.brand"
@@ -124,6 +130,7 @@
       <div
         v-for="(item, index) in demandForm.competitive_product"
         :key="index"
+        class="form-item_width"
       >
         <el-form-item
           :label="'竞品图片' + (index + 1)"
@@ -233,6 +240,7 @@
     <el-form-item
       label="核心参数"
       prop="parameter"
+      class="form-item_width"
     >
       <el-input
         v-model="demandForm.parameter"
@@ -311,6 +319,7 @@
       <el-form-item
         label="毛重/kg"
         prop="rough_weight"
+        class="form-item_width"
       >
         <el-input
           v-model="demandForm.rough_weight"
@@ -322,6 +331,7 @@
       <el-form-item
         label="出货量"
         prop="shipments"
+        class="form-item_width"
       >
         <el-input
           v-model="demandForm.shipments"
@@ -426,6 +436,7 @@
     <el-form-item
       label="特别卖点"
       prop="selling_point"
+      class="form-item_width"
     >
       <el-input
         v-model="demandForm.selling_point"
@@ -439,6 +450,7 @@
     <el-form-item
       label="需求洞察来源"
       prop="source"
+      class="form-item_width"
     >
       <el-select
         v-model="demandForm.source"
@@ -459,6 +471,7 @@
     <el-form-item
       label="痛点"
       prop="pain_spot"
+      class="form-item_width"
     >
       <el-input
         v-model="demandForm.pain_spot"
@@ -470,6 +483,7 @@
     <el-form-item
       label="需求点"
       prop="demand_point"
+      class="form-item_width"
     >
       <el-input
         v-model="demandForm.demand_point"
@@ -483,6 +497,7 @@
     <el-form-item
       label="产品信息"
       prop="information"
+      class="form-item_width"
     >
       <el-input
         v-model="demandForm.information"
@@ -897,6 +912,7 @@ export default {
           this.demandForm.competitive_product[index].images = imgArr;
         }
       }
+      this.demandRules = val === 10 ? {} : this.demandRules;
       this.$refs.demandForm.validate((valid) => {
         if (valid) {
           let form = this.demandForm;

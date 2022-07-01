@@ -494,6 +494,7 @@
             v-model="supplierForm.purchase_specialist_id"
             :data="memberList"
             clearable
+            filterable
             :props="defaultProps"
             :disabled="isDisabled"
           />

@@ -18,7 +18,7 @@
           v-model="memberForm.user_id"
           :data="memberList"
           clearable
-          show-checkbox
+          filterable
           :props="defaultProps"
         />
       </el-form-item>
@@ -61,6 +61,8 @@
 </template>
 
 <script>
+import { getOrganizationList } from '../../../../utils/index';
+
 export default {
   inject: ['getMember'],
   props: ['title', 'dialogVisible', 'id', 'type', 'user'],
@@ -73,13 +75,16 @@ export default {
       memberList: [],
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'name',
+        disabled: 'disabled'
       }
     };
   },
   mounted() {
     this.getRole();
-    this.getOrganizationList();
+    getOrganizationList().then( (res) => {
+      this.memberList = res;
+    });
     if (this.type === 'edit') {
       this.memberForm = this.user;
     }
@@ -119,25 +124,6 @@ export default {
         return;
       }
     },
-    async getOrganizationList() {
-      try {
-        await this.$store.dispatch('getOrganizationList');
-        this.memberList = this.$store.state.organizationList;
-        for (let key in this.memberList) {
-          this.childrenFunc(this.memberList[key]);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    childrenFunc(data) {
-      if (data.member_list) {
-        for (const item of data.member_list) {
-          data.children.push(item);
-        }
-      }
-      return data.children;
-    },
     cancel() {
       this.visible = false;
       this.$emit('hide-dialog', this.visible);
@@ -145,7 +131,7 @@ export default {
     submitMemberForm() {
       this.$refs.memberForm.validate((valid) => {
         if (valid) {
-          if (this.type === 'add') {
+          if (this.type === 'create') {
             this.createProjectMember(this.memberForm);
           } else {
             this.updateProjectMember(this.memberForm);

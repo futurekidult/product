@@ -45,8 +45,6 @@ http.interceptors.response.use(async (res) => {
               requests.forEach((cb) => { cb(token) });
               requests = [];
               return http(config);
-            }).catch(() => {
-              window.location.href = '/';
             }).finally(() => {
               isRefreshing = false;
             })

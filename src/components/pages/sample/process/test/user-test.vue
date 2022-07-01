@@ -319,7 +319,7 @@
           v-model="editForm.user_survey_specialist_id"
           :data="memberList"
           clearable
-          show-checkbox
+          filterable
           :props="defaultProps"
         />
       </el-form-item>
@@ -365,7 +365,7 @@ import UserList from '../../common/user-template.vue';
 import TestRequired from '../../common/test-requred.vue';
 import TestQuestions from '../../common/test-template.vue';
 import TemplateForm from '../../common/template-form.vue';
-import { downloadFile, getFile, previewFile } from '../../../../../utils';
+import { downloadFile, getFile, getOrganizationList, previewFile } from '../../../../../utils';
 
 export default {
   components: {
@@ -407,7 +407,8 @@ export default {
       memberList: [],
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'name',
+        disabled: 'disabled'
       }
     };
   },
@@ -417,7 +418,9 @@ export default {
     }
   },
   mounted() {
-    this.getOrganizationList();
+     getOrganizationList().then( (res) => {
+      this.memberList = res;
+    });
   },
   methods: {
     async confirmTestResult(val) {
@@ -467,17 +470,6 @@ export default {
       try {
         await this.$store.dispatch('sample/user/submitTestResult', body);
         this.getProgress();
-      } catch (err) {
-        return;
-      }
-    },
-    async getOrganizationList() {
-      try {
-        await this.$store.dispatch('getOrganizationList');
-        this.memberList = this.$store.state.organizationList;
-        for (let key in this.memberList) {
-          this.childrenFunc(this.memberList[key]);
-        }
       } catch (err) {
         return;
       }
@@ -594,14 +586,6 @@ export default {
           this.submitTestResult(this.file.id);
         }
       });
-    },
-    childrenFunc(data) {
-      if (data.member_list) {
-        for (const item of data.member_list) {
-          data.children.push(item);
-        }
-      }
-      return data.children;
     }
   }
 };
