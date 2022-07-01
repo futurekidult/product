@@ -290,10 +290,12 @@
         :rules="[{ required: true, message: '请选择采购员' }]"
         prop="purchase_specialist_id"
       >
-        <el-select
+        <el-tree-select
           v-model="editSpecialistForm.purchase_specialist_id"
-          placeholder="请选择采购员"
+          :data="memberList"
           clearable
+          filterable
+          :props="defaultProps"
         />
       </el-form-item>
       <el-divider />
@@ -455,7 +457,7 @@
 import PurchaseForm from './common/purchase-form.vue';
 import PriceForm from './common/price-form.vue';
 import ViewForm from './common/view-form.vue';
-import { formatterTime } from '../../../utils';
+import { formatterTime, getOrganizationList } from '../../../utils';
 
 export default {
   components: {
@@ -492,17 +494,26 @@ export default {
       platform: [],
       prodId: 0,
       deleteDialog: false,
-      deleteId: 0
+      deleteId: 0,
+      memberList: [],
+      defaultProps: {
+        children: 'children',
+        label: 'name',
+        disabled: 'disabled'
+      }
     };
   },
   mounted() {
     this.getQuotationList();
+     getOrganizationList().then( (res) => {
+      this.memberList = res;
+    });
   },
   methods: {
     async getQuotationList(currentPage = 1, pageSize = 10) {
       this.$store.commit('price/setQuotationLoading', true);
       let params = {
-        price_id: +this.$route.params.id,
+        pricing_id: +this.$route.params.id,
         current_page: currentPage,
         page_size: pageSize
       };
@@ -520,6 +531,7 @@ export default {
         this.getPlatform();
         this.getReferencePrice();
       } catch (err) {
+        this.$store.commit('price/setQuotationLoading', false);
         return;
       }
     },
@@ -544,8 +556,8 @@ export default {
           }
         });
         this.targetList = this.$store.state.price.targetPrice;
-        let low = this.referenceList.some((item) => {
-          return +item.reference_price > +price;
+        let low = this.targetList.some((item) => {
+          return +item.target_price > +price;
         });
         if (low) {
           this.lowVisible = true;
@@ -555,12 +567,6 @@ export default {
         });
         if (high) {
           this.highVisible = true;
-        }
-        let equal = this.targetList.every((item) => {
-          return +item.target_price === +price;
-        });
-        if (equal) {
-          this.submitQuotation();
         }
       } catch (err) {
         return;
@@ -665,7 +671,7 @@ export default {
     },
     showEditForm(id, purchaseSpecialist) {
       this.editSpecialistForm = {
-        id,
+        quote_id: id,
         purchase_specialist_id: purchaseSpecialist
       };
       this.editSpecialistFormVisible = true;
@@ -734,7 +740,6 @@ export default {
         await this.$store.dispatch('price/submitQuotation', {
           id: this.submitId
         });
-        this.lowVisible = false;
         this.getQuotationList();
       } catch (err) {
         return;

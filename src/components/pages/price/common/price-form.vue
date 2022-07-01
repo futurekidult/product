@@ -340,6 +340,11 @@
           </el-form-item>
         </div>
       </el-form-item>
+      <el-form-item>
+        <div class="desc">
+          若没有海运费的金额请填0
+        </div>
+      </el-form-item>
       <el-form-item
         label="上传附件"
         prop="quotation_file"
@@ -587,7 +592,7 @@ export default {
       isHigh: 0,
       attachment: {},
       currency: [],
-      show: true
+      show: false
     };
   },
   mounted() {
@@ -638,7 +643,8 @@ export default {
     },
     async createQuotation(val) {
       let body = val;
-      body['price_id'] = this.id;
+      body.quote_validity = timestamp(val.quote_validity);
+      body['pricing_id'] = this.id;
       try {
         await this.$store.dispatch('price/createQuotation', body);
         this.visible = false;
@@ -651,9 +657,6 @@ export default {
       this.quotationForm.quotation_file = this.attachment.id;
       this.$refs.quotationForm.validate((valid) => {
         if (valid) {
-          this.quotationForm.quote_validity = timestamp(
-            this.quotationForm.quote_validity
-          );
           this.createQuotation(this.quotationForm);
         }
       });
@@ -731,10 +734,7 @@ export default {
         await this.$store.dispatch('getPriceRmb', {
           params: {
             price: this.quotationForm[`${val}_cost`],
-            currency:
-              val === 'sea_freight'
-                ? this.quotationForm[`${val}_currency`]
-                : this.quotationForm[`${val}_cost_currency`],
+            currency: this.quotationForm[`${val}_currency`],
             product_id: this.productId,
             market: this.market
           }

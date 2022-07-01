@@ -69,13 +69,14 @@
           v-model="userSurveyForm.result"
           placeholder="请选择评审结果"
           clearable
+          :disabled="type === 'view'"
         >
           <el-option
             v-for="item in reviewOptions"
             :key="item.value"
             :label="item.label"
             :value="item.value"
-            :disabled="disabled"
+            :disabled="item.disabled"
           />
         </el-select>
       </el-form-item>
@@ -101,7 +102,7 @@
 </template>
 
 <script>
-import { formatterTime } from '../../../../utils';
+import { formatterTime, timestamp } from '../../../../utils';
 export default {
   inject: ['getUserSurvey'],
   props: ['dialogVisible', 'formTitle', 'type', 'id'],
@@ -201,7 +202,7 @@ export default {
       body['apply_id'] = this.id;
       try {
         await this.$store.dispatch(
-          'product/survey/user/createUserSurveyApply',
+          'product/survey/user/ReviewUserSurveyApply',
           body
         );
         this.visible = false;
@@ -217,7 +218,7 @@ export default {
       try {
         await this.$store.dispatch(
           'product/survey/user/viewUserSurveyDetail',
-          params
+          { params }
         );
         this.userSurveyForm =
           this.$store.state.product.survey.user.userSurveyDetail;
@@ -235,8 +236,14 @@ export default {
     submitSurveyForm() {
       this.$refs.userSurveyForm.validate((valid) => {
         if (valid) {
+          let val = {
+            concrete_demand: this.userSurveyForm.concrete_demand,
+            expected_finish_time: timestamp(this.userSurveyForm.expected_finish_time),
+            expected_result: this.userSurveyForm.expected_result,
+            link: this.userSurveyForm.link
+          }
           if (this.type === 'apply') {
-            this.createApply(this.userSurveyForm);
+            this.createApply(val);
           } else {
             this.applyReview(this.userSurveyForm.result);
           }

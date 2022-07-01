@@ -168,13 +168,14 @@
 <script>
 import {
   downloadFile,
+  formatterTime,
   getFile,
   previewFile,
   timestamp
 } from '../../../../utils';
 export default {
   inject: ['getProofing'],
-  props: ['dialogVisible', 'title', 'type', 'form'],
+  props: ['dialogVisible', 'title', 'type'],
   emits: ['hide-dialog'],
   data() {
     return {
@@ -223,12 +224,28 @@ export default {
   },
   mounted() {
     this.isDisabled();
-    this.getForm();
     if (this.type === 'create') {
       this.show = false;
+    } else {
+      this.getProofingSheet();
     }
   },
   methods: {
+    async getProofingSheet() {
+      try {
+        await this.$store.dispatch('sample/getProofingSheet', {
+          params: {
+            id: +this.$route.params.id
+          }
+        });
+        let { sample } = this.$store.state;
+        this.proofingForm = sample.proofingSheet;
+        this.attachment = this.proofingForm.proofing_sheet_file;
+        this.proofingForm.demand_time = formatterTime(this.proofingForm.demand_time);
+      } catch (err) {
+        return;
+      }
+    },
     async createProofingSheet(val) {
       let body = val;
       body['sample_id'] = +this.$route.params.id;
@@ -256,12 +273,6 @@ export default {
         this.getProofing();
       } catch (err) {
         return;
-      }
-    },
-    getForm() {
-      if (this.type !== 'create') {
-        this.proofingForm = this.form;
-        this.attachment = this.proofingForm.proofing_sheet_file;
       }
     },
     async handleFileSuccess(e) {

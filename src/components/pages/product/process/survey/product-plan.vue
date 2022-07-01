@@ -290,6 +290,11 @@
               </el-form-item>
             </div>
           </el-form-item>
+          <el-form-item>
+            <div class="desc">
+              若没有海运费的金额请填0
+            </div>
+          </el-form-item>
         </el-collapse-item>
       </el-collapse>
       <el-form-item
@@ -309,22 +314,23 @@
           </el-button>
         </el-upload>
         <div class="attachment">
-          支持office文档格式,文件不能超过5MB(仅限一个)
+          支持office文档格式,文件不能超过5MB
         </div>
       </el-form-item>
       <el-form-item>
         <div
-          v-if="show"
+          v-for="item in file"
+          :key="item.id"
           class="attachment-list"
         >
           <div>
-            {{ file.name }}
+            {{ item.name }}
           </div>
           <div style="display: flex">
-            <div v-if="file.type === 12860">
+            <div v-if="item.type === 12860">
               <el-button
                 type="text"
-                @click="showViewFile(file.id)"
+                @click="showViewFile(item.id)"
               >
                 预览
               </el-button>
@@ -340,7 +346,7 @@
             <el-button
               v-else
               type="text"
-              @click="download(file.id, file.name)"
+              @click="download(item.id, item.name)"
             >
               下载
             </el-button>
@@ -508,7 +514,6 @@ export default {
           }
         ]
       },
-      show: true,
       currency: [],
       file: this.attachment,
       form: this.productForm,
@@ -526,6 +531,7 @@ export default {
     },
     productForm(val) {
       this.form = val;
+      this.form.usage_scenario = this.form.usage_scenario || [];
       if (this.form.usage_scenario.length === 0) {
         this.form.usage_scenario.push([]);
         this.scenarioVisible = false;
@@ -577,20 +583,23 @@ export default {
       }
     },
     async handleFileSuccess(e) {
+      if (this.file.length > 4) {
+        this.$message.error('附件个数不能传超过5张');
+      } else {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
       try {
         await this.$store.dispatch('uploadFile', form);
         if (this.$store.state.uploadState) {
-          this.show = true;
-          this.file = {
-            id: this.$store.state.fileRes.id,
-            name: this.$store.state.fileRes.file_name,
-            type: this.$store.state.fileRes.type
-          };
+          this.file.push({
+              id: this.$store.state.fileRes.id,
+              name: this.$store.state.fileRes.file_name,
+              type: this.$store.state.fileRes.type
+            });
         }
       } catch (err) {
         return;
+      }
       }
     },
     async download(id, name) {
@@ -618,10 +627,13 @@ export default {
     clearCurrency(val) {
       this.form[`${val}_cost`] = '';
     },
-    deleteFile() {
-      this.file = {};
-      this.form.attachment = '';
-      this.show = false;
+    deleteFile(id) {
+      this.file.splice(
+        this.file.findIndex((e) => {
+          return e.id === id;
+        }),
+        1
+      );
     },
     submitProductForm() {
       this.form.attachment = this.file.id;

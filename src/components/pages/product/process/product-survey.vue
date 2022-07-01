@@ -1,90 +1,92 @@
 <template>
-  <div class="select-title">
-    <span class="line">|</span> 项目调研
-  </div>
+  <div>
+    <div class="select-title">
+      <span class="line">|</span> 项目调研
+    </div>
 
-  <el-tabs
-    v-model="activeName"
-    type="card"
-    @tab-click="handleClick"
-  >
-    <el-tab-pane
-      label="平台调研"
-      name="platform"
+    <el-tabs
+      v-model="activeName"
+      type="card"
+      @tab-click="handleClick"
     >
-      <platform-survey
-        :change-color="changeColor"
-        :progress="platformProgress"
-        :survey-form="platformForm"
-        :attachment="platformAttachment"
-        :product-images="productImages"
-        :get-list="getPlatform"
-      />
-    </el-tab-pane>
-    <el-tab-pane
-      v-if="isNewCategory"
-      label="市场调研"
-      name="market"
-    >
-      <market-survey
-        :change-color="changeColor"
-        :get-list="getMarket"
-        :progress="marketProgress"
-        :attachment="markeAttachment"
-      />
-    </el-tab-pane>
-    <el-tab-pane
-      v-if="isNewCategoryProduct"
-      label="用户分析"
-      name="analysis"
-    >
-      <user-analysis
-        :get-list="getAnalysis"
-        :progress="analysisProgress"
-        :attachment="analysisAttachment"
-        :analysis-form="analysisForm"
-      />
-    </el-tab-pane>
-    <el-tab-pane
-      v-if="isNewProduct"
-      label="产品方案"
-      name="plan"
-    >
-      <product-plan
-        :get-list="getPlan"
-        :progress="planProgress"
-        :attachment="planAttachment"
-        :product-form="planForm"
-      />
-    </el-tab-pane>
-    <el-tab-pane
-      label="风险调研"
-      name="risk"
-    >
-      <risk-survey
-        :get-list="getRisk"
-        :progress="riskProgress"
-        :attachment="riskAttachment"
-        :risk-form="riskForm"
-      />
-    </el-tab-pane>
-    <el-tab-pane
-      v-if="isNewProduct"
-      label="用户调研"
-      name="user"
-    >
-      <user-survey
-        :change-color="changeColor"
-        :progress="userProgress"
-        :button-state="buttonState"
-        :survey-apply="surveyApply"
-        :plan-list="planList"
-        :length="length"
-        :get-list="getUserSurvey"
-        :user-id="userSurveyPrincipalId"
-      />
-    </el-tab-pane>
-  </el-tabs>
+      <el-tab-pane
+        label="平台调研"
+        name="platform"
+      >
+        <platform-survey
+          :change-color="changeColor"
+          :progress="platformProgress"
+          :survey-form="platformForm"
+          :attachment="platformAttachment"
+          :product-images="productImages"
+          :get-list="getPlatform"
+        />
+      </el-tab-pane>
+      <el-tab-pane
+        v-if="isNewCategory"
+        label="市场调研"
+        name="market"
+      >
+        <market-survey
+          :change-color="changeColor"
+          :get-list="getMarket"
+          :progress="marketProgress"
+          :attachment="markeAttachment"
+        />
+      </el-tab-pane>
+      <el-tab-pane
+        v-if="isNewCategoryProduct"
+        label="用户分析"
+        name="analysis"
+      >
+        <user-analysis
+          :get-list="getAnalysis"
+          :progress="analysisProgress"
+          :attachment="analysisAttachment"
+          :analysis-form="analysisForm"
+        />
+      </el-tab-pane>
+      <el-tab-pane
+        v-if="isNewProduct"
+        label="产品方案"
+        name="plan"
+      >
+        <product-plan
+          :get-list="getPlan"
+          :progress="planProgress"
+          :attachment="planAttachment"
+          :product-form="planForm"
+        />
+      </el-tab-pane>
+      <el-tab-pane
+        label="风险调研"
+        name="risk"
+      >
+        <risk-survey
+          :get-list="getRisk"
+          :progress="riskProgress"
+          :attachment="riskAttachment"
+          :risk-form="riskForm"
+        />
+      </el-tab-pane>
+      <el-tab-pane
+        v-if="isNewProduct"
+        label="用户调研"
+        name="user"
+      >
+        <user-survey
+          :change-color="changeColor"
+          :progress="userProgress"
+          :button-state="buttonState"
+          :survey-apply="surveyApply"
+          :plan-list="planList"
+          :length="length"
+          :get-list="getUserSurvey"
+          :user-id="userSurveyPrincipalId"
+        />
+      </el-tab-pane>
+    </el-tabs>
+  </div>
 </template>
 
 <script>
@@ -105,19 +107,25 @@ export default {
     RiskSurvey,
     UserSurvey
   },
+   inject: ['getPlatform'],
   provide() {
     return {
       getUserSurvey: this.getUserSurvey
     };
   },
-  props: ['id'],
+  props: [
+      'id',
+      'platformProgress',
+      'platformForm',
+      'productImages',
+      'platformAttachment',
+      'isNewCategory',
+      'isNewProduct',
+      'isNewCategoryProduct'
+  ],
   data() {
     return {
       activeName: 'platform',
-      platformProgress: {},
-      platformForm: {},
-      productImages: [],
-      platformAttachment: {},
       markeAttachment: {},
       marketProgress: {},
       analysisProgress: {},
@@ -134,37 +142,10 @@ export default {
       userProgress: {},
       surveyApply: [],
       length: 0,
-      isNewCategory: false,
-      isNewProduct: false,
-      isNewCategoryProduct: false,
       userSurveyPrincipalId: 0
     };
   },
-  mounted() {
-    this.getPlatform();
-    this.getState();
-  },
   methods: {
-    async getPlatform() {
-      this.$store.commit('product/survey/platform/setPlatformLoading', true);
-      let params = {
-        id: +this.$route.params.productId
-      };
-      try {
-        await this.$store.dispatch('product/survey/platform/getPlatform', {
-          params
-        });
-        let { platform } = this.$store.state.product.survey.platform;
-        this.platformProgress = platform.progress;
-        this.platformForm = platform.report;
-        this.productImages = this.platformForm.images;
-        this.platformAttachment = this.platformForm.attachment;
-        changeTimestamp(this.platformProgress, 'estimated_finish_time');
-        changeTimestamp(this.platformProgress, 'actual_finish_time');
-      } catch (err) {
-        return;
-      }
-    },
     async getMarket() {
       this.$store.commit('product/survey/market/setMarketLoading', true);
       let params = {
@@ -175,11 +156,12 @@ export default {
           params
         });
         let { market } = this.$store.state.product.survey.market;
-        this.marketProgress = market.progress;
-        this.markeAttachment = market.report;
+        this.marketProgress = market.progress || {};
+        this.markeAttachment = market.report || {};
         changeTimestamp(this.marketProgress, 'estimated_finish_time');
         changeTimestamp(this.marketProgress, 'actual_finish_time');
       } catch (err) {
+        this.$store.commit('product/survey/market/setMarketLoading', false);
         return;
       }
     },
@@ -196,12 +178,14 @@ export default {
           params
         });
         let { userAnalysis } = this.$store.state.product.survey.userAnalysis;
-        this.analysisProgress = userAnalysis.progress;
+        this.analysisProgress = userAnalysis.progress || {};
         changeTimestamp(this.analysisProgress, 'estimated_finish_time');
         changeTimestamp(this.analysisProgress, 'actual_finish_time');
-        this.analysisForm = userAnalysis.report;
-        this.analysisAttachment = this.analysisForm.attachment;
+        this.analysisForm = userAnalysis.report || {};
+        this.analysisAttachment = this.analysisForm.attachment || {};
       } catch (err) {
+        this.$store.commit(
+        'product/survey/userAnalysis/setAnalysisLoading', false);
         return;
       }
     },
@@ -213,12 +197,13 @@ export default {
       try {
         await this.$store.dispatch('product/survey/plan/getPlan', { params });
         let { plan } = this.$store.state.product.survey.plan;
-        this.planProgress = plan.progress;
-        changeTimestamp(this.platformProgress, 'estimated_finish_time');
-        changeTimestamp(this.platformProgress, 'actual_finish_time');
-        this.planForm = plan.report;
-        this.planAttachment = this.planForm.attachment;
+        this.planProgress = plan.progress || {};
+        changeTimestamp(this.planProgress, 'estimated_finish_time');
+        changeTimestamp(this.planProgress, 'actual_finish_time');
+        this.planForm = plan.report || {};
+        this.planAttachment = this.planForm.attachment || [];
       } catch (err) {
+        this.$store.commit('product/survey/plan/setPlanLoading', false);
         return;
       }
     },
@@ -230,12 +215,13 @@ export default {
       try {
         await this.$store.dispatch('product/survey/risk/getRisk', { params });
         let { risk } = this.$store.state.product.survey.risk;
-        this.riskProgress = risk.progress;
+        this.riskProgress = risk.progress || {};
         changeTimestamp(this.riskProgress, 'estimated_finish_time');
         changeTimestamp(this.riskProgress, 'actual_finish_time');
-        this.riskForm = risk.report;
-        this.riskAttachment = this.riskForm.attachment;
+        this.riskForm = risk.report || {};
+        this.riskAttachment = this.riskForm.attachment || {};
       } catch (err) {
+        this.$store.commit('product/survey/risk/setRiskLoading', false);
         return;
       }
     },
@@ -250,10 +236,10 @@ export default {
         });
         let userSurvey = this.$store.state.product.survey.user;
         this.userSurveyPrincipalId = userSurvey.userId;
-        this.buttonState = userSurvey.buttonState;
-        this.surveyApply = userSurvey.surveyApply;
-        this.userProgress = userSurvey.progress;
-        this.planList = userSurvey.planList;
+        this.buttonState = userSurvey.buttonState || {};
+        this.surveyApply = userSurvey.surveyApply || [];
+        this.userProgress = userSurvey.progress || {};
+        this.planList = userSurvey.planList || [];
         this.surveyApply.forEach((item) => {
           changeTimestamp(item, 'create_time');
           changeTimestamp(item, 'review_finish_time');
@@ -267,6 +253,7 @@ export default {
         });
         this.length = userSurvey.planList.length;
       } catch (err) {
+        this.$store.commit('product/survey/user/setUserLoading', false);
         return;
       }
     },
