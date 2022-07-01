@@ -213,14 +213,13 @@ export default {
     'agencyValue',
     'id',
     'getProgress',
-    'hasAgency',
     'changeColor',
     'testId'
   ],
   data() {
     return {
       agencyForm: {
-        isAgency: this.hasAgency
+        isAgency: this.agencyValue
       },
       isAgencyOptions: [
         {

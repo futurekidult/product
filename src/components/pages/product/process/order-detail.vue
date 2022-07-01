@@ -151,6 +151,7 @@ export default {
         changeTimestamp(this.skuSchedule, 'actual_finish_time');
         changeTimestamp(this.skuEntrySchedule, 'actual_finish_time');
       } catch (err) {
+        this.$store.commit('product/order/setSkuLoading', false);
         return;
       }
     },
@@ -170,6 +171,7 @@ export default {
         changeTimestamp(this.exportContract, 'actual_finish_time');
         changeTimestamp(this.purchaseContract, 'actual_finish_time');
       } catch (err) {
+        this.$store.commit('product/order/setContractLoading', false);
         return;
       }
     },
@@ -187,6 +189,7 @@ export default {
         changeTimestamp(this.preProductSample, 'actual_arrival_time');
         changeTimestamp(this.preProductSample, 'actual_finish_time');
       } catch (err) {
+        this.$store.commit('product/order/setPreProductLoading', false);
         return;
       }
     },

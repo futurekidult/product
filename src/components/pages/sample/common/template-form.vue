@@ -96,7 +96,7 @@ export default {
     return {
       templateForm: {},
       visible: this.dialogVisible,
-      show: false,
+      show: true,
       attachment: {},
       templateRules: {
         user_template_file: [

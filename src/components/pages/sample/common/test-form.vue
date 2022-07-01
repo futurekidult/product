@@ -39,7 +39,7 @@
       <el-form-item label="售卖国整数与测试报告">
         <el-input
           v-model="applyForm.certificate_and_report"
-          placeholder="请选择"
+          placeholder="请输入"
           :disabled="disabled"
           clearable
           maxlength="15"
@@ -124,7 +124,7 @@
           v-model="applyForm.quality_specialist_id"
           :data="memberList"
           clearable
-          show-checkbox
+          filterable
           :props="defaultProps"
           :disabled="type === 'view'"
         />
@@ -152,7 +152,7 @@
 </template>
 
 <script>
-import { timestamp, checkValid } from '../../../../utils';
+import { timestamp, getOrganizationList, formatterTime } from '../../../../utils';
 export default {
   inject: ['getTest'],
   props: ['dialogVisible', 'title', 'type', 'id'],
@@ -166,8 +166,7 @@ export default {
           {
             required: true,
             message: '请输入样品总数'
-          },
-          checkValid(15)
+          }
         ],
         is_pre_production: [
           {
@@ -233,7 +232,8 @@ export default {
       memberList: [],
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'name',
+        disabled: 'disabled'
       }
     };
   },
@@ -252,7 +252,9 @@ export default {
     this.isDisabled();
     this.getMsg();
     this.isLoading();
-    this.getOrganizationList();
+     getOrganizationList().then( (res) => {
+      this.memberList = res;
+    });
   },
   methods: {
     getMsg() {
@@ -277,7 +279,14 @@ export default {
       }
     },
     async createTestApply(val) {
-      let body = val;
+      let body = {
+        sample_id: +this.$route.params.id,
+        total: +val.total,
+        expected_finish_time: timestamp(val.expected_finish_time),
+        certificate_and_report: val.certificate_and_report,
+        is_pre_production: val.is_pre_production,
+        has_manual: val.has_manual
+      };
       body['sample_id'] = +this.$route.params.id;
       try {
         await this.$store.dispatch('sample/createTestApply', body);
@@ -295,6 +304,7 @@ export default {
           }
         });
         this.applyForm = this.$store.state.sample.sampleTestApply;
+        this.applyForm.expected_finish_time = formatterTime(this.applyForm.expected_finish_time);
         if (!this.applyForm.quality_specialist_id) {
           this.applyForm.quality_specialist_id = '';
         }
@@ -312,25 +322,6 @@ export default {
       } catch (err) {
         return;
       }
-    },
-    async getOrganizationList() {
-      try {
-        await this.$store.dispatch('getOrganizationList');
-        this.memberList = this.$store.state.organizationList;
-        for (let key in this.memberList) {
-          this.childrenFunc(this.memberList[key]);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    childrenFunc(data) {
-      if (data.member_list) {
-        for (const item of data.member_list) {
-          data.children.push(item);
-        }
-      }
-      return data.children;
     },
     cancel() {
       this.visible = false;
@@ -354,10 +345,6 @@ export default {
       this.$refs.applyForm.validate((valid) => {
         if (valid) {
           if (this.type === 'apply') {
-            this.applyForm.total = +this.applyForm.total;
-            this.applyForm.expected_finish_time = timestamp(
-              this.applyForm.expected_finish_time
-            );
             this.createTestApply(this.applyForm);
           } else {
             this.reviewTestApply({

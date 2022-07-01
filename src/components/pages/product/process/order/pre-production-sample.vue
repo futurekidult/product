@@ -97,7 +97,7 @@
         />
       </el-form-item>
       <el-form-item>
-        <div class="pre-product_desc">
+        <div class="desc">
           大货样套数最好3套以上
         </div>
       </el-form-item>

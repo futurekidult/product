@@ -207,6 +207,7 @@ export default {
           item.first_submit_time = formatterTime(item.first_submit_time);
         });
       } catch (err) {
+        this.$store.commit('price/setPriceLoading', false);
         return;
       }
     },

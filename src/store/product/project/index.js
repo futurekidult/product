@@ -234,7 +234,7 @@ export default {
       });
     },
     async getProfitParams(context, payload) {
-      await axios.get('/profit-calculation-rule/get', payload).then((res) => {
+      await axios.get('/project/profit-calculation-rule/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setProfitParams', res.data);
         }

@@ -12,11 +12,9 @@ export default {
       referencePrice: [],
       referenceLoading: true,
       targetPrice: [],
-      targetLoading: true,
       hasAdd: 0,
       hasHigh: 0,
-      quotation: {},
-      viewLoading: true
+      quotation: {}
     };
   },
   mutations: {
@@ -43,9 +41,6 @@ export default {
     },
     setQuotation(state, payload) {
       state.quotation = payload;
-    },
-    setViewLoading(state, payload) {
-      state.viewLoading = payload;
     },
     setQuotationLoading(state, payload) {
       state.quotationLoading = payload;
@@ -82,7 +77,6 @@ export default {
       await axios.get('/pricing/target-price/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setTargetPrice', res.data.list);
-          context.state.targetLoading = false;
         }
       });
     },
@@ -150,7 +144,6 @@ export default {
       await axios.get('/pricing/quote/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setQuotation', res.data);
-          context.commit('setViewLoading', false);
         }
       });
     },

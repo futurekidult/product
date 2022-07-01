@@ -81,7 +81,7 @@ export default {
     return {
       resultForm: {},
       visible: this.dialogVisible,
-      show: false,
+      show: true,
       attachment: {},
       templateRules: {
         user_template_file: [

@@ -7,7 +7,6 @@
   >
     <el-form
       ref="quotationForm"
-      v-loading="$store.state.price.viewLoading"
       label-width="150px"
       :model="quotationForm"
     >
@@ -256,6 +255,11 @@
           </el-form-item>
         </div>
       </el-form-item>
+      <el-form-item>
+        <div class="desc">
+          若没有海运费的金额请填0
+        </div>
+      </el-form-item>
       <el-form-item label="上传附件">
         <el-upload
           :show-file-list="false"
@@ -323,7 +327,6 @@ export default {
   methods: {
     cancel() {
       this.visible = false;
-      this.$store.commit('price/setViewLoading', true);
       this.$emit('hide-dialog', false);
     },
     async getQuotation() {

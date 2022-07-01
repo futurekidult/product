@@ -201,6 +201,7 @@
             v-model="reviewForm.project_director_id"
             :data="memberList"
             clearable
+            filterable
             :props="defaultProps"
             style="width: 339px"
           />
@@ -213,6 +214,7 @@
             v-model="reviewForm.coo_id"
             :data="memberList"
             clearable
+            filterable
             :props="defaultProps"
             style="width: 339px"
           />
@@ -225,6 +227,7 @@
             v-model="reviewForm.cmo_id"
             :data="memberList"
             clearable
+            filterable
             :props="defaultProps"
             style="width: 339px"
           />
@@ -237,6 +240,7 @@
             v-model="reviewForm.cpo_id"
             :data="memberList"
             clearable
+            filterable
             :props="defaultProps"
             style="width: 339px"
           />
@@ -249,6 +253,7 @@
             v-model="reviewForm.project_manager_id"
             :data="memberList"
             clearable
+            filterable
             :props="defaultProps"
             style="width: 339px"
           />
@@ -261,6 +266,7 @@
             v-model="reviewForm.project_administrator_id"
             :data="memberList"
             clearable
+            filterable
             :props="defaultProps"
             style="width: 339px"
           />
@@ -273,6 +279,7 @@
             v-model="reviewForm.operations_principal_id"
             :data="memberList"
             clearable
+            filterable
             :props="defaultProps"
             style="width: 339px"
           />
@@ -285,6 +292,7 @@
             v-model="reviewForm.product_principal_id"
             :data="memberList"
             clearable
+            filterable
             :props="defaultProps"
             style="width: 339px"
           />
@@ -297,6 +305,7 @@
             v-model="reviewForm.purchase_principal_id"
             :data="memberList"
             clearable
+            filterable
             :props="defaultProps"
             style="width: 339px"
           />
@@ -312,6 +321,7 @@
             v-model="reviewForm.market_survey_principal_id"
             :data="memberList"
             clearable
+            filterable
             :props="defaultProps"
             style="width: 339px"
           />
@@ -327,6 +337,7 @@
             v-model="reviewForm.user_survey_principal_id"
             :data="memberList"
             clearable
+            filterable
             :props="defaultProps"
             style="width: 339px"
           />
@@ -340,6 +351,7 @@
             v-model="reviewForm.user_test_principal_id"
             :data="memberList"
             clearable
+            filterable
             :props="defaultProps"
             style="width: 339px"
           />
@@ -352,6 +364,7 @@
             v-model="reviewForm.quality_principal_id"
             :data="memberList"
             clearable
+            filterable
             :props="defaultProps"
             style="width: 339px"
           />

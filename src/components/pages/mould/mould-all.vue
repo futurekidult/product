@@ -23,6 +23,7 @@
               v-model="chooseForm.creator_id"
               :data="memberList"
               clearable
+              filterable
               :props="defaultProps"
               @clear="getMouldList()"
             />

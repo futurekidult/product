@@ -83,7 +83,10 @@
       </el-table>
     </div>
 
-    <div style="margin-top: 20px">
+    <div 
+      v-if="JSON.stringify(qualityProgress) !== '{}'" 
+      style="margin-top: 20px"
+    >
       <div class="select-title">
         <span class="line">|</span> 测试详情
       </div>
@@ -118,7 +121,6 @@
             :submit-state="agencySubmitState"
             :get-progress="getAgencyTest"
             :agency-value="agencyValue"
-            :has-agency="isAgency"
             :change-color="changeColor"
           />
         </el-tab-pane>
@@ -145,7 +147,7 @@
   <test-form
     v-if="testApplyVisible"
     :dialog-visible="testApplyVisible"
-    title=" 申请样品测试"
+    title="申请样品测试"
     type="apply"
     @hide-dialog="closeApplyForm"
   />
@@ -154,7 +156,7 @@
     v-if="applyReviewVisible"
     :id="testId"
     :dialog-visible="applyReviewVisible"
-    title=" 申请样品测试评审"
+    title="申请样品测试评审"
     type="review"
     @hide-dialog="closeReviewForm"
   />
@@ -187,7 +189,6 @@
           v-model="editForm.quality_specialist_id"
           :data="memberList"
           clearable
-          show-checkbox
           :props="defaultProps"
         />
       </el-form-item>
@@ -212,7 +213,7 @@ import QualityTest from './test/quality-test.vue';
 import AgencyTest from './test/agency-test.vue';
 import UserTest from './test/user-test.vue';
 import TestForm from '../common/test-form.vue';
-import { changeTimestamp } from '../../../../utils';
+import { changeTimestamp, getOrganizationList } from '../../../../utils';
 
 export default {
   components: {
@@ -221,13 +222,13 @@ export default {
     UserTest,
     TestForm
   },
-  inject: ['getTest'],
+  inject: ['getTest','getQualityDetail'],
   provide() {
     return {
       getUser: this.getUserTest
     };
   },
-  props: ['applyList', 'buttonState'],
+  props: ['applyList', 'buttonState','qualityProgress','qualityAttachment','qualitySubmitState','qualityId','qualityTestId'],
   data() {
     return {
       activeName: 'quality',
@@ -237,75 +238,34 @@ export default {
       editSpecialistVisible: false,
       editForm: {},
       testId: 0,
-      qualityProgress: {},
-      qualityAttachment: {},
-      qualitySubmitState: 0,
-      qualityId: 0,
       agencyProgress: {},
       agencyAttachment: {},
       agencySubmitState: 0,
       agencyId: 0,
       agencyValue: -1,
-      isAgency: 0,
+      isAgency: -1,
       userProgress: {},
       userAttachment: {},
       userSubmitState: 0,
       userId: 0,
       userApplyList: [],
       userButtonState: 0,
-      qualityTestId: 0,
       agencyTestId: 0,
       userTestId: 0,
       memberList: [],
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'name',
+        disabled: 'disabled'
       }
     };
   },
   mounted() {
-    this.getQualityDetail();
-    this.getOrganizationList();
+     getOrganizationList().then( (res) => {
+      this.memberList = res;
+    });
   },
   methods: {
-    async getOrganizationList() {
-      try {
-        await this.$store.dispatch('getOrganizationList');
-        this.memberList = this.$store.state.organizationList;
-        for (let key in this.memberList) {
-          this.childrenFunc(this.memberList[key]);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    childrenFunc(data) {
-      if (data.member_list) {
-        for (const item of data.member_list) {
-          data.children.push(item);
-        }
-      }
-      return data.children;
-    },
-    async getQualityDetail() {
-      this.$store.commit('sample/quality/setQualityLoading', true);
-      try {
-        await this.$store.dispatch('sample/quality/getQualityDetail', {
-          params: {
-            sample_id: +this.$route.params.id
-          }
-        });
-        let { qualityDetail } = this.$store.state.sample.quality;
-        this.qualityProgress = qualityDetail.test_schedule;
-        this.qualityAttachment = qualityDetail.test_result_file;
-        this.qualitySubmitState = qualityDetail.is_submit;
-        this.qualityId = qualityDetail.test_apply_id;
-        this.qualityTestId = qualityDetail.id;
-        changeTimestamp(this.qualityProgress, 'actual_finish_time');
-      } catch (err) {
-        return;
-      }
-    },
     async getAgencyTest() {
       this.$store.commit('sample/agency/setAgencyLoading', true);
       try {
@@ -319,11 +279,11 @@ export default {
         this.agencyAttachment = agencyTest.test_result_file;
         this.agencySubmitState = agencyTest.is_submit;
         this.agencyId = agencyTest.test_apply_id;
-        this.isAgency = agencyTest.is_agency;
         this.agencyValue = agencyTest.is_agency;
         this.agencyTestId = agencyTest.id;
         changeTimestamp(this.agencyProgress, 'actual_finish_time');
       } catch (err) {
+        this.$store.commit('sample/agency/setAgencyLoading', false);
         return;
       }
     },
@@ -351,6 +311,7 @@ export default {
         });
         changeTimestamp(this.userProgress, 'actual_finish_time');
       } catch (err) {
+        this.$store.commit('sample/user/setUserLoading', false);
         return;
       }
     },

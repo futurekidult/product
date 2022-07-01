@@ -35,6 +35,7 @@
       </el-descriptions-item>
       <el-descriptions-item label="操作">
         <el-button
+          v-if="sampleDetail.test_result !== -1"
           type="text"
           :class="sampleDetail.state === undefined ? 'hide' : ''"
           @click="confirmResult"

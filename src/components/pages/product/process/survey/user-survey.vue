@@ -236,7 +236,7 @@
                 v-model="scope.row.operator_id"
                 :data="memberList"
                 clearable
-                show-checkbox
+                filterable
                 :props="defaultProps"
               />
               <span v-else>{{ scope.row.operator_desc }}</span>
@@ -522,6 +522,7 @@
 import {
   downloadFile,
   getFile,
+  getOrganizationList,
   previewFile,
   timestamp
 } from '../../../../../utils';
@@ -568,34 +569,18 @@ export default {
       memberList: [],
       defaultProps: {
         children: 'children',
-        label: 'name'
+        label: 'name',
+        disabled: 'disabled'
       }
     };
   },
   mounted() {
     this.getParams();
-    this.getOrganizationList();
+     getOrganizationList().then( (res) => {
+      this.memberList = res;
+    });
   },
   methods: {
-    async getOrganizationList() {
-      try {
-        await this.$store.dispatch('getOrganizationList');
-        this.memberList = this.$store.state.organizationList;
-        for (let key in this.memberList) {
-          this.childrenFunc(this.memberList[key]);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    childrenFunc(data) {
-      if (data.member_list) {
-        for (const item of data.member_list) {
-          data.children.push(item);
-        }
-      }
-      return data.children;
-    },
     async getParams() {
       if (localStorage.getItem('params')) {
         this.planOptions = JSON.parse(
@@ -859,7 +844,7 @@ export default {
     changeCellColor(val) {
       if (val === 10) {
         return 'result-ing';
-      } else if (val === 20) {
+      } else if (val === 30) {
         return 'result-pass';
       } else {
         return 'result-fail';

@@ -201,6 +201,7 @@ export default {
   },
   methods: {
     async getReport() {
+      this.$store.commit('product/patent/setReportLoading', true);
       try {
         await this.$store.dispatch('product/patent/getReport', {
           params: { product_id: this.$route.params.productId }
@@ -210,6 +211,7 @@ export default {
           this.report.actual_finish_time
         );
       } catch (err) {
+        this.$store.commit('product/patent/setReportLoading', false);
         return;
       }
     },
@@ -278,10 +280,8 @@ export default {
     },
     handleClick(tab) {
       if (tab.props.name === 'contract') {
-        this.$store.commit('product/patent/setContractLoading', true);
         this.getContract();
       } else {
-        this.$store.commit('product/patent/setReportLoading', true);
         this.getReport();
       }
     }

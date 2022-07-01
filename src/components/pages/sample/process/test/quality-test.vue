@@ -285,7 +285,7 @@ export default {
       this.fileForm.test_result_file = this.file.id;
       this.$refs.fileForm.validate((valid) => {
         if (valid) {
-          this.submitTestResult(this.attachment.id);
+          this.submitTestResult(this.fileForm.test_result_file);
         }
       });
     }

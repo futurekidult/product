@@ -23,6 +23,7 @@
               v-model="chooseForm.purchase_specialist_id"
               :data="memberList"
               clearable
+              filterable
               :props="defaultProps"
               @clear="getSupplierList()"
             />
