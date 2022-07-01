@@ -467,10 +467,15 @@ export default {
       }
     },
     async getRegionList(val) {
-      await this.$store.dispatch('getRegionList',{ params: { country_id: val }});
-      this.regionOption = this.$store.state.regionList;
+      try {
+        await this.$store.dispatch('getRegionList',{ params: { country_id: val }});
+        this.regionOption = this.$store.state.regionList;
+      } catch (err) {
+        return;
+      }
     },
   async getCityList(country, region) {
+    try {
       await this.$store.dispatch('getCityList',{ 
         params: { 
           country_id: country,
@@ -478,6 +483,9 @@ export default {
          }
       });
       this.cityOption = this.$store.state.cityList;
+      } catch (err) {
+        return;
+      }
     },
     async updateAnalysis(val) {
       let body = val;
