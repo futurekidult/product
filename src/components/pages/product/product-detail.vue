@@ -52,6 +52,7 @@
           </el-descriptions>
 
           <el-button
+            :disabled="productBase.state === 90"
             type="danger"
             @click="showTerminateForm"
           >
@@ -84,7 +85,15 @@
             label="项目调研"
             name="survey"
           >
-            <product-survey />
+            <product-survey  
+              :platform-progress="platformProgress"
+              :platform-form="platformForm"
+              :product-images="productImages"
+              :platform-attachment="platformAttachment"
+              :is-new-category="isNewCategory"
+              :is-new-product="isNewProduct"
+              :is-new-category-product="isNewCategoryProduct"
+            />
           </el-tab-pane>
           <el-tab-pane
             v-if="productBase.state >= 20"
@@ -110,6 +119,7 @@
             />
           </el-tab-pane>
           <el-tab-pane
+            v-if="productBase.state >= 40"
             label="专利排查"
             name="patent"
           >
@@ -226,7 +236,8 @@ export default {
       getContract: this.getContract,
       getPatent: this.getPatent,
       getPatentProgress: this.getPatentProgress,
-      getProject: this.getProject
+      getProject: this.getProject,
+      getPlatform: this.getPlatform
     };
   },
   props: ['productId', 'orderId'],
@@ -256,7 +267,14 @@ export default {
       terminateProjectVisible: false,
       viewReasonVisible: false,
       reason: '',
-      mode: ''
+      mode: '',
+      platformProgress: {},
+      platformForm: {},
+      productImages: [],
+      platformAttachment: {},
+      isNewCategory: false,
+      isNewProduct: false,
+      isNewCategoryProduct: false
     };
   },
   computed: {
@@ -302,6 +320,7 @@ export default {
         this.productForm = this.$store.state.product.productDetail;
         this.productAttachment = this.productForm.images;
       } catch (err) {
+        this.$store.commit('product/setDetailLoading', false);
         return;
       }
     },
@@ -320,6 +339,7 @@ export default {
           changeTimestamp(item, 'create_time');
         });
       } catch (err) {
+        this.$store.commit('product/setMemberLoading', false);
         return;
       }
     },
@@ -339,6 +359,7 @@ export default {
           changeTimestamp(item, 'confirm_time');
         });
       } catch (err) {
+        this.$store.commit('product/setPricingLoading', false);
         return;
       }
     },
@@ -356,6 +377,7 @@ export default {
           changeTimestamp(item, 'create_time');
         });
       } catch (err) {
+        this.$store.commit('product/setMouldLoading', false);
         return;
       }
     },
@@ -390,6 +412,7 @@ export default {
           changeTimestamp(item, 'demand_time');
         });
       } catch (err) {
+        this.$store.commit('product/setSampleLoading', false);
         return;
       }
     },
@@ -408,6 +431,7 @@ export default {
           changeTimestamp(item, 'record_time');
         });
       } catch (err) {
+        this.$store.commit('product/setQuestionLoading', false);
         return;
       }
     },
@@ -426,6 +450,7 @@ export default {
           changeTimestamp(item, 'actual_finish_time');
         });
       } catch (err) {
+        this.$store.commit('product/setPackageLoading', false);
         return;
       }
     },
@@ -446,6 +471,7 @@ export default {
           item.final_price = `￥${item.final_price}`;
         });
       } catch (err) {
+        this.$store.commit('product/order/setOrderLoading', false);
         return;
       }
     },
@@ -456,11 +482,12 @@ export default {
           params: { product_id: this.$route.params.productId }
         });
         let { project } = this.$store.state.product.project;
-        this.projectProgress = project.schedule;
-        this.projectForm = project.form;
-        this.projectAttachment = this.projectForm.sale_plan;
+        this.projectProgress = project.schedule || {};
+        this.projectForm = project.form || {};
+        this.projectAttachment = this.projectForm.sale_plan || {};
         changeTimestamp(this.projectProgress, 'actual_finish_time');
       } catch (err) {
+        this.$store.commit('product/project/setProjectLoading', false);
         return;
       }
     },
@@ -501,6 +528,7 @@ export default {
         });
         this.applyForm.product_name_cn = this.patent.product_name_cn;
       } catch (err) {
+        this.$store.commit('product/patent/setPatentLoading', false);
         return;
       }
     },
@@ -517,6 +545,7 @@ export default {
       }
     },
     async getContract() {
+      this.$store.commit('product/patent/setContractLoading', true);
       try {
         await this.$store.dispatch('product/patent/getContract', {
           params: { product_id: this.$route.params.productId }
@@ -524,7 +553,42 @@ export default {
         this.patentContract = this.$store.state.product.patent.contract;
         changeTimestamp(this.patentContract, 'actual_finish_time');
       } catch (err) {
+        this.$store.commit('product/patent/setContractLoading', false);
         return;
+      }
+    },
+    async getPlatform() {
+      this.$store.commit('product/survey/platform/setPlatformLoading', true);
+      let params = {
+        id: +this.$route.params.productId
+      };
+      try {
+        await this.$store.dispatch('product/survey/platform/getPlatform', {
+          params
+        });
+        let { platform } = this.$store.state.product.survey.platform;
+        this.platformProgress = platform.progress || {};
+        this.platformForm = platform.report || {};
+        this.productImages = this.platformForm.images || [];
+        this.platformAttachment = this.platformForm.attachment || {};
+        changeTimestamp(this.platformProgress, 'estimated_finish_time');
+        changeTimestamp(this.platformProgress, 'actual_finish_time');
+      } catch (err) {
+        this.$store.commit('product/survey/platform/setPlatformLoading', false);
+        return;
+      }
+    },
+    getState() {
+      let state = JSON.parse(localStorage.getItem('position'));
+      let val = String(state.is_new_category) + String(state.is_new_product);
+      if (val === '11') {
+        this.isNewCategoryProduct = true;
+        this.isNewCategory = true;
+        this.isNewProduct = true;
+      } else if (val === '10') {
+        this.isNewCategory = true;
+      } else if (val === '01') {
+        this.isNewProduct = true;
       }
     },
     changeCellColor(val) {
@@ -570,6 +634,10 @@ export default {
           this.getPatent();
           this.getPatentProgress();
           this.getContract();
+          break;
+        case'survey':
+          this.getPlatform(); 
+          this.getState();
           break;
         default:
       }

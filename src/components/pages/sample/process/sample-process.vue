@@ -26,6 +26,11 @@
       <sample-test
         :apply-list="applyList"
         :button-state="buttonState"
+        :quality-progress="qualityProgress"
+        :quality-attachment="qualityAttachment"
+        :quality-submit-state="qualitySubmitState"
+        :quality-id="qualityId"
+        :quality-test-id="qualityTestId"
       />
     </el-tab-pane>
   </el-tabs>
@@ -46,7 +51,8 @@ export default {
   provide() {
     return {
       getProofing: this.getProofingProgress,
-      getTest: this.getTestProgress
+      getTest: this.getTestProgress,
+      getQualityDetail: this.getQualityDetail
     };
   },
   data() {
@@ -54,7 +60,13 @@ export default {
       sampleDetail: {},
       proofingProgress: {},
       applyList: [],
-      buttonState: 0
+      buttonState: 0,
+      qualityProgress: {},
+      qualityAttachment: {},
+      qualitySubmitState: 0,
+      qualityId: 0,
+      progress: {},
+      qualityTestId:0
     };
   },
   mounted() {
@@ -76,6 +88,7 @@ export default {
         changeTimestamp(this.sampleDetail, 'estimated_finish_time');
         changeTimestamp(this.sampleDetail, 'actual_finish_time');
       } catch (err) {
+        this.$store.commit('sample/setBaseLoading', false);
         return;
       }
     },
@@ -91,6 +104,7 @@ export default {
         changeTimestamp(this.proofingProgress, 'submit_time');
         changeTimestamp(this.proofingProgress, 'actual_finish_time');
       } catch (err) {
+        this.$store.commit('sample/setProofingLoading', false);
         return;
       }
     },
@@ -110,6 +124,29 @@ export default {
           changeTimestamp(item, 'review_finish_time');
         });
       } catch (err) {
+        this.$store.commit('sample/setTestLoading', false);
+        return;
+      }
+    },
+    async getQualityDetail() {
+      this.$store.commit('sample/quality/setQualityLoading', true);
+      try {
+        await this.$store.dispatch('sample/quality/getQualityDetail', {
+          params: {
+            sample_id: +this.$route.params.id
+          }
+        });
+        let { qualityDetail } = this.$store.state.sample.quality;
+        this.qualityProgress = qualityDetail.test_schedule;
+        this.qualityAttachment = qualityDetail.test_result_file;
+        this.qualitySubmitState = qualityDetail.is_submit;
+        this.qualityId = qualityDetail.test_apply_id;
+        this.qualityTestId = qualityDetail.id;
+        if(this.qualityProgress.actual_finish_time !== undefined){
+          changeTimestamp(this.qualityProgress, 'actual_finish_time');
+        }
+      } catch (err) {
+        this.$store.commit('sample/quality/setQualityLoading', false);
         return;
       }
     },
@@ -123,6 +160,7 @@ export default {
           break;
         case 'test':
           this.getTestProgress();
+          this.getQualityDetail();
           break;
         default:
       }

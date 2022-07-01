@@ -31,10 +31,11 @@ const store = createStore({
       fileRes: {},
       viewLink: '',
       attachmentState: false,
-      countryList: [],
       userInfo: {},
       activeTab: '',
-      entry: ''
+      entry: '',
+      regionList: [],
+      cityList: []
     };
   },
   mutations: {
@@ -59,9 +60,6 @@ const store = createStore({
     setAttachmentState(state, payload) {
       state.attachmentState = payload;
     },
-    setCountry(state, payload) {
-      state.countryList = payload;
-    },
     setUserInfo(state, payload) {
       state.userInfo = payload;
     },
@@ -70,6 +68,12 @@ const store = createStore({
     },
     setEntry(state, payload) {
       state.entry = payload;
+    },
+    setRegionList(state, payload) {
+      state.regionList = payload;
+    },
+    setCityList(state, payload) {
+      state.cityList = payload;
     }
   },
   actions: {
@@ -120,10 +124,24 @@ const store = createStore({
         }
       });
     },
-    async getCountry(context) {
+    async getCountry() {
       await axios.get('/option/country/list').then((res) => {
         if (res.code === 200) {
-          context.commit('setCountry', res.data.list);
+          localStorage.setItem('country', JSON.stringify(res.data.list));
+        }
+      });
+    },
+    async getRegionList(context, payload) {
+      await axios.get('/option/state/list', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setRegionList', res.data.list);
+        }
+      });
+    },
+    async getCityList(context, payload) {
+      await axios.get('/option/city/list', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setCityList', res.data.list);
         }
       });
     },

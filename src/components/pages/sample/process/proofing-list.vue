@@ -9,6 +9,7 @@
         打样进度表
       </div>
       <el-button
+        :disabled="JSON.stringify(progress) !== 40"
         type="primary"
         @click="showProofingCreate"
       >
@@ -79,7 +80,6 @@
     :dialog-visible="proofingApprovalVisible"
     title="打样单审批"
     type="approval"
-    :form="approvalForm"
     @hide-dialog="closeProofingApproval"
   />
 
@@ -88,7 +88,6 @@
     :dialog-visible="proofingEditVisible"
     title="重新编辑"
     type="edit"
-    :form="editForm"
     @hide-dialog="closeProofingEdit"
   />
 
@@ -97,7 +96,6 @@
     :dialog-visible="proofingViewVisible"
     title="查看"
     type="view"
-    :form="reviewForm"
     @hide-dialog="closeProofingView"
   />
 </template>
@@ -115,31 +113,11 @@ export default {
       proofingVisible: false,
       proofingApprovalVisible: false,
       proofingEditVisible: false,
-      proofingViewVisible: false,
-      viewForm: {},
-      approvalForm: {},
-      editForm: {}
+      proofingViewVisible: false
     };
   },
-  mounted() {
-    this.getProofingSheet();
-  },
+
   methods: {
-    async getProofingSheet() {
-      try {
-        await this.$store.dispatch('sample/getProofingSheet', {
-          params: {
-            id: +this.$route.params.id
-          }
-        });
-        let { sample } = this.$store.state;
-        this.reviewForm = sample.proofingSheet;
-        this.approvalForm = sample.proofingSheet;
-        this.editForm = sample.proofingSheet;
-      } catch (err) {
-        return;
-      }
-    },
     showProofingCreate() {
       this.proofingVisible = true;
     },

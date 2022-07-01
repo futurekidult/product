@@ -6,7 +6,6 @@
     @close="cancel"
   >
     <el-table
-      v-loading="loading"
       :data="priceList"
       border
       stripe
@@ -39,8 +38,7 @@ export default {
   data() {
     return {
       visible: this.dialogVisible,
-      priceList: [],
-      loading: true
+      priceList: []
     };
   },
   mounted() {
@@ -62,7 +60,6 @@ export default {
         this.priceList.forEach((item) => {
           item.reference_price = `￥${item.reference_price}`;
         });
-        this.loading = this.$store.state.price.referenceLoading;
       } catch (err) {
         return;
       }

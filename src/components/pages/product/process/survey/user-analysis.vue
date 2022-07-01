@@ -123,20 +123,65 @@
       <div
         v-for="(item, index) in form.country"
         :key="index"
+        class="form-template"
       >
         <el-form-item
-          :label="'城市' + (index + 1)"
-          :prop="`country[${index}]`"
-          :rules="analysisRules.country"
+          :label="'国家' + (index + 1)"
+          :prop="`country.${index}.country_id`"
+          :rules="analysisRules.country_id"
         >
-          <el-cascader
-            v-model="form.country[index]"
+          <el-select
+            v-model="item.country_id"
             :disabled="isDisabled"
             clearable
-            :options="countryOption"
-            :props="defaultProps"
             placeholder="请选择国家"
-          />
+            @focus="getCountryList"
+          >
+            <el-option 
+              v-for="country in countryOption"
+              :key="country.id"
+              :label="country.name"
+              :value="country.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          :label="'州/大区' + (index + 1)"
+          :prop="`country.${index}.region_id`"
+        >
+          <el-select
+            v-model="item.region_id"
+            :disabled="isDisabled"
+            clearable
+            placeholder="请选择州/大区"
+            @focus="getRegionList(item.country_id)"
+          >
+            <el-option 
+              v-for="region in regionOption"
+              :key="region.id"
+              :label="region.name"
+              :value="region.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          :label="'城市' + (index + 1)"
+          :prop="`country.${index}.city_id`"
+        >
+          <el-select
+            v-model="item.city_id"
+            :disabled="isDisabled"
+            clearable
+            placeholder="请选择城市"
+            @focus="getCityList(item.country_id, item.region_id)"
+          >
+            <el-option 
+              v-for="city in cityOption"
+              :key="city.id"
+              :label="city.name"
+              :value="city.id"
+            />
+          </el-select>
         </el-form-item>
       </div>
       <el-form-item>
@@ -322,7 +367,7 @@ export default {
             message: '请选择婚姻状况'
           }
         ],
-        country: [
+        country_id: [
           {
             required: true,
             message: '请选择国家'
@@ -352,11 +397,8 @@ export default {
       form: this.analysisForm,
       file: this.attachment,
       countryOption: [],
-      defaultProps: {
-        value: 'id',
-        label: 'name',
-        children: 'children'
-      },
+      regionOption: [],
+      cityOption: [],
       countryVisible: false,
       scenarioVisible: false
     };
@@ -372,14 +414,16 @@ export default {
     },
     analysisForm(val) {
       this.form = val;
+      this.form.usage_scenario = this.form.usage_scenario || [];
       if (this.form.usage_scenario.length === 0) {
-        this.form.usage_scenario.push([]);
+        this.form.usage_scenario.push('');
         this.scenarioVisible = false;
       } else {
         this.scenarioVisible = true;
       }
+      this.form.country = this.form.country || [];
       if (this.form.country.length === 0) {
-        this.form.country.push([]);
+        this.form.country.push({});
         this.countryVisible = false;
       } else {
         this.countryVisible = true;
@@ -388,7 +432,6 @@ export default {
   },
   mounted() {
     this.getParams();
-    this.getCountryList();
   },
   methods: {
     async getParams() {
@@ -411,9 +454,35 @@ export default {
       }
     },
     async getCountryList() {
+      let country = JSON.parse(localStorage.getItem('country'));
+      if(country) {
+        this.countryOption = country;
+      } else {
+        try {
+          await this.$store.dispatch('getCountry');
+          this.getCountryList();
+        } catch (err) {
+          return;
+        }
+      }
+    },
+    async getRegionList(val) {
       try {
-        await this.$store.dispatch('getCountry');
-        this.countryOption = this.$store.state.countryList;
+        await this.$store.dispatch('getRegionList',{ params: { country_id: val }});
+        this.regionOption = this.$store.state.regionList;
+      } catch (err) {
+        return;
+      }
+    },
+  async getCityList(country, region) {
+    try {
+      await this.$store.dispatch('getCityList',{ 
+        params: { 
+          country_id: country,
+          state_id: region
+         }
+      });
+      this.cityOption = this.$store.state.cityList;
       } catch (err) {
         return;
       }
@@ -486,7 +555,7 @@ export default {
       }
     },
     addStateCity() {
-      this.form.country.push([]);
+      this.form.country.push({});
       if (this.form.country.length > 1) {
         this.countryVisible = true;
       }
