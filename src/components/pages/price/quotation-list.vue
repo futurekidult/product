@@ -740,6 +740,7 @@ export default {
         await this.$store.dispatch('price/submitQuotation', {
           id: this.submitId
         });
+        this.lowVisible = false;
         this.getQuotationList();
       } catch (err) {
         return;
