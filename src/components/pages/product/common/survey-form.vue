@@ -210,7 +210,7 @@ export default {
     },
     async getUserSurveyDetail() {
       let params = {
-        id: +this.$route.params.productId
+        id: this.id
       };
       try {
         await this.$store.dispatch(
