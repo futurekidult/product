@@ -249,7 +249,6 @@ export default {
             this.diecutsFile = file;
           }
         }
-        // this.getContract();
       } catch (err) {
         return;
       }
