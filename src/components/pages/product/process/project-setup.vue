@@ -134,7 +134,7 @@
             class="attachment-list"
           >
             <div>
-              {{ attachment.name }}
+              {{ file.name }}
             </div>
             <div style="display: flex">
               <div v-if="file.type === 12860">
@@ -187,7 +187,7 @@ export default {
     ProfitCalculation,
     ProcessTable
   },
-  inject: ['getProject'],
+  inject: ['getProject', 'getProfitCalcaulation', 'getProcessTable'],
   props: ['progress', 'attachment', 'projectForm', 'profit', 'schedule'],
   data() {
     return {
@@ -264,6 +264,8 @@ export default {
       try {
         await this.$store.dispatch('product/project/reviewProject', body);
         this.getProject();
+        this.getProfitCalcaulation();
+        this.getProcessTable();
       } catch (err) {
         return;
       }

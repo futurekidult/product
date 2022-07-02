@@ -570,7 +570,6 @@ export default {
       let body = val;
       body['survey_schedule_id'] = this.progress.id;
       body['product_id'] = +this.$route.params.productId;
-      body['attachment'] = this.file.id;
       try {
         await this.$store.dispatch('product/survey/plan/submitPlan', body);
         this.getList();
@@ -644,7 +643,11 @@ export default {
       );
     },
     submitProductForm() {
-      this.form.attachment = this.file.id;
+      this.form.attachment = [];
+      this.file.forEach((item) => {
+        let { id } = item;
+        this.form.attachment.push(id);
+      });
       this.$refs.productForm.validate((valid) => {
         if (valid) {
           this.updatePlan(this.form);

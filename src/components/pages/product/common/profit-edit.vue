@@ -29,10 +29,12 @@
             :prop="`${index}.operations_specialist_id`"
             :rules="[{ required: true, message: '请选择运营专员' }]"
           >
-            <el-select
+            <el-tree-select
               v-model="item.operations_specialist_id"
-              placeholder="请选择运营专员"
+              :data="memberList"
               clearable
+              filterable
+              :props="defaultProps"
             />
           </el-form-item>
           <el-divider />
@@ -57,6 +59,7 @@
 </template>
 
 <script>
+import { getOrganizationList } from '../../../../utils';
 export default {
   props: ['dialogVisible', 'id'],
   emits: ['hide-dialog'],
@@ -65,6 +68,12 @@ export default {
       visible: this.dialogVisible,
       editForm: {
         list: []
+      },
+      memberList: [],
+      defaultProps: {
+        children: 'children',
+        label: 'name',
+        disabled: 'disabled'
       }
     };
   },
@@ -75,6 +84,9 @@ export default {
   },
   mounted() {
     this.getOperationsSpecialist();
+    getOrganizationList().then( (res) => {
+      this.memberList = res;
+    });
   },
   methods: {
     async getOperationsSpecialist() {
@@ -92,13 +104,12 @@ export default {
       }
     },
     async updateOperationsSpecialist(val) {
-      let body = val;
-      body['product_id'] = this.$route.params.productId;
+      let body = {};
+      body['specialists'] = val;
+      body['product_id'] = +this.$route.params.productId;
       body['market'] = this.id;
       try {
-        await this.$store.dispatch('product/project/getOperationsSpecialist', {
-          body
-        });
+        await this.$store.dispatch('product/project/updateOperationsSpecialist', body);
         this.visible = false;
       } catch (err) {
         return;
@@ -109,6 +120,7 @@ export default {
       this.$emit('hide-dialog', this.visible);
     },
     submitEditForm() {
+      console.log(this.editForm)
       this.$refs.editForm.validate((valid) => {
         if (valid) {
           this.updateOperationsSpecialist(this.editForm);

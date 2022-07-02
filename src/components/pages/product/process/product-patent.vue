@@ -272,7 +272,7 @@ export default {
     changeColor(val) {
       if (val === 10) {
         return 'result-ing';
-      } else if (val === 20 || val === 40) {
+      } else if (val === 30 || val === 40) {
         return 'result-pass';
       } else {
         return 'result-fail';

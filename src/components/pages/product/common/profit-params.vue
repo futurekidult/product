@@ -45,32 +45,7 @@
 
 <script>
 export default {
-  props: ['market', 'platform'],
-  data() {
-    return {
-      profitParams: {}
-    };
-  },
-  mounted() {
-    this.getProfitParams();
-  },
-  methods: {
-    async getProfitParams() {
-      let params = {
-        market: this.market,
-        platform: this.platform,
-        product_id: +this.$route.params.productId
-      };
-      try {
-        await this.$store.dispatch('product/project/getProfitParams', {
-          params
-        });
-        this.profitParams = this.$store.state.product.project.profitParams;
-      } catch (err) {
-        return;
-      }
-    }
-  }
+  props: ['profitParams']
 };
 </script>
 

@@ -449,11 +449,11 @@
     </el-form-item>
     <el-form-item
       label="需求洞察来源"
-      prop="source"
+      prop="demand_source"
       class="form-item_width"
     >
       <el-select
-        v-model="demandForm.source"
+        v-model="demandForm.demand_source"
         type="textarea"
         :rows="6"
         placeholder="请选择需求洞察来源"
@@ -698,7 +698,7 @@ export default {
             message: '请上传产品图片'
           }
         ],
-        source: [
+        demand_source: [
           {
             required: true,
             message: '请选择来源'

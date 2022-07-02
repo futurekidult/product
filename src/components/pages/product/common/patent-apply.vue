@@ -224,7 +224,7 @@ export default {
     },
     async patentApply(params) {
       let body = params;
-      body['product_id'] = 1;
+      body['product_id'] = +this.$route.params.productId;
       try {
         await this.$store.dispatch('product/patent/patentApply', body);
         this.visible = false;

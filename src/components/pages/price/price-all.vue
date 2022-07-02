@@ -216,7 +216,7 @@ export default {
       this.getPriceList();
     },
     changeCellColor(val) {
-      if (val === 40) {
+      if (val >= 30) {
         return 'result-pass';
       } else {
         return 'result-ing';

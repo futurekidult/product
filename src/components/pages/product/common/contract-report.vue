@@ -1,93 +1,171 @@
 <template>
-  <div
-    v-loading="
-      type === 'contract'
-        ? $store.state.product.patent.contractLoading
-        : $store.state.product.patent.reportLoading
-    "
-  >
-    <el-descriptions
-      border
-      :column="5"
-      direction="vertical"
+  <div>
+    <div
+      v-loading="
+        type === 'contract'
+          ? $store.state.product.patent.contractLoading
+          : $store.state.product.patent.reportLoading
+      "
     >
-      <el-descriptions-item label="任务负责人">
-        {{ data.principal }}
-      </el-descriptions-item>
-      <el-descriptions-item label="实际完成时间">
-        {{ data.actual_finish_time }}
-      </el-descriptions-item>
-      <el-descriptions-item label="结果附件">
-        <div v-if="JSON.stringify(data) !== '{}'">
+      <el-descriptions
+        border
+        :column="5"
+        direction="vertical"
+      >
+        <el-descriptions-item label="任务负责人">
+          {{ data.principal }}
+        </el-descriptions-item>
+        <el-descriptions-item label="实际完成时间">
+          {{ data.actual_finish_time }}
+        </el-descriptions-item>
+        <el-descriptions-item label="结果附件">
+          <div v-if="JSON.stringify(data) !== '{}'">
+            <el-button
+              v-if="
+                data.state === 10 && JSON.stringify(file) === '{}'
+              "
+              type="text"
+              @click="showFileDialog"
+            >
+              上传
+            </el-button>
+            <div
+              v-if="data.state === 40"
+              style="display: flex"
+            >
+              <el-button
+                type="text"
+                @click="download(file.id, file.name)"
+              >
+                下载
+              </el-button>
+              <div v-if="data.result_file.type === 12860">
+                <span class="table-btn">|</span>
+                <el-button
+                  type="text"
+                  @click="showViewFile(file.id)"
+                >
+                  预览
+                </el-button>
+              </div>
+            </div>
+            <div
+              v-if="
+                data.state === 10 && JSON.stringify(file) !== '{}'
+              "
+              style="display: flex"
+            >
+              <div v-if="data.result_file.type === 12860">
+                <el-button
+                  type="text"
+                  @click="showViewFile(file.id)"
+                >
+                  预览
+                </el-button>
+                <span class="table-btn">|</span>
+              </div>
+              <el-button
+                type="text"
+                @click="deleteFile"
+              >
+                删除
+              </el-button>
+            </div>
+          </div>
+        </el-descriptions-item>
+        <el-descriptions-item label="状态">
+          <div :class="changeColor(data.state)">
+            {{ data.state_desc }}
+          </div>
+        </el-descriptions-item>
+        <el-descriptions-item label="操作">
           <el-button
-            v-if="
-              data.state === 10 && JSON.stringify(data.result_file) === '{}'
-            "
-            type="text"
-            @click="handleFileSuccess"
+            v-if="JSON.stringify(data) !== '{}'"
+            :disabled="data.state !== 10"
+            :class="data.state === undefined ? 'hide' : ''"
+            @click="uploadAttachment"
           >
-            上传
+            完成
           </el-button>
-          <div
-            v-if="data.state === 40"
-            style="display: flex"
-          >
-            <el-button
-              type="text"
-              @click="download(file.id, file.name)"
-            >
-              下载
-            </el-button>
-            <div v-if="data.result_file.type === 12860">
-              <span class="table-btn">|</span>
-              <el-button
-                type="text"
-                @click="showViewFile(file.id)"
-              >
-                预览
-              </el-button>
-            </div>
-          </div>
-          <div
-            v-if="
-              data.state === 10 && JSON.stringify(data.result_file) !== '{}'
-            "
-            style="display: flex"
-          >
-            <div v-if="data.result_file.type === 12860">
-              <el-button
-                type="text"
-                @click="showViewFile(file.id)"
-              >
-                预览
-              </el-button>
-              <span class="table-btn">|</span>
-            </div>
-            <el-button
-              type="text"
-              @click="deleteFile"
-            >
-              删除
-            </el-button>
-          </div>
-        </div>
-      </el-descriptions-item>
-      <el-descriptions-item label="状态">
-        <div :class="changeColor(data.state)">
-          {{ data.state_desc }}
-        </div>
-      </el-descriptions-item>
-      <el-descriptions-item label="操作">
-        <el-button
-          v-if="JSON.stringify(data) !== '{}'"
-          :disabled="data.state !== 10"
-          :class="data.state === undefined ? 'hide' : ''"
-          @click="uploadAttachment"
+        </el-descriptions-item>
+      </el-descriptions>
+    </div>
+
+    
+    <el-dialog
+      v-model="uploadVisible"
+      title="上传"
+      width="30%"
+    >
+      <el-form
+        ref="uploadForm"
+        :model="uploadForm"
+        label-width="100px"
+      >
+        <el-form-item
+          label="文件"
+          prop="file"
+          :rules="[{ required: true, message: '请上传附件'}]"
         >
-          完成
-        </el-button>
-      </el-descriptions-item>
-    </el-descriptions>
+          <el-upload
+            action
+            :show-file-list="false"
+            :http-request="handleFileSuccess"
+          >
+            <el-button
+              type="primary"
+            >
+              点击上传
+            </el-button>
+          </el-upload>
+          <div class="attachment">
+            支持office文档格式,文件不能超过5MB(仅限一个)
+          </div>
+        </el-form-item>
+        <el-form-item>
+          <div
+            v-if="show"
+            class="attachment-list"
+          >
+            <div>{{ file.name }}</div>
+            <div style="display: flex">
+              <div v-if="file.type === 12860">
+                <el-button
+                  type="text"
+                  @click="showViewFile(file.id)"
+                >
+                  预览
+                </el-button>
+                <span class="table-btn">|</span>
+              </div>
+              <el-button
+                type="text"
+                @click="deleteFile"
+              >
+                删除
+              </el-button>
+            </div>
+          </div>
+        </el-form-item>
+        <el-divider />
+        <div
+          style="text-align: right"
+        >
+          <el-button
+            class="close-btn"
+            @click="closeFileDialog"
+          >
+            取消
+          </el-button>
+          <el-button
+            type="primary"
+            @click="closeFileDialog"
+          >
+            提交
+          </el-button>
+        </div>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -98,12 +176,16 @@ export default {
   props: ['data', 'type', 'getReport'],
   data() {
     return {
-      file: this.data
+      progress: this.data,
+      file: {},
+      uploadVisible: false,
+      show: true,
+      uploadForm: {}
     };
   },
   watch: {
     data(val) {
-      this.file = val;
+      this.file = val.result_file;
     }
   },
   methods: {
@@ -115,6 +197,7 @@ export default {
       };
       try {
         await this.$store.dispatch(`product/patent/upload${url}`, params);
+        this.uploadVisible = false;
       } catch (err) {
         return;
       }
@@ -131,11 +214,6 @@ export default {
             name: this.$store.state.fileRes.file_name,
             type: this.$store.state.fileRes.type
           };
-          if (this.type === 'contract') {
-            this.getContract();
-          } else {
-            this.getReport();
-          }
         }
       } catch (err) {
         return;
@@ -165,7 +243,7 @@ export default {
     },
     uploadAttachment() {
       if (this.type === 'contract') {
-        this.upload('comtract', 'Contract');
+        this.upload('contract', 'Contract');
         this.getContract();
       } else {
         this.upload('report', 'Report');
@@ -186,6 +264,13 @@ export default {
       } else {
         this.getReport();
       }
+    },
+    showFileDialog() {
+      this.uploadVisible = true;
+    },
+    closeFileDialog() {
+      this.uploadVisible = false;
+      this.uploadForm.file = this.file.id;
     }
   }
 };

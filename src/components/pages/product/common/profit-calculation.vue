@@ -33,7 +33,7 @@
         <template #default="scope">
           <el-button
             type="text"
-            @click="showPricingList"
+            @click="showPricingList(scope.row.market)"
           >
             申请记录
           </el-button>
@@ -69,7 +69,7 @@
           <el-button
             v-if="isShow"
             type="text"
-            @click="deleteProfitItem(scope.row.market)"
+            @click="showDeleteDialog(scope.row.market)"
           >
             删除
           </el-button>
@@ -147,8 +147,8 @@
   />
 
   <pricing-log
-    v-if="getPricingVisible"
-    :dialog-visible="getPricingVisible"
+    v-if="viewPricingVisible"
+    :dialog-visible="viewPricingVisible"
     :get-list="adjustmentList"
     @hide-dialog="closePricingList"
   />
@@ -167,6 +167,31 @@
         @click="noAdjustmentVisible = false"
       >
         好的
+      </el-button>
+    </div>
+  </el-dialog>
+
+  <el-dialog
+    v-model="deleteDialog"
+    title="提示"
+    width="20%"
+  >
+    <div class="result-content">
+      确认要删除该核算利润吗
+    </div>
+    <div style="text-align: center">
+      <el-button
+        class="price-btn"
+        @click="closeDeleteDialog"
+      >
+        取消
+      </el-button>
+      <el-button
+        type="primary"
+        class="price-btn"
+        @click="deleteProfitItem"
+      >
+        提交
       </el-button>
     </div>
   </el-dialog>
@@ -194,14 +219,16 @@ export default {
       viewProfitVisible: false,
       editProfitVisible: false,
       adjustPriceVisible: false,
-      getPricingVisible: false,
+      viewPricingVisible: false,
       editFormVisible: false,
       marketId: 0,
       adjustment: {},
       adjustmentList: [],
       priceAdjustmentApplyId: 0,
       noAdjustmentVisible: false,
-      confirmDialog: false
+      confirmDialog: false,
+      deleteDialog: false,
+      deleteId: 0
     };
   },
   computed: {
@@ -232,16 +259,24 @@ export default {
         return;
       }
     },
-    async getAdjustmentList() {
+    async getAdjustmentList(id) {
+      let params = {
+        product_id: +this.$route.params.productId,
+        market: id
+      }
       try {
-        await this.$store.dispatch('product/project/getAdjustmentList');
+        await this.$store.dispatch('product/project/getAdjustmentList', { params });
         this.adjustmentList = this.$store.state.product.project.adjustmentList;
-        this.adjustmentList.forEach((item) => {
+        if(this.adjustmentList.length === 0) {
+          this.$message.warning('当前无调价记录');
+        }else {
+          this.viewPricingVisible = true;
+          this.adjustmentList.forEach((item) => {
           changeTimestamp(item, 'submit_time');
           changeTimestamp(item, 'apply_approve_time');
           changeTimestamp(item, 'adjust_approve_time');
-        });
-        this.getPricingVisible = true;
+          });
+        }
       } catch (err) {
         return;
       }
@@ -276,11 +311,11 @@ export default {
     closeAdjustPrice() {
       this.adjustPriceVisible = false;
     },
-    showPricingList() {
-      this.getAdjustmentList();
+    showPricingList(id) {
+      this.getAdjustmentList(id);
     },
     closePricingList() {
-      this.getPricingVisible = false;
+      this.viewPricingVisible = false;
     },
     closeEditProfit() {
       this.editProfitVisible = false;
@@ -291,15 +326,16 @@ export default {
     async deleteItem(val) {
       try {
         await this.$store.dispatch('product/project/deleteProfitItem', val);
+        this.deleteDialog = false;
         this.getProfitCalcaulation();
       } catch (err) {
         return;
       }
     },
-    deleteProfitItem(id) {
+    deleteProfitItem() {
       let body = {
-        prroduct_id: +this.$route.params.productId,
-        market: id
+        product_id: +this.$route.params.productId,
+        market: this.deleteId
       };
       this.deleteItem(body);
     },
@@ -309,6 +345,13 @@ export default {
     },
     closeConfirmDialog() {
       this.confirmDialog = false;
+    },
+    showDeleteDialog(id) {
+      this.deleteDialog = true;
+      this.deleteId = id;
+    },
+    closeDeleteDialog() {
+      this.deleteDialog = false;
     }
   }
 };

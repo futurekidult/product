@@ -77,6 +77,7 @@
               placeholder="请选择平台"
               :disabled="isDisabled"
               clearable
+              @change="getProfitParams(profitForm.market,profitForm.list[index].platform)"
             >
               <el-option
                 v-for="platform in platformList"
@@ -88,11 +89,9 @@
           </el-form-item>
           <el-form-item v-if="profitForm.list[index].platform">
             <el-collapse style="width: 100%">
-              <el-collapse-item :title="'利润核算参数明细表' + (index + 1)">
-                <profit-params
-                  :market="profitForm.market"
-                  :platform="profitForm.list[index].platform"
-                />
+              <el-collapse-item 
+                :title="'利润核算参数明细表' + (index + 1)">
+                <profit-params :profit-params="profitParams" />
               </el-collapse-item>
             </el-collapse>
           </el-form-item>
@@ -325,7 +324,8 @@ export default {
         disabled: 'disabled'
       },
       rate: '',
-      calculationResult: {}
+      calculationResult: {},
+      profitParams: {}
     };
   },
   computed: {
@@ -350,14 +350,28 @@ export default {
       this.memberList = res;
     });
     this.getParams();
-    this.getProfitCalculation();
     this.getMarket();
-    if (this.type !== 'add') {
-      this.getRate();
-      this.getPrice();
+    if (this.type !== 'add') { 
+      this.getProfitCalculation();
+      this.getRate(this.id);
     }
   },
   methods: {
+    async getProfitParams(market, platform) {
+      let params = {
+        market,
+        platform,
+        product_id: +this.$route.params.productId
+      };
+      try {
+        await this.$store.dispatch('product/project/getProfitParams', {
+          params
+        });
+        this.profitParams = this.$store.state.product.project.profitParams;
+      } catch (err) {
+        return;
+      }
+    },
     async getParams() {
       if (localStorage.getItem('params')) {
         let { demand } = JSON.parse(localStorage.getItem('params'));
@@ -392,9 +406,10 @@ export default {
         await this.$store.dispatch('product/project/getProfitCalculation', {
           params
         });
-        if (this.type !== 'add') {
-          this.profitForm = this.$store.state.product.project.profitCalculation;
-        }
+        this.profitForm = this.$store.state.product.project.profitCalculation;
+        this.profitForm.list.forEach((item) => {
+          this.getPrice(this.id, item.platform, +this.$route.params.productId, item.selling_price);
+        })
       } catch (err) {
         return;
       }
@@ -423,7 +438,7 @@ export default {
     },
     async createProfit(val) {
       let body = val;
-      body['product_id'] = this.$route.params.paroductId;
+      body['product_id'] = +this.$route.params.productId;
       try {
         await this.$store.dispatch('product/project/createProfit', body);
         this.visible = false;
@@ -434,7 +449,7 @@ export default {
     },
     async updateProfit(val) {
       let body = val;
-      body['product_id'] = this.$route.params.paroductId;
+      body['product_id'] = +this.$route.params.productId;
       try {
         await this.$store.dispatch('product/project/updateProfit', body);
         this.visible = false;
@@ -461,7 +476,7 @@ export default {
             market,
             platform,
             product_id: +this.$route.params.productId,
-            price
+            selling_price: price
           }
         });
         this.calculationResult =

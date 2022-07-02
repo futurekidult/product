@@ -211,7 +211,8 @@ body {
 .pre-product_btn,
 .member-btn,
 .quote-btn,
-.mould-btn {
+.mould-btn,
+.price-btn {
   width: 120px;
 }
 
