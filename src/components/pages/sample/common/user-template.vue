@@ -120,7 +120,7 @@
           </el-button>
           <el-button
             :disabled="JSON.stringify(scope.row.test_result_file) !== '{}'"
-            @click="showResultForm(scope.row.user_test_apply_id)"
+            @click="showResultForm(scope.row.user_test_apply_id,scope.row.id)"
           >
             {{
               JSON.stringify(scope.row.test_result_file) === '{}'
@@ -157,6 +157,7 @@
     <sample-result
       v-if="resultFormVisible"
       :id="testUserId"
+      :user-id="userId"
       :dialog-visible="resultFormVisible"
       :get-list="getList"
       @hide-dialog="closeResultForm"
@@ -201,7 +202,8 @@ export default {
       testUserId: 0,
       viewUserVisible: false,
       viewUserid: 0,
-      file: {}
+      file: {},
+      userId: 0
     };
   },
   methods: {
@@ -261,9 +263,10 @@ export default {
     deleteFile() {
       this.file = {};
     },
-    showResultForm(id) {
+    showResultForm(id, userId) {
       this.resultFormVisible = true;
       this.testUserId = id;
+      this.userId = userId;
     },
     closeResultForm() {
       this.resultFormVisible = false;

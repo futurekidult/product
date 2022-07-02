@@ -46,7 +46,7 @@
             clearable
           >
             <el-option
-              v-for="content in platform"
+              v-for="content in $store.state.platform"
               :key="content.platform"
               :label="content.platform_desc"
               :value="content.platform"
@@ -209,7 +209,6 @@ export default {
         ]
       },
       show: true,
-      platform: [],
       file: this.attachment,
       form: this.skuForm,
       deleteVisible: false
@@ -229,22 +228,7 @@ export default {
       this.form.sku = this.form.sku || [{}];
     }
   },
-  mounted() {
-    this.getPlatform();
-  },
   methods: {
-    async getPlatform() {
-      let params = {
-        product_id: +this.$route.params.productId,
-        pricing_id: this.$store.state.product.order.progress.pricing_id
-      };
-      try {
-        await this.$store.dispatch('getPlatform', { params });
-        this.platform = this.$store.state.platform;
-      } catch (err) {
-        return;
-      }
-    },
     async updateSkuname(val) {
       let body = {};
       body['sku_info'] = {};

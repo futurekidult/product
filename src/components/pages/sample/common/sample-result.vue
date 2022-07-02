@@ -75,7 +75,7 @@
 <script>
 import { getFile, previewFile } from '../../../../utils';
 export default {
-  props: ['id', 'dialogVisible', 'getList'],
+  props: ['id', 'dialogVisible', 'getList','userId'],
   emits: ['hide-dialog'],
   data() {
     return {
@@ -97,7 +97,8 @@ export default {
     async uploadFile(val) {
       let body = {
         user_test_apply_id: this.id,
-        user_template_file: val
+        test_result_file: val,
+        user_id: this.userId
       };
       try {
         await this.$store.dispatch('sample/user/uploadFile', body);

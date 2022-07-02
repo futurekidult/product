@@ -131,7 +131,7 @@ export default {
     async createTemplate(val) {
       let body = {
         user_test_apply_id: this.id,
-        user_template_file: val
+        user_template_file: val.user_template_file
       };
       try {
         await this.$store.dispatch('sample/user/createTemplate', body);

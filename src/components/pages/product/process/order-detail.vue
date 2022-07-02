@@ -151,6 +151,7 @@ export default {
         this.skuSchedule = sku.sku_name_schedule;
         changeTimestamp(this.skuSchedule, 'actual_finish_time');
         changeTimestamp(this.skuEntrySchedule, 'actual_finish_time');
+        this.getPlatform();
       } catch (err) {
         this.$store.commit('product/order/setSkuLoading', false);
         return;
@@ -191,6 +192,18 @@ export default {
         changeTimestamp(this.preProductSample, 'actual_finish_time');
       } catch (err) {
         this.$store.commit('product/order/setPreProductLoading', false);
+        return;
+      }
+    },
+    async getPlatform() {
+      let params = {
+        product_id: +this.$route.params.productId,
+        pricing_id: this.$store.state.product.order.pricingId
+      };
+      try {
+        await this.$store.dispatch('getPlatform', { params });
+        this.platform = this.$store.state.platform;
+      } catch (err) {
         return;
       }
     },

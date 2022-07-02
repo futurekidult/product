@@ -206,7 +206,7 @@
             v-if="show"
             class="attachment-list"
           >
-            <div>{{ attachment.name }}</div>
+            <div>{{ file.name }}</div>
             <div style="display: flex">
               <div v-if="file.type === 12860">
                 <el-button
