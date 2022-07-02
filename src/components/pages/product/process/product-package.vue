@@ -49,11 +49,15 @@
         width="300px"
       >
         <template #default="scope">
-          <el-button @click="showResultForm(scope.row.id)">
+          <el-button 
+            :disabled="scope.row.result_path !== ''"
+            @click="showResultForm(scope.row.id)"
+          >
             上传结果
           </el-button>
           <el-button
             type="primary"
+            :disabled="scope.row.state === 20"
             @click="confirmResult(scope.row.id)"
           >
             结果确认

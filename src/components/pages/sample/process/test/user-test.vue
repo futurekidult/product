@@ -51,8 +51,13 @@
         />
         <el-table-column
           label="评审状态"
-          prop="review_state_desc"
-        />
+        >
+          <template #default="scope">
+            <div :class="changeReiviewColor(scope.row.review_state)">
+              {{ scope.row.review_state_desc }}
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           label="操作"
           width="200px"
@@ -589,7 +594,16 @@ export default {
           this.submitTestResult(this.file.id);
         }
       });
-    }
+    },
+    changeReiviewColor(val) {
+      if(val === 10) {
+        return 'result-ing';
+      } else if(val === 20){
+        return 'result-fail';
+      } else {
+        return 'result-pass';
+      }
+  }
   }
 };
 </script>

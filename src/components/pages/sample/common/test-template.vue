@@ -44,6 +44,7 @@
         </el-button>
         <el-button
           v-else
+          :disabled="scope.row.is_record === 1"
           type="text"
           @click="recordProblem(scope.row.id)"
         >

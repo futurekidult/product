@@ -61,7 +61,7 @@
           >
             <el-button
               v-if="
-                JSON.stringify(purchaseContract.product_manual_file) === '{}'
+                JSON.stringify(manualFile) === '{}'
               "
               type="text"
             >
@@ -93,7 +93,7 @@
           </div>
           <div
             v-if="
-              JSON.stringify(purchaseContract.product_manual_file) !== '{}' &&
+              JSON.stringify(manualFile) !== '{}' &&
                 purchaseContract.state === 10
             "
           >
@@ -121,7 +121,7 @@
             :http-request="(e) => handleFileSuccess(e, 'diecuts')"
           >
             <el-button
-              v-if="JSON.stringify(purchaseContract.diecuts_file) === '{}'"
+              v-if="JSON.stringify(diecutsFile) === '{}'"
               type="text"
             >
               上传
@@ -152,7 +152,7 @@
           </div>
           <div
             v-if="
-              JSON.stringify(purchaseContract.diecuts_file) !== '{}' &&
+              JSON.stringify(diecutsFile) !== '{}' &&
                 purchaseContract.state === 10
             "
           >
@@ -249,7 +249,7 @@ export default {
             this.diecutsFile = file;
           }
         }
-        this.getContract();
+        // this.getContract();
       } catch (err) {
         return;
       }

@@ -14,7 +14,7 @@
       border
     >
       <el-descriptions-item label="关联定价ID">
-        {{ progress.product_id }}
+        {{ progress.pricing_id }}
       </el-descriptions-item>
       <el-descriptions-item label="最终定价">
         {{ progress.final_price }}
@@ -92,7 +92,8 @@ export default {
       getSku: this.getSku,
       changeColor: this.changeColor,
       getContract: this.getContract,
-      getPreProductSample: this.getPreProductSample
+      getPreProductSample: this.getPreProductSample,
+      getProgress: this.getProgress
     };
   },
   props: ['orderId'],
@@ -145,7 +146,7 @@ export default {
         let { sku } = this.$store.state.product.order;
         this.skuForm = sku.sku_info;
         this.skuId = sku.id;
-        this.skuAttachment = this.skuForm.project_plan_file;
+        this.skuAttachment = this.skuForm.project_plan_file || {};
         this.skuEntrySchedule = sku.sku_entry_schedule;
         this.skuSchedule = sku.sku_name_schedule;
         changeTimestamp(this.skuSchedule, 'actual_finish_time');

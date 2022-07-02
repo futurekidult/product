@@ -43,12 +43,15 @@
         <template #default="scope">
           <el-button
             type="text"
-            @click="deleteMould(scope.row.id)"
+            @click="showDeleteDialog(scope.row.id)"
           >
             删除
           </el-button>
           <span class="table-btn">|</span>
-          <el-button type="text">
+          <el-button 
+            type="text" 
+            @click="toDetail(scope.row.id)"
+          >
             查看
           </el-button>
         </template>
@@ -60,6 +63,31 @@
       :get-list="getMould"
     />
   </div>
+
+  <el-dialog
+    v-model="deleteDialog"
+    title="提示"
+    width="20%"
+  >
+    <div class="result-content">
+      确认要删除该模具吗
+    </div>
+    <div style="text-align: center">
+      <el-button
+        class="mould-btn"
+        @click="closeDeleteDialog"
+      >
+        取消
+      </el-button>
+      <el-button
+        type="primary"
+        class="mould-btn"
+        @click="deleteMould"
+      >
+        提交
+      </el-button>
+    </div>
+  </el-dialog>
 
   <el-dialog
     v-model="mouldSelectedVisible"
@@ -93,6 +121,7 @@
       <el-table-column
         label="创建时间"
         prop="create_time"
+        width="200px"
       />
       <el-table-column
         label="创建人"
@@ -131,7 +160,9 @@ export default {
     return {
       mouldSelectedVisible: false,
       multipleSelection: [],
-      mouldIds: []
+      mouldIds: [],
+      deleteDialog: false,
+      mouldId: 0
     };
   },
   methods: {
@@ -159,15 +190,26 @@ export default {
         return;
       }
     },
-    async deleteMould(id) {
+    async deleteMould() {
       try {
         await this.$store.dispatch('product/deleteMould', {
-          relation_id: id
+          relation_id: this.mouldId
         });
+        this.deleteDialog = false;
         this.getMould();
       } catch (err) {
         return;
       }
+    },
+    closeDeleteDialog() {
+      this.deleteDialog = false;
+    },
+    showDeleteDialog(id) {
+      this.deleteDialog = true;
+      this.mouldId = id;
+    },
+    toDetail(id) {
+      this.$router.push(`/mould-list/${id}`);
     }
   }
 };

@@ -384,7 +384,8 @@ export default {
     async getAllMouldList(currentPage = 1, pageSize = 10) {
       let params = {
         page_size: pageSize,
-        current_page: currentPage
+        current_page: currentPage,
+        state: 40
       };
       try {
         await this.$store.dispatch('mould/getMouldList', { params });

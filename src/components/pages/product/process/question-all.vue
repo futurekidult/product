@@ -85,11 +85,15 @@
         width="300px"
       >
         <template #default="scope">
-          <el-button @click="showIgnoreForm(scope.row.id)">
+          <el-button 
+            :disabled="scope.row.state !== 10"
+            @click="showIgnoreForm(scope.row.id)"
+          >
             可忽略
           </el-button>
           <el-button
             type="success"
+            :disabled="scope.row.state !== 10"
             @click="showResolveDialog(scope.row.id)"
           >
             已解决

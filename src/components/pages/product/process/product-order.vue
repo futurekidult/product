@@ -70,26 +70,8 @@ export default {
   inject: ['getOrder'],
   props: ['orderList'],
   methods: {
-    async getSkuForm() {
-      try {
-        await this.$store.dispatch('product/order/getSku');
-      } catch (err) {
-        return;
-      }
-    },
-    async getOrderProgress() {
-      try {
-        await this.$store.dispatch('product/order/getProgress', {
-          params: { id: this.$route.params.productId }
-        });
-      } catch (err) {
-        return;
-      }
-    },
     toDetail(id) {
       this.$router.push(`/product-list/${this.$route.params.productId}/${id}`);
-      this.getOrderProgress();
-      this.getSkuForm();
     },
     changeCellColor(val) {
       if (val <= 30) {

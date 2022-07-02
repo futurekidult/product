@@ -66,7 +66,7 @@
           />
         </el-form-item>
       </div>
-      <el-form-item>
+      <el-form-item v-if="schedule.state !== 40">
         <el-button
           :disabled="isDisabled"
           @click="addSku"
@@ -108,7 +108,7 @@
       >
         <div class="attachment-list">
           <div>
-            {{ attachment.name }}
+            {{ file.name }}
           </div>
           <div style="display: flex">
             <div v-if="file.type === 12860">
@@ -184,7 +184,7 @@
 <script>
 import { downloadFile, getFile, previewFile } from '../../../../../utils';
 export default {
-  inject: ['getSku', 'changeColor'],
+  inject: ['getSku', 'changeColor','getProgress'],
   props: ['skuForm', 'attachment', 'skuEntrySchedule', 'schedule', 'skuId'],
   data() {
     return {
@@ -226,6 +226,7 @@ export default {
     },
     skuForm(val) {
       this.form = val;
+      this.form.sku = this.form.sku || [{}];
     }
   },
   mounted() {
@@ -235,7 +236,7 @@ export default {
     async getPlatform() {
       let params = {
         product_id: +this.$route.params.productId,
-        pricing_id: +this.$route.params.orderId
+        pricing_id: this.$store.state.product.order.progress.pricing_id
       };
       try {
         await this.$store.dispatch('getPlatform', { params });
@@ -249,7 +250,7 @@ export default {
       body['sku_info'] = {};
       body['sku_info']['sku'] = val.sku;
       body['order_id'] = +this.$route.params.orderId;
-      body['sku_info']['project_plan_file'] = this.attachment.id;
+      body['sku_info']['project_plan_file'] = this.file.id;
       try {
         await this.$store.dispatch('product/order/submitSkuname', body);
         this.getSku();
@@ -315,6 +316,7 @@ export default {
           id: this.skuId
         });
         this.getSku();
+        this.getProgress();
       } catch (err) {
         return;
       }
