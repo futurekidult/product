@@ -219,8 +219,7 @@ export default {
         }
       ],
       disabled: null,
-      show: true,
-      proofingId: 0
+      show: true
     };
   },
   mounted() {
@@ -236,7 +235,7 @@ export default {
       try {
         await this.$store.dispatch('sample/getProofingSheet', {
           params: {
-            id: +this.$route.params.id
+            id: this.$store.state.sample.proofingId
           }
         });
         let { sample } = this.$store.state;

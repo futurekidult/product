@@ -17,6 +17,7 @@ export default {
       sampleDetail: {},
       detailLoading: true,
       proofingProgress: {},
+      proofingId:0,
       proofingSheet: {},
       testLoading: true,
       testProgress: {},
@@ -111,6 +112,7 @@ export default {
           if (res.code === 200) {
             context.commit('setProofingProgress', res.data);
             context.commit('setProofingLoading', false);
+            context.state.proofingId = res.data.id;
           }
         });
     },

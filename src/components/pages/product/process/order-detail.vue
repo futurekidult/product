@@ -151,7 +151,7 @@ export default {
         this.skuSchedule = sku.sku_name_schedule;
         changeTimestamp(this.skuSchedule, 'actual_finish_time');
         changeTimestamp(this.skuEntrySchedule, 'actual_finish_time');
-        this.getPlatform();
+        this.getPlatform(sku.pricing_id);
       } catch (err) {
         this.$store.commit('product/order/setSkuLoading', false);
         return;
@@ -195,10 +195,10 @@ export default {
         return;
       }
     },
-    async getPlatform() {
+    async getPlatform(id) {
       let params = {
         product_id: +this.$route.params.productId,
-        pricing_id: this.$store.state.product.order.pricingId
+        pricing_id: id
       };
       try {
         await this.$store.dispatch('getPlatform', { params });

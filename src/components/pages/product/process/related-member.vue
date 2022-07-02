@@ -59,7 +59,7 @@
       </el-table-column>
     </el-table>
     <base-pagination
-      :length="projectMember.length"
+      :length="$store.state.product.memberListLength"
       :get-list="getMember"
     />
   </div>

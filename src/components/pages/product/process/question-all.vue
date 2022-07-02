@@ -139,7 +139,7 @@
     width="20%"
   >
     <div class="result-content">
-      是否确定提交样品测试结果
+      是否确认已解决问题
     </div>
     <div style="text-align: center">
       <el-button
