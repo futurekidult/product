@@ -218,9 +218,7 @@ export default {
   ],
   data() {
     return {
-      agencyForm: {
-        isAgency: this.agencyValue
-      },
+      agencyForm: {},
       isAgencyOptions: [
         {
           label: '请选择',
@@ -248,6 +246,9 @@ export default {
   watch: {
     attachment(val) {
       this.file = val;
+    },
+    agencyValue(val) {
+      this.agencyForm.isAgency = val;
     }
   },
   methods: {
@@ -270,6 +271,7 @@ export default {
       let body = val;
       try {
         await this.$store.dispatch('sample/agency/isAgency', body);
+        this.getProgress();
       } catch (err) {
         return;
       }

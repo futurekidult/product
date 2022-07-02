@@ -642,8 +642,34 @@ export default {
       }
     },
     async createQuotation(val) {
-      let body = val;
-      body.quote_validity = timestamp(val.quote_validity);
+      let body = {
+        'pricing_id':  this.id,
+        'supplier_id': val.supplier_id,
+        'quote_currency': val.quote_currency,
+        'quote_amount': val.quote_amount,
+        'quote_amount_rmb': val.quote_amount_rmb,
+        'appended_reason': val.appended_reason,
+        'beyond_reference_reason': val.beyond_reference_reason,
+        'quote_validity': timestamp(val.quote_validity),
+        'inner_l': val.inner_l,
+        'inner_w': val.inner_w,
+        'inner_h': val.inner_h,
+        'inner_box_weight': val.inner_box_weight,
+        'outer_l': val.outer_l,
+        'outer_w': val.outer_w,
+        'outer_h': val.outer_h,
+        'outer_box_weight': val.outer_box_weight,
+        'head_currency': val.head_currency,
+        'head_cost': val.head_cost,
+        'head_cost_rmb': val.head_cost_rmb,
+        'tail_currency': val.tail_currency,
+        'tail_cost': val.tail_cost,
+        'tail_cost_rmb': val.tail_cost_rmb,  
+        'sea_freight_currency': val.sea_freight_currency,
+        'sea_freight_cost': val.sea_freight_cost,
+        'sea_freight_cost_rmb': val.sea_freight_cost_rmb,  
+        'quotation_file': val.quotation_file
+      }
       body['pricing_id'] = this.id;
       try {
         await this.$store.dispatch('price/createQuotation', body);

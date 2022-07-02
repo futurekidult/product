@@ -344,8 +344,13 @@ export default {
   },
   methods: {
     async createTestApply(val) {
-      let body = val;
-      body['sample_id'] = +this.$route.params.id;
+      let body = {
+        'sample_id': +this.$route.params.id,
+        'user_experience_duration': +val.user_experience_duration,
+        'estimated_finish_time': timestamp(val.estimated_finish_time),
+        'illustrate_text': val.illustrate_text,
+        'demand_list_file': val.demand_list_file
+      }
       try {
         await this.$store.dispatch('sample/user/createTestApply', body);
         this.visible = false;
@@ -424,12 +429,7 @@ export default {
       this.$refs.demandForm.validate((valid) => {
         if (valid) {
           if (this.type === 'apply') {
-            this.demandForm.user_experience_duration =
-              +this.demandForm.user_experience_duration;
             this.createTestApply(this.demandForm);
-            this.demandForm.estimated_finish_time = timestamp(
-              this.demandForm.estimated_finish_time
-            );
           } else {
             this.reviewTestApply({
               review_result: this.demandForm.review_result,

@@ -23,6 +23,7 @@
         :label="'使用场景' + (index + 1)"
         :prop="`usage_scenario[${index}]`"
         :rules="productRules.usage_scenario"
+        class="form-item_width"
       >
         <el-input
           v-model="form.usage_scenario[index]"
@@ -54,6 +55,7 @@
       <el-form-item
         label="用户痛点"
         prop="pain_spot"
+        class="form-item_width"
       >
         <el-input
           v-model="form.pain_spot"
@@ -68,6 +70,7 @@
       <el-form-item
         label="用户需求分析"
         prop="user_demand_analysis"
+        class="form-item_width"
       >
         <el-input
           v-model="form.user_demand_analysis"
@@ -82,6 +85,7 @@
       <el-form-item
         label="产品切入点"
         prop="pointcut"
+        class="form-item_width"
       >
         <el-input
           v-model="form.pointcut"
@@ -96,7 +100,7 @@
       <competitive-table :product-form="form" />
       <el-collapse class="collapse-item">
         <el-collapse-item title="新品信息">
-          <div class="analy-form_item">
+          <div class="analy-form_item form-item_width">
             <el-form-item
               label="内箱尺寸/cm"
               required
@@ -192,6 +196,7 @@
             label="头程费用"
             style="margin-bottom: 18px"
             required
+            class="form-item_width"
           >
             <div style="display: flex">
               <el-form-item prop="head_cost_currency">
@@ -226,6 +231,7 @@
             label="尾程费用"
             style="margin-bottom: 18px"
             required
+            class="form-item_width"
           >
             <div style="display: flex">
               <el-form-item prop="tail_cost_currency">
@@ -260,6 +266,7 @@
             label="海运单价"
             style="margin-bottom: 18px"
             required
+            class="form-item_width"
           >
             <div style="display: flex">
               <el-form-item prop="sea_freight_currency">
@@ -290,7 +297,7 @@
               </el-form-item>
             </div>
           </el-form-item>
-          <el-form-item>
+          <el-form-item class="form-item_width">
             <div class="desc">
               若没有海运费的金额请填0
             </div>
@@ -300,6 +307,7 @@
       <el-form-item
         label="上传附件"
         prop="attachment"
+        class="form-item_width"
       >
         <el-upload
           action
@@ -317,7 +325,7 @@
           支持office文档格式,文件不能超过5MB
         </div>
       </el-form-item>
-      <el-form-item>
+      <el-form-item class="form-item_width">
         <div
           v-for="item in file"
           :key="item.id"

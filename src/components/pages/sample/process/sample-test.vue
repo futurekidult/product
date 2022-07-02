@@ -100,6 +100,7 @@
           name="quality"
         >
           <quality-test
+            v-if="activeName === 'quality'"
             :id="qualityId"
             :test-id="qualityTestId"
             :progress="qualityProgress"
@@ -114,6 +115,7 @@
           name="agency"
         >
           <agency-test
+            v-if="activeName === 'agency'"
             :id="agencyId"
             :test-id="agencyTestId"
             :progress="agencyProgress"
@@ -129,6 +131,7 @@
           name="user"
         >
           <user-test
+            v-if="activeName === 'user'"
             :id="userId"
             :test-id="userTestId"
             :progress="userProgress"
@@ -138,6 +141,7 @@
             :button-state="userButtonState"
             :apply-list="userApplyList"
             :change-color="changeColor"
+            :user-list="userList"
           />
         </el-tab-pane>
       </el-tabs>
@@ -213,7 +217,7 @@ import QualityTest from './test/quality-test.vue';
 import AgencyTest from './test/agency-test.vue';
 import UserTest from './test/user-test.vue';
 import TestForm from '../common/test-form.vue';
-import { changeTimestamp, getOrganizationList } from '../../../../utils';
+import { changeTimestamp, formatterTime, getOrganizationList } from '../../../../utils';
 
 export default {
   components: {
@@ -225,7 +229,8 @@ export default {
   inject: ['getTest','getQualityDetail'],
   provide() {
     return {
-      getUser: this.getUserTest
+      getUser: this.getUserTest,
+      getList: this.getUserList
     };
   },
   props: ['applyList', 'buttonState','qualityProgress','qualityAttachment','qualitySubmitState','qualityId','qualityTestId'],
@@ -257,7 +262,8 @@ export default {
         children: 'children',
         label: 'name',
         disabled: 'disabled'
-      }
+      },
+      userList: []
     };
   },
   mounted() {
@@ -339,6 +345,25 @@ export default {
         return;
       }
     },
+    async getUserList(currentPage = 1, pageSize = 10) {
+      try {
+        await this.$store.dispatch('sample/user/getUserList', {
+          params: {
+            sample_id: +this.$route.params.id,
+            current_page: currentPage,
+            page_size: pageSize
+          }
+        });
+        this.userList = this.$store.state.sample.user.userList;
+        this.userList.forEach((item) => {
+          item.create_time = formatterTime(item.create_time);
+          item.delivery_time = formatterTime(item.delivery_time);
+          item.upload_time = formatterTime(item.upload_time);
+        });
+      } catch (err) {
+        return;
+      }
+    },
     showApplyForm() {
       this.testApplyVisible = true;
     },
@@ -393,7 +418,9 @@ export default {
         this.getAgencyTest();
       } else {
         this.getUserTest();
+        this.getUserList();
       }
+      this.activeName = tab.props.name;
     }
   }
 };

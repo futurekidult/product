@@ -1,172 +1,174 @@
 <template>
-  <el-table
-    border
-    stripe
-    empty-text="无数据"
-    :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-    :data="userList"
-  >
-    <el-table-column
-      label="序号"
-      type="index"
-      width="60px"
-    />
-    <el-table-column
-      label="创建人"
-      prop="creator"
-    />
-    <el-table-column
-      label="创建时间"
-      prop="create_time"
-      width="200px"
-    />
-    <el-table-column
-      label="寄样完成时间"
-      prop="delivery_time"
-      width="200px"
-    />
-    <el-table-column
-      label="结果上传时间"
-      prop="upload_time"
-      width="200px"
-    />
-    <el-table-column
-      label="用户姓名"
-      prop="username"
-    />
-    <el-table-column
-      label="是否已寄样"
-      prop="is_delivered_desc"
-    />
-    <el-table-column label="测试状态">
-      <template #default="scope">
-        <div :class="changeCellColor(scope.row.state)">
-          {{ scope.row.state_desc }}
-        </div>
-      </template>
-    </el-table-column>
-    <el-table-column
-      label="测试结果文件"
-      prop="test_result_file"
-      width="150px"
+  <div>
+    <el-table
+      border
+      stripe
+      empty-text="无数据"
+      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+      :data="userList"
     >
-      <template #default="scope">
-        <div style="display: flex">
-          <el-upload
-            action
-            :show-file-list="false"
-            :http-request="handleFileSuccess"
-          >
-            <el-button
+      <el-table-column
+        label="序号"
+        type="index"
+        width="60px"
+      />
+      <el-table-column
+        label="创建人"
+        prop="creator"
+      />
+      <el-table-column
+        label="创建时间"
+        prop="create_time"
+        width="200px"
+      />
+      <el-table-column
+        label="寄样完成时间"
+        prop="delivery_time"
+        width="200px"
+      />
+      <el-table-column
+        label="结果上传时间"
+        prop="upload_time"
+        width="200px"
+      />
+      <el-table-column
+        label="用户姓名"
+        prop="username"
+      />
+      <el-table-column
+        label="是否已寄样"
+        prop="is_delivered_desc"
+      />
+      <el-table-column label="测试状态">
+        <template #default="scope">
+          <div :class="changeCellColor(scope.row.state)">
+            {{ scope.row.state_desc }}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="测试结果文件"
+        prop="test_result_file"
+        width="150px"
+      >
+        <template #default="scope">
+          <div style="display: flex">
+            <el-upload
+              action
+              :show-file-list="false"
+              :http-request="handleFileSuccess"
+            >
+              <el-button
+                v-if="
+                  JSON.stringify(scope.row.test_result_file) === '{}' &&
+                    scope.row.button_state.is_upload === 0
+                "
+                type="text"
+              >
+                上传
+              </el-button>
+            </el-upload>
+            <div v-if="JSON.stringify(scope.row.test_result_file) !== '{}'">
+              <el-button
+                type="text"
+                @click="showViewFile(scope.row.test_result_file.id)"
+              >
+                预览
+              </el-button>
+            </div>
+            <div v-if="scope.row.button_state.is_upload === 1">
+              <span class="table-btn">|</span>
+              <el-button
+                type="text"
+                @click="
+                  download(
+                    scope.row.test_result_file.id,
+                    scope.row.test_result_file.name
+                  )
+                "
+              >
+                下载
+              </el-button>
+            </div>
+            <div
               v-if="
-                JSON.stringify(scope.row.test_result_file) === '{}' &&
+                JSON.stringify(scope.row.test_result_file) !== '{}' &&
                   scope.row.button_state.is_upload === 0
               "
-              type="text"
             >
-              上传
-            </el-button>
-          </el-upload>
-          <div v-if="JSON.stringify(scope.row.test_result_file) !== '{}'">
-            <el-button
-              type="text"
-              @click="showViewFile(scope.row.test_result_file.id)"
-            >
-              预览
-            </el-button>
+              <span class="table-btn">|</span>
+              <el-button
+                type="text"
+                @click="deleteFile"
+              >
+                删除
+              </el-button>
+            </div>
           </div>
-          <div v-if="scope.row.button_state.is_upload === 1">
-            <span class="table-btn">|</span>
-            <el-button
-              type="text"
-              @click="
-                download(
-                  scope.row.test_result_file.id,
-                  scope.row.test_result_file.name
-                )
-              "
-            >
-              下载
-            </el-button>
-          </div>
-          <div
-            v-if="
-              JSON.stringify(scope.row.test_result_file) !== '{}' &&
-                scope.row.button_state.is_upload === 0
-            "
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="操作"
+        width="350px"
+      >
+        <template #default="scope">
+          <el-button
+            :disabled="scope.row.is_delivered_desc === '是'"
+            @click="deliverSample(scope.row.user_test_apply_id, scope.row.id)"
           >
-            <span class="table-btn">|</span>
-            <el-button
-              type="text"
-              @click="deleteFile"
-            >
-              删除
-            </el-button>
-          </div>
-        </div>
-      </template>
-    </el-table-column>
-    <el-table-column
-      label="操作"
-      width="350px"
-    >
-      <template #default="scope">
-        <el-button
-          :disabled="scope.row.is_delivered_desc === '是'"
-          @click="deliverSample(scope.row.user_test_apply_id, scope.row.id)"
-        >
-          样品已寄送
-        </el-button>
-        <el-button
-          :disabled="JSON.stringify(scope.row.test_result_file) !== '{}'"
-          @click="showResultForm(scope.row.user_test_apply_id)"
-        >
-          {{
-            JSON.stringify(scope.row.test_result_file) === '{}'
-              ? '上传结果'
-              : '已上传'
-          }}
-        </el-button>
-        <el-button @click="showViewUserForm(scope.row.user_test_apply_id)">
-          查看信息
-        </el-button>
-      </template>
-    </el-table-column>
-  </el-table>
+            样品已寄送
+          </el-button>
+          <el-button
+            :disabled="JSON.stringify(scope.row.test_result_file) !== '{}'"
+            @click="showResultForm(scope.row.user_test_apply_id)"
+          >
+            {{
+              JSON.stringify(scope.row.test_result_file) === '{}'
+                ? '上传结果'
+                : '已上传'
+            }}
+          </el-button>
+          <el-button @click="showViewUserForm(scope.row.user_test_apply_id)">
+            查看信息
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
 
-  <div class="user-item">
-    <el-button
-      style="margin: 15px 0"
-      @click="showUserForm"
-    >
-      + 新增测试用户
-    </el-button>
+    <div class="user-item">
+      <el-button
+        style="margin: 15px 0"
+        @click="showUserForm"
+      >
+        + 新增测试用户
+      </el-button>
 
-    <base-pagination
-      :length="userList.length"
-      :get-list="getUserList"
+      <base-pagination
+        :length="$store.state.sample.user.total"
+        :get-list="getList"
+      />
+    </div>
+    <user-form
+      v-if="userVisible"
+      :dialog-visible="userVisible"
+      @hide-dialog="closeUserForm"
+    />
+
+    <sample-result
+      v-if="resultFormVisible"
+      :id="testUserId"
+      :dialog-visible="resultFormVisible"
+      :get-list="getList"
+      @hide-dialog="closeResultForm"
+    />
+
+    <view-user
+      v-if="viewUserVisible"
+      :id="viewUserid"
+      :dialog-visible="viewUserVisible"
+      @hide-dialog="closeViewUserForm"
     />
   </div>
-  <user-form
-    v-if="userVisible"
-    :dialog-visible="userVisible"
-    @hide-dialog="closeUserForm"
-  />
-
-  <sample-result
-    v-if="resultFormVisible"
-    :id="testUserId"
-    :dialog-visible="resultFormVisible"
-    :get-list="getUserList"
-    @hide-dialog="closeResultForm"
-  />
-
-  <view-user
-    v-if="viewUserVisible"
-    :id="viewUserid"
-    :dialog-visible="viewUserVisible"
-    @hide-dialog="closeViewUserForm"
-  />
 </template>
 
 <script>
@@ -175,7 +177,6 @@ import SampleResult from './sample-result.vue';
 import ViewUser from './view-user.vue';
 import {
   downloadFile,
-  formatterTime,
   getFile,
   previewFile
 } from '../../../../utils';
@@ -186,15 +187,16 @@ export default {
     SampleResult,
     ViewUser
   },
+  inject: ['getList'],
   provide() {
     return {
-      getUser: this.getUserList
+      getUser: this.getList
     };
   },
+  props: ['userList'],
   data() {
     return {
       userVisible: false,
-      userList: [],
       resultFormVisible: false,
       testUserId: 0,
       viewUserVisible: false,
@@ -202,29 +204,7 @@ export default {
       file: {}
     };
   },
-  mounted() {
-    this.getUserList();
-  },
   methods: {
-    async getUserList(currentPage = 1, pageSize = 10) {
-      try {
-        await this.$store.dispatch('sample/user/getUserList', {
-          params: {
-            sample_id: +this.$route.params.id,
-            current_page: currentPage,
-            page_size: pageSize
-          }
-        });
-        this.userList = this.$store.state.sample.user.userList;
-        this.userList.forEach((item) => {
-          item.create_time = formatterTime(item.create_time);
-          item.delivery_time = formatterTime(item.delivery_time);
-          item.upload_time = formatterTime(item.upload_time);
-        });
-      } catch (err) {
-        return;
-      }
-    },
     async deliverSample(testId, userId) {
       let body = {
         user_test_apply_id: testId,
@@ -233,7 +213,7 @@ export default {
       };
       try {
         await this.$store.dispatch('sample/user/deliverSample', body);
-        this.getUserList();
+        this.getList();
       } catch (err) {
         return;
       }
@@ -250,7 +230,7 @@ export default {
             name: this.$store.state.fileRes.file_name,
             type: this.$store.state.fileRes.type
           };
-          this.getUserList();
+          this.getList();
         }
       } catch (err) {
         return;

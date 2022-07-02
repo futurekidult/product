@@ -219,7 +219,8 @@ export default {
         }
       ],
       disabled: null,
-      show: true
+      show: true,
+      proofingId: 0
     };
   },
   mounted() {
@@ -241,6 +242,7 @@ export default {
         let { sample } = this.$store.state;
         this.proofingForm = sample.proofingSheet;
         this.attachment = this.proofingForm.proofing_sheet_file;
+        this.proofingId = this.proofingForm.id;
         this.proofingForm.demand_time = formatterTime(this.proofingForm.demand_time);
       } catch (err) {
         return;
@@ -248,7 +250,6 @@ export default {
     },
     async createProofingSheet(val) {
       let body = val;
-      body['sample_id'] = +this.$route.params.id;
       try {
         await this.$store.dispatch('sample/createProofingSheet', body);
         this.visible = false;
@@ -306,18 +307,22 @@ export default {
     },
     submitProofingSheet() {
       this.proofingForm.proofing_sheet_file = this.attachment.id;
+      let val = {
+        'sample_id': +this.$route.params.id,
+        'sample_model': this.proofingForm.sample_model,
+        'demand_quantity': +this.proofingForm.demand_quantity,
+        'has_verify': +this.proofingForm.has_verify,
+        'demand_time': timestamp(this.proofingForm.demand_time),
+        'remark_text': this.proofingForm.remark_text,
+        'proofing_sheet_file': this.proofingForm.proofing_sheet_file
+      }
       this.$refs.proofingForm.validate((valid) => {
         if (valid) {
-          this.proofingForm.has_verify = +this.proofingForm.has_verify;
-          this.proofingForm.demand_quantity =
-            +this.proofingForm.demand_quantity;
-          this.proofingForm.demand_time = timestamp(
-            this.proofingForm.demand_time
-          );
           if (this.type === 'create') {
-            this.createProofingSheet(this.proofingForm);
+            this.createProofingSheet(val);
           } else {
-            this.updateProofingSheet(this.proofingForm);
+            val.id = this.proofingId;
+            this.updateProofingSheet(val);
           }
         }
       });
