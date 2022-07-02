@@ -34,6 +34,7 @@
           :change-color="changeColor"
           :progress="makingMould"
           :get-list="getMakingMould"
+          :button-state="buttonState"
         />
       </el-tab-pane>
       <el-tab-pane
@@ -71,7 +72,8 @@ export default {
       prototypeProgress: {},
       attachment: [],
       makingMould: {},
-      testingMould: {}
+      testingMould: {},
+      buttonState: 0
     };
   },
   mounted() {
@@ -121,6 +123,7 @@ export default {
           }
         });
         this.makingMould = this.$store.state.mould.makingMouldProgress;
+        this.buttonState = this.makingMould.button_state;
         changeTimestamp(this.makingMould, 'actual_finish_time');
         changeTimestamp(this.makingMould, 'estimated_finish_time');
       } catch (err) {

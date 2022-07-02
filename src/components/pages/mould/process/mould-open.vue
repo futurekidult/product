@@ -8,7 +8,7 @@
         开模确认进度表
       </div>
       <el-button
-        :disabled="JSON.stringify(progress) !== '{}'"
+        :disabled="buttonState === 0"
         type="primary"
         @click="showApplyForm"
       >
@@ -114,7 +114,7 @@ export default {
     MouldForm
   },
   inject: ['getMould'],
-  props: ['progress', 'changeColor', 'getList'],
+  props: ['progress', 'changeColor', 'getList','buttonState'],
   data() {
     return {
       applyFormVisible: false,

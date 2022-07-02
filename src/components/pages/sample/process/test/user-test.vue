@@ -359,7 +359,7 @@
       type="view"
       @hide-dialog="closeViewTemplateForm"
     />
-</div>
+  </div>
 </template>
 
 <script>

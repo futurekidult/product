@@ -8,7 +8,7 @@
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
     >
       <el-table-column
-        prop="id"
+        type="index"
         label="序号"
         width="60px"
       />

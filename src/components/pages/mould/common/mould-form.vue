@@ -112,9 +112,7 @@ export default {
     }
   },
   methods: {
-    async createMakingMould(val) {
-      let body = val;
-      body['mould_id'] = +this.$route.params.id;
+    async createMakingMould(body) {
       try {
         await this.$store.dispatch('mould/createMakingMould', body);
         this.visible = false;
@@ -139,14 +137,17 @@ export default {
     submitForm() {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          this.form.estimated_finish_time = timestamp(
-            this.form.estimated_finish_time
-          );
-          this.form.cost = +this.form.cost;
+          let val = {
+            'mould_id': +this.$route.params.id,
+            'cost': +this.form.cost,
+            'mould_factory': this.form.mould_factory,
+            'estimated_finish_time': timestamp(this.form.estimated_finish_time),
+            'illustration_text': this.form.illustration_text
+           }
           if (this.type === 'create') {
-            this.createMakingMould(this.form);
+            this.createMakingMould(val);
           } else {
-            this.updateMakingMould(this.form);
+            this.updateMakingMould(val);
           }
         }
       });
