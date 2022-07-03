@@ -59,7 +59,7 @@
     </el-table>
 
     <base-pagination
-      :length="mouldList.length"
+      :length="$store.state.product.mouldListLength"
       :get-list="getMould"
     />
   </div>
@@ -99,7 +99,7 @@
       stripe
       empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      :data="allList"
+      :data="allMouldList"
       @selection-change="handleSelectionChange"
     >
       <el-table-column
@@ -130,8 +130,8 @@
     </el-table>
 
     <base-pagination
-      :length="20"
-      :get-list="getAllMould"
+      :length="$store.state.mould.mouldListLength"
+      :get-list="getAllMouldList"
     />
 
     <el-divider style="margin: 68px 0px 20px" />
@@ -153,21 +153,40 @@
 </template>
 
 <script>
+import { changeTimestamp } from '../../../../utils';
 export default {
-  inject: ['getAllMould', 'getMould'],
-  props: ['mouldList', 'allList'],
+  inject: [ 'getMould'],
+  props: ['mouldList'],
   data() {
     return {
       mouldSelectedVisible: false,
       multipleSelection: [],
       mouldIds: [],
       deleteDialog: false,
-      mouldId: 0
+      mouldId: 0,
+      allMouldList: []
     };
   },
   methods: {
+    async getAllMouldList(currentPage = 1, pageSize = 10) {
+      let params = {
+        page_size: pageSize,
+        current_page: currentPage,
+        state: 40
+      };
+      try {
+        await this.$store.dispatch('mould/getMouldList', { params });
+        this.allMouldList = this.$store.state.mould.mouldList;
+        this.allMouldList.forEach((item) => {
+          changeTimestamp(item, 'create_time');
+        });
+       this.mouldSelectedVisible = true;
+      } catch (err) {
+        return;
+      }
+    },
     showMouldSelectedForm() {
-      this.mouldSelectedVisible = true;
+      this.getAllMouldList();
     },
     closeMouldSelectedForm() {
       this.mouldSelectedVisible = false;

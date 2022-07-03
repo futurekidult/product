@@ -103,7 +103,7 @@
         </div>
       </el-form-item>
       <el-form-item
-        v-if="show"
+        v-if="JSON.stringify(file) !== '{}'"
         prop="project_plan_file"
       >
         <div class="attachment-list">
@@ -208,7 +208,6 @@ export default {
           }
         ]
       },
-      show: true,
       file: this.attachment,
       form: this.skuForm,
       deleteVisible: false
@@ -259,7 +258,6 @@ export default {
       try {
         await this.$store.dispatch('uploadFile', form);
         if (this.$store.state.uploadState) {
-          this.show = true;
           this.file = {
             id: this.$store.state.fileRes.id,
             name: this.$store.state.fileRes.file_name,
@@ -284,7 +282,6 @@ export default {
     deleteFile() {
       this.file = {};
       this.form.project_plan_file = '';
-      this.show = false;
     },
     submitSkuForm() {
       this.form.project_plan_file = this.file.id;

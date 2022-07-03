@@ -34,7 +34,7 @@
           :disabled="isDisabled"
         />
       </el-form-item>
-      <el-form-item>
+      <el-form-item v-if="progress.state !== 50">
         <el-button
           class="project-plan_btn"
           :disabled="isDisabled"

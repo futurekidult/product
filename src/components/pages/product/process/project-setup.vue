@@ -130,7 +130,7 @@
         </el-form-item>
         <el-form-item style="margin-bottom: 18px; width: 50%">
           <div
-            v-if="show"
+            v-if="JSON.stringify(file) !== '{}'"
             class="attachment-list"
           >
             <div>
@@ -234,7 +234,6 @@ export default {
           label: '不通过'
         }
       ],
-      show: true,
       file: this.attachment,
       form: this.projectForm
     };
@@ -276,7 +275,6 @@ export default {
       try {
         await this.$store.dispatch('uploadFile', form);
         if (this.$store.state.uploadState) {
-          this.show = true;
           this.file = {
             id: this.$store.state.fileRes.id,
             name: this.$store.state.fileRes.file_name,
@@ -312,7 +310,6 @@ export default {
     deleteFile() {
       this.file = {};
       this.form.sale_plan = '';
-      this.show = false;
     },
     submitProjectForm() {
       this.form.sale_plan = this.file.id;
@@ -328,7 +325,7 @@ export default {
     changeCellColor(val) {
       if (val === 10) {
         return 'result-ing';
-      } else if (val === 20) {
+      } else if (val === 30) {
         return 'result-pass';
       } else {
         return 'result-fail';

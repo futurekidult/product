@@ -128,7 +128,7 @@
                 : '已上传'
             }}
           </el-button>
-          <el-button @click="showViewUserForm(scope.row.user_test_apply_id)">
+          <el-button @click="showViewUserForm(scope.row.id)">
             查看信息
           </el-button>
         </template>

@@ -134,7 +134,7 @@
       </el-table>
 
       <base-pagination
-        :length="mouldList.length"
+        :length="$store.state.mould.mouldListLength"
         :get-list="getMouldList"
       />
 

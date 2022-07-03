@@ -41,6 +41,7 @@
       style="width: 50%"
       :rules="surveyRules"
       :model="form"
+      :validate-on-rule-change="false"
     >
       <el-form-item
         label="产品图片"
@@ -360,7 +361,7 @@
       </el-form-item>
       <el-form-item>
         <div
-          v-if="show"
+          v-if="JSON.stringify(file) !== '{}'"
           class="attachment-list"
         >
           <div>
@@ -534,7 +535,6 @@ export default {
           }
         ]
       },
-      show: true,
       options: [
         {
           label: '是',
@@ -633,7 +633,6 @@ export default {
       try {
         await this.$store.dispatch('uploadFile', form);
         if (this.$store.state.uploadState) {
-          this.show = true;
           this.file = {
             id: this.$store.state.fileRes.id,
             name: this.$store.state.fileRes.file_name,
@@ -670,7 +669,6 @@ export default {
     deleteFile() {
       this.file = {};
       this.form.attachment = '';
-      this.show = false;
     },
     submitSurveyForm() {
       this.form.images = [];

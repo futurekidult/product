@@ -120,7 +120,6 @@ export default {
       this.$emit('hide-dialog', this.visible);
     },
     submitEditForm() {
-      console.log(this.editForm)
       this.$refs.editForm.validate((valid) => {
         if (valid) {
           this.updateOperationsSpecialist(this.editForm);

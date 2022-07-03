@@ -5,7 +5,10 @@
         <div class="test-title">
           用户测试申请进度表
         </div>
-        <el-button @click="showApplyForm">
+        <el-button 
+          :disabled="buttonState === 0"
+          @click="showApplyForm"
+        >
           申请用户测试
         </el-button>
       </div>
@@ -203,7 +206,7 @@
         </el-form-item>
         <el-form-item>
           <div
-            v-if="show"
+            v-if="JSON.stringify(file) !== '{}'"
             class="attachment-list"
           >
             <div>{{ file.name }}</div>
@@ -411,7 +414,6 @@ export default {
       viewTemplateFromVisible: false,
       fileId: 0,
       file: this.attachment,
-      show: true,
       memberList: [],
       defaultProps: {
         children: 'children',
@@ -539,7 +541,6 @@ export default {
       try {
         await this.$store.dispatch('uploadFile', form);
         if (this.$store.state.uploadState) {
-          this.show = true;
           this.file = {
             id: this.$store.state.fileRes.id,
             name: this.$store.state.fileRes.file_name,
@@ -575,7 +576,6 @@ export default {
     deleteFile() {
       this.file = {};
       this.fileForm.test_result_file = '';
-      this.show = false;
     },
     confirmResult() {
       this.confirmTestResult({

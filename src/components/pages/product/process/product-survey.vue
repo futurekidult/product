@@ -75,7 +75,6 @@
         name="user"
       >
         <user-survey
-          :change-color="changeColor"
           :progress="userProgress"
           :button-state="buttonState"
           :survey-apply="surveyApply"
@@ -248,8 +247,8 @@ export default {
         changeTimestamp(this.userProgress, 'actual_start_time');
         changeTimestamp(this.userProgress, 'actual_finish_time');
         this.planList.forEach((item) => {
-          changeTimestamp(item, 'estimated_finish_time');
-          changeTimestamp(item, 'actual_finish_time');
+           changeTimestamp(item, 'estimated_finish_time');
+           changeTimestamp(item, 'actual_finish_time');
         });
         this.length = userSurvey.planList.length;
       } catch (err) {

@@ -92,7 +92,7 @@
       </el-form-item>
       <el-form-item>
         <div
-          v-if="show"
+          v-if="JSON.stringify(attachment) !== '{}'"
           class="attachment-list"
         >
           <div>{{ attachment.name }}</div>
@@ -218,15 +218,12 @@ export default {
           value: 0
         }
       ],
-      disabled: null,
-      show: true
+      disabled: null
     };
   },
   mounted() {
     this.isDisabled();
-    if (this.type === 'create') {
-      this.show = false;
-    } else {
+    if (this.type !== 'create') {
       this.getProofingSheet();
     }
   },
@@ -281,7 +278,6 @@ export default {
       try {
         await this.$store.dispatch('uploadFile', form);
         if (this.$store.state.uploadState) {
-          this.show = true;
           this.attachment = {
             id: this.$store.state.fileRes.id,
             name: this.$store.state.fileRes.file_name,
@@ -329,7 +325,6 @@ export default {
     deleteFile() {
       this.attachment = {};
       this.proofingForm.proofing_sheet_file = '';
-      this.show = false;
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);

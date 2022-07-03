@@ -779,14 +779,19 @@ export default {
             demand_id: +this.$route.params.id
           }
         });
-        this.demandForm = this.$store.state.demand.demandDetail;
+        let { demandDetail } = this.$store.state.demand;
+        this.demandForm = demandDetail;
+        if(demandDetail.competitive_product.length === 0) {
+          this.demandForm.competitive_product = this.attachment;
+        } else {
+          this.attachment = this.demandForm.competitive_product;
+        } 
         this.bigCategoryList.map((item) => {
           if (item.id === this.demandForm.big_category_id) {
             this.smallCategoryList = item.children;
           }
         });
         this.imagesList = this.demandForm.images;
-        this.attachment = this.demandForm.competitive_product;
       } catch (err) {
         return;
       }

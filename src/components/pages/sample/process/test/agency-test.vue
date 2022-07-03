@@ -119,7 +119,7 @@
           </el-form-item>
           <el-form-item>
             <div
-              v-if="show"
+              v-if="JSON.stringify(file) !== '{}'"
               class="attachment-list"
             >
               <div>{{ file.name }}</div>
@@ -239,8 +239,7 @@ export default {
       },
       failFormVisible: false,
       reasonForm: {},
-      file: this.attachment,
-      show: true
+      file: this.attachment
     };
   },
   watch: {
@@ -305,7 +304,6 @@ export default {
       try {
         await this.$store.dispatch('uploadFile', form);
         if (this.$store.state.uploadState) {
-          this.show = true;
           this.file = {
             id: this.$store.state.fileRes.id,
             name: this.$store.state.fileRes.file_name,
@@ -341,7 +339,6 @@ export default {
     deleteFile() {
       this.file = {};
       this.fileForm.test_result_file = '';
-      this.show = false;
     },
     showFailReason() {
       this.failFormVisible = true;

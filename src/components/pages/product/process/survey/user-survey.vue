@@ -67,7 +67,7 @@
         </el-table-column>
       </el-table>
 
-      <div>
+      <div v-if="buttonState.apply === 0">
         <div class="survey-title">
           调研进度表
         </div>
@@ -128,6 +128,7 @@
           >
             <el-button
               v-if="buttonState.review_pass === 0"
+              :disabled="progress.state === 40"
               @click="confirmUserSurvey(progress.id)"
             >
               用户调研结果确认
@@ -190,7 +191,7 @@
           >
             <template #default="scope">
               <el-select
-                v-if="buttonState.plan === 1"
+                v-if="!scope.row.id"
                 v-model="scope.row.proceeding"
                 placeholder="请选择"
                 clearable
@@ -212,7 +213,7 @@
           >
             <template #default="scope">
               <el-select
-                v-if="buttonState.plan === 1"
+                v-if="!scope.row.id"
                 v-model="scope.row.detail"
                 placeholder="请选择"
               >
@@ -232,7 +233,7 @@
           >
             <template #default="scope">
               <el-tree-select
-                v-if="buttonState.plan === 1"
+                v-if="!scope.row.id"
                 v-model="scope.row.operator_id"
                 :data="memberList"
                 clearable
@@ -248,7 +249,7 @@
           >
             <template #default="scope">
               <el-date-picker
-                v-if="buttonState.plan === 1"
+                v-if="!scope.row.id"
                 v-model="scope.row.estimated_finish_time"
                 type="datetime"
                 placeholder="请选择时间"
@@ -284,7 +285,7 @@
                     action
                     :show-file-list="false"
                     :http-request="
-                      (e) => handleFileSuccess(e, scope.row.attachment)
+                      (e) => handleFileSuccess(e, scope.row.attachment, scope.row.id)
                     "
                   >
                     <el-button type="text">
@@ -348,13 +349,13 @@
               <div v-if="scope.row.state === 20">
                 <el-button
                   v-if="scope.row.state === 20"
-                  type="text"
                   @click="approvalItemFail(scope.row.id)"
                 >
                   不通过
                 </el-button>
                 <el-button
-                  type="text"
+                  type="success"
+                  style="width: 60px"
                   :disabled="scope.row.state >= 40"
                   @click="approvalItemPass(scope.row.id)"
                 >
@@ -364,7 +365,6 @@
               <div v-else>
                 <el-button
                   v-if="buttonState.plan === 1"
-                  type="text"
                   @click="deletePlanItem(scope.$index + 1)"
                 >
                   删除
@@ -375,8 +375,7 @@
                       buttonState.review_pass === 0 &&
                       (scope.row.state === 10 || scope.row.state === 30)
                   "
-                  type="text"
-                  @click="editOperator(scope.row.id)"
+                  @click="editOperator(scope.row.id,scope.row.operator_id)"
                 >
                   编辑
                 </el-button>
@@ -386,7 +385,8 @@
                       buttonState.review_pass === 0 &&
                       scope.row.state !== 20
                   "
-                  type="text"
+                  type="primary"
+                  style="width: 60px"
                   :disabled="scope.row.state >= 40"
                   @click="finishItem(scope.row.id)"
                 >
@@ -397,15 +397,17 @@
           </el-table-column>
         </el-table>
         <el-button
+          v-if="buttonState.plan === 1"
           style="margin: 15px 0"
-          :disabled="buttonState.plan === 0"
+          :disabled="progress.state === 40"
           @click="addSurveyPlan"
         >
           + 新增调研计划
         </el-button>
         <el-button
-          v-if="buttonState.review_pass === 0"
+          v-if="buttonState.review_pass === 0 && buttonState.plan === 0"
           style="margin: 15px; width: 128px"
+          :disabled="progress.state === 40"
           @click="addSurveyPlanItem"
         >
           提交
@@ -433,6 +435,7 @@
 
     <survey-form
       v-if="isViewReviewVisible"
+      :id="viewId"
       :dialog-visible="isViewReviewVisible"
       form-title="查看用户调研需求"
       type="view"
@@ -453,10 +456,12 @@
           label="执行人"
           prop="operator"
         >
-          <el-input
+          <el-tree-select
             v-model="editForm.operator"
+            :data="memberList"
             clearable
-            placeholder="请输入执行人"
+            filterable
+            :props="defaultProps"
           />
         </el-form-item>
         <el-divider />
@@ -533,7 +538,6 @@ export default {
     SurveyForm
   },
   props: [
-    'changeColor',
     'buttonState',
     'planList',
     'progress',
@@ -571,7 +575,8 @@ export default {
         children: 'children',
         label: 'name',
         disabled: 'disabled'
-      }
+      },
+      viewId: 0
     };
   },
   mounted() {
@@ -752,14 +757,16 @@ export default {
     closeReviewForm() {
       this.isReviewVisible = false;
     },
-    showViewReviewForm() {
+    showViewReviewForm(id) {
       this.isViewReviewVisible = true;
+      this.viewId = id;
     },
     closeViewReviewForm() {
       this.isViewReviewVisible = false;
     },
     addSurveyPlan() {
       let row = {
+        id: null,
         proceeding: 0,
         operator_id: this.userId
       };
@@ -768,9 +775,10 @@ export default {
     deletePlanItem(id) {
       this.planList.splice(id - 1, 1);
     },
-    editOperator(id) {
+    editOperator(id,operator) {
       this.operatorVisible = true;
       this.planId = id;
+      this.editForm.operator = operator;
     },
     closeEdit() {
       this.operatorVisible = false;
@@ -795,12 +803,9 @@ export default {
         survey_schedule_id: this.progress.id,
         plan: this.planList
       };
-      if (
-        this.buttonState.plan === 1 &&
-        this.buttonState.review_no_pass === 1
-      ) {
+      if (this.buttonState.plan === 1) {
         this.submitUserSurveyPlan(val);
-      } else if (this.buttonState.review_no_pass === 0) {
+      } else {
         this.updateUserSurveyPlan(val);
       }
     },
@@ -857,7 +862,7 @@ export default {
         }
       });
     },
-    async handleFileSuccess(e, attachment) {
+    async handleFileSuccess(e, attachment, id) {
       this.$store.commit('setUploadState', false);
       let form = getFile(e);
       try {
@@ -866,6 +871,7 @@ export default {
           attachment['id'] = this.$store.state.fileRes.id;
           attachment['name'] = this.$store.state.fileRes.file_name;
           attachment['type'] = this.$store.state.fileRes.type;
+          await this.$store.dispatch('product/survey/user/addPlanResultAttachment',{ plan_id: id, attachment: this.$store.state.fileRes.id })
           this.getList();
         }
       } catch (err) {
@@ -899,6 +905,15 @@ export default {
       delete obj['type'];
       delete obj['name'];
       this.getList();
+    },
+    changeColor(val) {
+      if (val === 10 || val === 20) {
+        return 'result-ing';
+      } else if (val >= 40) {
+        return 'result-pass';
+      } else {
+        return 'result-fail';
+      }
     }
   }
 };

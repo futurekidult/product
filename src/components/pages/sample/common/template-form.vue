@@ -33,7 +33,7 @@
       </el-form-item>
       <el-form-item>
         <div
-          v-if="show"
+          v-if="JSON.stringify(attachment) !== '{}'"
           class="attachment-list"
         >
           <div>{{ attachment.name }}</div>
@@ -96,7 +96,6 @@ export default {
     return {
       templateForm: {},
       visible: this.dialogVisible,
-      show: true,
       attachment: {},
       templateRules: {
         user_template_file: [
@@ -123,7 +122,6 @@ export default {
         });
         this.templateForm = this.$store.state.sample.user.templateFile;
         this.attchement = this.templateForm.user_template_file;
-        this.show = true;
       } catch (err) {
         return;
       }
@@ -173,7 +171,6 @@ export default {
       try {
         await this.$store.dispatch('uploadFile', form);
         if (this.$store.state.uploadState) {
-          this.show = true;
           this.attachment = {
             id: this.$store.state.fileRes.id,
             name: this.$store.state.fileRes.file_name,
@@ -187,7 +184,6 @@ export default {
     deleteFile() {
       this.attachment = {};
       this.templateForm.user_template_file = '';
-      this.show = false;
     },
     submitTemplateForm() {
       this.templateForm.user_template_file = this.attachment.id;
