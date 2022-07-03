@@ -15,7 +15,7 @@
       label-width="110px"
       style="width: 50%"
       :model="form"
-      :rules="productRules"
+      :rules="rules"
     >
       <el-form-item
         v-for="(item, index) in form.usage_scenario"
@@ -525,7 +525,8 @@ export default {
       currency: [],
       file: this.attachment,
       form: this.productForm,
-      scenarioVisible: false
+      scenarioVisible: false,
+      rules: {}
     };
   },
   computed: {
@@ -648,6 +649,7 @@ export default {
         let { id } = item;
         this.form.attachment.push(id);
       });
+      this.rules = this.productRules;
       this.$refs.productForm.validate((valid) => {
         if (valid) {
           this.updatePlan(this.form);

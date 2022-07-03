@@ -235,7 +235,8 @@ export default {
       getPatent: this.getPatent,
       getPatentProgress: this.getPatentProgress,
       getProject: this.getProject,
-      getPlatform: this.getPlatform
+      getPlatform: this.getPlatform,
+      getBase: this.getProductBase
     };
   },
   props: ['productId', 'orderId'],

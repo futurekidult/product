@@ -15,7 +15,7 @@
       label-width="110px"
       style="width: 50%"
       :model="form"
-      :rules="analysisRules"
+      :rules="rules"
     >
       <div class="form-item">
         <el-form-item
@@ -399,7 +399,8 @@ export default {
       regionOption: [],
       cityOption: [],
       countryVisible: false,
-      scenarioVisible: false
+      scenarioVisible: false,
+      rules: {}
     };
   },
   computed: {
@@ -503,6 +504,7 @@ export default {
     },
     submitAnalysisForm() {
       this.form.attachment = this.file.id;
+      this.rules = this.analysisRules;
       this.$refs.analysisForm.validate((valid) => {
         if (valid) {
           this.updateAnalysis(this.form);

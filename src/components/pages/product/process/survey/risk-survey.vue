@@ -15,7 +15,7 @@
       label-width="110px"
       style="width: 50%"
       :model="form"
-      :rules="riskRules"
+      :rules="rules"
     >
       <div class="form-item">
         <el-form-item
@@ -230,7 +230,8 @@ export default {
       ],
       inventivePatent: [],
       file: this.attachment,
-      form: this.riskForm
+      form: this.riskForm,
+      rules: {}
     };
   },
   computed: {
@@ -277,6 +278,7 @@ export default {
     },
     submitRiskForm() {
       this.form.attachment = this.file.id;
+      this.rules = this.riskRules;
       this.$refs.riskForm.validate((valid) => {
         if (valid) {
           this.updateRisk(this.form);

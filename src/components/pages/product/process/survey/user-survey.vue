@@ -127,8 +127,8 @@
             width="200px"
           >
             <el-button
-              v-if="buttonState.review_pass === 0"
-              :disabled="progress.state === 40"
+              v-if="progress.state === 40"
+              :disabled="progress.state === 50"
               @click="confirmUserSurvey(progress.id)"
             >
               用户调研结果确认
@@ -264,7 +264,7 @@
           />
           <el-table-column label="状态">
             <template #default="scope">
-              <div :class="changeCellColor(scope.row.state)">
+              <div :class="changeTableCellColor(scope.row.state)">
                 {{ scope.row.state_desc }}
               </div>
             </template>
@@ -293,7 +293,7 @@
                     </el-button>
                   </el-upload>
                 </div>
-                <div v-if="scope.row.state >= 40">
+                <div v-if="scope.row.state >= 40 || scope.row.state === 20">
                   <el-button
                     type="text"
                     @click="showViewFile(scope.row.attachment.id)"
@@ -397,9 +397,8 @@
           </el-table-column>
         </el-table>
         <el-button
-          v-if="buttonState.plan === 1"
           style="margin: 15px 0"
-          :disabled="progress.state === 40"
+          :disabled="progress.state === 50"
           @click="addSurveyPlan"
         >
           + 新增调研计划
@@ -407,7 +406,7 @@
         <el-button
           v-if="buttonState.review_pass === 0 && buttonState.plan === 0"
           style="margin: 15px; width: 128px"
-          :disabled="progress.state === 40"
+          :disabled="progress.state === 50"
           @click="addSurveyPlanItem"
         >
           提交
@@ -537,6 +536,7 @@ export default {
   components: {
     SurveyForm
   },
+  inject: ['getBase'],
   props: [
     'buttonState',
     'planList',
@@ -683,6 +683,7 @@ export default {
           body
         );
         this.getList();
+        this.getBase();
       } catch (err) {
         return;
       }
@@ -910,6 +911,15 @@ export default {
       if (val === 10 || val === 20) {
         return 'result-ing';
       } else if (val >= 40) {
+        return 'result-pass';
+      } else {
+        return 'result-fail';
+      }
+    },
+    changeTableCellColor(val) {
+      if (val <= 20) {
+        return 'result-ing';
+      } else if (val === 40) {
         return 'result-pass';
       } else {
         return 'result-fail';

@@ -39,9 +39,8 @@
       ref="form"
       label-width="121px"
       style="width: 50%"
-      :rules="surveyRules"
+      :rules="rules"
       :model="form"
-      :validate-on-rule-change="false"
     >
       <el-form-item
         label="产品图片"
@@ -553,7 +552,8 @@ export default {
       viewImgDialog: false,
       imgLink: '',
       file: this.attachment,
-      form: this.surveyForm
+      form: this.surveyForm,
+      rules: {}
     };
   },
   computed: {
@@ -678,6 +678,7 @@ export default {
       });
       this.form.attachment = this.file.id;
       this.form.annual_sales = + this.form.annual_sales;
+      this.rules = this.surveyRules;
       this.$refs.form.validate((valid) => {
         if (valid) {
           this.updatePlatform(this.form);
