@@ -46,6 +46,7 @@
 
 <script>
 export default {
+  inject: ['getBase'],
   props: ['type', 'dialogVisible', 'reason'],
   emits: ['hide-dialog'],
   data() {
@@ -66,6 +67,7 @@ export default {
           id: +this.$route.params.productId,
           reason: this.terminateForm.reason
         });
+        this.getBase();
       } catch (err) {
         return;
       }

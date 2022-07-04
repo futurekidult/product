@@ -591,21 +591,27 @@ export default {
           break;
         case 'price':
           this.getPricingList();
+          this.getProductBase();
           break;
         case 'mould':
           this.getMouldList();
+          this.getProductBase();
           break;
         case 'sample':
           this.getSampleList();
+          this.getProductBase();
           break;
         case 'question':
           this.getQuestionList();
+          this.getProductBase();
           break;
         case 'package':
           this.getPackageList();
+          this.getProductBase();
           break;
         case 'order':
           this.getOrderList();
+          this.getProductBase();
           break;
         case 'project':
           this.getProfit();
@@ -616,6 +622,7 @@ export default {
           this.getPatent();
           this.getPatentProgress();
           this.getContract();
+          this.getProductBase();
           break;
         case'survey':
           this.getPlatform(); 
