@@ -364,7 +364,7 @@
               </div>
               <div v-else>
                 <el-button
-                  v-if="buttonState.plan === 1"
+                  v-if="!scope.row.id"
                   @click="deletePlanItem(scope.$index + 1)"
                 >
                   删除
@@ -383,7 +383,7 @@
                   v-if="
                     buttonState.plan === 0 &&
                       buttonState.review_pass === 0 &&
-                      scope.row.state !== 20
+                      scope.row.state !== 20 && scope.row.id
                   "
                   type="primary"
                   style="width: 60px"

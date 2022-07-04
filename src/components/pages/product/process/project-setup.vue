@@ -187,7 +187,7 @@ export default {
     ProfitCalculation,
     ProcessTable
   },
-  inject: ['getProject', 'getProfitCalcaulation', 'getProcessTable'],
+  inject: ['getProject', 'getProfitCalcaulation', 'getProcessTable', 'getBase'],
   props: ['progress', 'attachment', 'projectForm', 'profit', 'schedule'],
   data() {
     return {
@@ -345,6 +345,7 @@ export default {
       try {
         await this.$store.dispatch('product/project/approvalProject', body);
         this.getProject();
+        this.getBase();
       } catch (err) {
         return;
       }
