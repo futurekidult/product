@@ -180,9 +180,11 @@
               </template>
             </el-input>
           </el-form-item>
-          <div style="margin: 0 0 10px 110px; font-size: 10px">
-            系统根据利润核算规则自动计算
-          </div>
+          <el-form-item>
+            <div class="desc">
+              系统根据利润核算规则自动计算
+            </div>
+          </el-form-item>
           <el-form-item
             :label="'运营专员' + (index + 1)"
             :prop="`list.${index}.operations_specialist_id`"

@@ -60,7 +60,7 @@
       label-width="100px"
       class="project-form"
       :model="form"
-      :rules="projectRules"
+      :rules="rules"
     >
       <el-form-item
         label="评审结果"
@@ -235,15 +235,11 @@ export default {
         }
       ],
       file: this.attachment,
-      form: this.projectForm
+      form: this.projectForm,
+      rules: {}
     };
   },
   computed: {
-    projectRules() {
-      return this.projectForm.review_result === 1
-        ? this.passRules
-        : this.failRules;
-    },
     isDisabled() {
       return this.progress.review_state === 10 ? false : true;
     }
@@ -313,6 +309,7 @@ export default {
     },
     submitProjectForm() {
       this.form.sales_plan = this.file.id;
+      this.rules = this.projectForm.review_result === 1 ? this.passRules : this.failRules;
       this.$refs.projectForm.validate((valid) => {
         if (valid) {
           this.reviewProject(this.form);
