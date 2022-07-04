@@ -4,7 +4,7 @@
     :model="reviewForm"
     label-width="120px"
     style="width: 70%"
-    :rules="getRules"
+    :rules="rules"
   >
     <el-form-item
       label="评审结果"
@@ -314,7 +314,7 @@
           label="市研负责人"
           prop="market_survey_principal_id"
           :rules="
-            isNewProductFlag ? productRules.market_survey_principal_id : []
+            isNewCategoryFlag ? productRules.market_survey_principal_id : []
           "
         >
           <el-tree-select
@@ -330,7 +330,7 @@
           label="用研负责人"
           prop="user_survey_principal_id"
           :rules="
-            isNewCategoryFlag ? categoryRules.user_survey_principal_id : []
+            isNewProductFlag ? categoryRules.user_survey_principal_id : []
           "
         >
           <el-tree-select
@@ -345,7 +345,7 @@
         <el-form-item
           label="用测负责人"
           prop="user_test_principal_id"
-          :rules="isNewCategoryFlag ? categoryRules.user_test_principal_id : []"
+          :rules="isNewProductFlag ? categoryRules.user_test_principal_id : []"
         >
           <el-tree-select
             v-model="reviewForm.user_test_principal_id"
@@ -608,13 +608,11 @@ export default {
         children: 'children',
         label: 'name',
         disabled: 'disabled'
-      }
+      },
+      rules: {}
     };
   },
   computed: {
-    getRules() {
-      return this.reviewForm.state === 0 ? this.failRules : this.passRules;
-    },
     getCategory() {
       return this.reviewForm.is_new_category;
     },
@@ -663,7 +661,7 @@ export default {
   },
   methods: {
     async reviewDemandForm(val) {
-      let body = val;
+     let body = val;
       body['demand_id'] = +this.$route.params.id;
       try {
         await this.$store.dispatch('demand/reviewDemandForm', body);
@@ -673,14 +671,16 @@ export default {
       }
     },
     submitDemandForm() {
-      for (let item of Object.keys(this.reviewForm)) {
+      let timeForm = JSON.parse(JSON.stringify(this.reviewForm));
+        for (let item of Object.keys(timeForm)) {
         if (item.indexOf('time') !== -1) {
-          this.reviewForm[item] = timestamp(this.reviewForm[item]);
+          timeForm[item] = timestamp(timeForm[item]);
         }
       }
+      this.rules = this.reviewForm.state === 0 ? this.failRules : this.passRules;
       this.$refs.reviewForm.validate((valid) => {
         if (valid) {
-          this.reviewDemandForm(this.reviewForm);
+          this.reviewDemandForm(timeForm);
         }
       });
     },

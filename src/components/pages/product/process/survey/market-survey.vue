@@ -116,6 +116,7 @@
 import { downloadFile, getFile, previewFile } from '../../../../../utils';
 
 export default {
+  inject: ['getBase'],
   props: ['changeColor', 'progress', 'attachment', 'getList'],
   data() {
     return {
@@ -171,6 +172,7 @@ export default {
           params
         );
         this.getList();
+        this.getBase();
       } catch (err) {
         return;
       }

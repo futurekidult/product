@@ -420,6 +420,7 @@ export default {
   components: {
     ViewDialog
   },
+  inject: ['getBase'],
   props: [
     'changeColor',
     'progress',
@@ -602,6 +603,7 @@ export default {
           body
         );
         this.getList();
+        this.getBase();
       } catch (err) {
         return;
       }

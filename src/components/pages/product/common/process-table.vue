@@ -371,16 +371,8 @@ export default {
       }
     },
     async setStageTime(val) {
-      let body = {
-      'product_id': +this.$route.params.productId,
-      'pricing': timestamp(val.pricing),
-      'patent': timestamp(val.patent),
-      'sample': timestamp(val.sample),
-      'order': timestamp(val.order),
-      'package': timestamp(val.package),
-      'shipment': timestamp(val.shipment),
-      'selling': timestamp(val.selling)
-      }
+      let body = val;
+      body['product_id'] = +this.$route.params.productId;
       try {
         await this.$store.dispatch('product/project/setStageTime', body);
         this.setStageVisible = false;
@@ -397,9 +389,13 @@ export default {
       });
     },
     submitSetStageForm() {
+      let stageForm = JSON.parse(JSON.stringify(this.setStageForm));
+      for(let time in stageForm) {
+        stageForm[time] = timestamp(stageForm[time]);
+      }
       this.$refs.setStageForm.validate((valid) => {
         if (valid) {
-          this.setStageTime(this.setStageForm);
+          this.setStageTime(stageForm);
         }
       });
     },

@@ -795,16 +795,19 @@ export default {
       this.finishSurveyItem(id);
     },
     submitPlan() {
-      this.planList.forEach((item) => {
+      let planArr = JSON.parse(JSON.stringify(this.planList));
+      planArr.forEach((item) => {
         item.estimated_finish_time = timestamp(item.estimated_finish_time);
-        item.actual_finish_time = timestamp(item.actual_finish_time);
+        if(item.actual_finish_time) {
+           item.actual_finish_time = timestamp(item.actual_finish_time);
+        }
       });
       let val = {
         product_id: +this.$route.params.productId,
         survey_schedule_id: this.progress.id,
-        plan: this.planList
+        plan: planArr
       };
-      if (this.buttonState.plan === 1) {
+      if (this.progress.state !== 30) {
         this.submitUserSurveyPlan(val);
       } else {
         this.updateUserSurveyPlan(val);

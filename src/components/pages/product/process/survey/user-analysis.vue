@@ -325,6 +325,7 @@ export default {
   components: {
     SurveySchedule
   },
+  inject: ['getBase'],
   props: ['progress', 'attachment', 'analysisForm', 'getList'],
   data() {
     return {
@@ -498,6 +499,7 @@ export default {
           body
         );
         this.getList();
+        this.getBase();
       } catch (err) {
         return;
       }

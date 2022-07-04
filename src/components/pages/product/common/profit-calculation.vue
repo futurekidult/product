@@ -267,16 +267,16 @@ export default {
       try {
         await this.$store.dispatch('product/project/getAdjustmentList', { params });
         this.adjustmentList = this.$store.state.product.project.adjustmentList;
-        if(this.adjustmentList.length === 0) {
-          this.$message.warning('当前无调价记录');
-        }else {
-          this.viewPricingVisible = true;
-          this.adjustmentList.forEach((item) => {
-          changeTimestamp(item, 'submit_time');
-          changeTimestamp(item, 'apply_approve_time');
-          changeTimestamp(item, 'adjust_approve_time');
-          });
-        }
+          if(this.adjustmentList.length === 0) {
+            this.$message.warning('当前无调价记录');
+          } else {
+            this.viewPricingVisible = true;
+            this.adjustmentList.forEach((item) => {
+            changeTimestamp(item, 'submit_time');
+            changeTimestamp(item, 'apply_approve_time');
+            changeTimestamp(item, 'adjust_approve_time');
+            });
+          }
       } catch (err) {
         return;
       }

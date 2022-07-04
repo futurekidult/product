@@ -22,8 +22,12 @@ export const formatterTime = (val) => {
 };
 
 export const timestamp = (val) => {
-  let date = new Date(val);
-  return date.getTime() / 1000;
+  if(val !== undefined) {
+    let date = new Date(val);
+    return date.getTime() / 1000;
+  } else {
+    return 0;
+  }
 };
 
 export const downloadFile = (val, name) => {

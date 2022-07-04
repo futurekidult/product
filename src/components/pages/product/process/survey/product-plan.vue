@@ -388,6 +388,7 @@ export default {
     SurveySchedule,
     CompetitiveTable
   },
+  inject: ['getBase'],
   props: ['progress', 'attachment', 'getList', 'productForm'],
   data() {
     return {
@@ -574,6 +575,7 @@ export default {
       try {
         await this.$store.dispatch('product/survey/plan/submitPlan', body);
         this.getList();
+        this.getBase();
       } catch (err) {
         return;
       }
