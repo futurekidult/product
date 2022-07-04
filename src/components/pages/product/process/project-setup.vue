@@ -109,7 +109,7 @@
 
         <el-form-item
           label="上传附件"
-          prop="sale_plan"
+          prop="sales_plan"
           style="margin-bottom: 18px"
         >
           <el-upload
@@ -198,7 +198,7 @@ export default {
             message: '请选择评审结果'
           }
         ],
-        sale_plan: [
+        sales_plan: [
           {
             required: true,
             message: '请上传附件'
@@ -309,10 +309,10 @@ export default {
     },
     deleteFile() {
       this.file = {};
-      this.form.sale_plan = '';
+      this.form.sales_plan = '';
     },
     submitProjectForm() {
-      this.form.sale_plan = this.file.id;
+      this.form.sales_plan = this.file.id;
       this.$refs.projectForm.validate((valid) => {
         if (valid) {
           this.reviewProject(this.form);
