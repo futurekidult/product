@@ -145,6 +145,7 @@
           </div>
           <div style="display: flex; align-items: center">
             <el-button
+              :disabled="buttonState.plan === 0"
               type="primary"
               @click="submitPlan"
             >
