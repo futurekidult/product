@@ -196,6 +196,7 @@
 </template>
 
 <script>
+import { timestamp } from '../../../../../utils';
 export default {
   inject: ['changeColor', 'getPreProductSample'],
   props: ['preProductSample'],
@@ -246,25 +247,35 @@ export default {
     },
     async submitSheet() {
       this.followupForm['id'] = this.preProductSample.id;
+        let val = {
+        pre_production_sample_quantity: +this.followupForm.pre_production_sample_quantity,
+        estimated_arrival_time: timestamp(this.followupForm.estimated_arrival_time),
+        id: this.preProductSample.id
+      }
       try {
         await this.$store.dispatch(
           'product/order/followupSheet',
-          this.followupForm
+          val
         );
-        this.followupSheetDialog = true;
+        this.followupSheetDialog = false;
+        this.getPreProductSample();
       } catch (err) {
         return;
       }
     },
     async submitReceipt() {
-      this.courierNumberForm['id'] = this.preProductSample.id;
+      let val = {
+        courier_number: this.courierNumberForm.courier_number,
+        actual_arrival_time: timestamp(this.courierNumberForm.actual_arrival_time),
+        id: this.preProductSample.id
+      }
       try {
         await this.$store.dispatch(
           'product/order/receiptSheet',
-          this.courierNumberForm
+          val
         );
         this.courierNumberDialog = false;
-        this.SampleSample();
+        this.getPreProductSample();
       } catch (err) {
         return;
       }
@@ -273,7 +284,6 @@ export default {
       this.$refs.followupForm.validate((valid) => {
         if (valid) {
           this.submitSheet();
-          this.SampleSample();
         }
       });
     },
@@ -300,7 +310,7 @@ export default {
           id: this.id
         });
         this.confirmVisible = false;
-        this.SampleSample();
+        this.getPreProductSample();
       } catch (err) {
         return;
       }

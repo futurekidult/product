@@ -69,7 +69,7 @@
       </el-form-item>
       <el-form-item>
         <div
-          v-if="show"
+          v-if="JSON.stringify(attachment) !== '{}'"
           class="attachment-list"
         >
           <div>{{ attachment.name }}</div>
@@ -154,7 +154,7 @@
         </el-form-item>
         <el-form-item>
           <div
-            v-if="requiredShow"
+            v-if="JSON.stringify(requiredAttachment) !== '{}'"
             class="attachment-list"
           >
             <div>{{ requiredAttachment.name }}</div>
@@ -295,10 +295,8 @@ export default {
         ]
       },
       demandForm: {},
-      show: true,
       attachment: {},
       requiredAttachment: {},
-      requiredShow: false,
       memberList: [],
       defaultProps: {
         children: 'children',
@@ -344,8 +342,13 @@ export default {
   },
   methods: {
     async createTestApply(val) {
-      let body = val;
-      body['sample_id'] = +this.$route.params.id;
+      let body = {
+        'sample_id': +this.$route.params.id,
+        'user_experience_duration': +val.user_experience_duration,
+        'estimated_finish_time': timestamp(val.estimated_finish_time),
+        'illustrate_text': val.illustrate_text,
+        'demand_list_file': val.demand_list_file
+      }
       try {
         await this.$store.dispatch('sample/user/createTestApply', body);
         this.visible = false;
@@ -363,7 +366,6 @@ export default {
         });
         this.demandForm = this.$store.state.sample.user.applyDetail;
         this.attachment = this.demandForm.demand_list_file;
-        this.show = true;
         if (!this.demandForm.user_survey_specialist_id) {
           this.demandForm.user_survey_specialist_id = '';
         }
@@ -381,8 +383,6 @@ export default {
         this.demandForm = this.$store.state.sample.user.viewApplyDetail;
         this.attachment = this.demandForm.demand_list_file;
         this.requiredAttachment = this.demandForm.user_requirement_file;
-        this.show = true;
-        this.requiredShow = true;
       } catch (err) {
         return;
       }
@@ -408,7 +408,6 @@ export default {
       try {
         await this.$store.dispatch('uploadFile', form);
         if (this.$store.state.uploadState) {
-          this.requiredShow = true;
           this.requiredAttachment = {
             id: this.$store.state.fileRes.id,
             name: this.$store.state.fileRes.file_name,
@@ -424,12 +423,7 @@ export default {
       this.$refs.demandForm.validate((valid) => {
         if (valid) {
           if (this.type === 'apply') {
-            this.demandForm.user_experience_duration =
-              +this.demandForm.user_experience_duration;
             this.createTestApply(this.demandForm);
-            this.demandForm.estimated_finish_time = timestamp(
-              this.demandForm.estimated_finish_time
-            );
           } else {
             this.reviewTestApply({
               review_result: this.demandForm.review_result,
@@ -448,7 +442,6 @@ export default {
       try {
         await this.$store.dispatch('uploadFile', form);
         if (this.$store.state.uploadState) {
-          this.show = true;
           this.attachment = {
             id: this.$store.state.fileRes.id,
             name: this.$store.state.fileRes.file_name,
@@ -463,12 +456,10 @@ export default {
     deleteFile() {
       this.attachment = {};
       this.demandForm.demand_list_file = '';
-      this.show = false;
     },
     deleteRequiredFile() {
       this.requiredAttachment = {};
       this.demandForm.user_requirement_file = '';
-      this.requiredShow = false;
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);

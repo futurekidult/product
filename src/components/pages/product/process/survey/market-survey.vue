@@ -64,7 +64,7 @@
       </el-form-item>
       <el-form-item>
         <div
-          v-if="show"
+          v-if="JSON.stringify(file) !== '{}'"
           class="attachment-list"
         >
           <div>
@@ -128,7 +128,6 @@ export default {
           }
         ]
       },
-      show: true,
       file: this.attachment
     };
   },
@@ -149,7 +148,6 @@ export default {
       try {
         await this.$store.dispatch('uploadFile', form);
         if (this.$store.state.uploadState) {
-          this.show = true;
           this.file = {
             id: this.$store.state.fileRes.id,
             name: this.$store.state.fileRes.file_name,
@@ -188,7 +186,6 @@ export default {
     deleteFile() {
       this.file = {};
       this.marketForm.attachment = '';
-      this.show = false;
     },
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);

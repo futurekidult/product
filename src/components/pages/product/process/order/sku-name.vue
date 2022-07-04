@@ -46,7 +46,7 @@
             clearable
           >
             <el-option
-              v-for="content in platform"
+              v-for="content in $store.state.platform"
               :key="content.platform"
               :label="content.platform_desc"
               :value="content.platform"
@@ -66,7 +66,7 @@
           />
         </el-form-item>
       </div>
-      <el-form-item>
+      <el-form-item v-if="schedule.state !== 40">
         <el-button
           :disabled="isDisabled"
           @click="addSku"
@@ -103,12 +103,12 @@
         </div>
       </el-form-item>
       <el-form-item
-        v-if="show"
+        v-if="JSON.stringify(file) !== '{}'"
         prop="project_plan_file"
       >
         <div class="attachment-list">
           <div>
-            {{ attachment.name }}
+            {{ file.name }}
           </div>
           <div style="display: flex">
             <div v-if="file.type === 12860">
@@ -184,7 +184,7 @@
 <script>
 import { downloadFile, getFile, previewFile } from '../../../../../utils';
 export default {
-  inject: ['getSku', 'changeColor'],
+  inject: ['getSku', 'changeColor','getProgress'],
   props: ['skuForm', 'attachment', 'skuEntrySchedule', 'schedule', 'skuId'],
   data() {
     return {
@@ -208,8 +208,6 @@ export default {
           }
         ]
       },
-      show: true,
-      platform: [],
       file: this.attachment,
       form: this.skuForm,
       deleteVisible: false
@@ -226,30 +224,16 @@ export default {
     },
     skuForm(val) {
       this.form = val;
+      this.form.sku = this.form.sku || [{}];
     }
   },
-  mounted() {
-    this.getPlatform();
-  },
   methods: {
-    async getPlatform() {
-      let params = {
-        product_id: +this.$route.params.productId,
-        pricing_id: +this.$route.params.orderId
-      };
-      try {
-        await this.$store.dispatch('getPlatform', { params });
-        this.platform = this.$store.state.platform;
-      } catch (err) {
-        return;
-      }
-    },
     async updateSkuname(val) {
       let body = {};
       body['sku_info'] = {};
       body['sku_info']['sku'] = val.sku;
       body['order_id'] = +this.$route.params.orderId;
-      body['sku_info']['project_plan_file'] = this.attachment.id;
+      body['sku_info']['project_plan_file'] = this.file.id;
       try {
         await this.$store.dispatch('product/order/submitSkuname', body);
         this.getSku();
@@ -274,7 +258,6 @@ export default {
       try {
         await this.$store.dispatch('uploadFile', form);
         if (this.$store.state.uploadState) {
-          this.show = true;
           this.file = {
             id: this.$store.state.fileRes.id,
             name: this.$store.state.fileRes.file_name,
@@ -299,7 +282,6 @@ export default {
     deleteFile() {
       this.file = {};
       this.form.project_plan_file = '';
-      this.show = false;
     },
     submitSkuForm() {
       this.form.project_plan_file = this.file.id;
@@ -315,6 +297,7 @@ export default {
           id: this.skuId
         });
         this.getSku();
+        this.getProgress();
       } catch (err) {
         return;
       }

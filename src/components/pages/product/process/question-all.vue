@@ -85,11 +85,15 @@
         width="300px"
       >
         <template #default="scope">
-          <el-button @click="showIgnoreForm(scope.row.id)">
+          <el-button 
+            :disabled="scope.row.state !== 10"
+            @click="showIgnoreForm(scope.row.id)"
+          >
             可忽略
           </el-button>
           <el-button
             type="success"
+            :disabled="scope.row.state !== 10"
             @click="showResolveDialog(scope.row.id)"
           >
             已解决
@@ -135,7 +139,7 @@
     width="20%"
   >
     <div class="result-content">
-      是否确定提交样品测试结果
+      是否确认已解决问题
     </div>
     <div style="text-align: center">
       <el-button

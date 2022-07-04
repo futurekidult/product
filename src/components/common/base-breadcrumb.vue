@@ -107,7 +107,7 @@ export default {
                   meta: { title: '新品管理' }
                 })
                 .concat({
-                  path: '/product-list/1',
+                  path: `/product-list/${+this.$route.params.productId}`,
                   meta: { title: '新品详情' }
                 });
             } else {

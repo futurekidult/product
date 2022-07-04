@@ -9,7 +9,7 @@
         打样进度表
       </div>
       <el-button
-        :disabled="JSON.stringify(progress) !== 40"
+        :disabled="JSON.stringify(progress) !== '{}'"
         type="primary"
         @click="showProofingCreate"
       >

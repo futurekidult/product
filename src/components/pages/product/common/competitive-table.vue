@@ -9,6 +9,7 @@
           <div
             v-for="(item, index) in productForm.competitive_product"
             :key="index"
+            class="form-item_width"
           >
             <el-form-item
               :label="'竞品图片' + (index + 1)"

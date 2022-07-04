@@ -141,7 +141,7 @@
       </el-table>
 
       <base-pagination
-        :length="productList.length"
+        :length="$store.state.product.productListLength"
         :get-list="getProductList"
       />
 

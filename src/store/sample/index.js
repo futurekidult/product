@@ -17,6 +17,7 @@ export default {
       sampleDetail: {},
       detailLoading: true,
       proofingProgress: {},
+      proofingId:0,
       proofingSheet: {},
       testLoading: true,
       testProgress: {},
@@ -111,6 +112,7 @@ export default {
           if (res.code === 200) {
             context.commit('setProofingProgress', res.data);
             context.commit('setProofingLoading', false);
+            context.state.proofingId = res.data.id;
           }
         });
     },
@@ -201,13 +203,6 @@ export default {
             ElMessage.success(res.message);
           }
         });
-    },
-    async recordTestProblem(_, payload) {
-      await axios.post('/sample/test/problem/record/', payload).then((res) => {
-        if (res.code === 200) {
-          ElMessage.success('记录的问题可在产品详情页查看');
-        }
-      });
     }
   }
 };

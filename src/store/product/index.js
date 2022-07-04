@@ -35,7 +35,10 @@ export default {
       mouldLoading: true,
       sampleLoading: true,
       questionLoading: true,
-      packageLoading: true
+      packageLoading: true,
+      memberListLength: 0,
+      productListLength: 0,
+      mouldListLength: 0
     };
   },
   mutations: {
@@ -103,6 +106,7 @@ export default {
         if (res.code === 200) {
           context.commit('setProduct', res.data.list);
           context.commit('setListLoading', false);
+          context.state.productListLength = res.data.total;
         }
       });
     },
@@ -146,6 +150,7 @@ export default {
         if (res.code === 200) {
           context.commit('setProjectMember', res.data.list);
           context.commit('setMemberLoading', false);
+          context.state.memberListLength = res.data.total;
         }
       });
     },
@@ -183,6 +188,7 @@ export default {
         if (res.code === 200) {
           context.commit('setMouldList', res.data.list);
           context.commit('setMouldLoading', false);
+          context.state.mouldListLength = res.data.total;
         }
       });
     },

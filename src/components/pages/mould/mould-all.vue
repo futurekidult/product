@@ -134,7 +134,7 @@
       </el-table>
 
       <base-pagination
-        :length="mouldList.length"
+        :length="$store.state.mould.mouldListLength"
         :get-list="getMouldList"
       />
 
@@ -146,7 +146,7 @@
         <el-form
           ref="mouldForm"
           :model="mouldForm"
-          :rules="mouldRules"
+          :rules="rules"
           label-width="120px"
         >
           <el-form-item
@@ -221,7 +221,8 @@ export default {
         children: 'children',
         label: 'name',
         disabled: 'disabled'
-      }
+      },
+      rules: {}
     };
   },
   mounted() {
@@ -291,7 +292,9 @@ export default {
       }
     },
     showMouldForm() {
+      this.rules = {};
       this.mouldFormVisible = true;
+      this.mouldForm = {};
     },
     closeMouldForm() {
       this.mouldFormVisible = false;
@@ -301,6 +304,7 @@ export default {
       this.getMouldList();
     },
     submitMouldForm() {
+      this.rules = this.mouldRules;
       this.$refs.mouldForm.validate((valid) => {
         if (valid) {
           this.createMould(this.mouldForm);

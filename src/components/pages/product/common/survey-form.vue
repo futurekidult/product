@@ -180,10 +180,7 @@ export default {
     }
   },
   methods: {
-    async createApply(val) {
-      let body = val;
-      body['product_id'] = +this.$route.params.productId;
-      body['survey_schedule_id'] = this.id;
+    async createApply(body) {
       try {
         await this.$store.dispatch(
           'product/survey/user/createUserSurveyApply',
@@ -213,7 +210,7 @@ export default {
     },
     async getUserSurveyDetail() {
       let params = {
-        id: +this.$route.params.productId
+        id: this.id
       };
       try {
         await this.$store.dispatch(
@@ -237,11 +234,13 @@ export default {
       this.$refs.userSurveyForm.validate((valid) => {
         if (valid) {
           let val = {
-            concrete_demand: this.userSurveyForm.concrete_demand,
-            expected_finish_time: timestamp(this.userSurveyForm.expected_finish_time),
-            expected_result: this.userSurveyForm.expected_result,
-            link: this.userSurveyForm.link
-          }
+            'product_id': +this.$route.params.productId,
+            'survey_schedule_id': this.id,
+            'product_link': this.userSurveyForm.product_link,
+            'concrete_demand': this.userSurveyForm.concrete_demand,
+            'expected_result': this.userSurveyForm.expected_result,
+            'expected_finish_time': timestamp(this.userSurveyForm.expected_finish_time)
+          };
           if (this.type === 'apply') {
             this.createApply(val);
           } else {

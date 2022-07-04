@@ -43,12 +43,15 @@
         <template #default="scope">
           <el-button
             type="text"
-            @click="deleteMould(scope.row.id)"
+            @click="showDeleteDialog(scope.row.id)"
           >
             删除
           </el-button>
           <span class="table-btn">|</span>
-          <el-button type="text">
+          <el-button 
+            type="text" 
+            @click="toDetail(scope.row.id)"
+          >
             查看
           </el-button>
         </template>
@@ -56,10 +59,35 @@
     </el-table>
 
     <base-pagination
-      :length="mouldList.length"
+      :length="$store.state.product.mouldListLength"
       :get-list="getMould"
     />
   </div>
+
+  <el-dialog
+    v-model="deleteDialog"
+    title="提示"
+    width="20%"
+  >
+    <div class="result-content">
+      确认要删除该模具吗
+    </div>
+    <div style="text-align: center">
+      <el-button
+        class="mould-btn"
+        @click="closeDeleteDialog"
+      >
+        取消
+      </el-button>
+      <el-button
+        type="primary"
+        class="mould-btn"
+        @click="deleteMould"
+      >
+        提交
+      </el-button>
+    </div>
+  </el-dialog>
 
   <el-dialog
     v-model="mouldSelectedVisible"
@@ -71,7 +99,7 @@
       stripe
       empty-text="无数据"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      :data="allList"
+      :data="allMouldList"
       @selection-change="handleSelectionChange"
     >
       <el-table-column
@@ -93,6 +121,7 @@
       <el-table-column
         label="创建时间"
         prop="create_time"
+        width="200px"
       />
       <el-table-column
         label="创建人"
@@ -101,8 +130,8 @@
     </el-table>
 
     <base-pagination
-      :length="20"
-      :get-list="getAllMould"
+      :length="$store.state.mould.mouldListLength"
+      :get-list="getAllMouldList"
     />
 
     <el-divider style="margin: 68px 0px 20px" />
@@ -124,19 +153,40 @@
 </template>
 
 <script>
+import { changeTimestamp } from '../../../../utils';
 export default {
-  inject: ['getAllMould', 'getMould'],
-  props: ['mouldList', 'allList'],
+  inject: [ 'getMould'],
+  props: ['mouldList'],
   data() {
     return {
       mouldSelectedVisible: false,
       multipleSelection: [],
-      mouldIds: []
+      mouldIds: [],
+      deleteDialog: false,
+      mouldId: 0,
+      allMouldList: []
     };
   },
   methods: {
+    async getAllMouldList(currentPage = 1, pageSize = 10) {
+      let params = {
+        page_size: pageSize,
+        current_page: currentPage,
+        state: 40
+      };
+      try {
+        await this.$store.dispatch('mould/getMouldList', { params });
+        this.allMouldList = this.$store.state.mould.mouldList;
+        this.allMouldList.forEach((item) => {
+          changeTimestamp(item, 'create_time');
+        });
+       this.mouldSelectedVisible = true;
+      } catch (err) {
+        return;
+      }
+    },
     showMouldSelectedForm() {
-      this.mouldSelectedVisible = true;
+      this.getAllMouldList();
     },
     closeMouldSelectedForm() {
       this.mouldSelectedVisible = false;
@@ -159,15 +209,26 @@ export default {
         return;
       }
     },
-    async deleteMould(id) {
+    async deleteMould() {
       try {
         await this.$store.dispatch('product/deleteMould', {
-          relation_id: id
+          relation_id: this.mouldId
         });
+        this.deleteDialog = false;
         this.getMould();
       } catch (err) {
         return;
       }
+    },
+    closeDeleteDialog() {
+      this.deleteDialog = false;
+    },
+    showDeleteDialog(id) {
+      this.deleteDialog = true;
+      this.mouldId = id;
+    },
+    toDetail(id) {
+      this.$router.push(`/mould-list/${id}`);
     }
   }
 };

@@ -101,8 +101,10 @@ export default {
           }
         });
         this.proofingProgress = this.$store.state.sample.proofingProgress;
-        changeTimestamp(this.proofingProgress, 'submit_time');
-        changeTimestamp(this.proofingProgress, 'actual_finish_time');
+        if(this.proofingProgress.submit_time !== undefined && this.proofingProgress.actual_finish_time !== undefined){
+          changeTimestamp(this.proofingProgress, 'submit_time');
+          changeTimestamp(this.proofingProgress, 'actual_finish_time');
+        }
       } catch (err) {
         this.$store.commit('sample/setProofingLoading', false);
         return;

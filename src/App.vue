@@ -210,7 +210,9 @@ body {
 .project-plan_btn,
 .pre-product_btn,
 .member-btn,
-.quote-btn {
+.quote-btn,
+.mould-btn,
+.price-btn {
   width: 120px;
 }
 

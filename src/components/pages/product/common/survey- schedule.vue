@@ -28,7 +28,7 @@ export default {
     changeColor(val) {
       if (val === 10 || val === 20) {
         return 'result-ing';
-      } else if (val === 40) {
+      } else if (val === 50) {
         return 'result-pass';
       } else {
         return 'result-fail';

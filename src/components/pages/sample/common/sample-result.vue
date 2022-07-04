@@ -30,7 +30,7 @@
       </el-form-item>
       <el-form-item>
         <div
-          v-if="show"
+          v-if="JSON.stringify(attachment) !== '{}'"
           class="attachment-list"
         >
           <div>{{ attachment.name }}</div>
@@ -75,13 +75,12 @@
 <script>
 import { getFile, previewFile } from '../../../../utils';
 export default {
-  props: ['id', 'dialogVisible', 'getList'],
+  props: ['id', 'dialogVisible', 'getList','userId'],
   emits: ['hide-dialog'],
   data() {
     return {
       resultForm: {},
       visible: this.dialogVisible,
-      show: true,
       attachment: {},
       templateRules: {
         user_template_file: [
@@ -97,7 +96,8 @@ export default {
     async uploadFile(val) {
       let body = {
         user_test_apply_id: this.id,
-        user_template_file: val
+        test_result_file: val,
+        user_id: this.userId
       };
       try {
         await this.$store.dispatch('sample/user/uploadFile', body);
@@ -117,7 +117,6 @@ export default {
       try {
         await this.$store.dispatch('uploadFile', form);
         if (this.$store.state.uploadState) {
-          this.show = true;
           this.attachment = {
             id: this.$store.state.fileRes.id,
             name: this.$store.state.fileRes.file_name,
@@ -142,7 +141,6 @@ export default {
     deleteFile() {
       this.attachment = {};
       this.resultForm.user_template_file = '';
-      this.show = false;
     },
     submitResultForm() {
       this.resultForm.user_template_file = this.attachment.id;

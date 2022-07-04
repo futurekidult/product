@@ -92,7 +92,7 @@
       </el-form-item>
       <el-form-item>
         <div
-          v-if="show"
+          v-if="JSON.stringify(attachment) !== '{}'"
           class="attachment-list"
         >
           <div>{{ attachment.name }}</div>
@@ -218,15 +218,12 @@ export default {
           value: 0
         }
       ],
-      disabled: null,
-      show: true
+      disabled: null
     };
   },
   mounted() {
     this.isDisabled();
-    if (this.type === 'create') {
-      this.show = false;
-    } else {
+    if (this.type !== 'create') {
       this.getProofingSheet();
     }
   },
@@ -235,12 +232,13 @@ export default {
       try {
         await this.$store.dispatch('sample/getProofingSheet', {
           params: {
-            id: +this.$route.params.id
+            id: this.$store.state.sample.proofingId
           }
         });
         let { sample } = this.$store.state;
         this.proofingForm = sample.proofingSheet;
         this.attachment = this.proofingForm.proofing_sheet_file;
+        this.proofingId = this.proofingForm.id;
         this.proofingForm.demand_time = formatterTime(this.proofingForm.demand_time);
       } catch (err) {
         return;
@@ -248,7 +246,6 @@ export default {
     },
     async createProofingSheet(val) {
       let body = val;
-      body['sample_id'] = +this.$route.params.id;
       try {
         await this.$store.dispatch('sample/createProofingSheet', body);
         this.visible = false;
@@ -281,7 +278,6 @@ export default {
       try {
         await this.$store.dispatch('uploadFile', form);
         if (this.$store.state.uploadState) {
-          this.show = true;
           this.attachment = {
             id: this.$store.state.fileRes.id,
             name: this.$store.state.fileRes.file_name,
@@ -306,18 +302,22 @@ export default {
     },
     submitProofingSheet() {
       this.proofingForm.proofing_sheet_file = this.attachment.id;
+      let val = {
+        'sample_id': +this.$route.params.id,
+        'sample_model': this.proofingForm.sample_model,
+        'demand_quantity': +this.proofingForm.demand_quantity,
+        'has_verify': +this.proofingForm.has_verify,
+        'demand_time': timestamp(this.proofingForm.demand_time),
+        'remark_text': this.proofingForm.remark_text,
+        'proofing_sheet_file': this.proofingForm.proofing_sheet_file
+      }
       this.$refs.proofingForm.validate((valid) => {
         if (valid) {
-          this.proofingForm.has_verify = +this.proofingForm.has_verify;
-          this.proofingForm.demand_quantity =
-            +this.proofingForm.demand_quantity;
-          this.proofingForm.demand_time = timestamp(
-            this.proofingForm.demand_time
-          );
           if (this.type === 'create') {
-            this.createProofingSheet(this.proofingForm);
+            this.createProofingSheet(val);
           } else {
-            this.updateProofingSheet(this.proofingForm);
+            val.id = this.proofingId;
+            this.updateProofingSheet(val);
           }
         }
       });
@@ -325,7 +325,6 @@ export default {
     deleteFile() {
       this.attachment = {};
       this.proofingForm.proofing_sheet_file = '';
-      this.show = false;
     },
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);

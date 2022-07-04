@@ -8,7 +8,6 @@
     <el-form
       ref="reasonForm"
       :model="reasonForm"
-      :rules="getRules"
     >
       <el-form-item
         label="内容"

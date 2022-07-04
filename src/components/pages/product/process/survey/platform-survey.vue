@@ -39,7 +39,7 @@
       ref="form"
       label-width="121px"
       style="width: 50%"
-      :rules="surveyRules"
+      :rules="rules"
       :model="form"
     >
       <el-form-item
@@ -360,7 +360,7 @@
       </el-form-item>
       <el-form-item>
         <div
-          v-if="show"
+          v-if="JSON.stringify(file) !== '{}'"
           class="attachment-list"
         >
           <div>
@@ -534,7 +534,6 @@ export default {
           }
         ]
       },
-      show: true,
       options: [
         {
           label: '是',
@@ -553,7 +552,8 @@ export default {
       viewImgDialog: false,
       imgLink: '',
       file: this.attachment,
-      form: this.surveyForm
+      form: this.surveyForm,
+      rules: {}
     };
   },
   computed: {
@@ -633,7 +633,6 @@ export default {
       try {
         await this.$store.dispatch('uploadFile', form);
         if (this.$store.state.uploadState) {
-          this.show = true;
           this.file = {
             id: this.$store.state.fileRes.id,
             name: this.$store.state.fileRes.file_name,
@@ -670,7 +669,6 @@ export default {
     deleteFile() {
       this.file = {};
       this.form.attachment = '';
-      this.show = false;
     },
     submitSurveyForm() {
       this.form.images = [];
@@ -680,6 +678,7 @@ export default {
       });
       this.form.attachment = this.file.id;
       this.form.annual_sales = + this.form.annual_sales;
+      this.rules = this.surveyRules;
       this.$refs.form.validate((valid) => {
         if (valid) {
           this.updatePlatform(this.form);

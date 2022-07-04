@@ -44,6 +44,7 @@
         </el-button>
         <el-button
           v-else
+          :disabled="scope.row.is_record === 1"
           type="text"
           @click="recordProblem(scope.row.id)"
         >
@@ -63,7 +64,7 @@
     </el-button>
 
     <base-pagination
-      :length="questionList.length"
+      :length="total"
       :get-list="getTestQuestion"
     />
   </div>
@@ -107,7 +108,8 @@ export default {
       editQuestionsVisible: false,
       questionList: [],
       questionId: 0,
-      question: {}
+      question: {},
+      total:0
     };
   },
   mounted() {
@@ -121,22 +123,21 @@ export default {
         page_size: pageSize
       };
       try {
+        await this.$store.dispatch(`sample/${this.type}/getTestQuestion`, {
+            params
+        });
         if (this.type === 'quality') {
-          await this.$store.dispatch('sample/quality/getTestQuestion', {
-            params
-          });
-          this.questionList =
-            this.$store.state.sample.quality.testQuestion.list;
+          let quality = this.$store.state.sample.quality.testQuestion;
+          this.questionList = quality.list; 
+          this.total = quality.total;
         } else if (this.type === 'agency') {
-          await this.$store.dispatch('sample/agency/getTestQuestion', {
-            params
-          });
-          this.questionList = this.$store.state.sample.agency.testQuestion.list;
+          let agency = this.$store.state.sample.agency.testQuestion;
+          this.questionList = agency.list;
+           this.total = agency.total;
         } else {
-          await this.$store.dispatch('sample/user/getTestQuestion', {
-            params
-          });
-          this.questionList = this.$store.state.sample.user.testQuestion.list;
+          let user = this.$store.state.sample.user.testQuestion;
+          this.questionList = user.list;
+           this.total = user.total;
         }
         this.questionList.forEach((item) => {
           item.create_time = formatterTime(item.create_time);
@@ -150,7 +151,7 @@ export default {
         problem_id: id
       };
       try {
-        await this.$store.dispatch('sample/recordTestProblem', body);
+        await this.$store.dispatch(`sample/${this.type}/recordTestProblem`, body);
       } catch (err) {
         return;
       }

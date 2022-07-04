@@ -449,11 +449,11 @@
     </el-form-item>
     <el-form-item
       label="需求洞察来源"
-      prop="source"
+      prop="demand_source"
       class="form-item_width"
     >
       <el-select
-        v-model="demandForm.source"
+        v-model="demandForm.demand_source"
         type="textarea"
         :rows="6"
         placeholder="请选择需求洞察来源"
@@ -698,7 +698,7 @@ export default {
             message: '请上传产品图片'
           }
         ],
-        source: [
+        demand_source: [
           {
             required: true,
             message: '请选择来源'
@@ -779,14 +779,19 @@ export default {
             demand_id: +this.$route.params.id
           }
         });
-        this.demandForm = this.$store.state.demand.demandDetail;
+        let { demandDetail } = this.$store.state.demand;
+        this.demandForm = demandDetail;
+        if(demandDetail.competitive_product.length === 0) {
+          this.demandForm.competitive_product = this.attachment;
+        } else {
+          this.attachment = this.demandForm.competitive_product;
+        } 
         this.bigCategoryList.map((item) => {
           if (item.id === this.demandForm.big_category_id) {
             this.smallCategoryList = item.children;
           }
         });
         this.imagesList = this.demandForm.images;
-        this.attachment = this.demandForm.competitive_product;
       } catch (err) {
         return;
       }

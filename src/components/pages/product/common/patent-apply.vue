@@ -75,7 +75,10 @@
           clearable
         />
       </el-form-item>
-      <competitive-table :product-form="productForm" />
+      <competitive-table 
+        v-if="productForm.competitive_product !== undefined && productForm.competitive_product.length !== 0"
+        :product-form="productForm" 
+      />
       <el-divider />
 
       <el-form-item
@@ -224,7 +227,7 @@ export default {
     },
     async patentApply(params) {
       let body = params;
-      body['product_id'] = 1;
+      body['product_id'] = +this.$route.params.productId;
       try {
         await this.$store.dispatch('product/patent/patentApply', body);
         this.visible = false;

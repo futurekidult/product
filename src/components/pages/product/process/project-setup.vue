@@ -109,7 +109,7 @@
 
         <el-form-item
           label="上传附件"
-          prop="sale_plan"
+          prop="sales_plan"
           style="margin-bottom: 18px"
         >
           <el-upload
@@ -130,11 +130,11 @@
         </el-form-item>
         <el-form-item style="margin-bottom: 18px; width: 50%">
           <div
-            v-if="show"
+            v-if="JSON.stringify(file) !== '{}'"
             class="attachment-list"
           >
             <div>
-              {{ attachment.name }}
+              {{ file.name }}
             </div>
             <div style="display: flex">
               <div v-if="file.type === 12860">
@@ -187,7 +187,7 @@ export default {
     ProfitCalculation,
     ProcessTable
   },
-  inject: ['getProject'],
+  inject: ['getProject', 'getProfitCalcaulation', 'getProcessTable'],
   props: ['progress', 'attachment', 'projectForm', 'profit', 'schedule'],
   data() {
     return {
@@ -198,7 +198,7 @@ export default {
             message: '请选择评审结果'
           }
         ],
-        sale_plan: [
+        sales_plan: [
           {
             required: true,
             message: '请上传附件'
@@ -234,7 +234,6 @@ export default {
           label: '不通过'
         }
       ],
-      show: true,
       file: this.attachment,
       form: this.projectForm
     };
@@ -264,6 +263,8 @@ export default {
       try {
         await this.$store.dispatch('product/project/reviewProject', body);
         this.getProject();
+        this.getProfitCalcaulation();
+        this.getProcessTable();
       } catch (err) {
         return;
       }
@@ -274,7 +275,6 @@ export default {
       try {
         await this.$store.dispatch('uploadFile', form);
         if (this.$store.state.uploadState) {
-          this.show = true;
           this.file = {
             id: this.$store.state.fileRes.id,
             name: this.$store.state.fileRes.file_name,
@@ -309,11 +309,10 @@ export default {
     },
     deleteFile() {
       this.file = {};
-      this.form.sale_plan = '';
-      this.show = false;
+      this.form.sales_plan = '';
     },
     submitProjectForm() {
-      this.form.sale_plan = this.file.id;
+      this.form.sales_plan = this.file.id;
       this.$refs.projectForm.validate((valid) => {
         if (valid) {
           this.reviewProject(this.form);
@@ -326,7 +325,7 @@ export default {
     changeCellColor(val) {
       if (val === 10) {
         return 'result-ing';
-      } else if (val === 20) {
+      } else if (val === 30) {
         return 'result-pass';
       } else {
         return 'result-fail';

@@ -137,7 +137,6 @@
           >
             <mould-message
               :mould-list="mouldList"
-              :all-list="allMouldList"
             />
           </el-tab-pane>
           <el-tab-pane
@@ -226,7 +225,6 @@ export default {
       getMember: this.getProjectMember,
       getPricing: this.getPricingList,
       getMould: this.getMouldList,
-      getAllMould: this.getAllMouldList,
       getSample: this.getSampleList,
       getQuestion: this.getQuestionList,
       getPackage: this.getPackageList,
@@ -237,7 +235,8 @@ export default {
       getPatent: this.getPatent,
       getPatentProgress: this.getPatentProgress,
       getProject: this.getProject,
-      getPlatform: this.getPlatform
+      getPlatform: this.getPlatform,
+      getBase: this.getProductBase
     };
   },
   props: ['productId', 'orderId'],
@@ -250,7 +249,6 @@ export default {
       projectMember: [],
       pricingList: [],
       mouldList: [],
-      allMouldList: [],
       sampleList: [],
       questionList: [],
       packageList: [],
@@ -378,21 +376,6 @@ export default {
         });
       } catch (err) {
         this.$store.commit('product/setMouldLoading', false);
-        return;
-      }
-    },
-    async getAllMouldList(currentPage = 1, pageSize = 10) {
-      let params = {
-        page_size: pageSize,
-        current_page: currentPage
-      };
-      try {
-        await this.$store.dispatch('mould/getMouldList', { params });
-        this.allMouldList = this.$store.state.mould.mouldList;
-        this.allMouldList.forEach((item) => {
-          changeTimestamp(item, 'create_time');
-        });
-      } catch (err) {
         return;
       }
     },
@@ -611,7 +594,6 @@ export default {
           break;
         case 'mould':
           this.getMouldList();
-          this.getAllMouldList();
           break;
         case 'sample':
           this.getSampleList();

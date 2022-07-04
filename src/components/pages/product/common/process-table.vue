@@ -39,14 +39,14 @@
           <el-button
             v-if="isDisabled"
             type="text"
-            @click="editStage(scope.row.stage_desc, scope.row.stage)"
+            @click="editStage(scope.row.stage_desc, scope.row.id, scope.row.estimated_finish_time)"
           >
             编辑
           </el-button>
           <el-button
             v-if="show && (scope.row.stage === 60 || scope.row.stage === 70)"
             type="text"
-            @click="showActualTimeForm(scope.row.stage)"
+            @click="showActualTimeForm(scope.row.id)"
           >
             填写实际完成时间
           </el-button>
@@ -54,7 +54,7 @@
       </el-table-column>
     </el-table>
     <el-button
-      :disabled="!isDisabled"
+      :disabled="getSchedule.list.length !== 0"
       class="profit-plan_btn"
       @click="showSetStage"
     >
@@ -248,7 +248,7 @@
 </template>
 
 <script>
-import { formatterTime, timestamp } from '../../../../utils';
+import { timestamp } from '../../../../utils';
 export default {
   inject: ['getProcessTable'],
   props: ['getSchedule', 'changeColor'],
@@ -313,8 +313,7 @@ export default {
       },
       actualTimeVisible: false,
       timeForm: {},
-      estimatedStageCode: 0,
-      actualSatgeCode: 0
+      projectScheduleId: 0
     };
   },
   computed: {
@@ -326,10 +325,11 @@ export default {
     }
   },
   methods: {
-    editStage(desc, code) {
+    editStage(desc, code, time) {
       this.editStageVisible = true;
       this.stageLabel = desc;
-      this.estimatedStageCode = code;
+      this.stageForm.estimated_finish_time = time;
+      this.projectScheduleId = code;
     },
     closeStageForm() {
       this.editStageVisible = false;
@@ -337,17 +337,17 @@ export default {
     closeSetStageForm() {
       this.setStageVisible = false;
     },
-    showActualTimeForm(code) {
+    showActualTimeForm(id) {
       this.actualTimeVisible = true;
-      this.actualSatgeCode = code;
+      this.projectScheduleId = id;
     },
     closeActualTimeForm() {
       this.actualTimeVisible = false;
     },
     async updateEstimatedTime(val) {
       let body = {
-        id: this.estimatedStageCode,
-        estimated_finish_time: val
+        id: this.projectScheduleId,
+        estimated_finish_time: timestamp(val)
       };
       try {
         await this.$store.dispatch('product/project/updateEstimatedTime', body);
@@ -359,8 +359,8 @@ export default {
     },
     async updateActualTime(val) {
       let body = {
-        id: this.actualSatgeCode,
-        actual_finish_time: val
+        id: this.projectScheduleId,
+        actual_finish_time: timestamp(val)
       };
       try {
         await this.$store.dispatch('product/project/updateActualTime', body);
@@ -371,8 +371,16 @@ export default {
       }
     },
     async setStageTime(val) {
-      let body = val;
-      body['product_id'] = +this.$route.params.productId;
+      let body = {
+      'product_id': +this.$route.params.productId,
+      'pricing': timestamp(val.pricing),
+      'patent': timestamp(val.patent),
+      'sample': timestamp(val.sample),
+      'order': timestamp(val.order),
+      'package': timestamp(val.package),
+      'shipment': timestamp(val.shipment),
+      'selling': timestamp(val.selling)
+      }
       try {
         await this.$store.dispatch('product/project/setStageTime', body);
         this.setStageVisible = false;
@@ -382,9 +390,6 @@ export default {
       }
     },
     submitStageForm() {
-      this.stageForm.estimated_finish_time = timestamp(
-        this.stageForm.estimated_finish_time
-      );
       this.$refs.stageForm.validate((valid) => {
         if (valid) {
           this.updateEstimatedTime(this.stageForm.estimated_finish_time);
@@ -392,9 +397,6 @@ export default {
       });
     },
     submitSetStageForm() {
-      for (let key in this.setStageForm) {
-        this.setStageForm[key] = formatterTime(this.setStageForm[key]);
-      }
       this.$refs.setStageForm.validate((valid) => {
         if (valid) {
           this.setStageTime(this.setStageForm);

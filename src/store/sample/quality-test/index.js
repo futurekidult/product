@@ -74,6 +74,13 @@ export default {
             ElMessage.success(res.message);
           }
         });
+    },
+    async recordTestProblem(_, payload) {
+      await axios.post('/sample/agency-test/problem/record/', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success('记录的问题可在产品详情页查看');
+        }
+      });
     }
   }
 };

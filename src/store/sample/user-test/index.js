@@ -16,7 +16,8 @@ export default {
       userList: [],
       simpleUserDetail: {},
       testQuestion: {},
-      userLoading: true
+      userLoading: true,
+      total: 0
     };
   },
   mutations: {
@@ -152,6 +153,7 @@ export default {
       await axios.get('/sample/user-test/user/list/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setUserList', res.data.list);
+          context.state.total = res.data.total;
         } 
       });
     },
@@ -215,6 +217,13 @@ export default {
             ElMessage.success(res.message);
           } 
         });
+    },
+    async recordTestProblem(_, payload) {
+      await axios.post('/sample/user-test/problem/record/', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success('记录的问题可在产品详情页查看');
+        }
+      });
     }
   }
 };

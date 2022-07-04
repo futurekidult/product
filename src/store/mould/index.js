@@ -16,7 +16,8 @@ export default {
       makingMouldProgress: {},
       makingMouldLoading: true,
       testingMouldProgress: {},
-      testingMouldLoading: true
+      testingMouldLoading: true,
+      mouldListLength: 0
     };
   },
   mutations: {
@@ -63,6 +64,7 @@ export default {
         if (res.code === 200) {
           context.commit('setMouldList', res.data.list);
           context.commit('setListLoading', false);
+          context.state.mouldListLength = res.data.total;
         }
       });
     },
