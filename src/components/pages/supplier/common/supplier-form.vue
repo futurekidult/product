@@ -361,7 +361,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="SWFT CODE">
+        <el-form-item label="SWIFT CODE">
           <el-input
             v-model="supplierForm.swift_code"
             placeholder="请输入SWIFT CODE"

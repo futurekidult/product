@@ -3,6 +3,7 @@
     v-model="visible"
     title="提示"
     width="20%"
+    @close="cancel"
   >
     <div class="result-content">
       确定将该供应商{{ type === 'black' ? '加入黑名单' : '移除黑名单' }}
