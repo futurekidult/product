@@ -69,6 +69,7 @@
             placeholder="请选择市场"
             style="width: 30%"
             clearable
+            @change="clearPlatform(index)"
           >
             <el-option
               v-for="market in market"
@@ -702,6 +703,11 @@ export default {
         } catch (err) {
           return;
         }
+      }
+    },
+    clearPlatform(index) {
+      if(this.reviewForm.market[index].platform) {
+        this.reviewForm.market[index].platform.length = 0;
       }
     }
   }

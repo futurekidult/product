@@ -85,6 +85,7 @@
           placeholder="请选择大品类"
           :disabled="isDisabled"
           clearable
+          @change="clearSmallCategory"
         >
           <el-option
             v-for="item in bigCategoryList"
@@ -975,6 +976,9 @@ export default {
     clearCurrency(val) {
       this.demandForm[`${val}_price_rmb`] = '';
       this.demandForm[`${val}_price`] = '';
+    },
+    clearSmallCategory() {
+      this.demandForm.small_category_id = '';
     }
   }
 };
