@@ -48,9 +48,7 @@ export default {
     async setWhiteSupplier() {
       try {
         await this.$store.dispatch('supplier/setWhiteSupplier', {
-          params: {
-            id: this.id
-          }
+          id: this.id
         });
         this.visible = false;
         this.getList();
