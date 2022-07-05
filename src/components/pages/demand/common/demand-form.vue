@@ -874,7 +874,7 @@ export default {
       }
     },
     async handleCProductImageSuccess(e, index) {
-      if (this.attachment[index].images.length > 0) {
+      if (this.attachment[index].images.length > 8) {
         this.$message.error(`第${index + 1}组竞品中的竞品图片最多传9张`);
       } else {
         this.$store.commit('setUploadState', false);
