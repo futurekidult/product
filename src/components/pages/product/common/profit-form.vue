@@ -23,7 +23,7 @@
           placeholder="请选择市场"
           :disabled="isDisabled"
           clearable
-          @change="getRate(profitForm.market)"
+          @change="changeMarket(profitForm.market)"
         >
           <el-option
             v-for="item in marketList"
@@ -505,6 +505,12 @@ export default {
         this.getProfitCalcaulation();
       } catch (err) {
         return;
+      }
+    },
+    changeMarket(val) {
+      this.getRate(val);
+      for (let key in this.profitForm.list) {
+        this.profitForm.list[key].platform = null;
       }
     }
   }

@@ -22,6 +22,7 @@
           remote
           :remote-method="remoteMethod"
           clearable
+          @clear="clearAddQuotationResult"
           @change="getAddReason"
         >
           <el-option
@@ -613,6 +614,7 @@ export default {
           params
         });
         this.hasAdd = this.$store.state.price.hasAdd;
+        this.quotationForm.appended_reason = '';
       } catch (err) {
         return;
       }
@@ -782,9 +784,15 @@ export default {
     clearMoney(val) {
       if (val === 'quote') {
         this.quotationForm.quote_amount_rmb = '';
+        this.isHigh = false;
+        this.quotationForm.beyond_reference_reason = '';
       } else {
         this.quotationForm[`${val}_cost_rmb`] = '';
       }
+    },
+    clearAddQuotationResult() {
+      this.quotationForm.appended_reason = '';
+      this.hasAdd = false;
     }
   }
 };

@@ -157,6 +157,7 @@
             clearable
             :disabled="isDisabled"
             style="width: 100%"
+            @change="clearAddress(index)"
           />
         </el-form-item>
         <el-form-item
@@ -1089,6 +1090,9 @@ export default {
         max: val,
         message: `长度不超过${val}个字符`
       };
+    },
+    clearAddress(index) {        
+      this.supplierForm.addresses[index].detail = '';
     }
   }
 };

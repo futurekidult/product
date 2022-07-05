@@ -136,6 +136,7 @@
             clearable
             placeholder="请选择国家"
             @focus="getCountryList"
+            @change="clearStateCity"
           >
             <el-option 
               v-for="country in countryOption"
@@ -577,6 +578,12 @@ export default {
       this.form.usage_scenario.pop();
       if (this.form.usage_scenario.length === 1) {
         this.scenarioVisible = false;
+      }
+    },
+    clearStateCity() {
+      for (let key in this.form.country) {
+        this.form.country[key].region_id = null;
+        this.form.country[key].city_id = null;
       }
     }
   }
