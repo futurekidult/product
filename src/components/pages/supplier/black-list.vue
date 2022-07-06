@@ -74,7 +74,7 @@
     </el-table>
 
     <base-pagination
-      :length="blackList.length"
+      :length="$store.state.supplier.blackListLength"
       :get-list="getBlackList"
     />
   </div>
