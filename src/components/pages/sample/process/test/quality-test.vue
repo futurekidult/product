@@ -29,12 +29,14 @@
       >
         <div :class="progress.state === undefined ? 'hide' : ''">
           <el-button
-            v-if="progress.state === 10"
+            v-if="progress.unapproved_reason_text"
+            :disabled="progress.state !== 10"
             @click="showFailReason"
           >
             测试不通过
           </el-button>
           <el-button
+            v-else
             type="primary"
             :disabled="progress.state !== 10"
             @click="confirmResult"

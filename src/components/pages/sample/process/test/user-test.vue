@@ -63,7 +63,7 @@
         </el-table-column>
         <el-table-column
           label="操作"
-          width="200px"
+          width="300px"
         >
           <template #default="scope">
             <el-button
@@ -152,12 +152,14 @@
         >
           <div :class="progress.state === undefined ? 'hide' : ''">
             <el-button
-              v-if="progress.state === 10"
+              v-if="progress.unapproved_reason_text"
+              :disabled="progress.state !== 10"
               @click="showFailReason"
             >
               测试不通过
             </el-button>
             <el-button
+              v-else
               type="primary"
               :disabled="progress.state !== 10"
               @click="confirmResult"
@@ -419,7 +421,8 @@ export default {
         children: 'children',
         label: 'name',
         disabled: 'disabled'
-      }
+      },
+      editId: 0
     };
   },
   watch: {
@@ -462,7 +465,7 @@ export default {
     },
     async updateSpecialist(val) {
       let body = val;
-      body.id = this.id;
+      body.id = this.editId;
       try {
         await this.$store.dispatch('sample/user/updateSpecialist', body);
         this.specialistFormVisible = false;
@@ -514,6 +517,7 @@ export default {
     showEditForm(id) {
       this.specialistFormVisible = true;
       this.getSpecialist(id);
+      this.editId = id;
     },
     closeEditForm() {
       this.specialistFormVisible = false;

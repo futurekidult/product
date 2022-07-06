@@ -28,6 +28,7 @@
         name="market"
       >
         <market-survey
+          v-if="isGetMarketData"
           :change-color="changeColor"
           :get-list="getMarket"
           :progress="marketProgress"
@@ -40,10 +41,13 @@
         name="analysis"
       >
         <user-analysis
+          v-if="isGetAnalysisData"
           :get-list="getAnalysis"
           :progress="analysisProgress"
           :attachment="analysisAttachment"
           :analysis-form="analysisForm"
+          :scenario-visible="scenarioVisible"
+          :country-visible="countryVisible"
         />
       </el-tab-pane>
       <el-tab-pane
@@ -52,10 +56,12 @@
         name="plan"
       >
         <product-plan
+          v-if="isGetPlanData"
           :get-list="getPlan"
           :progress="planProgress"
           :attachment="planAttachment"
           :product-form="planForm"
+          :scenario-visible="planScenarioVisible"
         />
       </el-tab-pane>
       <el-tab-pane
@@ -63,6 +69,7 @@
         name="risk"
       >
         <risk-survey
+          v-if="isGetRiskData"
           :get-list="getRisk"
           :progress="riskProgress"
           :attachment="riskAttachment"
@@ -141,7 +148,14 @@ export default {
       userProgress: {},
       surveyApply: [],
       length: 0,
-      userSurveyPrincipalId: 0
+      userSurveyPrincipalId: 0,
+      isGetMarketData: false,
+      isGetAnalysisData: false,
+      isGetPlanData: false,
+      isGetRiskData: false,
+      countryVisible: false,
+      scenarioVisible: false,
+      planScenarioVisible: false
     };
   },
   methods: {
@@ -159,6 +173,7 @@ export default {
         this.markeAttachment = market.report || {};
         changeTimestamp(this.marketProgress, 'estimated_finish_time');
         changeTimestamp(this.marketProgress, 'actual_finish_time');
+        this.isGetMarketData = true;
       } catch (err) {
         this.$store.commit('product/survey/market/setMarketLoading', false);
         return;
@@ -182,6 +197,21 @@ export default {
         changeTimestamp(this.analysisProgress, 'actual_finish_time');
         this.analysisForm = userAnalysis.report || {};
         this.analysisAttachment = this.analysisForm.attachment || {};
+        this.analysisForm.usage_scenario = this.analysisForm.usage_scenario || [];
+        if (this.analysisForm.usage_scenario.length === 0) {
+          this.analysisForm.usage_scenario.push('');
+          this.scenarioVisible = false;
+        } else {
+          this.scenarioVisible = true;
+        }
+        this.analysisForm.country = this.analysisForm.country || [];
+        if (this.analysisForm.country.length === 0) {
+          this.analysisForm.country.push({});
+          this.countryVisible = false;
+        } else {
+          this.countryVisible = true;
+        }
+        this.isGetAnalysisData = true;
       } catch (err) {
         this.$store.commit(
         'product/survey/userAnalysis/setAnalysisLoading', false);
@@ -201,6 +231,14 @@ export default {
         changeTimestamp(this.planProgress, 'actual_finish_time');
         this.planForm = plan.report || {};
         this.planAttachment = this.planForm.attachment || [];
+        this.planForm.usage_scenario = this.planForm.usage_scenario || [];
+        if (this.planForm.usage_scenario.length === 0) {
+          this.planForm.usage_scenario.push([]);
+          this.planScenarioVisible = false;
+        } else {
+          this.planScenarioVisible = true;
+        }
+        this.isGetPlanData = true;
       } catch (err) {
         this.$store.commit('product/survey/plan/setPlanLoading', false);
         return;
@@ -219,6 +257,7 @@ export default {
         changeTimestamp(this.riskProgress, 'actual_finish_time');
         this.riskForm = risk.report || {};
         this.riskAttachment = this.riskForm.attachment || {};
+        this.isGetRiskData = true;
       } catch (err) {
         this.$store.commit('product/survey/risk/setRiskLoading', false);
         return;

@@ -37,7 +37,7 @@
         <el-button
           v-if="sampleDetail.test_result !== -1"
           type="text"
-          :disabled="sampleDetail.state === 30"
+          :disabled="sampleDetail.state !== 20 && sampleDetail.test_result !== -1"
           :class="sampleDetail.state === undefined ? 'hide' : ''"
           @click="confirmResult"
         >
