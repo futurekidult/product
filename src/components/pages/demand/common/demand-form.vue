@@ -58,7 +58,7 @@
           {{ item.name }}
         </div>
         <div style="display: flex">
-          <div v-if="type !== 'detail'">
+          <div v-if="type !== 'detail' || state === 20">
             <el-button
               type="text"
               @click="deleteProductImg(item.id, imagesList)"
@@ -164,7 +164,7 @@
               {{ image.name }}
             </div>
             <div style="display: flex">
-              <div v-if="type !== 'detail'">
+              <div v-if="type !== 'detail' || state === 20">
                 <el-button
                   type="text"
                   @click="deleteProductImg(image.id, attachment[index].images)"
@@ -524,6 +524,16 @@
         提交
       </el-button>
     </el-form-item>
+    <el-form-item v-else>
+      <el-button 
+        v-if="state === 20"
+        type="primary"
+        :disabled="btnDisabled"
+        @click="updateDemandForm"
+      >
+        保存
+      </el-button>
+    </el-form-item>
   </el-form>
 
   <view-dialog
@@ -682,8 +692,7 @@ export default {
           {
             required: true,
             message: '请输入毛重'
-          },
-          checkValid(15)
+          }
         ],
         parameter: [
           {
@@ -744,7 +753,8 @@ export default {
       CRes: {},
       imgLink: '',
       viewImgDialog: false,
-      isGetRules: false
+      isGetRules: false,
+      state: null
     };
   },
   computed: {
@@ -766,13 +776,10 @@ export default {
     this.getCategoryList();
     if (this.type === 'detail') {
       this.getDetail();
-      this.isDisabled = true;
     } else if (this.type === 'edit') {
       this.getDetail();
-      this.getDepartment();
-    } else {
-      this.getDepartment();
     }
+    this.getDepartment();
   },
   methods: {
     async getDetail() {
@@ -784,6 +791,10 @@ export default {
         });
         let { demandDetail } = this.$store.state.demand;
         this.demandForm = demandDetail;
+        this.state = this.demandForm.state;
+        if(this.state !== 20) {
+          this.isDisabled = true;
+        }
         if(demandDetail.competitive_product.length === 0) {
           this.demandForm.competitive_product = this.attachment;
         } else {
@@ -795,6 +806,7 @@ export default {
           }
         });
         this.imagesList = this.demandForm.images;
+        this.isGetRules = true;
       } catch (err) {
         return;
       }
@@ -900,7 +912,7 @@ export default {
         1
       );
     },
-    submitDemandForm(val) {
+    getForm() {
       this.demandForm.images = [];
       this.imagesList.forEach((item) => {
         let { id } = item;
@@ -915,6 +927,9 @@ export default {
           this.demandForm.competitive_product[index].images = imgArr;
         }
       }
+    },
+    submitDemandForm(val) {
+      this.getForm();
       this.demandRules = val === 10 ? {} : this.demandRules;
       this.$refs.demandForm.validate((valid) => {
         if (valid) {
@@ -976,6 +991,19 @@ export default {
     },
     clearSmallCategory() {
       this.demandForm.small_category_id = '';
+    },
+    async updateReviewDemand(body) {
+      await this.$store.dispatch('demand/updateDemandForm', body);
+    },
+    updateDemandForm() {
+      this.getForm();
+      this.$refs.demandForm.validate((valid) => {
+        if (valid) {
+          let form = this.demandForm;
+          form.id = +this.$route.params.id;
+          this.updateReviewDemand(form);
+        }
+      });
     }
   }
 };
