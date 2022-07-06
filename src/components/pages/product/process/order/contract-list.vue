@@ -186,7 +186,7 @@
 <script>
 import { downloadFile, getFile, previewFile } from '../../../../../utils';
 export default {
-  inject: ['getContract', 'changeColor'],
+  inject: ['getContract', 'changeColor', 'getProgress'],
   props: [
     'contract',
     'exportContract',
@@ -227,6 +227,7 @@ export default {
           diecuts_file: this.diecutsFile.id
         });
         this.getContract();
+        this.getProgress();
       } catch (err) {
         return;
       }

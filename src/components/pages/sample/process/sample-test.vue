@@ -115,7 +115,7 @@
           name="agency"
         >
           <agency-test
-            v-if="activeName === 'agency'"
+            v-if="activeName === 'agency' && isGetData"
             :id="agencyId"
             :test-id="agencyTestId"
             :progress="agencyProgress"
@@ -263,7 +263,8 @@ export default {
         label: 'name',
         disabled: 'disabled'
       },
-      userList: []
+      userList: [],
+      isGetData: false
     };
   },
   mounted() {
@@ -288,6 +289,7 @@ export default {
         this.agencyValue = agencyTest.is_agency;
         this.agencyTestId = agencyTest.id;
         changeTimestamp(this.agencyProgress, 'actual_finish_time');
+        this.isGetData = true;
       } catch (err) {
         this.$store.commit('sample/agency/setAgencyLoading', false);
         return;

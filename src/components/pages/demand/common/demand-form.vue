@@ -1,5 +1,6 @@
 <template>
   <el-form
+    v-if="isGetRules"
     ref="demandForm"
     label-width="120px"
     class="demand-form"
@@ -742,7 +743,8 @@ export default {
       res: {},
       CRes: {},
       imgLink: '',
-      viewImgDialog: false
+      viewImgDialog: false,
+      isGetRules: false
     };
   },
   computed: {
@@ -798,14 +800,9 @@ export default {
       }
     },
     async getDepartment() {
-      try {
-        await this.$store.dispatch('getToken');
-        await this.$store.dispatch('getUserInfo');
-        this.department = this.$store.state.userInfo.center_group;
-        this.isRequired = this.department.indexOf(30) > -1;
-      } catch (err) {
-        return;
-      }
+      this.department = this.$store.state.userInfo.center_group;
+      this.isRequired = this.department.indexOf(30) > -1;
+      this.getRules();
     },
     async getCategoryList() {
       try {
@@ -839,6 +836,7 @@ export default {
       if (Object.keys(this.demandRules).length > 0) {
          Object.assign(this.demandRules, this.commonRules);
       }
+      this.isGetRules = true;
     },
     addRow() {
       this.demandForm.competitive_product.push({
@@ -904,7 +902,6 @@ export default {
     },
     submitDemandForm(val) {
       this.demandForm.images = [];
-      this.getRules();
       this.imagesList.forEach((item) => {
         let { id } = item;
         this.demandForm.images.push(id);

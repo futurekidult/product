@@ -86,6 +86,7 @@
             name="survey"
           >
             <product-survey  
+              v-if="isGetData"
               :platform-progress="platformProgress"
               :platform-form="platformForm"
               :product-images="productImages"
@@ -272,7 +273,8 @@ export default {
       platformAttachment: {},
       isNewCategory: false,
       isNewProduct: false,
-      isNewCategoryProduct: false
+      isNewCategoryProduct: false,
+      isGetData: false
     };
   },
   computed: {
@@ -556,6 +558,7 @@ export default {
         this.platformAttachment = this.platformForm.attachment || {};
         changeTimestamp(this.platformProgress, 'estimated_finish_time');
         changeTimestamp(this.platformProgress, 'actual_finish_time');
+        this.isGetData = true;
       } catch (err) {
         this.$store.commit('product/survey/platform/setPlatformLoading', false);
         return;

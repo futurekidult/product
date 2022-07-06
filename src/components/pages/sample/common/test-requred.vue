@@ -225,6 +225,7 @@
 <script>
 import {
   downloadFile,
+  formatterTime,
   getFile,
   getOrganizationList,
   previewFile,
@@ -383,6 +384,7 @@ export default {
         this.demandForm = this.$store.state.sample.user.viewApplyDetail;
         this.attachment = this.demandForm.demand_list_file;
         this.requiredAttachment = this.demandForm.user_requirement_file;
+        this.demandForm.estimated_finish_time = formatterTime(this.demandForm.estimated_finish_time);
       } catch (err) {
         return;
       }

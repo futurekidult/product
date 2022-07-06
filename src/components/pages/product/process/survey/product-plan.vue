@@ -15,7 +15,7 @@
       label-width="110px"
       style="width: 50%"
       :model="form"
-      :rules="rules"
+      :rules="productRules"
     >
       <el-form-item
         v-for="(item, index) in form.usage_scenario"
@@ -389,7 +389,7 @@ export default {
     CompetitiveTable
   },
   inject: ['getBase'],
-  props: ['progress', 'attachment', 'getList', 'productForm'],
+  props: ['progress', 'attachment', 'getList', 'productForm', 'scenarioVisible'],
   data() {
     return {
       productRules: {
@@ -525,29 +525,12 @@ export default {
       },
       currency: [],
       file: this.attachment,
-      form: this.productForm,
-      scenarioVisible: false,
-      rules: {}
+      form: this.productForm
     };
   },
   computed: {
     isDisabled() {
       return this.progress.state === 10 ? false : true;
-    }
-  },
-  watch: {
-    attachment(val) {
-      this.file = val;
-    },
-    productForm(val) {
-      this.form = val;
-      this.form.usage_scenario = this.form.usage_scenario || [];
-      if (this.form.usage_scenario.length === 0) {
-        this.form.usage_scenario.push([]);
-        this.scenarioVisible = false;
-      } else {
-        this.scenarioVisible = true;
-      }
     }
   },
   mounted() {
@@ -651,7 +634,6 @@ export default {
         let { id } = item;
         this.form.attachment.push(id);
       });
-      this.rules = this.productRules;
       this.$refs.productForm.validate((valid) => {
         if (valid) {
           this.updatePlan(this.form);

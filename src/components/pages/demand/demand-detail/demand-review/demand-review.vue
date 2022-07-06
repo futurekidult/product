@@ -62,7 +62,7 @@
         <el-form-item
           :label="'市场' + (index + 1)"
           :prop="`market.${index}.market_id`"
-          :rules="passRules.market_id"
+          :rules="rules.market_id"
         >
           <el-select
             v-model="item.market_id"
@@ -82,7 +82,7 @@
         <el-form-item
           :label="'平台' + (index + 1)"
           :prop="`market.${index}.platform`"
-          :rules="passRules.platform"
+          :rules="rules.platform"
         >
           <el-checkbox-group v-model="item.platform">
             <el-checkbox
@@ -430,7 +430,7 @@ export default {
       isNewCategoryIsNewProduct: false,
       isNewCategoryFlag: false,
       isNewProductFlag: false,
-      failRules: {
+      rules: {
         state: [
           {
             required: true,
@@ -441,14 +441,6 @@ export default {
           {
             required: true,
             message: '请输入内容'
-          }
-        ]
-      },
-      passRules: {
-        state: [
-          {
-            required: true,
-            message: '请选择评审结果'
           }
         ],
         is_new_category: [
@@ -609,8 +601,7 @@ export default {
         children: 'children',
         label: 'name',
         disabled: 'disabled'
-      },
-      rules: {}
+      }
     };
   },
   computed: {
@@ -678,7 +669,6 @@ export default {
           timeForm[item] = timestamp(timeForm[item]);
         }
       }
-      this.rules = this.reviewForm.state === 0 ? this.failRules : this.passRules;
       this.$refs.reviewForm.validate((valid) => {
         if (valid) {
           this.reviewDemandForm(timeForm);
