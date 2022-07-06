@@ -15,7 +15,7 @@
       label-width="110px"
       style="width: 50%"
       :model="form"
-      :rules="rules"
+      :rules="analysisRules"
     >
       <div class="form-item">
         <el-form-item
@@ -136,6 +136,7 @@
             clearable
             placeholder="请选择国家"
             @focus="getCountryList"
+            @change="clearStateCity"
           >
             <el-option 
               v-for="country in countryOption"
@@ -326,7 +327,7 @@ export default {
     SurveySchedule
   },
   inject: ['getBase'],
-  props: ['progress', 'attachment', 'analysisForm', 'getList'],
+  props: ['progress', 'attachment', 'analysisForm', 'getList', 'countryVisible', 'scenarioVisible'],
   data() {
     return {
       fileList: [],
@@ -398,10 +399,7 @@ export default {
       file: this.attachment,
       countryOption: [],
       regionOption: [],
-      cityOption: [],
-      countryVisible: false,
-      scenarioVisible: false,
-      rules: {}
+      cityOption: []
     };
   },
   computed: {
@@ -409,28 +407,7 @@ export default {
       return this.progress.state === 10 ? false : true;
     }
   },
-  watch: {
-    attachment(val) {
-      this.file = val;
-    },
-    analysisForm(val) {
-      this.form = val;
-      this.form.usage_scenario = this.form.usage_scenario || [];
-      if (this.form.usage_scenario.length === 0) {
-        this.form.usage_scenario.push('');
-        this.scenarioVisible = false;
-      } else {
-        this.scenarioVisible = true;
-      }
-      this.form.country = this.form.country || [];
-      if (this.form.country.length === 0) {
-        this.form.country.push({});
-        this.countryVisible = false;
-      } else {
-        this.countryVisible = true;
-      }
-    }
-  },
+
   mounted() {
     this.getParams();
   },
@@ -577,6 +554,12 @@ export default {
       this.form.usage_scenario.pop();
       if (this.form.usage_scenario.length === 1) {
         this.scenarioVisible = false;
+      }
+    },
+    clearStateCity() {
+      for (let key in this.form.country) {
+        this.form.country[key].region_id = null;
+        this.form.country[key].city_id = null;
       }
     }
   }

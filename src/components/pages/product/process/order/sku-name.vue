@@ -44,6 +44,7 @@
             placeholder="请选择平台"
             :disabled="isDisabled"
             clearable
+            @change="clearSku(index)"
           >
             <el-option
               v-for="content in $store.state.platform"
@@ -313,6 +314,9 @@ export default {
       if (this.form.sku.length === 1) {
         this.deleteVisible = false;
       }
+    },
+    clearSku(index) {
+      this.form.sku[index].name = '';
     }
   }
 };

@@ -1,5 +1,6 @@
 <template>
   <el-form
+    v-if="isGetRules"
     ref="demandForm"
     label-width="120px"
     class="demand-form"
@@ -57,7 +58,7 @@
           {{ item.name }}
         </div>
         <div style="display: flex">
-          <div v-if="type !== 'detail'">
+          <div v-if="type !== 'detail' || state === 20">
             <el-button
               type="text"
               @click="deleteProductImg(item.id, imagesList)"
@@ -85,6 +86,7 @@
           placeholder="请选择大品类"
           :disabled="isDisabled"
           clearable
+          @change="clearSmallCategory"
         >
           <el-option
             v-for="item in bigCategoryList"
@@ -162,7 +164,7 @@
               {{ image.name }}
             </div>
             <div style="display: flex">
-              <div v-if="type !== 'detail'">
+              <div v-if="type !== 'detail' || state === 20">
                 <el-button
                   type="text"
                   @click="deleteProductImg(image.id, attachment[index].images)"
@@ -522,6 +524,16 @@
         提交
       </el-button>
     </el-form-item>
+    <el-form-item v-else>
+      <el-button 
+        v-if="state === 20"
+        type="primary"
+        :disabled="btnDisabled"
+        @click="updateDemandForm"
+      >
+        保存
+      </el-button>
+    </el-form-item>
   </el-form>
 
   <view-dialog
@@ -680,8 +692,7 @@ export default {
           {
             required: true,
             message: '请输入毛重'
-          },
-          checkValid(15)
+          }
         ],
         parameter: [
           {
@@ -741,7 +752,9 @@ export default {
       res: {},
       CRes: {},
       imgLink: '',
-      viewImgDialog: false
+      viewImgDialog: false,
+      isGetRules: false,
+      state: null
     };
   },
   computed: {
@@ -763,13 +776,10 @@ export default {
     this.getCategoryList();
     if (this.type === 'detail') {
       this.getDetail();
-      this.isDisabled = true;
     } else if (this.type === 'edit') {
       this.getDetail();
-      this.getDepartment();
-    } else {
-      this.getDepartment();
     }
+    this.getDepartment();
   },
   methods: {
     async getDetail() {
@@ -781,6 +791,10 @@ export default {
         });
         let { demandDetail } = this.$store.state.demand;
         this.demandForm = demandDetail;
+        this.state = this.demandForm.state;
+        if(this.state !== 20) {
+          this.isDisabled = true;
+        }
         if(demandDetail.competitive_product.length === 0) {
           this.demandForm.competitive_product = this.attachment;
         } else {
@@ -792,19 +806,15 @@ export default {
           }
         });
         this.imagesList = this.demandForm.images;
+        this.isGetRules = true;
       } catch (err) {
         return;
       }
     },
     async getDepartment() {
-      try {
-        await this.$store.dispatch('getToken');
-        await this.$store.dispatch('getUserInfo');
-        this.department = this.$store.state.userInfo.center_group;
-        this.isRequired = this.department.indexOf(30) > -1;
-      } catch (err) {
-        return;
-      }
+      this.department = this.$store.state.userInfo.center_group;
+      this.isRequired = this.department.indexOf(30) > -1;
+      this.getRules();
     },
     async getCategoryList() {
       try {
@@ -838,6 +848,7 @@ export default {
       if (Object.keys(this.demandRules).length > 0) {
          Object.assign(this.demandRules, this.commonRules);
       }
+      this.isGetRules = true;
     },
     addRow() {
       this.demandForm.competitive_product.push({
@@ -873,7 +884,7 @@ export default {
       }
     },
     async handleCProductImageSuccess(e, index) {
-      if (this.attachment[index].images.length > 0) {
+      if (this.attachment[index].images.length > 8) {
         this.$message.error(`第${index + 1}组竞品中的竞品图片最多传9张`);
       } else {
         this.$store.commit('setUploadState', false);
@@ -901,9 +912,8 @@ export default {
         1
       );
     },
-    submitDemandForm(val) {
+    getForm() {
       this.demandForm.images = [];
-      this.getRules();
       this.imagesList.forEach((item) => {
         let { id } = item;
         this.demandForm.images.push(id);
@@ -917,6 +927,9 @@ export default {
           this.demandForm.competitive_product[index].images = imgArr;
         }
       }
+    },
+    submitDemandForm(val) {
+      this.getForm();
       this.demandRules = val === 10 ? {} : this.demandRules;
       this.$refs.demandForm.validate((valid) => {
         if (valid) {
@@ -975,6 +988,22 @@ export default {
     clearCurrency(val) {
       this.demandForm[`${val}_price_rmb`] = '';
       this.demandForm[`${val}_price`] = '';
+    },
+    clearSmallCategory() {
+      this.demandForm.small_category_id = '';
+    },
+    async updateReviewDemand(body) {
+      await this.$store.dispatch('demand/updateDemandForm', body);
+    },
+    updateDemandForm() {
+      this.getForm();
+      this.$refs.demandForm.validate((valid) => {
+        if (valid) {
+          let form = this.demandForm;
+          form.id = +this.$route.params.id;
+          this.updateReviewDemand(form);
+        }
+      });
     }
   }
 };

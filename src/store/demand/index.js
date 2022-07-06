@@ -79,8 +79,15 @@ export default {
         }
       });
     },
-    async reviewDemandForm(context, payload) {
+    async reviewDemandForm(_, payload) {
       await axios.post('/demand/entry/review', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
+    },
+    async updateDemandForm(_, payload) {
+      await axios.post('/demand/review/update', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }

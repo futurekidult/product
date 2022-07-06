@@ -139,6 +139,7 @@
       />
 
       <el-dialog
+        v-if="mouldFormVisible"
         v-model="mouldFormVisible"
         title="创建模具"
         width="30%"
@@ -146,7 +147,7 @@
         <el-form
           ref="mouldForm"
           :model="mouldForm"
-          :rules="rules"
+          :rules="mouldRules"
           label-width="120px"
         >
           <el-form-item
@@ -221,8 +222,7 @@ export default {
         children: 'children',
         label: 'name',
         disabled: 'disabled'
-      },
-      rules: {}
+      }
     };
   },
   mounted() {
@@ -292,7 +292,6 @@ export default {
       }
     },
     showMouldForm() {
-      this.rules = {};
       this.mouldFormVisible = true;
       this.mouldForm = {};
     },
@@ -304,7 +303,6 @@ export default {
       this.getMouldList();
     },
     submitMouldForm() {
-      this.rules = this.mouldRules;
       this.$refs.mouldForm.validate((valid) => {
         if (valid) {
           this.createMould(this.mouldForm);

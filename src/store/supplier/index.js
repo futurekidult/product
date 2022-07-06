@@ -12,7 +12,8 @@ export default {
       supplierDetail: {},
       supplierDetailLoading: true,
       cityOption: [],
-      supplierListLength: 0
+      supplierListLength: 0,
+      blackListLength: 0
     };
   },
   mutations: {
@@ -53,6 +54,7 @@ export default {
         if (res.code === 200) {
           context.commit('setBlackList', res.data.list);
           context.commit('setBlackLoading', false);
+          context.state.blackListLength = res.data.total;
         }
       });
     },

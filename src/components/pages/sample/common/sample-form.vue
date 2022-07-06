@@ -73,7 +73,10 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="上传附件">
+      <el-form-item 
+        label="上传附件" 
+        prop="proofing_sheet_file"
+      >
         <el-upload
           action
           :show-file-list="false"
@@ -206,6 +209,12 @@ export default {
             required: true,
             message: '请选择需求日期'
           }
+        ],
+        proofing_sheet_file: [
+           {
+            required: true,
+            message: '请上传附件'
+          }
         ]
       },
       hasVerifyOptions: [
@@ -267,6 +276,7 @@ export default {
       let body = val;
       try {
         await this.$store.dispatch('sample/updateProofingSheet', body);
+        this.visible = false;
         this.getProofing();
       } catch (err) {
         return;

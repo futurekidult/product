@@ -39,7 +39,7 @@
       ref="form"
       label-width="121px"
       style="width: 50%"
-      :rules="rules"
+      :rules="surveyRules"
       :model="form"
     >
       <el-form-item
@@ -553,21 +553,12 @@ export default {
       viewImgDialog: false,
       imgLink: '',
       file: this.attachment,
-      form: this.surveyForm,
-      rules: {}
+      form: this.surveyForm
     };
   },
   computed: {
     isDisabled() {
       return this.progress.state === 10 ? false : true;
-    }
-  },
-  watch: {
-    attachment(val) {
-      this.file = val;
-    },
-    surveyForm(val) {
-      this.form = val;
     }
   },
   mounted() {
@@ -673,17 +664,17 @@ export default {
       this.form.attachment = '';
     },
     submitSurveyForm() {
-      this.form.images = [];
+      let form = JSON.parse(JSON.stringify(this.form));
+      form.images = [];
       this.productImages.forEach((item) => {
         let { id } = item;
-        this.form.images.push(id);
+       form.images.push(id);
       });
-      this.form.attachment = this.file.id;
-      this.form.annual_sales = + this.form.annual_sales;
-      this.rules = this.surveyRules;
+      form.attachment = this.file.id;
+      form.annual_sales = +form.annual_sales;
       this.$refs.form.validate((valid) => {
         if (valid) {
-          this.updatePlatform(this.form);
+          this.updatePlatform(form);
         }
       });
     },

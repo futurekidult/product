@@ -137,11 +137,6 @@ export default {
       return this.progress.state === 10 ? false : true;
     }
   },
-  watch: {
-    attachment(val) {
-      this.file = val;
-    }
-  },
   methods: {
     async handleFileSuccess(e) {
       this.$store.commit('setUploadState', false);

@@ -65,12 +65,14 @@
           >
             <div :class="progress.state === undefined ? 'hide' : ''">
               <el-button
-                v-if="progress.state === 10"
+                v-if="progress.unapproved_reason_text"
+                :disabled="progress.state !== 10"
                 @click="showFailReason"
               >
                 测试不通过
               </el-button>
               <el-button
+                v-else
                 type="primary"
                 :disabled="progress.state !== 10"
                 @click="confirmResult"
@@ -218,7 +220,9 @@ export default {
   ],
   data() {
     return {
-      agencyForm: {},
+      agencyForm: {
+        isAgency: this.agencyValue
+      },
       isAgencyOptions: [
         {
           label: '请选择',
@@ -245,9 +249,6 @@ export default {
   watch: {
     attachment(val) {
       this.file = val;
-    },
-    agencyValue(val) {
-      this.agencyForm.isAgency = val;
     }
   },
   methods: {

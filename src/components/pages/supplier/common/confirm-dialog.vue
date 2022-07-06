@@ -3,6 +3,7 @@
     v-model="visible"
     title="提示"
     width="20%"
+    @close="cancel"
   >
     <div class="result-content">
       确定将该供应商{{ type === 'black' ? '加入黑名单' : '移除黑名单' }}
@@ -48,9 +49,7 @@ export default {
     async setWhiteSupplier() {
       try {
         await this.$store.dispatch('supplier/setWhiteSupplier', {
-          params: {
-            id: this.id
-          }
+          id: this.id
         });
         this.visible = false;
         this.getList();
