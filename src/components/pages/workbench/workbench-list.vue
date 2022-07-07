@@ -2,7 +2,7 @@
   <base-breadcrumb />
   <div class="border">
     <el-badge
-      :value="todoList.length"
+      :value="$store.state.workbench.todoListLength"
       size="mini"
       class="item"
     />

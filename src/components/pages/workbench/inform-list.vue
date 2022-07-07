@@ -55,9 +55,7 @@ export default {
     async noticationRead(id) {
       try {
         await this.$store.dispatch('workbench/noticationRead', {
-          params: {
             id
-          }
         });
         this.getList();
       } catch (err) {
