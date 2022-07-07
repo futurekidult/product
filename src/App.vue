@@ -311,4 +311,13 @@ body {
   width: 99%;
 }
 
+.detail-title {
+  font-weight: 700;
+  margin: 0 0 20px 0;
+  display: flex;
+}
+
+.tag-position {
+  margin-left: 20px;
+}
 </style>
