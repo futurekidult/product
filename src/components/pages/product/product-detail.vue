@@ -106,6 +106,7 @@
             name="project"
           >
             <project-setup
+              v-if="isGetProjectData"
               :progress="projectProgress"
               :project-form="projectForm"
               :attachment="projectAttachment"
@@ -278,7 +279,8 @@ export default {
       isNewCategory: false,
       isNewProduct: false,
       isNewCategoryProduct: false,
-      isGetData: false
+      isGetData: false,
+      isGetProjectData: false
     };
   },
   computed: {
@@ -475,6 +477,7 @@ export default {
         this.projectForm = project.form || {};
         this.projectAttachment = this.projectForm.sale_plan || {};
         changeTimestamp(this.projectProgress, 'actual_finish_time');
+        this.isGetProjectData = true;
       } catch (err) {
         this.$store.commit('product/project/setProjectLoading', false);
         return;
