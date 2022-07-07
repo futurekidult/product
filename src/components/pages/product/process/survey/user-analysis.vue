@@ -136,7 +136,7 @@
             clearable
             placeholder="请选择国家"
             @focus="getCountryList"
-            @change="clearStateCity"
+            @change="clearStateCity(index)"
           >
             <el-option 
               v-for="country in countryOption"
@@ -194,7 +194,7 @@
           + 新增
         </el-button>
         <el-button
-          v-if="countryVisible"
+          v-if="isCountryVisible"
           class="user-btn"
           type="danger"
           :disabled="isDisabled"
@@ -207,7 +207,7 @@
         v-for="(item, index) in form.usage_scenario"
         :key="index"
         :label="'使用场景' + (index + 1)"
-        :prop="`usage_scenario[${index}]`"
+        :prop="`usage_scenario${index}`"
         :rules="analysisRules.usage_scenario"
       >
         <el-input
@@ -226,7 +226,7 @@
           + 新增
         </el-button>
         <el-button
-          v-if="scenarioVisible"
+          v-if="isScenarioVisible"
           class="user-btn"
           type="danger"
           :disabled="isDisabled"
@@ -399,7 +399,9 @@ export default {
       file: this.attachment,
       countryOption: [],
       regionOption: [],
-      cityOption: []
+      cityOption: [],
+      isScenarioVisible: this.isScenarioVisible,
+      isCountryVisible: this.isCountryVisible
     };
   },
   computed: {
@@ -535,32 +537,30 @@ export default {
     addStateCity() {
       this.form.country.push({});
       if (this.form.country.length > 1) {
-        this.countryVisible = true;
+        this.isCountryVisible = true;
       }
     },
     addUsageScenario() {
-      this.form.usage_scenario.push([]);
+      this.form.usage_scenario.length++;
       if (this.form.usage_scenario.length > 1) {
-        this.scenarioVisible = true;
+        this.isScenarioVisible = true;
       }
     },
     deleteStateCity() {
       this.form.country.pop();
       if (this.form.country.length === 1) {
-        this.countryVisible = false;
+        this.isCountryVisible = false;
       }
     },
     deleteUsageScenario() {
       this.form.usage_scenario.pop();
       if (this.form.usage_scenario.length === 1) {
-        this.scenarioVisible = false;
+        this.isScenarioVisible = false;
       }
     },
-    clearStateCity() {
-      for (let key in this.form.country) {
-        this.form.country[key].region_id = null;
-        this.form.country[key].city_id = null;
-      }
+    clearStateCity(index) {
+        this.form.country[index].region_id = null;
+        this.form.country[index].city_id = null;
     }
   }
 };
