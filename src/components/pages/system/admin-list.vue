@@ -28,6 +28,7 @@
             :props="defaultProps"
             show-checkbox
             @focus="getOrganizationList"
+            @clear="getAdminList"
           />
         </el-form-item>
         <el-form-item label="状态">
@@ -215,7 +216,7 @@ export default {
         current_page:  this.page,
         page_size: this.pageSize,
         name: this.chooseForm.name,
-        dept_ids: this.chooseForm.dept_ids.join(','),
+        dept_ids: !this.chooseForm.dept_ids ? '' : this.chooseForm.dept_ids.join(','),
         state: this.chooseForm.state
       }
       try {
@@ -284,15 +285,15 @@ export default {
     },
     handleSizeChange(val) {
       this.pageSize = val;
-      this.getAdminList(this.page, this.pageSize, this.chooseForm.name, this.chooseForm.dept_ids, this.chooseForm.state);
+      this.getAdminList();
     },
     handleCurrentChange(val) {
       this.page = val;
-      this.getAdminList(this.page, this.pageSize, this.chooseForm.name, this.chooseForm.dept_ids, this.chooseForm.state);
+      this.getAdminList();
     },
     resetForm() {
       this.chooseForm = {};
-      this.getAdminList(this.page, this.pageSize, this.chooseForm.name, this.chooseForm.dept_ids, this.chooseForm.state);
+      this.getAdminList();
     }
   }
 };
