@@ -10,15 +10,19 @@
   <div v-else>
     <div v-loading="$store.state.demand.demandDetailLoading">
       <div class="border">
-        <base-tag
-          class="tag"
-          :mode="changeColor(demandDetail.state)"
-        >
-          {{ demandDetail.state_desc }}
-        </base-tag>
+        <div class="demand-title">
+          {{ demandDetail.name }}  
+          <div class="tag-position">
+            <base-tag
+              class="tag"
+              :mode="changeColor(demandDetail.state)"
+            >
+              {{ demandDetail.state_desc }}
+            </base-tag>
+          </div>
+        </div>
 
         <el-descriptions
-          :title="demandDetail.name"
           :column="4"
         >
           <el-descriptions-item
@@ -146,5 +150,15 @@ export default {
   justify-content: space-between;
   background: #f6f6f6;
   padding: 15px;
+}
+
+.demand-title {
+  font-weight: 700;
+  margin: 0 0 20px 0;
+  display: flex;
+}
+
+.tag-position {
+  margin-left: 20px;
 }
 </style>
