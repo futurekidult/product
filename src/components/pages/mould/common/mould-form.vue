@@ -44,6 +44,7 @@
           type="datetime"
           placeholder="请选择日期"
           clearable
+          :default-time="defaultTime"
         />
       </el-form-item>
       <el-form-item label="说明">
@@ -103,7 +104,8 @@ export default {
           }
         ]
       },
-      visible: this.dialogVisible
+      visible: this.dialogVisible,
+      defaultTime: new Date(2000,1,1,23,59,59)
     };
   },
   mounted() {

@@ -10,15 +10,19 @@
   <div v-else>
     <div v-loading="$store.state.demand.demandDetailLoading">
       <div class="border">
-        <base-tag
-          class="tag"
-          :mode="changeColor(demandDetail.state)"
-        >
-          {{ demandDetail.state_desc }}
-        </base-tag>
+        <div class="detail-title">
+          {{ demandDetail.name }}  
+          <div class="tag-position">
+            <base-tag
+              class="tag"
+              :mode="changeColor(demandDetail.state)"
+            >
+              {{ demandDetail.state_desc }}
+            </base-tag>
+          </div>
+        </div>
 
         <el-descriptions
-          :title="demandDetail.name"
           :column="4"
         >
           <el-descriptions-item

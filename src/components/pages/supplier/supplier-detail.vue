@@ -1,15 +1,20 @@
 <template>
   <div v-loading="$store.state.supplier.supplierDetailLoading">
     <div class="border">
-      <base-tag
-        :mode="mode"
-        type="tag"
-      >
-        {{ supplierDetail.state_desc }}
-      </base-tag>
+      <div class="detail-title">
+        {{ supplierDetail.name }}  
+        <div class="tag-position">
+          <base-tag
+            :mode="mode"
+            type="tag"
+          >
+            {{ supplierDetail.state_desc }}
+          </base-tag>
+        </div>
+      </div>
+
       <div class="supplier-item">
         <el-descriptions
-          :title="supplierDetail.name"
           :column="2"
           style="width: 70%"
         >

@@ -109,6 +109,7 @@
                   placeholder="请选择货币"
                   :disabled="isDisabled"
                   clearable
+                  @change="clearMoney(index)"
                 >
                   <el-option
                     v-for="cur in currency"
@@ -512,6 +513,10 @@ export default {
       for (let key in this.profitForm.list) {
         this.profitForm.list[key].platform = null;
       }
+    },
+    clearMoney(index) {
+      this.profitForm.list[index].selling_price = '';
+      this.profitForm.list[index].selling_price_rmb = '';
     }
   }
 };

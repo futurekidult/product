@@ -84,6 +84,7 @@
           type="datetime"
           placeholder="请选择日期"
           clearable
+          :default-time="defaultTime"
         />
       </el-form-item>
       <el-form-item
@@ -149,6 +150,7 @@
           type="datetime"
           placeholder="选择日期时间"
           clearable
+          :default-time="defaultTime"
         />
       </el-form-item>
       <el-divider />
@@ -235,7 +237,8 @@ export default {
           }
         ]
       },
-      id: 0
+      id: 0,
+      defaultTime: new Date(2000,1,1,23,59,59)
     };
   },
   methods: {

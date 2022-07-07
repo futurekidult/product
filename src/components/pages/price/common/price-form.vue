@@ -119,6 +119,7 @@
           type="datetime"
           placeholder="请选择日期"
           clearable
+          :default-time="defaultTime"
         />
       </el-form-item>
       <el-divider />
@@ -593,7 +594,8 @@ export default {
       isHigh: 0,
       attachment: {},
       currency: [],
-      show: false
+      show: false,
+      defaultTime: new Date(2000,1,1,23,59,59)
     };
   },
   mounted() {

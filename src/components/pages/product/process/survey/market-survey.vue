@@ -12,7 +12,7 @@
       <el-descriptions-item label="负责人">
         {{ progress.principal_desc }}
       </el-descriptions-item>
-      <el-descriptions-item label="是否多平台">
+      <el-descriptions-item label="是否多市场">
         {{ progress.is_multi_market }}
       </el-descriptions-item>
       <el-descriptions-item label="调研市场">
