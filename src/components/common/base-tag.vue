@@ -15,8 +15,6 @@ export default {
 
 <style scoped>
 .tag {
-  position: absolute;
-  left: 275px;
   border-radius: 10px;
 }
 </style>
