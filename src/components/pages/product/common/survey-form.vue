@@ -57,6 +57,7 @@
           placeholder="请选择时间"
           :disabled="isDisabled"
           clearable
+          :default-time="defaultTime"
         />
       </el-form-item>
       <el-divider />
@@ -159,7 +160,8 @@ export default {
           label: '不通过',
           value: 0
         }
-      ]
+      ],
+      defaultTime: new Date(2000,1,1,23,59,59)
     };
   },
   computed: {

@@ -92,6 +92,7 @@
           :disabled="disabled"
           clearable
           type="datetime"
+          :default-time="defaultTime"
         />
       </el-form-item>
       <el-divider v-if="type !== 'apply'" />
@@ -234,7 +235,8 @@ export default {
         children: 'children',
         label: 'name',
         disabled: 'disabled'
-      }
+      },
+      defaultTime: new Date(2000,1,1,23,59,59)
     };
   },
   computed: {

@@ -32,6 +32,7 @@
           placeholder="请选择日期"
           :disabled="isDisbaled"
           clearable
+          :default-time="defaultTime"
         />
       </el-form-item>
       <el-form-item
@@ -303,7 +304,8 @@ export default {
         children: 'children',
         label: 'name',
         disabled: 'disabled'
-      }
+      },
+      defaultTime: new Date(2000,1,1,23,59,59)
     };
   },
   computed: {

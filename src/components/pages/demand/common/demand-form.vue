@@ -528,7 +528,6 @@
       <el-button 
         v-if="state === 20"
         type="primary"
-        :disabled="btnDisabled"
         @click="updateDemandForm"
       >
         保存
@@ -692,7 +691,8 @@ export default {
           {
             required: true,
             message: '请输入毛重'
-          }
+          },
+          checkValid(15)
         ],
         parameter: [
           {
