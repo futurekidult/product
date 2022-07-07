@@ -3,23 +3,27 @@
     <router-view />
     <div v-if="isParent">
       <div class="border">
-        <base-tag
-          :mode="mode"
-          type="tag"
-        >
-          <span>{{ productBase.state_desc }}</span>
-        </base-tag>
-        <el-button
-          v-if="productBase.state === 90"
-          type="text"
-          class="terminate-btn"
-          @click="showViewReasonForm(productBase.termination_reason)"
-        >
-          查看终止原因
-        </el-button>
+        <div class="product-title">
+          {{ productBase.name }}  
+          <div class="tag-position">
+            <base-tag
+              :mode="mode"
+              type="tag"
+            >
+              <span>{{ productBase.state_desc }}</span>
+            </base-tag>
+            <el-button
+              v-if="productBase.state === 90"
+              type="text"
+              class="terminate-btn"
+              @click="showViewReasonForm(productBase.termination_reason)"
+            >
+              查看终止原因
+            </el-button>
+          </div>
+        </div>
         <div style="display: flex; justify-content: space-between">
           <el-descriptions
-            :title="productBase.name"
             :column="5"
             style="width: 80%"
           >
@@ -662,7 +666,16 @@ export default {
 
 <style scoped>
 .terminate-btn {
-  position: absolute;
-  left: 355px;
+  margin-left: 20px;
+}
+
+.product-title {
+  font-weight: 700;
+  margin: 0 0 20px 0;
+  display: flex;
+}
+
+.tag-position {
+  margin-left: 20px;
 }
 </style>
