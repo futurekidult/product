@@ -3,7 +3,7 @@
     <router-view />
     <div v-if="isParent">
       <div class="border">
-        <div class="product-title">
+        <div class="detail-title">
           {{ productBase.name }}  
           <div class="tag-position">
             <base-tag
@@ -666,16 +666,6 @@ export default {
 
 <style scoped>
 .terminate-btn {
-  margin-left: 20px;
-}
-
-.product-title {
-  font-weight: 700;
-  margin: 0 0 20px 0;
-  display: flex;
-}
-
-.tag-position {
   margin-left: 20px;
 }
 </style>

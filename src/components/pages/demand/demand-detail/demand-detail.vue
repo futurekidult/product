@@ -10,7 +10,7 @@
   <div v-else>
     <div v-loading="$store.state.demand.demandDetailLoading">
       <div class="border">
-        <div class="demand-title">
+        <div class="detail-title">
           {{ demandDetail.name }}  
           <div class="tag-position">
             <base-tag
@@ -150,15 +150,5 @@ export default {
   justify-content: space-between;
   background: #f6f6f6;
   padding: 15px;
-}
-
-.demand-title {
-  font-weight: 700;
-  margin: 0 0 20px 0;
-  display: flex;
-}
-
-.tag-position {
-  margin-left: 20px;
 }
 </style>
