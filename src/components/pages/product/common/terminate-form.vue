@@ -20,6 +20,7 @@
           clearable
           type="textarea"
           :rows="6"
+          :disabled="type === 'view'"
         />
       </el-form-item>
       <el-divider />
