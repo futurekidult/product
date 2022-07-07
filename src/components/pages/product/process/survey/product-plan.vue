@@ -21,7 +21,7 @@
         v-for="(item, index) in form.usage_scenario"
         :key="index"
         :label="'使用场景' + (index + 1)"
-        :prop="`usage_scenario[${index}]`"
+        :prop="`usage_scenario${index}`"
         :rules="productRules.usage_scenario"
         class="form-item_width"
       >
@@ -43,7 +43,7 @@
           + 新增
         </el-button>
         <el-button
-          v-if="scenarioVisible"
+          v-if="isScenarioVisible"
           class="user-btn"
           type="danger"
           :disabled="isDisabled"
@@ -525,7 +525,8 @@ export default {
       },
       currency: [],
       file: this.attachment,
-      form: this.productForm
+      form: this.productForm,
+      isScenarioVisible: this.isScenarioVisible
     };
   },
   computed: {
@@ -564,15 +565,15 @@ export default {
       }
     },
     addUsageScenario() {
-      this.form.usage_scenario.push([]);
+      this.form.usage_scenario.length++;
       if (this.form.usage_scenario.length > 1) {
-        this.scenarioVisible = true;
+        this.isScenarioVisible = true;
       }
     },
     deleteUsageScenario() {
       this.form.usage_scenario.pop();
       if (this.form.usage_scenario.length === 1) {
-        this.scenarioVisible = false;
+        this.isScenarioVisible = false;
       }
     },
     async handleFileSuccess(e) {

@@ -191,7 +191,7 @@ export default {
   props: ['progress', 'attachment', 'projectForm', 'profit', 'schedule'],
   data() {
     return {
-      passRules: {
+      rules: {
         review_result: [
           {
             required: true,
@@ -202,14 +202,6 @@ export default {
           {
             required: true,
             message: '请上传附件'
-          }
-        ]
-      },
-      failRules: {
-        review_result: [
-          {
-            required: true,
-            message: '请选择评审结果'
           }
         ],
         unapproved_reason: [
@@ -235,8 +227,7 @@ export default {
         }
       ],
       file: this.attachment,
-      form: this.projectForm,
-      rules: {}
+      form: this.projectForm
     };
   },
   computed: {
@@ -309,7 +300,6 @@ export default {
     },
     submitProjectForm() {
       this.form.sales_plan = this.file.id;
-      this.rules = this.projectForm.review_result === 1 ? this.passRules : this.failRules;
       this.$refs.projectForm.validate((valid) => {
         if (valid) {
           this.reviewProject(this.form);
