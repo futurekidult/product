@@ -253,6 +253,7 @@
                 v-model="scope.row.estimated_finish_time"
                 type="datetime"
                 placeholder="请选择时间"
+                :default-time="defaultTime"
               />
               <span v-else>{{ scope.row.estimated_finish_time }}</span>
             </template>
@@ -576,7 +577,8 @@ export default {
         label: 'name',
         disabled: 'disabled'
       },
-      viewId: 0
+      viewId: 0,
+      defaultTime: new Date(2000,1,1,23,59,59)
     };
   },
   mounted() {
