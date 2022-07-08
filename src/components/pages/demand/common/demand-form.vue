@@ -28,6 +28,7 @@
       label="产品图片"
       prop="images"
       class="form-item_width"
+      :rules="state === 20 ? [{ required: true, message: '请上传产品图片'}] : demandRules.images"
     >
       <el-upload
         action
@@ -80,6 +81,7 @@
       <el-form-item
         label="大品类"
         prop="big_category_id"
+        :rules="state === 20 ? [{ required: true, message: '请选择大品类', trigger: 'blur'}] : demandRules.big_category_id"
       >
         <el-select
           v-model="demandForm.big_category_id"
@@ -100,6 +102,7 @@
       <el-form-item
         label="小品类"
         prop="small_category_id"
+        :rules="state === 20 ? [{ required: true, message: '请选择小品类', trigger: 'blur'}] : demandRules.small_category_id"
       >
         <el-select
           v-model="demandForm.small_category_id"
@@ -120,6 +123,7 @@
       label="品牌"
       prop="brand"
       class="form-item_width"
+      :rules="state === 20 ? [{ required: true, message: '请选择品牌'}] : demandRules.brand"
     >
       <el-input
         v-model="demandForm.brand"
@@ -812,9 +816,11 @@ export default {
       }
     },
     async getDepartment() {
-      this.department = this.$store.state.userInfo.center_group;
-      this.isRequired = this.department.indexOf(30) > -1;
-      this.getRules();
+      this.department = JSON.parse(localStorage.getItem('center_group'));
+      this.isRequired = this.department.indexOf(30) > -1 && this.$store.state.demand.demandDetail.state !== 20;
+      if(this.$store.state.demand.demandDetail.state !== 20 || this.type !== 'detail') {
+        this.getRules();
+      }
     },
     async getCategoryList() {
       try {

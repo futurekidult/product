@@ -68,6 +68,7 @@ export default {
           id: +this.$route.params.productId,
           reason: this.terminateForm.reason
         });
+        this.visible = false;
         this.getBase();
       } catch (err) {
         return;

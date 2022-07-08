@@ -156,6 +156,7 @@ const store = createStore({
       await axios.get('/admin/info').then((res) => {
         if (res.code === 200) {
           context.commit('setUserInfo', res.data);
+          localStorage.setItem('center_group', JSON.stringify(res.data.center_group));
         }
       });
     },
