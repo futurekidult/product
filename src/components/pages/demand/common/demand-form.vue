@@ -792,7 +792,7 @@ export default {
         let { demandDetail } = this.$store.state.demand;
         this.demandForm = demandDetail;
         this.state = this.demandForm.state;
-        if(this.state !== 20) {
+        if(this.state !== 20 && this.type !== 'edit') {
           this.isDisabled = true;
         }
         if(demandDetail.competitive_product.length === 0) {
@@ -863,45 +863,53 @@ export default {
       this.attachment.pop();
     },
     async handleProductImageSuccess(e) {
-      if (this.imagesList.length > 8) {
-        this.$message.error('产品图片最多传9张');
-      } else {
-        this.$store.commit('setUploadState', false);
-        let form = getFile(e);
-        try {
-          await this.$store.dispatch('uploadFile', form);
-          if (this.$store.state.uploadState) {
-            this.res = this.$store.state.fileRes;
-            this.imagesList.push({
-              id: this.res.id,
-              name: this.res.file_name,
-              type: this.res.type
-            });
+      if(e.file.type.indexOf('image') > -1) {
+        if (this.imagesList.length > 8) {
+          this.$message.error('产品图片最多传9张');
+        } else {
+          this.$store.commit('setUploadState', false);
+          let form = getFile(e);
+          try {
+            await this.$store.dispatch('uploadFile', form);
+            if (this.$store.state.uploadState) {
+              this.res = this.$store.state.fileRes;
+              this.imagesList.push({
+                id: this.res.id,
+                name: this.res.file_name,
+                type: this.res.type
+              });
+            }
+          } catch (err) {
+            return;
           }
-        } catch (err) {
-          return;
-        }
+       }
+      } else {
+          this.$message.error('上传的产品图片格式有误！');
       }
     },
     async handleCProductImageSuccess(e, index) {
-      if (this.attachment[index].images.length > 8) {
-        this.$message.error(`第${index + 1}组竞品中的竞品图片最多传9张`);
-      } else {
-        this.$store.commit('setUploadState', false);
-        let form = getFile(e);
-        try {
-          await this.$store.dispatch('uploadFile', form);
-          if (this.$store.state.uploadState) {
-            this.CRes = this.$store.state.fileRes;
-            this.attachment[index].images.push({
-              id: this.CRes.id,
-              name: this.CRes.file_name,
-              type: this.CRes.type
-            });
+      if(e.file.type.indexOf('image') > -1) {
+        if (this.attachment[index].images.length > 8) {
+          this.$message.error(`第${index + 1}组竞品中的竞品图片最多传9张`);
+        } else {
+          this.$store.commit('setUploadState', false);
+          let form = getFile(e);
+          try {
+            await this.$store.dispatch('uploadFile', form);
+            if (this.$store.state.uploadState) {
+              this.CRes = this.$store.state.fileRes;
+              this.attachment[index].images.push({
+                id: this.CRes.id,
+                name: this.CRes.file_name,
+                type: this.CRes.type
+              });
+            }
+          } catch (err) {
+            return;
           }
-        } catch (err) {
-          return;
         }
+      } else {
+        this.$message.error(`上传的第${index + 1}组竞品中的竞品图片格式有误！`);
       }
     },
     deleteProductImg(id, arr) {

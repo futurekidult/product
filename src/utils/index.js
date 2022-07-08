@@ -31,12 +31,10 @@ export const timestamp = (val) => {
 };
 
 export const downloadFile = (val, name) => {
-  let blob = new Blob([val]);
   let link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
+  link.href = val;
   link.download = name;
   link.click();
-  URL.revokeObjectURL(link.href);
 };
 
 export const previewFile = (val) => {

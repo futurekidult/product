@@ -21,7 +21,7 @@
         v-for="(item, index) in form.usage_scenario"
         :key="index"
         :label="'使用场景' + (index + 1)"
-        :prop="`usage_scenario${index}`"
+        :prop="`usage_scenario[${index}]`"
         :rules="productRules.usage_scenario"
         class="form-item_width"
       >
