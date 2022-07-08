@@ -14,7 +14,8 @@ export default {
       targetPrice: [],
       hasAdd: 0,
       hasHigh: 0,
-      quotation: {}
+      quotation: {},
+      supplierOption: []
     };
   },
   mutations: {
@@ -44,6 +45,9 @@ export default {
     },
     setQuotationLoading(state, payload) {
       state.quotationLoading = payload;
+    },
+    setSupplierOption(state, payload) {
+      state.supplierOption = payload;
     }
   },
   actions: {
@@ -153,6 +157,13 @@ export default {
           ElMessage.success(res.message);
         }
       });
+    },
+    async getSupplierOption(context) {
+      await axios.get('/option/supplier/list').then((res) => {
+        if(res.code === 200) {
+          context.commit('setSupplierOption', res.data.list);
+        }
+      })
     }
   }
 };

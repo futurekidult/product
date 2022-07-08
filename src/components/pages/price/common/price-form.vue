@@ -606,19 +606,21 @@ export default {
       this.visible = false;
       this.$emit('hide-dialog', false);
     },
-    async getAddReason(val) {
-      let params = {
-        supplier_id: val,
-        pricing_id: this.id
-      };
-      try {
-        await this.$store.dispatch('price/getAddReason', {
-          params
-        });
-        this.hasAdd = this.$store.state.price.hasAdd;
-        this.quotationForm.appended_reason = '';
-      } catch (err) {
-        return;
+    async getAddReason() {
+     if(this.quotationForm.supplier_id !== '') {
+        let params = {
+          supplier_id: this.quotationForm.supplier_id,
+          pricing_id: this.id
+        };
+        try {
+          await this.$store.dispatch('price/getAddReason', {
+            params
+          });
+          this.hasAdd = this.$store.state.price.hasAdd;
+          this.quotationForm.appended_reason = '';
+        } catch (err) {
+          return;
+        }
       }
     },
     async getHighReason(val) {
@@ -728,25 +730,20 @@ export default {
         return;
       }
     },
-    async getSupplier() {
-      let params = {
-        current_page: 1,
-        page_size: 10,
-        state: 30
-      };
+    async getSupplier(val) {
       try {
-        await this.$store.dispatch('supplier/getSupplierList', { params });
-        this.supplierList = this.$store.state.supplier.supplierList;
+        await this.$store.dispatch('price/getSupplierOption');
+        this.supplierList = this.$store.state.price.supplierOption;
+        this.options = this.supplierList.filter((item) => {
+          return item.name.indexOf(val) > -1;
+        });
       } catch (err) {
         return;
       }
     },
     remoteMethod(query) {
       if (query) {
-        this.getSupplier();
-        this.options = this.supplierList.filter((item) => {
-          return item.name.indexOf(query) > -1;
-        });
+        this.getSupplier(query);
       }
     },
     async getParams() {
