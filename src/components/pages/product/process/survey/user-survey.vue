@@ -195,7 +195,7 @@
                 v-model="scope.row.proceeding"
                 placeholder="请选择"
                 clearable
-                @clear="clearDetail(scope.row.id)"
+                @clear="clearDetail(scope.row.proceeding)"
               >
                 <el-option
                   v-for="item in planOptions"
@@ -216,9 +216,10 @@
                 v-if="!scope.row.id"
                 v-model="scope.row.detail"
                 placeholder="请选择"
+                clearable
               >
                 <el-option
-                  v-for="item in detailOptions[scope.row.proceeding].children"
+                  v-for="item in detailOptions[Number(scope.row.proceeding)].children"
                   :key="item.key"
                   :label="item.value"
                   :value="item.key"
@@ -863,26 +864,30 @@ export default {
     },
     clearDetail(id) {
       this.planList.map((item) => {
-        if (item.id === id) {
-          item.detail = '';
+        if (item.proceeding === id) {
+          item.detail = '';   
         }
       });
     },
     async handleFileSuccess(e, attachment, id) {
-      this.$store.commit('setUploadState', false);
-      let form = getFile(e);
-      try {
-        await this.$store.dispatch('uploadFile', form);
-        if (this.$store.state.uploadState) {
-          attachment['id'] = this.$store.state.fileRes.id;
-          attachment['name'] = this.$store.state.fileRes.file_name;
-          attachment['type'] = this.$store.state.fileRes.type;
-          await this.$store.dispatch('product/survey/user/addPlanResultAttachment',{ plan_id: id, attachment: this.$store.state.fileRes.id })
-          this.getList();
+      if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
+        this.$store.commit('setUploadState', false);
+        let form = getFile(e);
+        try {
+          await this.$store.dispatch('uploadFile', form);
+          if (this.$store.state.uploadState) {
+            attachment['id'] = this.$store.state.fileRes.id;
+            attachment['name'] = this.$store.state.fileRes.file_name;
+            attachment['type'] = this.$store.state.fileRes.type;
+            await this.$store.dispatch('product/survey/user/addPlanResultAttachment',{ plan_id: id, attachment: this.$store.state.fileRes.id })
+            this.getList();
+          }
+        } catch (err) {
+          return;
         }
-      } catch (err) {
-        return;
-      }
+      } else {
+        this.$message.error('上传的附件格式有误！');
+      } 
     },
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);

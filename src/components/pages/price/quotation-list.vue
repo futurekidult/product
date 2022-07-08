@@ -642,7 +642,7 @@ export default {
         await this.$store.dispatch('price/confirmQuotation', {
           id: this.confirmQuotationId
         });
-        this.confirmQuotationId = false;
+        this.confirmFormVisible = false;
         this.getQuotationList();
       } catch (err) {
         return;

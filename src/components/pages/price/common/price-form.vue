@@ -606,19 +606,21 @@ export default {
       this.visible = false;
       this.$emit('hide-dialog', false);
     },
-    async getAddReason(val) {
-      let params = {
-        supplier_id: val,
-        pricing_id: this.id
-      };
-      try {
-        await this.$store.dispatch('price/getAddReason', {
-          params
-        });
-        this.hasAdd = this.$store.state.price.hasAdd;
-        this.quotationForm.appended_reason = '';
-      } catch (err) {
-        return;
+    async getAddReason() {
+     if(this.quotationForm.supplier_id !== '') {
+        let params = {
+          supplier_id: this.quotationForm.supplier_id,
+          pricing_id: this.id
+        };
+        try {
+          await this.$store.dispatch('price/getAddReason', {
+            params
+          });
+          this.hasAdd = this.$store.state.price.hasAdd;
+          this.quotationForm.appended_reason = '';
+        } catch (err) {
+          return;
+        }
       }
     },
     async getHighReason(val) {
@@ -680,7 +682,12 @@ export default {
         this.visible = false;
         this.getList();
       } catch (err) {
+       if(err.message === '45034') {
+        this.visible = false;
+        this.getList();
+       } else {
         return;
+       }
       }
     },
     submitForm() {
@@ -692,21 +699,25 @@ export default {
       });
     },
     async handleFileSuccess(e) {
-      this.$store.commit('setUploadState', false);
-      let form = getFile(e);
-      try {
-        await this.$store.dispatch('uploadFile', form);
-        if (this.$store.state.uploadState) {
-          this.show = true;
-          this.attachment = {
-            id: this.$store.state.fileRes.id,
-            name: this.$store.state.fileRes.file_name,
-            type: this.$store.state.fileRes.type
-          };
+     if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
+       this.$store.commit('setUploadState', false);
+        let form = getFile(e);
+        try {
+          await this.$store.dispatch('uploadFile', form);
+          if (this.$store.state.uploadState) {
+            this.show = true;
+            this.attachment = {
+              id: this.$store.state.fileRes.id,
+              name: this.$store.state.fileRes.file_name,
+              type: this.$store.state.fileRes.type
+            };
+          }
+        } catch (err) {
+          return;
         }
-      } catch (err) {
-        return;
-      }
+     } else {
+      this.$message.error('上传的附件格式有误！');
+     }
     },
     deleteFile() {
       this.attachment = {};
@@ -724,25 +735,20 @@ export default {
         return;
       }
     },
-    async getSupplier() {
-      let params = {
-        current_page: 1,
-        page_size: 10,
-        state: 30
-      };
+    async getSupplier(val) {
       try {
-        await this.$store.dispatch('supplier/getSupplierList', { params });
-        this.supplierList = this.$store.state.supplier.supplierList;
+        await this.$store.dispatch('price/getSupplierOption');
+        this.supplierList = this.$store.state.price.supplierOption;
+        this.options = this.supplierList.filter((item) => {
+          return item.name.indexOf(val) > -1;
+        });
       } catch (err) {
         return;
       }
     },
     remoteMethod(query) {
       if (query) {
-        this.getSupplier();
-        this.options = this.supplierList.filter((item) => {
-          return item.name.indexOf(query) > -1;
-        });
+        this.getSupplier(query);
       }
     },
     async getParams() {

@@ -600,40 +600,49 @@ export default {
       }
     },
     async handleImgSuccess(e) {
-      if (this.productImages.length > 8) {
-        this.$message.error('产品图片不能传超过9张');
+      if(e.file.type.indexOf('image') > -1) {
+        if (this.productImages.length > 8) {
+          this.$message.error('产品图片不能传超过9张');
+        } else {
+          this.$store.commit('setUploadState', false);
+          let form = getFile(e);
+          try {
+            await this.$store.dispatch('uploadFile', form);
+            if (this.$store.state.uploadState) {
+              this.res = this.$store.state.fileRes;
+              this.productImages.push({
+                id: this.res.id,
+                name: this.res.file_name,
+                type: this.res.type
+              });
+            }
+          } catch (err) {
+            return;
+          }
+        }
       } else {
+        this.$message.error('上传的产品图片有误！');
+      }
+    },
+    async handleFileSuccess(e) {
+      if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
         this.$store.commit('setUploadState', false);
         let form = getFile(e);
         try {
           await this.$store.dispatch('uploadFile', form);
           if (this.$store.state.uploadState) {
-            this.res = this.$store.state.fileRes;
-            this.productImages.push({
-              id: this.res.id,
-              name: this.res.file_name,
-              type: this.res.type
-            });
+            this.file = {
+              id: this.$store.state.fileRes.id,
+              name: this.$store.state.fileRes.file_name,
+              type: this.$store.state.fileRes.type
+            };
+            this.marketForm.attachment = this.file.id;
           }
         } catch (err) {
           return;
         }
-      }
-    },
-    async handleFileSuccess(e) {
-      this.$store.commit('setUploadState', false);
-      let form = getFile(e);
-      try {
-        await this.$store.dispatch('uploadFile', form);
-        if (this.$store.state.uploadState) {
-          this.file = {
-            id: this.$store.state.fileRes.id,
-            name: this.$store.state.fileRes.file_name,
-            type: this.$store.state.fileRes.type
-          };
-        }
-      } catch (err) {
-        return;
+      } else {
+        this.$message.error('上传的附件格式有误！');
       }
     },
     async showViewDialog(id) {
