@@ -71,6 +71,7 @@
         <el-button
           type="primary"
           class="create"
+          :disabled="getPrivilege"
           @click="toCreate"
         >
           创建需求
@@ -201,6 +202,14 @@ export default {
         disabled: 'disabled'
       }
     };
+  },
+  computed: {
+    getPrivilege() {
+      let group = JSON.parse(localStorage.getItem('center_group'));
+      let flag = group.indexOf(100) > -1;
+      let length = group.length === 1;
+      return flag && length;
+    }
   },
   mounted() {
     this.getDemandList();

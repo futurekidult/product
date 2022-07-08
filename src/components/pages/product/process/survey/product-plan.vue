@@ -22,7 +22,7 @@
         :key="index"
         :label="'使用场景' + (index + 1)"
         :prop="`usage_scenario[${index}]`"
-        :rules="productRules.usage_scenario"
+        :rules="[{ required: true, message: '请输入使用场景'}, checkValid(15)]"
         class="form-item_width"
       >
         <el-input
@@ -393,13 +393,6 @@ export default {
   data() {
     return {
       productRules: {
-        usage_scenario: [
-          {
-            required: true,
-            message: '请输入使用场景'
-          },
-          checkValid(15)
-        ],
         pain_spot: [
           {
             required: true,
@@ -538,6 +531,7 @@ export default {
     this.getCurrency();
   },
   methods: {
+    checkValid,
     async getCurrency() {
       if (localStorage.getItem('params')) {
         this.currency = JSON.parse(

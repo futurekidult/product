@@ -208,7 +208,7 @@
         :key="index"
         :label="'使用场景' + (index + 1)"
         :prop="`usage_scenario[${index}]`"
-        :rules="analysisRules.usage_scenario"
+        :rules="[{ required: true,message: '请输入使用场景'}, checkValid(15)]"
       >
         <el-input
           v-model="form.usage_scenario[index]"
@@ -375,13 +375,6 @@ export default {
             message: '请选择国家'
           }
         ],
-        usage_scenario: [
-          {
-            required: true,
-            message: '请输入使用场景'
-          },
-          checkValid(15)
-        ],
         attachment: [
           {
             required: true,
@@ -414,6 +407,7 @@ export default {
     this.getParams();
   },
   methods: {
+    checkValid,
     async getParams() {
       if (localStorage.getItem('params')) {
         let userAnalysis = JSON.parse(

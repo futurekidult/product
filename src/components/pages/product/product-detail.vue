@@ -475,7 +475,7 @@ export default {
         let { project } = this.$store.state.product.project;
         this.projectProgress = project.schedule || {};
         this.projectForm = project.form || {};
-        this.projectAttachment = this.projectForm.sale_plan || {};
+        this.projectAttachment = this.projectForm.sales_plan || {};
         changeTimestamp(this.projectProgress, 'actual_finish_time');
         this.isGetProjectData = true;
       } catch (err) {
