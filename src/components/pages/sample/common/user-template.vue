@@ -221,21 +221,25 @@ export default {
       }
     },
     async handleFileSuccess(e) {
-      this.$store.commit('setUploadState', false);
-      let form = getFile(e);
-      try {
-        await this.$store.dispatch('uploadFile', form);
-        if (this.$store.state.uploadState) {
-          this.show = true;
-          this.file = {
-            id: this.$store.state.fileRes.id,
-            name: this.$store.state.fileRes.file_name,
-            type: this.$store.state.fileRes.type
-          };
-          this.getList();
+      if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
+        this.$store.commit('setUploadState', false);
+        let form = getFile(e);
+        try {
+          await this.$store.dispatch('uploadFile', form);
+          if (this.$store.state.uploadState) {
+            this.show = true;
+            this.file = {
+              id: this.$store.state.fileRes.id,
+              name: this.$store.state.fileRes.file_name,
+              type: this.$store.state.fileRes.type
+            };
+            this.getList();
+          }
+        } catch (err) {
+          return;
         }
-      } catch (err) {
-        return;
+      } else {
+        this.$message.error('上传的附件格式有误！');
       }
     },
     async download(id, name) {

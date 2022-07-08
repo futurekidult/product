@@ -319,24 +319,28 @@ export default {
       }
     },
     async handleFileSuccess(e) {
-      if (this.imgList.length > 8) {
-        this.$message.error('产品图片最多传9张');
-      } else {
-        this.$store.commit('setUploadState', false);
-        let form = getFile(e);
-        try {
-          await this.$store.dispatch('uploadFile', form);
-          if (this.$store.state.uploadState) {
-            this.res = this.$store.state.fileRes;
-            this.imgList.push({
-              id: this.res.id,
-              name: this.res.file_name,
-              type: this.res.type
-            });
+      if(e.file.type.indexOf('image') > -1) {
+        if (this.imgList.length > 8) {
+          this.$message.error('产品图片最多传9张');
+        } else {
+          this.$store.commit('setUploadState', false);
+          let form = getFile(e);
+          try {
+            await this.$store.dispatch('uploadFile', form);
+            if (this.$store.state.uploadState) {
+              this.res = this.$store.state.fileRes;
+              this.imgList.push({
+                id: this.res.id,
+                name: this.res.file_name,
+                type: this.res.type
+              });
+            }
+          } catch (err) {
+            return;
           }
-        } catch (err) {
-          return;
         }
+      } else {
+        this.$message.error('上传的产品图片格式有误！');
       }
     },
     async getProductList(currentPage = 1, pageSize = 10) {

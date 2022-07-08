@@ -7,7 +7,7 @@
   >
     <div class="select-title">
       <span class="line">|</span>
-      {{ type === 'create' ? '创建' : '编辑' }}供应商
+      {{ getTitle(type) }}
     </div>
 
     <el-form
@@ -677,7 +677,7 @@
         <el-upload
           action
           :show-file-list="false"
-          :http-request="(e) => handleFileSuccess(e, purchaseEvaluationFile)"
+          :http-request="(e) => handleFileSuccess(e, purchaseEvaluationFile,'采购供应商评估表')"
         >
           <el-button
             type="primary"
@@ -740,7 +740,7 @@
         <el-upload
           action
           :show-file-list="false"
-          :http-request="(e) => handleFileSuccess(e, qualityEvaluationFile)"
+          :http-request="(e) => handleFileSuccess(e, qualityEvaluationFile, '质检供应商评估表')"
         >
           <el-button
             type="primary"
@@ -890,6 +890,14 @@ export default {
     }
   },
   methods: {
+    getTitle(val) {
+      let title = {
+        'create': '创建供应商',
+        'update': '编辑供应商',
+        'review': '详细信息'
+      }
+      return title[val];
+    },
     async getParams() {
       if (localStorage.getItem('params')) {
         let { supplier } = JSON.parse(localStorage.getItem('params'));
@@ -976,37 +984,45 @@ export default {
       }
     },
     async handleFileArrSuccess(e, arr, str) {
-      if (arr.length > 8) {
-        this.$emssage.error(`${str}不能传超过9张`);
+      if(e.file.type.indexOf('image') > -1) {
+        if (arr.length > 8) {
+          this.$emssage.error(`${str}不能传超过9张`);
+        } else {
+          this.$store.commit('setUploadState', false);
+          let form = getFile(e);
+          try {
+            await this.$store.dispatch('uploadFile', form);
+            if (this.$store.state.uploadState) {
+              arr.push({
+                id: this.$store.state.fileRes.id,
+                name: this.$store.state.fileRes.file_name,
+                type: this.$store.state.fileRes.type
+              });
+            }
+          } catch (err) {
+            return;
+          }
+        }
       } else {
+        this.$message.error(`上传的${str}格式有误！`);
+      }
+    },
+    async handleFileSuccess(e, obj, str) {
+      if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
         this.$store.commit('setUploadState', false);
         let form = getFile(e);
         try {
           await this.$store.dispatch('uploadFile', form);
           if (this.$store.state.uploadState) {
-            arr.push({
-              id: this.$store.state.fileRes.id,
-              name: this.$store.state.fileRes.file_name,
-              type: this.$store.state.fileRes.type
-            });
+            obj['id'] = this.$store.state.fileRes.id;
+            obj['name'] = this.$store.state.fileRes.file_name;
+            obj['type'] = this.$store.state.fileRes.type;
           }
         } catch (err) {
           return;
         }
-      }
-    },
-    async handleFileSuccess(e, obj) {
-      this.$store.commit('setUploadState', false);
-      let form = getFile(e);
-      try {
-        await this.$store.dispatch('uploadFile', form);
-        if (this.$store.state.uploadState) {
-          obj['id'] = this.$store.state.fileRes.id;
-          obj['name'] = this.$store.state.fileRes.file_name;
-          obj['type'] = this.$store.state.fileRes.type;
-        }
-      } catch (err) {
-        return;
+      } else {
+        this.$message.error(`上传的${str}格式有误！`);
       }
     },
     handleFileArr(oldArr, key) {
