@@ -682,7 +682,12 @@ export default {
         this.visible = false;
         this.getList();
       } catch (err) {
+       if(err.message === '45034') {
+        this.visible = false;
+        this.getList();
+       } else {
         return;
+       }
       }
     },
     submitForm() {

@@ -60,7 +60,7 @@ http.interceptors.response.use(async (res) => {
     } else {
       ElMessage.error(res.data.message);
     }
-    throw new Error();
+    throw new Error(code);
   }
   return res.data;
   }, (err) => {
