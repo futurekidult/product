@@ -62,6 +62,7 @@ export default {
             break;
           case 'demand':
           case 'demand create':
+          case 'demand edit':
             prefix = prefix.concat({
               path: '/demand-list',
               meta: { title: '需求管理' }

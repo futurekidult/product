@@ -6,12 +6,12 @@
     class="demand-form"
     style="width: 60%"
     :model="demandForm"
-    :rules="demandRules"
+    :rules="$store.state.demand.demandDetail.state !== 20 ? {}: demandRules"
   >
     <el-form-item
       label="产品名称"
       prop="name"
-      :rules="[
+      :rules="$store.state.demand.demandDetail.state !== 20 ? {} : [
         { required: true, message: '请输入产品名称' },
         { max: 15, message: '长度不超过 15个字符' }
       ]"
@@ -28,7 +28,7 @@
       label="产品图片"
       prop="images"
       class="form-item_width"
-      :rules="state === 20 ? [{ required: true, message: '请上传产品图片'}] : demandRules.images"
+      :rules="state === 20 ? [{ required: true, message: '请上传产品图片'}] : type ==='detail' ? [] :demandRules.images"
     >
       <el-upload
         action
@@ -82,7 +82,7 @@
       <el-form-item
         label="大品类"
         prop="big_category_id"
-        :rules="state === 20 ? [{ required: true, message: '请选择大品类', trigger: 'blur'}] : demandRules.big_category_id"
+        :rules="state === 20 ? [{ required: true, message: '请选择大品类', trigger: 'blur'}] : type ==='detail' ? [] :demandRules.big_category_id"
       >
         <el-select
           v-model="demandForm.big_category_id"
@@ -103,7 +103,7 @@
       <el-form-item
         label="小品类"
         prop="small_category_id"
-        :rules="state === 20 ? [{ required: true, message: '请选择小品类', trigger: 'blur'}] : demandRules.small_category_id"
+        :rules="state === 20 ? [{ required: true, message: '请选择小品类', trigger: 'blur'}] : type ==='detail' ? [] :demandRules.small_category_id"
       >
         <el-select
           v-model="demandForm.small_category_id"
@@ -124,7 +124,7 @@
       label="品牌"
       prop="brand"
       class="form-item_width"
-      :rules="state === 20 ? [{ required: true, message: '请选择品牌'}] : demandRules.brand"
+      :rules="state === 20 ? [{ required: true, message: '请选择品牌'}] : type ==='detail' ? [] :demandRules.brand"
     >
       <el-input
         v-model="demandForm.brand"
@@ -191,7 +191,7 @@
         <el-form-item
           :label="'竞品链接' + (index + 1)"
           :prop="`competitive_product.${index}.link`"
-          :rules="demandRules.link"
+          :rules="$store.state.demand.demandDetail.state !== 20 ? [] : demandRules.link"
         >
           <el-input
             v-model="item.link"
@@ -220,7 +220,7 @@
         <el-form-item
           :label="'对标理由' + (index + 1)"
           :prop="`competitive_product.${index}.benchmarking_reason`"
-          :rules="demandRules.benchmarking_reason"
+          :rules="$store.state.demand.demandDetail.state !== 20 ? [] : demandRules.benchmarking_reason"
         >
           <el-input
             v-model="item.benchmarking_reason"
@@ -819,7 +819,7 @@ export default {
     },
     async getDepartment() {
       this.department = JSON.parse(localStorage.getItem('center_group'));
-      this.isRequired = this.department.indexOf(30) > -1 && this.$store.state.demand.demandDetail.state !== 20;
+      this.isRequired = this.department.indexOf(30) > -1 && this.$store.state.demand.demandDetail.state !== 20 && this.type !== 'detail';
       if(this.$store.state.demand.demandDetail.state !== 20 || this.type !== 'detail') {
         this.getRules();
       }
