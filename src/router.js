@@ -3,6 +3,7 @@ import Manage from './components/layout/manage.vue';
 import WorkBench from './components/pages/workbench/workbench-list.vue';
 import DemandList from './components/pages/demand/demand-list.vue';
 import DemandCreate from './components/pages/demand/demand-create.vue';
+import DemandEdit from './components/pages/demand/demand-edit.vue';
 import DemandDetail from './components/pages/demand/demand-detail/demand-detail.vue';
 import SupplyList from './components/pages/supplier/supply-list.vue';
 import SupplierCreate from './components/pages/supplier/supplier-create.vue';
@@ -58,6 +59,15 @@ const router = createRouter({
               name: 'demand detail',
               meta: {
                 title: '需求详情'
+              },
+              props: true
+            },
+            {
+              path: '/demand-list/edit/:id',
+              component: DemandEdit,
+              name: 'demand edit',
+              meta: {
+                title: '编辑需求'
               },
               props: true
             }

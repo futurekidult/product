@@ -1,8 +1,10 @@
 <template>
-  <demand-form
-    :id="id"
-    type="edit"
-  />
+  <div class="border">
+    <demand-form
+      :id="id"
+      type="edit"
+    />
+  </div>
 </template>
 
 <script>
