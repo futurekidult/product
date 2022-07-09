@@ -354,10 +354,6 @@ export default {
     });
     this.getParams();
     this.getMarket();
-    if (this.type !== 'add') { 
-      this.getProfitCalculation();
-      this.getRate(this.id);
-    }
   },
   methods: {
     async getProfitParams(market, platform) {
@@ -396,6 +392,10 @@ export default {
           }
         });
         this.marketList = this.$store.state.product.project.marketList;
+        if (this.type !== 'add') { 
+          this.getProfitCalculation();
+          this.getRate(this.id);
+        }
       } catch (err) {
         return;
       }
