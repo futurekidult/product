@@ -191,7 +191,7 @@
           >
             <template #default="scope">
               <el-select
-                v-if="!scope.row.id"
+                v-if="(progress.state === 10 || progress.state === 30) || (progress.state ===40 && !scope.row.id)"
                 v-model="scope.row.proceeding"
                 placeholder="请选择"
                 clearable
@@ -213,7 +213,7 @@
           >
             <template #default="scope">
               <el-select
-                v-if="!scope.row.id"
+                v-if="(progress.state === 10 || progress.state === 30) || (progress.state ===40 && !scope.row.id)"
                 v-model="scope.row.detail"
                 placeholder="请选择"
                 clearable
@@ -234,7 +234,7 @@
           >
             <template #default="scope">
               <el-tree-select
-                v-if="!scope.row.id"
+                v-if="(progress.state === 10 || progress.state === 30) || (progress.state ===40 && !scope.row.id)"
                 v-model="scope.row.operator_id"
                 :data="memberList"
                 clearable
@@ -250,7 +250,7 @@
           >
             <template #default="scope">
               <el-date-picker
-                v-if="!scope.row.id"
+                v-if="(progress.state === 10 || progress.state === 30) || (progress.state ===40 && !scope.row.id)"
                 v-model="scope.row.estimated_finish_time"
                 type="datetime"
                 placeholder="请选择时间"
@@ -275,7 +275,10 @@
             label="结果附件"
             width="150px"
           >
-            <template #default="scope">
+            <template 
+              v-if="progress.state >= 40"
+              #default="scope"
+            >
               <div
                 v-if="
                   scope.row.has_approval_process === 1 ||
@@ -297,12 +300,16 @@
                 </div>
                 <div v-if="scope.row.state >= 40 || scope.row.state === 20">
                   <el-button
+                    v-if="scope.row.attachment.type === 12860"
                     type="text"
                     @click="showViewFile(scope.row.attachment.id)"
                   >
                     预览
                   </el-button>
-                  <span class="table-btn">|</span>
+                  <span 
+                    v-if="scope.row.attachment.type === 12860"
+                    class="table-btn"
+                  >|</span>
                   <el-button
                     type="text"
                     @click="
@@ -318,17 +325,20 @@
                 <div
                   v-if="
                     JSON.stringify(scope.row.attachment) !== '{}' &&
-                      scope.row.state === 10 &&
-                      buttonState.plan === 0
+                      (scope.row.state === 10 || scope.row.state === 30)
                   "
                 >
                   <el-button
+                    v-if="scope.row.attachment.type === 12860"
                     type="text"
                     @click="showViewFile(scope.row.attachment.id)"
                   >
                     预览
                   </el-button>
-                  <span class="table-btn">|</span>
+                  <span 
+                    v-if="scope.row.attachment.type === 12860" 
+                    class="table-btn"  
+                  >|</span>
                   <el-button
                     type="text"
                     @click="deleteFile(scope.row.attachment)"
@@ -348,7 +358,7 @@
             width="200px"
           >
             <template #default="scope">
-              <div v-if="scope.row.state === 20">
+              <div v-if="scope.row.state === 20 || (scope.row.state >= 40 && scope.row.has_approval_process === 1)">
                 <el-button
                   v-if="scope.row.state === 20"
                   @click="approvalItemFail(scope.row.id)"
@@ -366,7 +376,7 @@
               </div>
               <div v-else>
                 <el-button
-                  v-if="!scope.row.id"
+                  v-if="(progress.state === 10 || progress.state === 30) || (progress.state ===40 && !scope.row.id)"
                   @click="deletePlanItem(scope.$index + 1)"
                 >
                   删除
@@ -400,7 +410,7 @@
         </el-table>
         <el-button
           style="margin: 15px 0"
-          :disabled="progress.state === 50"
+          :disabled="progress.state === 50 || progress.state === 20"
           @click="addSurveyPlan"
         >
           + 新增调研计划
@@ -744,6 +754,7 @@ export default {
           body
         );
         this.getList();
+        this.addItem.length = 0;
       } catch (err) {
         return;
       }
@@ -817,13 +828,18 @@ export default {
       }
     },
     addSurveyPlanItem() {
-      for (let i = this.length; i < this.planList.length; i++) {
-        this.addItem.push(this.planList[i]);
+     for (let i = this.length; i < this.planList.length; i++) {
+       this.addItem.push(this.planList[i]);
       }
-      this.addItem.forEach((item) => {
-        item.estimated_finish_time = timestamp(item.estimated_finish_time);
-      });
-      this.addUserSurveyPlan(this.addItem);
+     if( this.addItem.length !== 0) {
+      let itemArr = JSON.parse(JSON.stringify(this.addItem));
+       itemArr.forEach((item) => {
+          item.estimated_finish_time = timestamp(item.estimated_finish_time);
+       });
+      this.addUserSurveyPlan(itemArr);
+     } else {
+      this.$message.warning('用户调研计划表无数据提交！')
+     }
     },
     approvalFail() {
       this.approvalUserSurveyPlan(0);
