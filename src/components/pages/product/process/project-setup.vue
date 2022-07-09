@@ -347,6 +347,8 @@ export default {
         await this.$store.dispatch('product/project/approvalProject', body);
         this.getProject();
         this.getBase();
+        this.getProfitCalcaulation();
+        this.getProcessTable();
       } catch (err) {
         return;
       }
