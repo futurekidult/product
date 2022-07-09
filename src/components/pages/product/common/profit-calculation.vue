@@ -145,6 +145,7 @@
     :id="priceAdjustmentApplyId"
     :dialog-visible="adjustPriceVisible"
     :adjust-msg="adjustment"
+    :market="marketId"
     @hide-dialog="closeAdjustPrice"
   />
 
