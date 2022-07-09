@@ -233,7 +233,7 @@
         </el-form-item>
       </div>
     </el-scrollbar>
-    <el-form-item v-if="type === 'create'">
+    <el-form-item v-if="type !== 'detail' ">
       <el-button @click="addRow">
         + 新增竞品
       </el-button>
