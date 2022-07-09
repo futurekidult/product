@@ -240,6 +240,7 @@ export default {
       getContract: this.getContract,
       getPatent: this.getPatent,
       getPatentProgress: this.getPatentProgress,
+      getPatentContract: this.getContract,
       getProject: this.getProject,
       getPlatform: this.getPlatform,
       getBase: this.getProductBase

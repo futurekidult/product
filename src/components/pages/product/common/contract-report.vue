@@ -159,7 +159,7 @@
           </el-button>
           <el-button
             type="primary"
-            @click="closeFileDialog"
+            @click="submitFileDialog"
           >
             提交
           </el-button>
@@ -197,6 +197,11 @@ export default {
       try {
         await this.$store.dispatch(`product/patent/upload${url}`, params);
         this.uploadVisible = false;
+        if(type === 'contract') {
+          this.getContract();
+        } else {
+          this.getReport();
+        }
       } catch (err) {
         return;
       }
@@ -246,10 +251,8 @@ export default {
     uploadAttachment() {
       if (this.type === 'contract') {
         this.upload('contract', 'Contract');
-        this.getContract();
       } else {
         this.upload('report', 'Report');
-        this.getReport();
       }
     },
     changeColor(val) {
@@ -272,7 +275,14 @@ export default {
     },
     closeFileDialog() {
       this.uploadVisible = false;
+    },
+    submitFileDialog() {
       this.uploadForm.file = this.file.id;
+      this.$refs.uploadForm.validate((valid) => {
+       if(valid) {
+        this.uploadVisible = false;
+       }
+      })
     }
   }
 };
