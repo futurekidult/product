@@ -50,6 +50,7 @@
           action
           :show-file-list="false"
           :http-request="handleImgSuccess"
+          :disabled="isDisabled"
         >
           <el-button
             type="primary"
@@ -346,6 +347,7 @@
           action
           :show-file-list="false"
           :http-request="handleFileSuccess"
+          :disabled="isDisabled"
         >
           <el-button
             type="primary"

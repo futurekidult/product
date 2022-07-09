@@ -34,6 +34,7 @@
         action
         :show-file-list="false"
         :http-request="handleProductImageSuccess"
+        :disabled="isDisabled"
       >
         <el-button
           type="primary"
@@ -146,6 +147,7 @@
             action
             :show-file-list="false"
             :http-request="(e) => handleCProductImageSuccess(e, index)"
+            :disabled="isDisabled"
           >
             <el-button
               type="primary"

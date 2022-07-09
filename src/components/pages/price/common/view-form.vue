@@ -264,6 +264,7 @@
         <el-upload
           :show-file-list="false"
           action
+          disabled
         >
           <el-button
             type="primary"
