@@ -129,7 +129,7 @@ export default {
   components: {
     CompetitiveTable
   },
-  inject: ['getPatent'],
+  inject: ['getPatent','getPatentContract','getPatentProgress'],
   props: ['dialogVisible', 'formTitle', 'type', 'form', 'id', 'productForm'],
   emits: ['hide-dialog'],
   data() {
@@ -232,6 +232,8 @@ export default {
         await this.$store.dispatch('product/patent/patentApply', body);
         this.visible = false;
         this.getPatent();
+        this.getPatentProgress();
+        this.getPatentContract();
       } catch (err) {
         return;
       }
