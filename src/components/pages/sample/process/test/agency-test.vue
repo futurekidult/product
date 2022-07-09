@@ -107,6 +107,7 @@
               action
               :show-file-list="false"
               :http-request="handleFileSuccess"
+              :disabled="submitState === 1"
             >
               <el-button
                 type="primary"

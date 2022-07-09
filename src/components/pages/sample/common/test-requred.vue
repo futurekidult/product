@@ -56,6 +56,7 @@
           action
           :show-file-list="false"
           :http-request="handleFileSuccess"
+          :disabled="isDisbaled"
         >
           <el-button
             type="primary"
@@ -141,6 +142,7 @@
             action
             :show-file-list="false"
             :http-request="handleRequirementFileSuccess"
+            :disabled="isViewDisabled"
           >
             <el-button
               type="primary"

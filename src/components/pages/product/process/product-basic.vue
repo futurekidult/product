@@ -14,6 +14,7 @@
       <el-upload
         action
         :show-file-list="false"
+        disabled
       >
         <el-button
           type="primary"

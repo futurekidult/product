@@ -512,6 +512,7 @@
           :http-request="
             (e) => handleFileArrSuccess(e, vatInvoiceFile, '增值税发票')
           "
+          :disabled="isDisabled"
         >
           <el-button
             type="primary"
@@ -566,6 +567,7 @@
             (e) =>
               handleFileArrSuccess(e, accountOpeningLicenseFile, '开户许可证')
           "
+          :disabled="isDisabled"
         >
           <el-button
             type="primary"
@@ -623,6 +625,7 @@
           :http-request="
             (e) => handleFileArrSuccess(e, businessLicenseFile, '营业执照')
           "
+          :disabled="isDisabled"
         >
           <el-button
             type="primary"
@@ -678,6 +681,7 @@
           action
           :show-file-list="false"
           :http-request="(e) => handleFileSuccess(e, purchaseEvaluationFile,'采购供应商评估表')"
+          :disabled="isDisabled"
         >
           <el-button
             type="primary"
@@ -741,6 +745,7 @@
           action
           :show-file-list="false"
           :http-request="(e) => handleFileSuccess(e, qualityEvaluationFile, '质检供应商评估表')"
+          :disabled="isDisabled"
         >
           <el-button
             type="primary"

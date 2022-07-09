@@ -81,6 +81,7 @@
           action
           :show-file-list="false"
           :http-request="handleFileSuccess"
+          :disabled="disabled"
         >
           <el-button
             type="primary"
