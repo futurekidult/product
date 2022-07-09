@@ -144,14 +144,14 @@
             <el-button
               v-if="scope.row.state !== 10"
               type="text"
-              @click="toDetail(scope.row.id, scope.row.state)"
+              @click="toDetail(scope.row.id)"
             >
               查看详情
             </el-button>
             <el-button
               v-else
               type="text"
-              @click="toDetail(scope.row.id, scope.row.state)"
+              @click="toEdit(scope.row.id)"
             >
               编辑
             </el-button>
@@ -267,14 +267,12 @@ export default {
     toCreate() {
       this.$router.push('/create-demand');
     },
-    toDetail(id, val) {
+    toDetail(id) {
       this.$router.push(`/demand-list/${id}`);
-      if (val === 10) {
-        this.$store.commit('demand/setDraft', true);
-      } else {
-        this.$store.commit('demand/setDraft', false);
-      }
       this.$store.commit('demand/setDemandDetailLoading', true);
+    },
+    toEdit(id) {
+      this.$router.push(`/demand-list/edit/${id}`);
     },
     toProductDetail(id) {
       this.$router.push(`/product-list/${id}`);
@@ -304,3 +302,4 @@ export default {
   color: #409eff;
 }
 </style>
+

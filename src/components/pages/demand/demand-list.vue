@@ -18,7 +18,7 @@ export default {
   },
   computed: {
     isParent() {
-      return this.$route.name !== 'demand detail';
+      return this.$route.name !== 'demand detail' && this.$route.name !== 'demand edit';
     }
   }
 };

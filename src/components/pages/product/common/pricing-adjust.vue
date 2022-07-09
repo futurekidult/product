@@ -148,7 +148,7 @@ export default {
   components: {
     Clock
   },
-  props: ['dialogVisible', 'title', 'type', 'id', 'adjustMsg'],
+  props: ['dialogVisible', 'title', 'type', 'id', 'adjustMsg', 'market'],
   emits: ['hide-dialog'],
   data() {
     return {
@@ -196,7 +196,8 @@ export default {
       let params = {
         price: this.adjustForm.adjusted_selling_price,
         currency: this.adjustForm.currency,
-        product_id: +this.$route.params.productId
+        product_id: +this.$route.params.productId,
+        market: this.market
       };
       try {
         await this.$store.dispatch('getPriceRmb', { params });

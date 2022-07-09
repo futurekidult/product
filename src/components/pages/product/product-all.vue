@@ -123,19 +123,23 @@
         </el-table-column>
         <el-table-column label="操作">
           <template #default="scope">
-            <el-button
-              type="text"
-              @click="showEditForm(scope.row.id)"
-            >
-              编辑
-            </el-button>
-            <span class="table-btn">|</span>
-            <el-button
-              type="text"
-              @click="toDetail(scope.row.id)"
-            >
-              查看详情
-            </el-button>
+            <div style="display: flex">
+              <div v-if="scope.row.state !== 90">
+                <el-button
+                  type="text"
+                  @click="showEditForm(scope.row.id)"
+                >
+                  编辑
+                </el-button>
+                <span class="table-btn">|</span>
+              </div>
+              <el-button
+                type="text"
+                @click="toDetail(scope.row.id)"
+              >
+                查看详情
+              </el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>

@@ -1,13 +1,5 @@
 <template>
-  <div
-    v-if="$store.state.demand.isDraft"
-    class="border"
-  >
-    <div v-loading="$store.state.demand.demandDetailLoading">
-      <demand-edit />
-    </div>
-  </div>
-  <div v-else>
+  <div>
     <div v-loading="$store.state.demand.demandDetailLoading">
       <div class="border">
         <div class="detail-title">
@@ -88,13 +80,11 @@
 import { formatterTime } from '../../../../utils';
 import DemandForm from '../common/demand-form.vue';
 import DemandReview from '../demand-detail/demand-review/demand-review.vue';
-import DemandEdit from '../demand-edit.vue';
 
 export default {
   components: {
     DemandForm,
-    DemandReview,
-    DemandEdit
+    DemandReview
   },
   props: ['id'],
   data() {

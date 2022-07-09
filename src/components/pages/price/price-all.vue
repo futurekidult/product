@@ -91,7 +91,10 @@
         />
         <el-table-column label="关联产品ID">
           <template #default="scope">
-            <el-button type="text">
+            <el-button 
+              type="text"
+              @click="toProduct( scope.row.related_product_id)"
+            >
               {{ scope.row.related_product_id }}
             </el-button>
           </template>
@@ -133,7 +136,7 @@
           <template #default="scope">
             <el-button
               type="text"
-              @click="ToQuotation(scope.row.id)"
+              @click="toQuotation(scope.row.id)"
             >
               报价列表
             </el-button>
@@ -222,8 +225,11 @@ export default {
         return 'result-ing';
       }
     },
-    ToQuotation(id) {
+    toQuotation(id) {
       this.$router.push(`/price-list/${id}`);
+    },
+    toProduct(id) {
+      this.$router.push(`/product-list/${id}`);
     }
   }
 };

@@ -129,7 +129,7 @@ export default {
   components: {
     CompetitiveTable
   },
-  inject: ['getPatent'],
+  inject: ['getPatent','getPatentContract','getPatentProgress'],
   props: ['dialogVisible', 'formTitle', 'type', 'form', 'id', 'productForm'],
   emits: ['hide-dialog'],
   data() {
@@ -185,11 +185,11 @@ export default {
           disabled: true
         },
         {
-          label: '是',
+          label: '通过',
           value: 1
         },
         {
-          label: '否',
+          label: '不通过',
           value: 0
         }
       ]
@@ -232,6 +232,8 @@ export default {
         await this.$store.dispatch('product/patent/patentApply', body);
         this.visible = false;
         this.getPatent();
+        this.getPatentProgress();
+        this.getPatentContract();
       } catch (err) {
         return;
       }

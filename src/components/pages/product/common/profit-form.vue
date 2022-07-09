@@ -354,10 +354,6 @@ export default {
     });
     this.getParams();
     this.getMarket();
-    if (this.type !== 'add') { 
-      this.getProfitCalculation();
-      this.getRate(this.id);
-    }
   },
   methods: {
     async getProfitParams(market, platform) {
@@ -396,6 +392,10 @@ export default {
           }
         });
         this.marketList = this.$store.state.product.project.marketList;
+        if (this.type !== 'add') { 
+          this.getProfitCalculation();
+          this.getRate(this.id);
+        }
       } catch (err) {
         return;
       }
@@ -410,8 +410,14 @@ export default {
           params
         });
         this.profitForm = this.$store.state.product.project.profitCalculation;
+        this.marketList.map((market) => {
+          if (market.id === this.profitForm.market ) {
+            this.platformList = market.platform;
+          }
+        });
         this.profitForm.list.forEach((item) => {
           this.getPrice(this.id, item.platform, +this.$route.params.productId, item.selling_price);
+          this.getProfitParams(item.market, item.platform);
         })
       } catch (err) {
         return;

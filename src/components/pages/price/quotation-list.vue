@@ -8,7 +8,12 @@
           style="width: 80%"
         >
           <el-descriptions-item label="关联产品:">
-            {{ quotationList.related_product_name }}
+            <el-button 
+              type="text"
+              @click="toProduct(quotationList.related_product_id)" 
+            >
+              查看
+            </el-button>
           </el-descriptions-item>
           <el-descriptions-item label="定价ID:">
             {{ quotationList.pricing_id }}
@@ -754,6 +759,9 @@ export default {
     },
     toDetail(id) {
       this.$router.push(`/supplier-list/${id}`);
+    },
+    toProduct(id) {
+      this.$router.push(`/product-list/${id}`);
     }
   }
 };
