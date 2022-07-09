@@ -410,6 +410,11 @@ export default {
           params
         });
         this.profitForm = this.$store.state.product.project.profitCalculation;
+        this.marketList.map((market) => {
+              if (market.id === this.profitForm.market ) {
+                this.platformList = market.platform;
+              }
+            });
         this.profitForm.list.forEach((item) => {
           this.getPrice(this.id, item.platform, +this.$route.params.productId, item.selling_price);
         })
