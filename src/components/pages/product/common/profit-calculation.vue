@@ -31,19 +31,21 @@
       />
       <el-table-column label="调价记录">
         <template #default="scope">
-          <el-button
-            type="text"
-            @click="showPricingList(scope.row.market)"
-          >
-            申请记录
-          </el-button>
-          <span class="table-btn">|</span>
-          <el-button
-            type="text"
-            @click="showAdjustPrice(scope.row.market)"
-          >
-            调价
-          </el-button>
+          <div v-if="!isShow">
+            <el-button
+              type="text"
+              @click="showPricingList(scope.row.market)"
+            >
+              申请记录
+            </el-button>
+            <span class="table-btn">|</span>
+            <el-button
+              type="text"
+              @click="showAdjustPrice(scope.row.market)"
+            >
+              调价
+            </el-button>
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="操作">
@@ -52,7 +54,7 @@
             type="text"
             @click="showEditProfit(scope.row.market)"
           >
-            编辑
+            {{ isShow ? '编辑' : '修改人员'}}
           </el-button>
           <span
             v-if="!isShow"

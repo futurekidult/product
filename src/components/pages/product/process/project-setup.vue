@@ -34,7 +34,7 @@
         width="300px"
       >
         <div
-          v-if="progress.state !== 10"
+          v-if="progress.state !== 10 && progress.review_state !==10"
           :class="progress.state === undefined ? 'hide' : ''"
         >
           <el-button
@@ -72,6 +72,7 @@
           placeholder="请选择评审结果"
           clearable
           :disabled="isDisabled"
+          @change="refresh(form.review_result)"
         >
           <el-option
             v-for="item in options"
@@ -94,6 +95,7 @@
           type="textarea"
           placeholder="请输入不通过原因"
           clearable
+          :disabled="isDisabled"
         />
       </el-form-item>
       <div v-if="form.review_result === 1">
@@ -305,9 +307,13 @@ export default {
     },
     submitProjectForm() {
       this.form.sales_plan = this.file.id;
+      let form = JSON.parse(JSON.stringify(this.form));
+      if(form.review_result === 1) {
+        delete form.unapproved_reason;
+      }
       this.$refs.projectForm.validate((valid) => {
         if (valid) {
-          this.reviewProject(this.form);
+          this.reviewProject(form);
         }
       });
     },
@@ -343,6 +349,12 @@ export default {
         this.getBase();
       } catch (err) {
         return;
+      }
+    },
+    refresh(val) {
+      if(val === 1) {
+        this.getProfitCalcaulation();
+        this.getProcessTable();
       }
     }
   }
