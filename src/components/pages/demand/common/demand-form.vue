@@ -1,17 +1,17 @@
 <template>
   <el-form
-    v-if="isGetRules"
+    v-if="type === 'create' ? isGetRules : isGetData"
     ref="demandForm"
     label-width="120px"
     class="demand-form"
     style="width: 60%"
     :model="demandForm"
-    :rules="$store.state.demand.demandDetail.state !== 20 ? {}: demandRules"
+    :rules="$store.state.demand.demandDetail.state !== 20 && type === 'detail' ? {}: demandRules"
   >
     <el-form-item
       label="产品名称"
       prop="name"
-      :rules="$store.state.demand.demandDetail.state !== 20 ? {} : [
+      :rules="$store.state.demand.demandDetail.state !== 20 && type ==='detail' ? {} : [
         { required: true, message: '请输入产品名称' },
         { max: 15, message: '长度不超过 15个字符' }
       ]"
@@ -760,7 +760,8 @@ export default {
       imgLink: '',
       viewImgDialog: false,
       isGetRules: false,
-      state: null
+      state: null,
+      isGetData: false
     };
   },
   computed: {
@@ -780,12 +781,12 @@ export default {
   mounted() {
     this.getParams();
     this.getCategoryList();
+    this.getDepartment();
     if (this.type === 'detail') {
       this.getDetail();
     } else if (this.type === 'edit') {
       this.getDetail();
     }
-    this.getDepartment();
   },
   methods: {
     async getDetail() {
@@ -812,7 +813,7 @@ export default {
           }
         });
         this.imagesList = this.demandForm.images;
-        this.isGetRules = true;
+        this.isGetData = true;
       } catch (err) {
         return;
       }
