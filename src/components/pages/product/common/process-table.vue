@@ -44,7 +44,7 @@
             编辑
           </el-button>
           <el-button
-            v-if="show && (scope.row.stage === 60 || scope.row.stage === 70)"
+            v-if="show && (scope.row.stage === 60 || scope.row.stage === 70) && scope.row.actual_finish_time === ''"
             type="text"
             @click="showActualTimeForm(scope.row.id)"
           >
