@@ -185,11 +185,11 @@ export default {
           disabled: true
         },
         {
-          label: '是',
+          label: '通过',
           value: 1
         },
         {
-          label: '否',
+          label: '不通过',
           value: 0
         }
       ]
