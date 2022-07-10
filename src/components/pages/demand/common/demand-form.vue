@@ -191,7 +191,7 @@
         <el-form-item
           :label="'竞品链接' + (index + 1)"
           :prop="`competitive_product.${index}.link`"
-          :rules="$store.state.demand.demandDetail.state !== 20 ? [] : demandRules.link"
+          :rules="$store.state.demand.demandDetail.state !== 20 && type === 'detail' ? [] : demandRules.link"
         >
           <el-input
             v-model="item.link"
@@ -220,7 +220,7 @@
         <el-form-item
           :label="'对标理由' + (index + 1)"
           :prop="`competitive_product.${index}.benchmarking_reason`"
-          :rules="$store.state.demand.demandDetail.state !== 20 ? [] : demandRules.benchmarking_reason"
+          :rules="$store.state.demand.demandDetail.state !== 20 && type === 'detail' ? [] : demandRules.benchmarking_reason"
         >
           <el-input
             v-model="item.benchmarking_reason"
@@ -233,7 +233,7 @@
         </el-form-item>
       </div>
     </el-scrollbar>
-    <el-form-item v-if="type !== 'detail' ">
+    <el-form-item v-if="state < 30 ">
       <el-button @click="addRow">
         + 新增竞品
       </el-button>
@@ -860,15 +860,11 @@ export default {
       this.isGetRules = true;
     },
     addRow() {
-      this.demandForm.competitive_product.push({
-        images: []
-      });
       this.attachment.push({
         images: []
       });
     },
     deleteRow() {
-      this.demandForm.competitive_product.pop();
       this.attachment.pop();
     },
     async handleProductImageSuccess(e) {
