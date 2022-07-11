@@ -69,7 +69,6 @@
               v-model="item.email"
               placeholder="请输入邮箱"
               clearable
-              @change="checkValid(item.email, index + 1)"
             />
           </el-form-item>
         </div>
@@ -111,6 +110,17 @@ export default {
   props: ['dialogVisible'],
   emits: ['hide-dialog'],
   data() {
+    const checkMail = (rule, value, callback) => {
+      if (value) {
+        if (value.indexOf('@') === -1) {
+          return callback(new Error('该项必须包括@'));
+        } else {
+          callback();
+        }
+      } else {
+        return callback(new Error('请输入邮箱'));
+      }
+    };
     return {
       visible: this.dialogVisible,
       formRules: {
@@ -141,7 +151,7 @@ export default {
         email: [
           {
             required: true,
-            message: '请输入邮箱'
+            validator: checkMail
           }
         ]
       },
@@ -178,13 +188,6 @@ export default {
           this.createUser(this.userForm.list);
         }
       });
-    },
-    checkValid(val, index) {
-      if (val) {
-        if (val.indexOf('@') === -1) {
-          this.$message.error(`第${index}个联系人的邮箱必须包含@`);
-        }
-      }
     }
   }
 };

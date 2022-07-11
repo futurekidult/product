@@ -191,7 +191,7 @@
         <el-form-item
           :label="'竞品链接' + (index + 1)"
           :prop="`competitive_product.${index}.link`"
-          :rules="$store.state.demand.demandDetail.state !== 20 ? [] : demandRules.link"
+          :rules="$store.state.demand.demandDetail.state !== 20 && type === 'detail' ? [] : demandRules.link"
         >
           <el-input
             v-model="item.link"
@@ -220,7 +220,7 @@
         <el-form-item
           :label="'对标理由' + (index + 1)"
           :prop="`competitive_product.${index}.benchmarking_reason`"
-          :rules="$store.state.demand.demandDetail.state !== 20 ? [] : demandRules.benchmarking_reason"
+          :rules="$store.state.demand.demandDetail.state !== 20 && type === 'detail' ? [] : demandRules.benchmarking_reason"
         >
           <el-input
             v-model="item.benchmarking_reason"
@@ -233,7 +233,7 @@
         </el-form-item>
       </div>
     </el-scrollbar>
-    <el-form-item v-if="type === 'create'">
+    <el-form-item v-if="state < 30 ">
       <el-button @click="addRow">
         + 新增竞品
       </el-button>
@@ -361,7 +361,7 @@
               placeholder="请选择货币"
               :disabled="isDisabled"
               clearable
-              @clear="clearCurrency('selling')"
+              @change="clearCurrency('selling')"
             >
               <el-option
                 v-for="item in currency"
@@ -407,7 +407,7 @@
               placeholder="请选择货币"
               :disabled="isDisabled"
               clearable
-              @clear="clearCurrency('purchase')"
+              @change="clearCurrency('purchase')"
             >
               <el-option
                 v-for="item in currency"
@@ -860,16 +860,24 @@ export default {
       this.isGetRules = true;
     },
     addRow() {
-      this.demandForm.competitive_product.push({
+      if(this.type === 'create') {
+         this.demandForm.competitive_product.push({});
+         this.attachment.push({
+           images: []
+         });
+      } else {
+        this.attachment.push({
         images: []
       });
-      this.attachment.push({
-        images: []
-      });
+      }
     },
     deleteRow() {
-      this.demandForm.competitive_product.pop();
-      this.attachment.pop();
+      if(this.type === 'create') {
+        this.demandForm.competitive_product.pop({});
+        this.attachment.pop();
+      } else {
+        this.attachment.pop();
+      }
     },
     async handleProductImageSuccess(e) {
       if(e.file.type.indexOf('image') > -1) {
@@ -987,16 +995,18 @@ export default {
       this.viewImgDialog = false;
     },
     async getRmb(val) {
-      try {
-        await this.$store.dispatch('getPriceRmb', {
-          params: {
-            price: this.demandForm[`${val}_price`],
-            currency: this.demandForm[`${val}_price_currency`]
-          }
-        });
-        this.demandForm[`${val}_price_rmb`] = this.$store.state.priceRmb;
-      } catch (err) {
-        return;
+      if(this.demandForm[`${val}_price`]) {
+        try {
+          await this.$store.dispatch('getPriceRmb', {
+            params: {
+              price: this.demandForm[`${val}_price`],
+              currency: this.demandForm[`${val}_price_currency`]
+            }
+          });
+          this.demandForm[`${val}_price_rmb`] = this.$store.state.priceRmb;
+        } catch (err) {
+          return;
+        }
       }
     },
     clearMoney(val) {
