@@ -860,12 +860,24 @@ export default {
       this.isGetRules = true;
     },
     addRow() {
-      this.attachment.push({
+      if(this.type === 'create') {
+         this.demandForm.competitive_product.push({});
+         this.attachment.push({
+           images: []
+         });
+      } else {
+        this.attachment.push({
         images: []
       });
+      }
     },
     deleteRow() {
-      this.attachment.pop();
+      if(this.type === 'create') {
+        this.demandForm.competitive_product.pop({});
+        this.attachment.pop();
+      } else {
+        this.attachment.pop();
+      }
     },
     async handleProductImageSuccess(e) {
       if(e.file.type.indexOf('image') > -1) {
