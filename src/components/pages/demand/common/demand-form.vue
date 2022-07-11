@@ -361,7 +361,7 @@
               placeholder="请选择货币"
               :disabled="isDisabled"
               clearable
-              @clear="clearCurrency('selling')"
+              @change="clearCurrency('selling')"
             >
               <el-option
                 v-for="item in currency"
@@ -407,7 +407,7 @@
               placeholder="请选择货币"
               :disabled="isDisabled"
               clearable
-              @clear="clearCurrency('purchase')"
+              @change="clearCurrency('purchase')"
             >
               <el-option
                 v-for="item in currency"
@@ -995,16 +995,18 @@ export default {
       this.viewImgDialog = false;
     },
     async getRmb(val) {
-      try {
-        await this.$store.dispatch('getPriceRmb', {
-          params: {
-            price: this.demandForm[`${val}_price`],
-            currency: this.demandForm[`${val}_price_currency`]
-          }
-        });
-        this.demandForm[`${val}_price_rmb`] = this.$store.state.priceRmb;
-      } catch (err) {
-        return;
+      if(this.demandForm[`${val}_price`]) {
+        try {
+          await this.$store.dispatch('getPriceRmb', {
+            params: {
+              price: this.demandForm[`${val}_price`],
+              currency: this.demandForm[`${val}_price_currency`]
+            }
+          });
+          this.demandForm[`${val}_price_rmb`] = this.$store.state.priceRmb;
+        } catch (err) {
+          return;
+        }
       }
     },
     clearMoney(val) {
