@@ -122,7 +122,7 @@ export default {
           }
         });
         this.templateForm = this.$store.state.sample.user.templateFile;
-        this.attchement = this.templateForm.user_template_file;
+        this.attachment = this.templateForm.user_template_file;
       } catch (err) {
         return;
       }

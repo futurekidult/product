@@ -53,21 +53,6 @@
       >
         <template #default="scope">
           <div style="display: flex">
-            <el-upload
-              action
-              :show-file-list="false"
-              :http-request="handleFileSuccess"
-            >
-              <el-button
-                v-if="
-                  JSON.stringify(scope.row.test_result_file) === '{}' &&
-                    scope.row.button_state.is_upload === 0
-                "
-                type="text"
-              >
-                上传
-              </el-button>
-            </el-upload>
             <div v-if="JSON.stringify(scope.row.test_result_file) !== '{}'">
               <el-button
                 type="text"
