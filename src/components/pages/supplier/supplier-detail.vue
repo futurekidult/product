@@ -25,7 +25,7 @@
             {{ supplierDetail.create_time }}
           </el-descriptions-item>
         </el-descriptions>
-        <section v-if="supplierDetail.state === 10">
+        <section v-if="supplierDetail.state === 10 && $store.state.supplier.type === 'approval'">
           <el-button
             class="close - btn"
             @click="approvalSupplier(0)"

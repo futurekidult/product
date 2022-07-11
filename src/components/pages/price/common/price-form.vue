@@ -442,12 +442,6 @@ export default {
           },
           checkValid(15)
         ],
-        quote_amount_rmb: [
-          {
-            required: true,
-            message: '请输入金额'
-          }
-        ],
         appended_reason: [
           {
             required: true,
@@ -537,12 +531,6 @@ export default {
           },
           checkValid(15)
         ],
-        head_cost_rmb: [
-          {
-            required: true,
-            message: '请输入金额'
-          }
-        ],
         tail_currency: [
           {
             required: true,
@@ -556,12 +544,6 @@ export default {
           },
           checkValid(15)
         ],
-        tail_cost_rmb: [
-          {
-            required: true,
-            message: '请输入金额'
-          }
-        ],
         sea_freight_currency: [
           {
             required: true,
@@ -574,12 +556,6 @@ export default {
             message: '请输入金额'
           },
           checkValid(15)
-        ],
-        sea_freight_cost_rmb: [
-          {
-            required: true,
-            message: '请输入金额'
-          }
         ],
         quotation_file: [
           {
@@ -624,27 +600,29 @@ export default {
       }
     },
     async getHighReason(val) {
-      let params = {
-        quote: val,
-        product_id: this.productId,
-        market: this.market
-      };
-      try {
-        await this.$store.dispatch('price/getHighReason', {
-          params
-        });
-        await this.$store.dispatch('getPriceRmb', {
-          params: {
-            price: this.quotationForm.quote_amount,
-            currency: this.quotationForm.quote_currency,
-            product_id: this.productId,
-            market: this.market
-          }
-        });
-        this.quotationForm.quote_amount_rmb = this.$store.state.priceRmb;
-        this.isHigh = this.$store.state.price.hasHigh;
-      } catch (err) {
-        return;
+      if(this.quotationForm.quote_amount) {
+        let params = {
+          quote: val,
+          product_id: this.productId,
+          market: this.market
+        };
+        try {
+          await this.$store.dispatch('price/getHighReason', {
+            params
+          });
+            await this.$store.dispatch('getPriceRmb', {
+              params: {
+                price: this.quotationForm.quote_amount,
+                currency: this.quotationForm.quote_currency,
+                product_id: this.productId,
+                market: this.market
+              }
+            });
+            this.quotationForm.quote_amount_rmb = this.$store.state.priceRmb;
+            this.isHigh = this.$store.state.price.hasHigh;
+        } catch (err) {
+          return;
+        }
       }
     },
     async createQuotation(val) {
@@ -766,18 +744,20 @@ export default {
       }
     },
     async getRmb(val) {
-      try {
-        await this.$store.dispatch('getPriceRmb', {
-          params: {
-            price: this.quotationForm[`${val}_cost`],
-            currency: this.quotationForm[`${val}_currency`],
-            product_id: this.productId,
-            market: this.market
-          }
-        });
-        this.quotationForm[`${val}_cost_rmb`] = this.$store.state.priceRmb;
-      } catch (err) {
-        return;
+      if(this.quotationForm[`${val}_cost`]){
+        try {
+          await this.$store.dispatch('getPriceRmb', {
+            params: {
+              price: this.quotationForm[`${val}_cost`],
+              currency: this.quotationForm[`${val}_currency`],
+              product_id: this.productId,
+              market: this.market
+            }
+          });
+          this.quotationForm[`${val}_cost_rmb`] = this.$store.state.priceRmb;
+        } catch (err) {
+          return;
+        }
       }
     },
     clearCurrency(val) {

@@ -50,7 +50,7 @@
           <template #default="scope">
             <el-button
               type="text"
-              @click="deleteRate(scope.row.id)"
+              @click="showDeleteDialog(scope.row.id)"
             >
               删除
             </el-button>
@@ -137,6 +137,30 @@
       </div>
     </el-form>
   </el-dialog>
+
+  <el-dialog 
+    v-model="deleteDialogVisible"
+    title="提示"
+    width="20%"
+  >
+    <div class="result-content">
+      是否删除该汇率
+    </div>
+    <div style="text-align: center">
+      <el-button
+        class="close-btn"
+        @click="closeDeleteDialog"
+      >
+        取消
+      </el-button>
+      <el-button
+        type="primary"
+        @click="deleteRate"
+      >
+        确定
+      </el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>
@@ -172,7 +196,8 @@ export default {
             message: '请输入'
           }
         ]
-      }
+      },
+      deleteDialogVisible: false
     };
   },
   mounted() {
@@ -212,11 +237,12 @@ export default {
         }
       });
     },
-    async deleteRate(id) {
+    async deleteRate() {
       try {
         await this.$store.dispatch('system/deleteRate', {
-          id
+          id: this.deleteId
         });
+        this.deleteDialogVisible = false;
         this.getRateList();
       } catch (err) {
         return;
@@ -227,6 +253,13 @@ export default {
     },
     closeForm() {
       this.addVisible = false;
+    },
+    showDeleteDialog(id) {
+      this.deleteDialogVisible = true;
+      this.deleteId = id;
+    },
+    closeDeleteDialog() {
+      this.deleteDialogVisible = false;
     }
   }
 };

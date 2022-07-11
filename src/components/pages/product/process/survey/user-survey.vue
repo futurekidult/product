@@ -478,7 +478,7 @@
         <el-divider />
         <div style="text-align: right">
           <el-button
-            type="primary"
+            class="close-btn"
             @click="closeEdit"
           >
             取消
