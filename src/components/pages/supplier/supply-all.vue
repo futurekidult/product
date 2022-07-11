@@ -137,7 +137,7 @@
             <div style="display: flex">
               <el-button
                 type="text"
-                @click="toDetail(scope.row.id)"
+                @click="toDetail(scope.row.id, 'view')"
               >
                 查看
               </el-button>
@@ -145,14 +145,14 @@
                 <span class="table-btn">|</span>
                 <el-button
                   type="text"
-                  @click="deleteSupplier(scope.row.id)"
+                  @click="showDeleteDialog(scope.row.id)"
                 >
                   删除
                 </el-button>
                 <span class="table-btn">|</span>
                 <el-button
                   type="text"
-                  @click="toDetail(scope.row.id)"
+                  @click="toDetail(scope.row.id, 'approval')"
                 >
                   供应商审批
                 </el-button>
@@ -200,6 +200,30 @@
     :get-list="getSupplierList"
     @hide-dialog="closeBlackDialog"
   />
+
+  <el-dialog 
+    v-model="deleteDialogVisible"
+    title="提示"
+    width="20%"
+  >
+    <div class="result-content">
+      是否删除该供应商
+    </div>
+    <div style="text-align: center">
+      <el-button
+        class="close-btn"
+        @click="closeDeleteDialog"
+      >
+        取消
+      </el-button>
+      <el-button
+        type="primary"
+        @click="deleteSupplier"
+      >
+        确定
+      </el-button>
+    </div>
+  </el-dialog>
 </template>
 
 <script>
@@ -222,7 +246,9 @@ export default {
         children: 'children',
         label: 'name',
         disabled: 'disabled'
-      }
+      },
+      deleteDialogVisible: false,
+      deleteId: 0
     };
   },
   mounted() {
@@ -270,8 +296,9 @@ export default {
     toUpdate(id) {
       this.$router.push(`/supplist-list/supplier-update/${id}`);
     },
-    toDetail(id) {
+    toDetail(id, type) {
       this.$router.push(`/supplier-list/${id}`);
+      this.$store.commit('supplier/setActionType', type);
     },
     changeColor(val) {
       if (val === 10) {
@@ -286,11 +313,19 @@ export default {
       this.chooseForm = {};
       this.getSupplierList();
     },
-    async deleteSupplier(id) {
+    showDeleteDialog(id) {
+      this.deleteDialogVisible = true;
+      this.deleteId = id;
+    },
+    closeDeleteDialog() {
+      this.deleteDialogVisible = false;
+    },
+    async deleteSupplier() {
       try {
         await this.$store.dispatch('supplier/deleteSupplier', {
-          id
+          id: this.deleteId
         });
+        this.deleteDialogVisible = false;
         this.getSupplierList();
       } catch (err) {
         return;

@@ -13,7 +13,8 @@ export default {
       supplierDetailLoading: true,
       cityOption: [],
       supplierListLength: 0,
-      blackListLength: 0
+      blackListLength: 0,
+      type: ''
     };
   },
   mutations: {
@@ -37,6 +38,9 @@ export default {
     },
     setCityOption(state, payload) {
       state.cityOption = payload;
+    },
+    setActionType(state, payload) {
+      state.type = payload;
     }
   },
   actions: {
