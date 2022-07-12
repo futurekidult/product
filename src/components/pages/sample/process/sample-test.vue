@@ -129,6 +129,7 @@
         <el-tab-pane
           label="用户测试"
           name="user"
+          v-if="hasUserTest"
         >
           <user-test
             v-if="activeName === 'user'"
@@ -233,7 +234,7 @@ export default {
       getList: this.getUserList
     };
   },
-  props: ['applyList', 'buttonState','qualityProgress','qualityAttachment','qualitySubmitState','qualityId','qualityTestId'],
+  props: ['applyList', 'buttonState','qualityProgress','qualityAttachment','qualitySubmitState','qualityId','qualityTestId', 'hasUserTest'],
   data() {
     return {
       activeName: 'quality',

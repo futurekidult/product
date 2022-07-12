@@ -61,6 +61,7 @@ export default {
   },
   methods: {
     async getSampleBase() {
+      this.$store.commit('sample/setBaseLoading', true);
       try {
         await this.$store.dispatch('sample/getSampleBase', {
           params: {
@@ -69,6 +70,7 @@ export default {
         });
         this.sampleBase = this.$store.state.sample.sampleBase;
       } catch (err) {
+        this.$store.commit('sample/setBaseLoading', false);
         return;
       }
     },

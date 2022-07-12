@@ -31,6 +31,7 @@
         :quality-submit-state="qualitySubmitState"
         :quality-id="qualityId"
         :quality-test-id="qualityTestId"
+        :has-user-test="hasUserTest"
       />
     </el-tab-pane>
   </el-tabs>
@@ -66,7 +67,8 @@ export default {
       qualitySubmitState: 0,
       qualityId: 0,
       progress: {},
-      qualityTestId:0
+      qualityTestId:0,
+      hasUserTest: 0
     };
   },
   mounted() {
@@ -77,7 +79,7 @@ export default {
   },
   methods: {
     async getSampleDetail() {
-      this.$store.commit('sample/setBaseLoading', true);
+      this.$store.commit('sample/setDetailLoading', true);
       try {
         await this.$store.dispatch('sample/getSampleDetail', {
           params: {
@@ -88,7 +90,7 @@ export default {
         changeTimestamp(this.sampleDetail, 'estimated_finish_time');
         changeTimestamp(this.sampleDetail, 'actual_finish_time');
       } catch (err) {
-        this.$store.commit('sample/setBaseLoading', false);
+        this.$store.commit('sample/setDetailLoading', false);
         return;
       }
     },
@@ -121,6 +123,7 @@ export default {
         let { testProgress } = this.$store.state.sample;
         this.applyList = testProgress.list;
         this.buttonState = testProgress.button_state;
+        this.hasUserTest = testProgress.is_user_test;
         this.applyList.forEach((item) => {
           changeTimestamp(item, 'submit_time');
           changeTimestamp(item, 'review_finish_time');
