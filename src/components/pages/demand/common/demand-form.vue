@@ -860,24 +860,14 @@ export default {
       this.isGetRules = true;
     },
     addRow() {
-      if(this.type === 'create') {
-         this.demandForm.competitive_product.push({});
-         this.attachment.push({
-           images: []
-         });
-      } else {
-        this.attachment.push({
+      this.demandForm.competitive_product.push({});
+      this.attachment.push({
         images: []
       });
-      }
     },
     deleteRow() {
-      if(this.type === 'create') {
-        this.demandForm.competitive_product.pop({});
-        this.attachment.pop();
-      } else {
-        this.attachment.pop();
-      }
+      this.demandForm.competitive_product.pop({});
+      this.attachment.pop();
     },
     async handleProductImageSuccess(e) {
       if(e.file.type.indexOf('image') > -1) {
