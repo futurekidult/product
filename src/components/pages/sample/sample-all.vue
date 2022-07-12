@@ -147,6 +147,11 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <base-pagination 
+        :length="$store.state.sample.sampleListLength"
+        :get-list="getSampleList"
+      />
     </div>
   </div>
 </template>

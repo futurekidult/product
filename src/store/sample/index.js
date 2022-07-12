@@ -29,7 +29,8 @@ export default {
       sampleBase: {},
       baseLoading: true,
       proofingLoading: true,
-      listLoading: true
+      listLoading: true,
+      sampleListLength: 0
     };
   },
   mutations: {
@@ -79,6 +80,7 @@ export default {
         if (res.code === 200) {
           context.commit('setSampleList', res.data.list);
           context.commit('setListLoading', false);
+          context.state.sampleListLength = res.data.total;
         }
       });
     },
