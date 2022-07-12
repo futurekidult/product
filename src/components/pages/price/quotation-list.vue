@@ -133,12 +133,14 @@
                   <el-button
                     type="danger"
                     style="width: 80px"
+                    :disabled="pricingState === 20"
                     @click="showDeleteDialog(scope.row.id)"
                   >
                     删除
                   </el-button>
                   <el-button
                     style="width: 80px"
+                    :disabled="pricingState === 20"
                     @click="
                       showApplyForm(scope.row.id, scope.row.quote_amount_rmb)
                     "
@@ -148,6 +150,7 @@
                   <el-button
                     type="primary"
                     style="width: 80px"
+                    :disabled="pricingState === 20"
                     @click="
                       showQuotation(scope.row.id, scope.row.quote_amount_rmb)
                     "
@@ -505,7 +508,8 @@ export default {
         children: 'children',
         label: 'name',
         disabled: 'disabled'
-      }
+      },
+      pricingState: 0
     };
   },
   mounted() {
@@ -528,6 +532,7 @@ export default {
         this.priceId = this.quotationList.pricing_id;
         this.prodId = this.quotationList.related_product_id;
         this.market = this.quotationList.market;
+        this.pricingState = this.quotationList.pricing_state;
         this.quotationList.list.forEach((item) => {
           item.create_time = formatterTime(item.create_time);
           item.quote_validity = formatterTime(item.quote_validity);
