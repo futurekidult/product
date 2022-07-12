@@ -805,7 +805,7 @@ export default {
         if(demandDetail.competitive_product.length === 0) {
           this.demandForm.competitive_product = this.attachment;
         } else {
-          this.attachment = this.demandForm.competitive_product;
+          this.attachment = JSON.parse(JSON.stringify(this.demandForm.competitive_product));
         } 
         this.bigCategoryList.map((item) => {
           if (item.id === this.demandForm.big_category_id) {
@@ -943,9 +943,10 @@ export default {
         let { id } = item;
         this.demandForm.images.push(id);
       });
-      for (let index in this.attachment) {
+      let fileArr = JSON.parse(JSON.stringify(this.attachment));
+      for (let index in fileArr) {
         let imgArr = [];
-        let { images } = this.attachment[index];
+        let { images } = fileArr[index];
         for (let i in images) {
           let { id } = images[i];
           imgArr.push(id);
@@ -958,7 +959,7 @@ export default {
       this.demandRules = val === 10 ? {} : this.demandRules;
       this.$refs.demandForm.validate((valid) => {
         if (valid) {
-          let form = this.demandForm;
+          let form = JSON.parse(JSON.stringify(this.demandForm));
           form.state = val;
           form.id = +this.$route.params.id;
           this.createDemandForm(form);
