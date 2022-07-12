@@ -96,6 +96,8 @@
           placeholder="请输入不通过原因"
           clearable
           :disabled="isDisabled"
+          maxlength="200"
+          show-word-limit
         />
       </el-form-item>
       <div v-if="form.review_result === 1">

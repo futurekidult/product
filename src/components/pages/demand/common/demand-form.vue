@@ -22,6 +22,8 @@
         placeholder="输入产品名称"
         :disabled="isDisabled"
         clearable
+        maxlength="15"
+        show-word-limit
       />
     </el-form-item>
     <el-form-item
@@ -131,6 +133,8 @@
         placeholder="请输入品牌"
         :disabled="isDisabled"
         clearable
+        maxlength="15"
+        show-word-limit
       />
     </el-form-item>
     <el-scrollbar height="440px">
@@ -200,6 +204,8 @@
             :rows="6"
             :disabled="isDisabled"
             clearable
+            maxlength="200"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item
@@ -229,6 +235,8 @@
             :rows="6"
             :disabled="isDisabled"
             clearable
+            maxlength="200"
+            show-word-limit
           />
         </el-form-item>
       </div>
@@ -255,6 +263,8 @@
         placeholder="请输入核心参数"
         :disabled="isDisabled"
         clearable
+        maxlength="50"
+        show-word-limit
       />
     </el-form-item>
     <div class="demand-form_item">
@@ -270,6 +280,8 @@
               placeholder="长度"
               :disabled="isDisabled"
               clearable
+              maxlength="15"
+              show-word-limit
             />
           </el-form-item>
           <el-form-item prop="product_dimension_w">
@@ -279,6 +291,8 @@
               placeholder="宽度"
               :disabled="isDisabled"
               clearable
+              maxlength="15"
+              show-word-limit
             />
           </el-form-item>
           <el-form-item prop="product_dimension_h">
@@ -287,6 +301,8 @@
               placeholder="高度"
               :disabled="isDisabled"
               clearable
+              maxlength="15"
+              show-word-limit
             />
           </el-form-item>
         </div>
@@ -303,6 +319,8 @@
               placeholder="长度"
               :disabled="isDisabled"
               clearable
+              maxlength="15"
+              show-word-limit
             />
           </el-form-item>
           <el-form-item prop="packing_dimension_w">
@@ -312,6 +330,8 @@
               placeholder="宽度"
               :disabled="isDisabled"
               clearable
+              maxlength="15"
+              show-word-limit
             />
           </el-form-item>
           <el-form-item prop="packing_dimension_h">
@@ -320,6 +340,8 @@
               placeholder="高度"
               :disabled="isDisabled"
               clearable
+              maxlength="15"
+              show-word-limit
             />
           </el-form-item>
         </div>
@@ -334,6 +356,8 @@
           placeholder="请输入毛重"
           :disabled="isDisabled"
           clearable
+          maxlength="15"
+          show-word-limit
         />
       </el-form-item>
       <el-form-item
@@ -346,6 +370,8 @@
           placeholder="请输入出货量"
           :disabled="isDisabled"
           clearable
+          maxlength="15"
+          show-word-limit
         />
       </el-form-item>
       <el-form-item
@@ -453,6 +479,8 @@
         placeholder="请输入特别卖点"
         :disabled="isDisabled"
         clearable
+        maxlength="200"
+        show-word-limit
       />
     </el-form-item>
     <el-form-item
@@ -462,8 +490,6 @@
     >
       <el-select
         v-model="demandForm.demand_source"
-        type="textarea"
-        :rows="6"
         placeholder="请选择需求洞察来源"
         :disabled="isDisabled"
         clearable
@@ -486,6 +512,10 @@
         placeholder="请输入痛点"
         :disabled="isDisabled"
         clearable
+        :rows="6"
+        type="textarea"
+        maxlength="200"
+        show-word-limit
       />
     </el-form-item>
     <el-form-item
@@ -500,6 +530,8 @@
         placeholder="请输入需求点"
         :disabled="isDisabled"
         clearable
+        maxlength="200"
+        show-word-limit
       />
     </el-form-item>
     <el-form-item
@@ -512,8 +544,10 @@
         type="textarea"
         :rows="6"
         placeholder="请输入产品信息"
-        :disabled="isDisabled"
+        :disabled="isDisabled" 
         clearable
+        maxlength="200"
+        show-word-limit
       />
     </el-form-item>
     <el-form-item v-if="type !== 'detail'">

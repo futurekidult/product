@@ -157,6 +157,8 @@
             placeholder="请输入年度销售额"
             :disabled="isDisabled"
             clearable
+            maxlength="15"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item
@@ -168,6 +170,8 @@
             placeholder="请输入同比增长率"
             :disabled="isDisabled"
             clearable
+            maxlength="15"
+            show-word-limit
           />
         </el-form-item>
       </div>

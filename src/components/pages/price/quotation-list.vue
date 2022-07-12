@@ -373,6 +373,8 @@
           type="textarea"
           :rows="6"
           clearable
+          maxlength="200"
+          show-word-limit
         />
       </el-form-item>
       <el-divider />

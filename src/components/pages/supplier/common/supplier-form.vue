@@ -49,6 +49,8 @@
             placeholder="请输入供应商名称"
             clearable
             :disabled="isDisabled"
+            maxlength="15"
+            show-word-limit
           />
         </el-form-item>
       </div>
@@ -70,6 +72,8 @@
             placeholder="请输入联系人姓名"
             clearable
             :disabled="isDisabled"
+            maxlength="15"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item
@@ -82,6 +86,8 @@
             placeholder="请输入手机号"
             clearable
             :disabled="isDisabled"
+            maxlength="15"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item :label="'座机号码' + (index + 1)">
@@ -173,6 +179,8 @@
             placeholder="请输入详细地址"
             clearable
             :disabled="isDisabled"
+            maxlength="30"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item
@@ -217,6 +225,8 @@
             placeholder="请输入公司主页链接"
             clearable
             :disabled="isDisabled"
+            maxlength="30"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item
@@ -248,6 +258,8 @@
             placeholder="请输入工厂规模"
             clearable
             :disabled="isDisabled"
+            maxlength="15"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item
@@ -263,6 +275,8 @@
             placeholder="请输入供应商税号"
             clearable
             :disabled="type !== 'create'"
+            maxlength="20"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item
@@ -275,6 +289,8 @@
             placeholder="请输入注册资金"
             clearable
             :disabled="isDisabled"
+            maxlength="15"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item
@@ -321,6 +337,8 @@
             placeholder="请输入定金比例"
             clearable
             :disabled="isDisabled"
+            maxlength="15"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item
@@ -384,6 +402,8 @@
             placeholder="请输入开户银行户名"
             clearable
             :disabled="isDisabled"
+            maxlength="15"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item
@@ -399,6 +419,8 @@
             placeholder="请输入开户银行名称"
             clearable
             :disabled="isDisabled"
+            maxlength="15"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item
@@ -411,6 +433,8 @@
             placeholder="请输入开户银行账号"
             clearable
             :disabled="isDisabled"
+            maxlength="15"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item label="开户银行所在地">
@@ -484,6 +508,8 @@
             placeholder="请输入主营产品"
             clearable
             :disabled="isDisabled"
+            maxlength="15"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item
