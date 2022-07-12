@@ -90,7 +90,7 @@
             {{ progress.estimated_finish_time }}
           </el-descriptions-item>
           <el-descriptions-item
-            v-if="progress.actual_start_time === 0"
+            v-if="progress.state === 10 && !progress.actual_start_time"
             label="实际调研开始时间"
             width="200px"
           >
@@ -639,7 +639,7 @@ export default {
     },
     async addActualStarttime(val) {
       let body = {
-        actual_start_time: val
+        actual_start_time: timestamp(val)
       };
       body['product_id'] = +this.$route.params.productId;
       body['survey_schedule_id'] = this.progress.id;
@@ -649,6 +649,7 @@ export default {
           body
         );
         this.setTimeVisible = false;
+        this.getList();
       } catch (err) {
         return;
       }

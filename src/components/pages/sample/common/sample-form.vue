@@ -71,6 +71,8 @@
           rows="5"
           :disabled="disabled"
           clearable
+          maxlength="200"
+          show-word-limit
         />
       </el-form-item>
       <el-form-item 

@@ -54,6 +54,8 @@
           :rows="6"
           placeholder="请输入内容"
           clearable
+          maxlength="200"
+          show-word-limit
         />
       </el-form-item>
       <el-divider />
