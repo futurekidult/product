@@ -145,7 +145,7 @@
       </el-table>
 
       <base-pagination
-        :length="priceList.length"
+        :length="$store.state.price.priceListLength"
         :get-list="getPriceList"
       />
     </div>
