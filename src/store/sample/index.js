@@ -67,6 +67,9 @@ export default {
     setBaseLoading(state, payload) {
       state.baseLoading = payload;
     },
+    setDetailLoading(state, payload) {
+      state.detailLoading = payload;
+    },
     setProofingLoading(state, payload) {
       state.proofingLoading = payload;
     },
@@ -88,7 +91,7 @@ export default {
       await axios.get('/sample/base/get/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSampleBase', res.data);
-          context.state.detailLoading = false;
+          context.commit('setBaseLoading', false);
         }
       });
     },
@@ -96,7 +99,7 @@ export default {
       await axios.get('/sample/detail/get/', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSampleDetail', res.data);
-          context.commit('setBaseLoading', false);
+          context.commit('setDetailLoading', false);
         }
       });
     },
