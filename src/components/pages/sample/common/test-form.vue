@@ -16,6 +16,8 @@
           v-model="applyForm.sample_model"
           placeholder="请输入样品型号"
           disabled
+          maxlength="15"
+          show-word-limit
         />
       </el-form-item>
       <el-form-item label="售卖国家">
@@ -23,6 +25,8 @@
           v-model="applyForm.market"
           placeholder="请输入售卖国家"
           disabled
+          maxlength="15"
+          show-word-limit
         />
       </el-form-item>
       <el-form-item
@@ -34,6 +38,8 @@
           placeholder="请输入样品总数"
           :disabled="disabled"
           clearable
+          maxlength="15"
+          show-word-limit
         />
       </el-form-item>
       <el-form-item label="售卖国整数与测试报告">

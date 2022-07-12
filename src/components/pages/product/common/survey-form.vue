@@ -33,6 +33,8 @@
           placeholder="请输入具体需求"
           :disabled="isDisabled"
           clearable
+          maxlength="200"
+          show-word-limit
         />
       </el-form-item>
       <el-form-item
@@ -45,6 +47,8 @@
           placeholder="请输入期望结果"
           :disabled="isDisabled"
           clearable
+          maxlength="200"
+          show-word-limit
         />
       </el-form-item>
       <el-form-item

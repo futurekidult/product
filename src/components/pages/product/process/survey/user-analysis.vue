@@ -63,6 +63,8 @@
             placeholder="请输入职业"
             :disabled="isDisabled"
             clearable
+            maxlength="15"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item
@@ -215,6 +217,8 @@
           placeholder="请输入使用场景"
           clearable
           :disabled="isDisabled"
+          maxlength="15"
+          show-word-limit
         />
       </el-form-item>
       <el-form-item v-if="progress.state !== 50">
@@ -243,6 +247,8 @@
           placeholder="请输入备注"
           :disabled="isDisabled"
           clearable
+          maxlength="200"
+          show-word-limit
         />
       </el-form-item>
       <el-form-item

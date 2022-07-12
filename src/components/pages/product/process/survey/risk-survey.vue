@@ -65,6 +65,8 @@
           placeholder="请输入外观专利"
           :disabled="isDisabled"
           clearable
+          maxlength="200"
+          show-word-limit
         />
       </el-form-item>
       <el-form-item
@@ -77,6 +79,8 @@
           placeholder="请输入法律法规"
           :disabled="isDisabled"
           clearable
+          maxlength="200"
+          show-word-limit
         />
       </el-form-item>
       <el-form-item
@@ -89,6 +93,8 @@
           placeholder="请输入其它风险"
           :disabled="isDisabled"
           clearable
+          maxlength="200"
+          show-word-limit
         />
       </el-form-item>
       <el-form-item

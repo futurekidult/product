@@ -47,6 +47,8 @@
           placeholder="请输入产品英文名"
           :disabled="isDisabled"
           clearable
+          maxlength="50"
+          show-word-limit
         />
       </el-form-item>
       <el-form-item
@@ -73,6 +75,8 @@
           type="textarea"
           :disabled="isDisabled"
           clearable
+          maxlength="200"
+          show-word-limit
         />
       </el-form-item>
       <competitive-table 

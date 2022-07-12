@@ -113,6 +113,8 @@
                     placeholder="长度"
                     :disabled="isDisabled"
                     clearable
+                    maxlength="15"
+                    show-word-limit
                   />
                 </el-form-item>
                 <el-form-item prop="inner_box_dimension_w">
@@ -122,6 +124,8 @@
                     placeholder="宽度"
                     :disabled="isDisabled"
                     clearable
+                    maxlength="15"
+                    show-word-limit
                   />
                 </el-form-item>
                 <el-form-item prop="inner_box_dimension_h">
@@ -130,6 +134,8 @@
                     placeholder="高度"
                     :disabled="isDisabled"
                     clearable
+                    maxlength="15"
+                    show-word-limit
                   />
                 </el-form-item>
               </div>
@@ -146,6 +152,8 @@
                     placeholder="长度"
                     :disabled="isDisabled"
                     clearable
+                    maxlength="15"
+                    show-word-limit
                   />
                 </el-form-item>
                 <el-form-item prop="outer_box_dimension_w">
@@ -155,6 +163,8 @@
                     placeholder="宽度"
                     :disabled="isDisabled"
                     clearable
+                    maxlength="15"
+                    show-word-limit
                   />
                 </el-form-item>
                 <el-form-item prop="outer_box_dimension_h">
@@ -163,6 +173,8 @@
                     placeholder="高度"
                     :disabled="isDisabled"
                     clearable
+                    maxlength="15"
+                    show-word-limit
                   />
                 </el-form-item>
               </div>
@@ -177,6 +189,8 @@
                 placeholder="请输入内箱重量"
                 :disabled="isDisabled"
                 clearable
+                maxlength="15"
+                show-word-limit
               />
             </el-form-item>
             <el-form-item
@@ -189,6 +203,8 @@
                 placeholder="请输入外箱重量"
                 :disabled="isDisabled"
                 clearable
+                maxlength="15"
+                show-word-limit
               />
             </el-form-item>
           </div>

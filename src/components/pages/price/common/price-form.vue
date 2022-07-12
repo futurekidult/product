@@ -89,6 +89,8 @@
             type="textarea"
             :rows="6"
             clearable
+            maxlength="200"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item>
@@ -108,6 +110,8 @@
           type="textarea"
           :rows="6"
           clearable
+          maxlength="200"
+          show-word-limit
         />
       </el-form-item>
       <el-form-item
@@ -135,6 +139,8 @@
                 class="analy-form_mar"
                 placeholder="长度"
                 clearable
+                maxlength="15"
+                show-word-limit
               />
             </el-form-item>
             <el-form-item prop="inner_w">
@@ -143,6 +149,8 @@
                 class="analy-form_mar"
                 placeholder="宽度"
                 clearable
+                maxlength="15"
+                show-word-limit
               />
             </el-form-item>
             <el-form-item prop="inner_h">
@@ -150,6 +158,8 @@
                 v-model="quotationForm.inner_h"
                 placeholder="高度"
                 clearable
+                maxlength="15"
+                show-word-limit
               />
             </el-form-item>
           </div>
@@ -165,6 +175,8 @@
                 class="analy-form_mar"
                 placeholder="长度"
                 clearable
+                maxlength="15"
+                show-word-limit
               />
             </el-form-item>
             <el-form-item prop="outer_w">
@@ -173,6 +185,8 @@
                 class="analy-form_mar"
                 placeholder="宽度"
                 clearable
+                maxlength="15"
+                show-word-limit
               />
             </el-form-item>
             <el-form-item prop="outer_h">
@@ -180,6 +194,8 @@
                 v-model="quotationForm.outer_h"
                 placeholder="高度"
                 clearable
+                maxlength="15"
+                show-word-limit
               />
             </el-form-item>
           </div>
@@ -193,6 +209,8 @@
             v-model="quotationForm.inner_box_weight"
             placeholder="请输入内箱重量"
             clearable
+            maxlength="15"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item
@@ -204,6 +222,8 @@
             v-model="quotationForm.outer_box_weight"
             placeholder="请输入外箱重量"
             clearable
+            maxlength="15"
+            show-word-limit
           />
         </el-form-item>
       </div>
@@ -439,8 +459,7 @@ export default {
           {
             required: true,
             message: '请输入金额'
-          },
-          checkValid(15)
+          }
         ],
         appended_reason: [
           {

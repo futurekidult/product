@@ -20,6 +20,8 @@
           :rows="6"
           clearable
           placeholder="请输入内容"
+          maxlength="200"
+          show-word-limit
         />
       </el-form-item>
       <div
