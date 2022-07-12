@@ -569,16 +569,17 @@ export default {
         });
         this.targetList = this.$store.state.price.targetPrice;
         let low = this.targetList.some((item) => {
-          return +item.target_price > +price;
+          return +item.target_price < +price;
         });
-        if (low) {
-          this.lowVisible = true;
-        }
         let high = this.targetList.every((item) => {
           return +item.target_price < +price;
         });
-        if (high) {
+        if (low) {
+          this.lowVisible = true;
+        } else if (high){
           this.highVisible = true;
+        } else {
+          this.submitQuotation();
         }
       } catch (err) {
         return;
