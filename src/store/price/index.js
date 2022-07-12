@@ -15,7 +15,8 @@ export default {
       hasAdd: 0,
       hasHigh: 0,
       quotation: {},
-      supplierOption: []
+      supplierOption: [],
+      priceListLength: 0
     };
   },
   mutations: {
@@ -56,6 +57,7 @@ export default {
         if (res.code === 200) {
           context.commit('setPriceList', res.data.list);
           context.commit('setPriceLoading', false);
+          context.state.priceListLength = res.data.total;
         } else {
           ElMessage.success(res.message);
         }
