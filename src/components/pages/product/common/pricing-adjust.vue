@@ -76,6 +76,7 @@
               placeholder="请选择货币"
               :disabled="adjustMsg.state === 30"
               clearable
+              @change="clearMoney"
             >
               <el-option
                 v-for="item in currency"
@@ -92,7 +93,7 @@
               placeholder="请输入金额"
               :disabled="adjustMsg.state === 30"
               clearable
-              @change="getPriceRmb"
+              @change="clearRmb"
             />
           </el-form-item>
           <el-form-item>
@@ -172,7 +173,7 @@ export default {
     };
   },
   mounted() {
-    if (this.adjustMsg.state === 30) {
+    if (this.adjustMsg.state >= 20) {
       this.getPriceRmb();
     }
     this.getCurrency();
@@ -199,11 +200,13 @@ export default {
         product_id: +this.$route.params.productId,
         market: this.market
       };
-      try {
-        await this.$store.dispatch('getPriceRmb', { params });
-        this.adjustForm.adjusted_selling_price_rmb = this.$store.state.priceRmb;
-      } catch (err) {
-        return;
+      if(this.adjustForm.adjusted_selling_price) {
+        try {
+          await this.$store.dispatch('getPriceRmb', { params });
+          this.adjustForm.adjusted_selling_price_rmb = this.$store.state.priceRmb;
+        } catch (err) {
+          return;
+        }
       }
     },
     async applyPricing(val) {
@@ -291,6 +294,14 @@ export default {
           this.submitAdjust(body);
         }
       });
+    },
+    clearRmb() {
+      this.adjustForm.adjusted_selling_price_rmb = '';
+      this.getPriceRmb();
+    },
+    clearMoney() {
+      this.adjustForm.adjusted_selling_price = '';
+      this.adjustForm.adjusted_selling_price_rmb = '';
     }
   }
 };
