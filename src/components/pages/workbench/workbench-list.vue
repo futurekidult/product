@@ -2,7 +2,7 @@
   <base-breadcrumb />
   <div class="border">
     <el-badge
-      :value="$store.state.workbench.todoListLength"
+      :value="count"
       size="mini"
       class="item"
     />
@@ -87,14 +87,24 @@ export default {
       todoList: [],
       notificationList: [],
       chooseForm: {},
-      workbenchState: []
+      workbenchState: [],
+      count: 0
     };
   },
   mounted() {
+    this.getTodoCount();
     this.getParams();
     this.getTodoList();
   },
   methods: {
+    async getTodoCount() {
+      try {
+        await this.$store.dispatch('workbench/getTodoCount');
+        this.count = this.$store.state.workbench.count;
+      } catch (err) {
+        return ;
+      }
+    },
     async getParams() {
       if (localStorage.getItem('params')) {
         this.workbenchState = JSON.parse(
@@ -145,6 +155,7 @@ export default {
     },
     handleClick(tab) {
       if (tab.props.name === 'todolist') {
+        this.getTodoCount();
         this.getTodoList();
       } else {
         this.getNotificationList();
