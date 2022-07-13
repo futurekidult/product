@@ -79,6 +79,7 @@ export default {
     },
     toProduct(id) {
       this.$router.push(`/product-list/${id}`);
+      this.$store.commit('setEntry', 'detail');
     }
   }
 };
