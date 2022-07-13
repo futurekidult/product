@@ -329,7 +329,7 @@
                   >|</span>
                   <el-button
                     type="text"
-                    @click="deleteFile(scope.row.attachment.id)"
+                    @click="deleteFile(scope.row.id)"
                   >
                     删除
                   </el-button>
