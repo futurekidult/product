@@ -284,6 +284,7 @@
                   scope.row.has_approval_process === 1 ||
                     scope.row.proceeding === 1
                 "
+                style="display: flex"
               >
                 <div v-if="JSON.stringify(scope.row.attachment) === '{}'">
                   <el-upload
@@ -298,29 +299,16 @@
                     </el-button>
                   </el-upload>
                 </div>
-                <div v-if="scope.row.state >= 40 || scope.row.state === 20">
+                <div v-if="(scope.row.state >= 40 || scope.row.state === 20) && scope.row.attachment.type === 12860">
                   <el-button
-                    v-if="scope.row.attachment.type === 12860"
                     type="text"
                     @click="showViewFile(scope.row.attachment.id)"
                   >
                     预览
                   </el-button>
-                  <span 
-                    v-if="scope.row.attachment.type === 12860"
+                  <span
                     class="table-btn"
                   >|</span>
-                  <el-button
-                    type="text"
-                    @click="
-                      download(
-                        scope.row.attachment.id,
-                        scope.row.attachment.name
-                      )
-                    "
-                  >
-                    下载
-                  </el-button>
                 </div>
                 <div
                   v-if="
@@ -341,9 +329,25 @@
                   >|</span>
                   <el-button
                     type="text"
-                    @click="deleteFile(scope.row.attachment)"
+                    @click="deleteFile(scope.row.attachment.id)"
                   >
                     删除
+                  </el-button>
+                  <span 
+                    class="table-btn"
+                  >|</span>
+                </div>
+                <div v-if="JSON.stringify(scope.row.attachment) !== '{}'">
+                  <el-button
+                    type="text"
+                    @click="
+                      download(
+                        scope.row.attachment.id,
+                        scope.row.attachment.name
+                      )
+                    "
+                  >
+                    下载
                   </el-button>
                 </div>
               </div>
@@ -896,7 +900,7 @@ export default {
             attachment['id'] = this.$store.state.fileRes.id;
             attachment['name'] = this.$store.state.fileRes.file_name;
             attachment['type'] = this.$store.state.fileRes.type;
-            await this.$store.dispatch('product/survey/user/addPlanResultAttachment',{ plan_id: id, attachment: this.$store.state.fileRes.id })
+            await this.$store.dispatch('product/survey/user/updatePlanResultAttachment',{ plan_id: id, attachment: this.$store.state.fileRes.id });
             this.getList();
           }
         } catch (err) {
@@ -928,11 +932,13 @@ export default {
         return;
       }
     },
-    deleteFile(obj) {
-      delete obj['id'];
-      delete obj['type'];
-      delete obj['name'];
-      this.getList();
+    async deleteFile(id) {
+      try {
+        await this.$store.dispatch('product/survey/user/updatePlanResultAttachment',{ plan_id: id });
+        this.getList();
+      } catch (err) {
+        return ;
+      }
     },
     changeColor(val) {
       if (val === 10 || val === 20) {
