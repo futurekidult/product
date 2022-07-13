@@ -88,6 +88,7 @@ export default {
   methods: {
     toDetail(id) {
       this.$router.push(`/sample-list/${id}`);
+      this.$store.commit('setActiveTab', 'base');
     },
     changeCellColor(val) {
       if (val <= 20) {

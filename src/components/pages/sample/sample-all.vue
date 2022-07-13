@@ -232,6 +232,7 @@ export default {
     },
     toRelatedProduct(id) {
       this.$router.push(`/product-list/${id}`);
+      this.$store.commit('setEntry', 'detail');
     }
   }
 };

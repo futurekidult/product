@@ -72,6 +72,7 @@ export default {
   methods: {
     toDetail(id) {
       this.$router.push(`/product-list/${this.$route.params.productId}/${id}`);
+      this.$store.commit('setEntry', 'detail');
     },
     changeCellColor(val) {
       if (val <= 30) {

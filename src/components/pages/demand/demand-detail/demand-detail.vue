@@ -116,6 +116,7 @@ export default {
     },
     toProductDetail(id) {
       this.$router.push(`/product-list/${id}`);
+      this.$store.commit('setEntry', 'detail');
     },
     changeColor(val) {
       if (val === 20) {
