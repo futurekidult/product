@@ -272,6 +272,11 @@
           </el-form-item>
         </div>
       </el-form-item>
+      <el-form-item>
+        <div class="desc">
+          此处为单个产品的费用
+        </div>
+      </el-form-item>
       <el-form-item
         label="尾程费用"
         style="margin-bottom: 18px"
@@ -315,6 +320,11 @@
               </template>
             </el-input>
           </el-form-item>
+        </div>
+      </el-form-item>
+      <el-form-item>
+        <div class="desc">
+          此处为单个产品的费用
         </div>
       </el-form-item>
       <el-form-item
