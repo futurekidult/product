@@ -332,7 +332,7 @@
                     删除
                   </el-button>
                 </div>
-                <div v-if="JSON.stringify(scope.row.attachment) !== '{}'">
+                <div v-if="JSON.stringify(scope.row.attachment) !== '{}' && scope.row.attachment.type === 12860">
                   <span 
                     class="table-btn"
                   >|</span>
