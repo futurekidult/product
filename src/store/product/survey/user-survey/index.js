@@ -153,7 +153,7 @@ export default {
       });
     },
     async addPlanResultAttachment(_, payload) {
-      await axios.post('survey/user-survey/plan-attachment/add', payload).then((res) => {
+      await axios.post('/survey/user-survey/plan/attachment', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }

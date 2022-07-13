@@ -284,6 +284,7 @@
                   scope.row.has_approval_process === 1 ||
                     scope.row.proceeding === 1
                 "
+                style="display: flex"
               >
                 <div v-if="JSON.stringify(scope.row.attachment) === '{}'">
                   <el-upload
@@ -306,21 +307,6 @@
                   >
                     预览
                   </el-button>
-                  <span 
-                    v-if="scope.row.attachment.type === 12860"
-                    class="table-btn"
-                  >|</span>
-                  <el-button
-                    type="text"
-                    @click="
-                      download(
-                        scope.row.attachment.id,
-                        scope.row.attachment.name
-                      )
-                    "
-                  >
-                    下载
-                  </el-button>
                 </div>
                 <div
                   v-if="
@@ -341,9 +327,25 @@
                   >|</span>
                   <el-button
                     type="text"
-                    @click="deleteFile(scope.row.attachment)"
+                    @click="deleteFile(scope.row.attachment.id)"
                   >
                     删除
+                  </el-button>
+                </div>
+                <div v-if="JSON.stringify(scope.row.attachment) !== '{}'">
+                  <span 
+                    class="table-btn"
+                  >|</span>
+                  <el-button
+                    type="text"
+                    @click="
+                      download(
+                        scope.row.attachment.id,
+                        scope.row.attachment.name
+                      )
+                    "
+                  >
+                    下载
                   </el-button>
                 </div>
               </div>
@@ -896,7 +898,7 @@ export default {
             attachment['id'] = this.$store.state.fileRes.id;
             attachment['name'] = this.$store.state.fileRes.file_name;
             attachment['type'] = this.$store.state.fileRes.type;
-            await this.$store.dispatch('product/survey/user/addPlanResultAttachment',{ plan_id: id, attachment: this.$store.state.fileRes.id })
+            await this.$store.dispatch('product/survey/user/addPlanResultAttachment',{ plan_id: id, attachment: this.$store.state.fileRes.id });
             this.getList();
           }
         } catch (err) {
@@ -928,10 +930,8 @@ export default {
         return;
       }
     },
-    deleteFile(obj) {
-      delete obj['id'];
-      delete obj['type'];
-      delete obj['name'];
+    async deleteFile(id) {
+      await this.$store.dispatch('product/survey/user/addPlanResultAttachment',{ plan_id: id });
       this.getList();
     },
     changeColor(val) {
