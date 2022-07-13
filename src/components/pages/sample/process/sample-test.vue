@@ -179,7 +179,6 @@
     v-model="editSpecialistVisible"
     title="编辑"
     width="20%"
-    @close="closeEditForm"
   >
     <el-form
       ref="editForm"
@@ -199,7 +198,10 @@
       </el-form-item>
       <el-divider />
       <div style="text-align: right">
-        <el-button class="close-btn">
+        <el-button 
+          class="close-btn"
+          @click="closeEditForm"  
+        >
           取消
         </el-button>
         <el-button

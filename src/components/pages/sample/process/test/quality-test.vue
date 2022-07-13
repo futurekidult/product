@@ -152,7 +152,10 @@
       </el-form-item>
       <el-divider />
       <div style="text-align: right">
-        <el-button class="close-btn">
+        <el-button 
+          class="close-btn"
+          @click="closeFailReason"
+        >
           取消
         </el-button>
         <el-button
@@ -280,6 +283,9 @@ export default {
     },
     showFailReason() {
       this.failFormVisible = true;
+    },
+    closeFailReason() {
+      this.failFormVisible = false;
     },
     submitFailResult() {
       this.confirmTestResult({
