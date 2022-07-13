@@ -299,15 +299,14 @@
                     </el-button>
                   </el-upload>
                 </div>
-                <div v-if="scope.row.state >= 40 || scope.row.state === 20">
+                <div v-if="(scope.row.state >= 40 || scope.row.state === 20) && scope.row.attachment.type === 12860">
                   <el-button
-                    v-if="scope.row.attachment.type === 12860"
                     type="text"
                     @click="showViewFile(scope.row.attachment.id)"
                   >
                     预览
                   </el-button>
-                  <span 
+                  <span
                     class="table-btn"
                   >|</span>
                 </div>
