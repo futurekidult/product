@@ -11,7 +11,8 @@ export default {
       planList: [],
       userSurveyDetail: {},
       userLoading: true,
-      userId: 0
+      userId: 0,
+      hasTask: 0
     };
   },
   mutations: {
@@ -35,6 +36,9 @@ export default {
     },
     setUserId(state, payload) {
       state.userId = payload;
+    },
+    setTaskStatus(state, payload) {
+      state.hasTask = payload;
     }
   },
   actions: {
@@ -46,6 +50,7 @@ export default {
           context.commit('setSurveyApply', res.data.survey_apply);
           context.commit('setPlanList', res.data.plan_list);
           context.commit('setUserId', res.data.user_survey_principal_id);
+          context.commit('setTaskStatus', res.data.has_task);
           context.commit('setUserLoading', false);
         }
       });

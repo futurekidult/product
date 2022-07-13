@@ -290,7 +290,7 @@ export default {
           params
         });
         let userSurvey = this.$store.state.product.survey.user;
-        this.hasUserSurveyTask = userSurvey.has_task;
+        this.hasUserSurveyTask = userSurvey.hasTask;
         this.userSurveyPrincipalId = userSurvey.userId;
         this.buttonState = userSurvey.buttonState || {};
         this.surveyApply = userSurvey.surveyApply || [];
