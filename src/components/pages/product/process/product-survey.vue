@@ -28,12 +28,13 @@
         name="market"
       >
         <market-survey
-          v-if="isGetMarketData"
+          v-if="hasMarketTask && isGetMarketData"
           :change-color="changeColor"
           :get-list="getMarket"
           :progress="marketProgress"
           :attachment="markeAttachment"
         />
+        <not-task v-else />
       </el-tab-pane>
       <el-tab-pane
         v-if="isNewCategoryProduct"
@@ -41,7 +42,7 @@
         name="analysis"
       >
         <user-analysis
-          v-if="isGetAnalysisData"
+          v-if="hasAnalysisTask && isGetAnalysisData"
           :get-list="getAnalysis"
           :progress="analysisProgress"
           :attachment="analysisAttachment"
@@ -49,6 +50,7 @@
           :scenario-visible="scenarioVisible"
           :country-visible="countryVisible"
         />
+        <not-task v-else />
       </el-tab-pane>
       <el-tab-pane
         v-if="isNewProduct"
@@ -56,25 +58,27 @@
         name="plan"
       >
         <product-plan
-          v-if="isGetPlanData"
+          v-if="hasPlanTask && isGetPlanData"
           :get-list="getPlan"
           :progress="planProgress"
           :attachment="planAttachment"
           :product-form="planForm"
           :scenario-visible="planScenarioVisible"
         />
+        <not-task v-else />
       </el-tab-pane>
       <el-tab-pane
         label="风险调研"
         name="risk"
       >
         <risk-survey
-          v-if="isGetRiskData"
+          v-if="hasRiskTask && isGetRiskData"
           :get-list="getRisk"
           :progress="riskProgress"
           :attachment="riskAttachment"
           :risk-form="riskForm"
         />
+        <not-task v-else />
       </el-tab-pane>
       <el-tab-pane
         v-if="isNewProduct"
@@ -82,6 +86,7 @@
         name="user"
       >
         <user-survey
+          v-if="hasUserSurveyTask"
           :progress="userProgress"
           :button-state="buttonState"
           :survey-apply="surveyApply"
@@ -90,6 +95,7 @@
           :get-list="getUserSurvey"
           :user-id="userSurveyPrincipalId"
         />
+        <not-task v-else />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -103,6 +109,7 @@ import UserAnalysis from './survey/user-analysis.vue';
 import ProductPlan from './survey/product-plan.vue';
 import RiskSurvey from './survey/risk-survey.vue';
 import UserSurvey from './survey/user-survey.vue';
+import NotTask from '../../../common/not-task.vue'
 
 export default {
   components: {
@@ -111,7 +118,8 @@ export default {
     UserAnalysis,
     ProductPlan,
     RiskSurvey,
-    UserSurvey
+    UserSurvey,
+    NotTask
   },
    inject: ['getPlatform'],
   provide() {
@@ -155,7 +163,12 @@ export default {
       isGetRiskData: false,
       countryVisible: false,
       scenarioVisible: false,
-      planScenarioVisible: false
+      planScenarioVisible: false,
+      hasMarketTask: 0,
+      hasAnalysisTask: 0,
+      hasPlanTask: 0,
+      hasRiskTask: 0,
+      hasUserSurveyTask: 0
     };
   },
   methods: {
@@ -169,6 +182,7 @@ export default {
           params
         });
         let { market } = this.$store.state.product.survey.market;
+        this.hasMarketTask = market.has_task;
         this.marketProgress = market.progress || {};
         this.markeAttachment = market.report || {};
         changeTimestamp(this.marketProgress, 'estimated_finish_time');
@@ -192,6 +206,7 @@ export default {
           params
         });
         let { userAnalysis } = this.$store.state.product.survey.userAnalysis;
+        this.hasAnalysisTask = userAnalysis.has_task;
         this.analysisProgress = userAnalysis.progress || {};
         changeTimestamp(this.analysisProgress, 'estimated_finish_time');
         changeTimestamp(this.analysisProgress, 'actual_finish_time');
@@ -226,6 +241,7 @@ export default {
       try {
         await this.$store.dispatch('product/survey/plan/getPlan', { params });
         let { plan } = this.$store.state.product.survey.plan;
+        this.hasPlanTask = plan.has_task;
         this.planProgress = plan.progress || {};
         changeTimestamp(this.planProgress, 'estimated_finish_time');
         changeTimestamp(this.planProgress, 'actual_finish_time');
@@ -252,6 +268,7 @@ export default {
       try {
         await this.$store.dispatch('product/survey/risk/getRisk', { params });
         let { risk } = this.$store.state.product.survey.risk;
+        this.hasRiskTask = risk.has_task;
         this.riskProgress = risk.progress || {};
         changeTimestamp(this.riskProgress, 'estimated_finish_time');
         changeTimestamp(this.riskProgress, 'actual_finish_time');
@@ -273,6 +290,7 @@ export default {
           params
         });
         let userSurvey = this.$store.state.product.survey.user;
+        this.hasUserSurveyTask = userSurvey.has_task;
         this.userSurveyPrincipalId = userSurvey.userId;
         this.buttonState = userSurvey.buttonState || {};
         this.surveyApply = userSurvey.surveyApply || [];
