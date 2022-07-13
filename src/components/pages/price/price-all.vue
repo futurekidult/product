@@ -145,7 +145,7 @@
       </el-table>
 
       <base-pagination
-        :length="priceList.length"
+        :length="$store.state.price.priceListLength"
         :get-list="getPriceList"
       />
     </div>
@@ -230,6 +230,7 @@ export default {
     },
     toProduct(id) {
       this.$router.push(`/product-list/${id}`);
+      this.$store.commit('setEntry', 'detail');
     }
   }
 };

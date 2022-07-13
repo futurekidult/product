@@ -278,6 +278,7 @@ export default {
     },
     toProductDetail(id) {
       this.$router.push(`/product-list/${id}`);
+      this.$store.commit('setEntry', 'detail');
     },
     resetForm() {
       this.chooseForm = {};

@@ -129,6 +129,7 @@
         <el-tab-pane
           label="用户测试"
           name="user"
+          v-if="hasUserTest"
         >
           <user-test
             v-if="activeName === 'user'"
@@ -178,7 +179,6 @@
     v-model="editSpecialistVisible"
     title="编辑"
     width="20%"
-    @close="closeEditForm"
   >
     <el-form
       ref="editForm"
@@ -198,7 +198,10 @@
       </el-form-item>
       <el-divider />
       <div style="text-align: right">
-        <el-button class="close-btn">
+        <el-button 
+          class="close-btn"
+          @click="closeEditForm"  
+        >
           取消
         </el-button>
         <el-button
@@ -233,7 +236,7 @@ export default {
       getList: this.getUserList
     };
   },
-  props: ['applyList', 'buttonState','qualityProgress','qualityAttachment','qualitySubmitState','qualityId','qualityTestId'],
+  props: ['applyList', 'buttonState','qualityProgress','qualityAttachment','qualitySubmitState','qualityId','qualityTestId', 'hasUserTest'],
   data() {
     return {
       activeName: 'quality',

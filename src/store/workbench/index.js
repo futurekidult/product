@@ -10,7 +10,8 @@ export default {
       notificationList: [],
       notificationListLoading: true,
       todoListLength: 0,
-      notificationListLength: 0
+      notificationListLength: 0,
+      count: 0
     };
   },
   mutations: {
@@ -25,6 +26,9 @@ export default {
     },
     setNotificationListLoading(state, payload) {
       state.notificationListLoading = payload;
+    },
+    setCount(state, payload) {
+      state.count = payload;
     }
   },
   actions: {
@@ -52,6 +56,13 @@ export default {
           ElMessage.success(res.message);
         }
       });
+    },
+    async getTodoCount(context) {
+      await axios.get('/workbench/unfinished/count').then((res) => {
+        if(res.code === 200) {
+          context.commit('setCount', res.data.unfinished);
+        }
+      })
     }
   }
 };

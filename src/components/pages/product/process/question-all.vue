@@ -238,6 +238,7 @@ export default {
     },
     toSampleDetail(id) {
       this.$router.push(`/sample-list/${id}`);
+      this.$store.commit('setActiveTab', 'base');
     }
   }
 };
