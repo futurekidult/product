@@ -824,8 +824,8 @@
         </div>
       </el-form-item>
       <el-form-item>
-        <div style="font-size: 10px; color: #606266">
-          备注：需上传供应商大门、样品间、车间、仓库等照片
+        <div class="desc">
+          表格中需上传供应商大门、样品间、车间、仓库等照片
         </div>
       </el-form-item>
       <el-form-item label="备注">
