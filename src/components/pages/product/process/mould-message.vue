@@ -50,7 +50,7 @@
           <span class="table-btn">|</span>
           <el-button 
             type="text" 
-            @click="toDetail(scope.row.id)"
+            @click="toDetail(scope.row.mould_id)"
           >
             查看
           </el-button>
@@ -229,6 +229,7 @@ export default {
     },
     toDetail(id) {
       this.$router.push(`/mould-list/${id}`);
+      this.$store.commit('setActiveTab', 'design');
     }
   }
 };
