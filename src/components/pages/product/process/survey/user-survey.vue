@@ -900,7 +900,7 @@ export default {
             attachment['id'] = this.$store.state.fileRes.id;
             attachment['name'] = this.$store.state.fileRes.file_name;
             attachment['type'] = this.$store.state.fileRes.type;
-            await this.$store.dispatch('product/survey/user/addPlanResultAttachment',{ plan_id: id, attachment: this.$store.state.fileRes.id });
+            await this.$store.dispatch('product/survey/user/updatePlanResultAttachment',{ plan_id: id, attachment: this.$store.state.fileRes.id });
             this.getList();
           }
         } catch (err) {
@@ -933,8 +933,12 @@ export default {
       }
     },
     async deleteFile(id) {
-      await this.$store.dispatch('product/survey/user/addPlanResultAttachment',{ plan_id: id });
-      this.getList();
+      try {
+        await this.$store.dispatch('product/survey/user/updatePlanResultAttachment',{ plan_id: id });
+        this.getList();
+      } catch (err) {
+        return ;
+      }
     },
     changeColor(val) {
       if (val === 10 || val === 20) {
