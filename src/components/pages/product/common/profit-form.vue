@@ -23,6 +23,7 @@
           placeholder="请选择市场"
           :disabled="isDisabled"
           clearable
+          @clear="clearMarket"
           @change="changeMarket(profitForm.market)"
         >
           <el-option
@@ -77,7 +78,8 @@
               placeholder="请选择平台"
               :disabled="isDisabled"
               clearable
-              @change="getProfitParams(profitForm.market,profitForm.list[index].platform)"
+              @clear="clearMoney(index)"
+              @change="getProfitParams(profitForm.market,profitForm.list[index].platform, profitForm.list[index].selling_price, index)"
             >
               <el-option
                 v-for="platform in platformList"
@@ -90,7 +92,8 @@
           <el-form-item v-if="profitForm.list[index].platform">
             <el-collapse style="width: 100%">
               <el-collapse-item 
-                :title="'利润核算参数明细表' + (index + 1)">
+                :title="'利润核算参数明细表' + (index + 1)"
+              >
                 <profit-params :profit-params="profitParams" />
               </el-collapse-item>
             </el-collapse>
@@ -100,25 +103,6 @@
             required
           >
             <div class="form-template">
-              <el-form-item
-                :prop="`list.${index}.currency`"
-                :rules="profitRules.currency"
-              >
-                <el-select
-                  v-model="item.currency"
-                  placeholder="请选择货币"
-                  :disabled="isDisabled"
-                  clearable
-                  @change="clearMoney(index)"
-                >
-                  <el-option
-                    v-for="cur in currency"
-                    :key="cur.key"
-                    :label="cur.value"
-                    :value="cur.key"
-                  />
-                </el-select>
-              </el-form-item>
               <el-form-item
                 style="margin-left: 6px"
                 :prop="`list.${index}.selling_price`"
@@ -133,7 +117,7 @@
                     getPrice(
                       profitForm.market,
                       item.platform,
-                      item.selling_price,
+                      item.selling_price, 
                       index
                     )
                   "
@@ -167,10 +151,15 @@
               </el-collapse-item>
             </el-collapse>
           </el-form-item>
+          <div 
+            v-if="isNegativeProfit"
+            class="profit-msg"
+          >
+            核算利润有负数， 请先检查利润核算规则等数据是否有误
+          </div>
           <el-form-item
             :label="'采购参考价' + (index + 1)"
             :prop="`list.${index}.reference_price`"
-            required
           >
             <el-input
               v-model="item.reference_price"
@@ -186,6 +175,12 @@
               系统根据利润核算规则自动计算
             </div>
           </el-form-item>
+          <div 
+            v-if="isNegativeReference"
+            class="profit-msg"
+          >
+            采购参考价为负， 请先检查产品方案等数据是否有误
+          </div>
           <el-form-item
             :label="'运营专员' + (index + 1)"
             :prop="`list.${index}.operations_specialist_id`"
@@ -288,12 +283,6 @@ export default {
             message: '请选择平台'
           }
         ],
-        currency: [
-          {
-            required: true,
-            message: '请选择货币'
-          }
-        ],
         selling_price: [
           {
             required: true,
@@ -319,7 +308,6 @@ export default {
           value: 0
         }
       ],
-      currency: [],
       memberList: [],
       defaultProps: {
         children: 'children',
@@ -328,7 +316,9 @@ export default {
       },
       rate: '',
       calculationResult: {},
-      profitParams: {}
+      profitParams: {},
+      isNegativeProfit: false,
+      isNegativeReference: false
     };
   },
   computed: {
@@ -352,33 +342,22 @@ export default {
      getOrganizationList().then( (res) => {
       this.memberList = res;
     });
-    this.getParams();
     this.getMarket();
   },
   methods: {
-    async getProfitParams(market, platform) {
-      let params = {
-        market,
-        platform,
-        product_id: +this.$route.params.productId
-      };
-      try {
-        await this.$store.dispatch('product/project/getProfitParams', {
-          params
-        });
-        this.profitParams = this.$store.state.product.project.profitParams;
-      } catch (err) {
-        return;
-      }
-    },
-    async getParams() {
-      if (localStorage.getItem('params')) {
-        let { demand } = JSON.parse(localStorage.getItem('params'));
-        this.currency = demand.currency;
-      } else {
+    async getProfitParams(market, platform, price, index) {
+      if(market && platform) {
+        let params = {
+          market,
+          platform,
+          product_id: +this.$route.params.productId
+        };
         try {
-          await this.$store.dispatch('getSystemParameters');
-          this.getParams();
+          await this.$store.dispatch('product/project/getProfitParams', {
+            params
+          });
+          this.profitParams = this.$store.state.product.project.profitParams;
+          this.getPrice(market, platform, price, index);
         } catch (err) {
           return;
         }
@@ -415,8 +394,8 @@ export default {
             this.platformList = market.platform;
           }
         });
-        this.profitForm.list.forEach((item) => {
-          this.getPrice(this.id, item.platform, +this.$route.params.productId, item.selling_price);
+        this.profitForm.list.forEach((item, index) => {
+          this.getPrice(this.id, item.platform, item.selling_price, index);
           this.getProfitParams(item.market, item.platform);
         })
       } catch (err) {
@@ -479,23 +458,34 @@ export default {
       });
     },
     async getPrice(market, platform, price, index) {
-      try {
-        await this.$store.dispatch('product/project/getReferencePrice', {
-          params: {
-            market,
-            platform,
-            product_id: +this.$route.params.productId,
-            selling_price: price
+      if(market && platform && price) {
+          try {
+            await this.$store.dispatch('product/project/getReferencePrice', {
+              params: {
+                market,
+                platform,
+                product_id: +this.$route.params.productId,
+                selling_price: price
+              }
+            });
+            this.calculationResult =
+              this.$store.state.product.project.referencePrice;
+            this.profitForm.list[index].selling_price_rmb =
+              this.calculationResult.selling_price_rmb;
+            this.profitForm.list[index].reference_price =
+              this.calculationResult.reference_price;
+        } catch (err) {
+         if(err.message === '45035') {
+            this.isNegativeProfit = true;
           }
-        });
-        this.calculationResult =
-          this.$store.state.product.project.referencePrice;
-        this.profitForm.list[index].selling_price_rmb =
-          this.calculationResult.selling_price_rmb;
-        this.profitForm.list[index].reference_price =
-          this.calculationResult.reference_price;
-      } catch (err) {
-        return;
+          if(err.message === '45036') {
+            this.isNegativeReference = true;
+          }
+          return;
+        } 
+      } else {
+         this.profitForm.list[index].selling_price_rmb = '';
+         this.profitForm.list[index].reference_price = '';
       }
     },
     async updateProfitCalculationCoefficient() {
@@ -515,15 +505,31 @@ export default {
       }
     },
     changeMarket(val) {
-      this.getRate(val);
-      for (let key in this.profitForm.list) {
-        this.profitForm.list[key].platform = null;
+      if(val) {
+        this.getRate(val);
+        this.clearMarket();
       }
+    },
+    clearMarket() {
+       for (let key in this.profitForm.list) {
+          this.profitForm.list[key].platform = null;
+          this.profitForm.list[key].selling_price = '';
+          this.profitForm.list[key].selling_price_rmb = '';
+          this.profitForm.list[key].reference_price = '';
+        }
     },
     clearMoney(index) {
       this.profitForm.list[index].selling_price = '';
       this.profitForm.list[index].selling_price_rmb = '';
+      this.profitForm.list[index].reference_price = '';
     }
   }
 };
 </script>
+
+<style scoped>
+.profit-msg {
+  margin: 0 0 15px 110px;
+  color: red;
+}
+</style>
