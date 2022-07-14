@@ -210,6 +210,7 @@ export default {
           item.actual_finish_time = formatterTime(item.actual_finish_time);
         });
       } catch (err) {
+        this.$store.commit('sample/setListLoading', false);
         return;
       }
     },
