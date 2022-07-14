@@ -293,6 +293,8 @@ export default {
     this.getProductBase();
     if (this.$store.state.entry !== 'workbench') {
       this.$store.commit('setActiveTab', 'basic');
+    } else {
+      this.getProductDetail();
     }
     this.getRequest(this.$store.state.activeTab);
   },
@@ -305,6 +307,7 @@ export default {
           }
         });
         this.productBase = this.$store.state.product.productBase;
+        localStorage.setItem('postion')
         if (this.productBase.state === 90) {
           this.mode = 'info';
         } else if (this.productBase.state === 80) {
