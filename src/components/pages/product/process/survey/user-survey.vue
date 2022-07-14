@@ -761,6 +761,7 @@ export default {
         this.getList();
         this.addItem.length = 0;
       } catch (err) {
+        this.addItem.length = 0;
         return;
       }
     },
