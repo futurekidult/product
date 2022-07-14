@@ -90,7 +90,7 @@ export default {
   data() {
     return {
       demandDetail: {},
-      show: false
+      show: true
     };
   },
   created() {
