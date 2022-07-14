@@ -53,7 +53,7 @@
       >
         <template #default="scope">
           <div style="display: flex">
-            <div v-if="JSON.stringify(scope.row.test_result_file) !== '{}'">
+            <div v-if="JSON.stringify(scope.row.test_result_file) !== '{}' && scope.row.test_result_file.type === 12860">
               <el-button
                 type="text"
                 @click="showViewFile(scope.row.test_result_file.id)"
@@ -62,7 +62,10 @@
               </el-button>
             </div>
             <div v-if="scope.row.button_state.is_upload === 1">
-              <span class="table-btn">|</span>
+              <span 
+                v-if=" scope.row.test_result_file.type === 12860"
+                class="table-btn"
+              >|</span>
               <el-button
                 type="text"
                 @click="

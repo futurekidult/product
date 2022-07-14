@@ -163,8 +163,8 @@
                 不通过
               </el-button>
               <el-button
-                type="primary"
-                style="background: #379f0d; border: 1px solid #379f0d"
+                v-if=" progress.state < 40"
+                type="success"
                 :disabled="buttonState.review_pass === 0"
                 @click="approvalPass"
               >
@@ -761,6 +761,7 @@ export default {
         this.getList();
         this.addItem.length = 0;
       } catch (err) {
+        this.addItem.length = 0;
         return;
       }
     },

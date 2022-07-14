@@ -46,6 +46,7 @@
               placeholder="请选择货币"
               clearable
               @clear="clearCurrency('quote')"
+              @change="changeQuoteCurrency('quote')"
             >
               <el-option
                 v-for="item in currency"
@@ -240,6 +241,7 @@
               placeholder="请选择货币"
               clearable
               @clear="clearCurrency('head')"
+              @change="changeCurrency('head')"
             >
               <el-option
                 v-for="item in currency"
@@ -290,6 +292,7 @@
               placeholder="请选择货币"
               clearable
               @clear="clearCurrency('tail')"
+              @change="changeCurrency('tail')"
             >
               <el-option
                 v-for="item in currency"
@@ -340,6 +343,7 @@
               placeholder="请选择货币"
               clearable
               @clear="clearCurrency('sea_freight')"
+              @change="changeCurrency('sea_freight')"
             >
               <el-option
                 v-for="item in currency"
@@ -629,7 +633,7 @@ export default {
       }
     },
     async getHighReason(val) {
-      if(this.quotationForm.quote_amount) {
+      if(this.quotationForm.quote_currency && this.quotationForm.quote_amount) {
         let params = {
           quote: val,
           product_id: this.productId,
@@ -773,7 +777,7 @@ export default {
       }
     },
     async getRmb(val) {
-      if(this.quotationForm[`${val}_cost`]){
+      if(this.quotationForm[`${val}_currency`] && this.quotationForm[`${val}_cost`]){
         try {
           await this.$store.dispatch('getPriceRmb', {
             params: {
@@ -788,6 +792,12 @@ export default {
           return;
         }
       }
+    },
+    changeQuoteCurrency(val) {
+      this.getHighReason(val);
+    },
+    changeCurrency(val) {
+      this.getRmb(val);
     },
     clearCurrency(val) {
       if (val === 'quote') {
