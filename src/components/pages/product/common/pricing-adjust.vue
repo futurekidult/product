@@ -74,9 +74,8 @@
               v-model="adjustForm.currency"
               class="analy-form_mar"
               placeholder="请选择货币"
-              :disabled="adjustMsg.state === 30"
+              :disabled="adjustMsg.state >= 20"
               clearable
-              @change="clearMoney"
             >
               <el-option
                 v-for="item in currency"
@@ -156,12 +155,6 @@ export default {
       visible: this.dialogVisible,
       adjustForm: this.adjustMsg.adjustment,
       adjustRules: {
-        currency: [
-          {
-            required: true,
-            message: '请选择货币'
-          }
-        ],
         adjusted_selling_price: [
           {
             required: true,
