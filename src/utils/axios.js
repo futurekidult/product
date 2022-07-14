@@ -32,7 +32,7 @@ http.interceptors.response.use(async (res) => {
         window.location.href = res.data.data.auth_url;
       }
     } else if (code === 403) {
-      ElMessage.error('no permission to access it');
+      ElMessage.error('无权限访问');
     } else if (code === 405) {  
           let { config } = res;
           if(!isRefreshing) {
@@ -74,7 +74,7 @@ const refreshToken = async () => {
 }
 
 const devLogin = async () => {
-  await http.get('/login?id=14').then((res) => {
+  await http.get('/login?id=12').then((res) => {
     return res.data;
   })
 }
