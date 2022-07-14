@@ -47,7 +47,7 @@ export default {
   },
   actions: {
     async getOrderList(context, payload) {
-      await axios.get('/order/part/list/', payload).then((res) => {
+      await axios.get('/order/part/list', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setOrderList', res.data.list);
           context.commit('setOrderLoading', false);
@@ -55,14 +55,14 @@ export default {
       });
     },
     async getProgress(context, payload) {
-      await axios.get('/order/detail/get/', payload).then((res) => {
+      await axios.get('/order/detail/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setProgress', res.data);
         }
       });
     },
     async getSku(context, payload) {
-      await axios.get('/order/sku/get/', payload).then((res) => {
+      await axios.get('/order/sku/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSku', res.data);
           context.commit('setSkuLoading', false);
@@ -70,7 +70,7 @@ export default {
       });
     },
     async getContract(context, payload) {
-      await axios.get('/order/contract/get/', payload).then((res) => {
+      await axios.get('/order/contract/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setContract', res.data);
           context.commit('setContractLoading', false);
@@ -88,7 +88,7 @@ export default {
     },
     async confirmPurchaseContract(_, payload) {
       await axios
-        .post('/order/purchase-contract/confirm/', payload)
+        .post('/order/purchase-contract/confirm', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -97,7 +97,7 @@ export default {
     },
     async getPreProduct(context, payload) {
       await axios
-        .get('/order/pre-production-sample/get/', payload)
+        .get('/order/pre-production-sample/get', payload)
         .then((res) => {
           if (res.code === 200) {
             context.commit('setPreProduct', res.data);
@@ -107,7 +107,7 @@ export default {
     },
     async followupSheet(_, payload) {
       await axios
-        .post('/order/follow-up-sheet/create/', payload)
+        .post('/order/follow-up-sheet/create', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -115,7 +115,7 @@ export default {
         });
     },
     async receiptSheet(_, payload) {
-      await axios.post('/order/goods-receipt/create/', payload).then((res) => {
+      await axios.post('/order/goods-receipt/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }
@@ -123,7 +123,7 @@ export default {
     },
     async confirmPreProduct(_, payload) {
       await axios
-        .post('/order/pre-production-sample/confirm/', payload)
+        .post('/order/pre-production-sample/confirm', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -131,14 +131,14 @@ export default {
         });
     },
     async completeSkuEntry(_, payload) {
-      await axios.post('/order/sku/entry/', payload).then((res) => {
+      await axios.post('/order/sku/entry', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }
       });
     },
     async submitSkuname(_, payload) {
-      await axios.post('/order/sku/name/', payload).then((res) => {
+      await axios.post('/order/sku/name', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }

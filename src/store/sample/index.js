@@ -79,7 +79,7 @@ export default {
   },
   actions: {
     async getSampleList(context, payload) {
-      await axios.get('/sample/all/list/', payload).then((res) => {
+      await axios.get('/sample/all/list', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSampleList', res.data.list);
           context.commit('setListLoading', false);
@@ -88,7 +88,7 @@ export default {
       });
     },
     async getSampleBase(context, payload) {
-      await axios.get('/sample/base/get/', payload).then((res) => {
+      await axios.get('/sample/base/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSampleBase', res.data);
           context.commit('setBaseLoading', false);
@@ -96,7 +96,7 @@ export default {
       });
     },
     async getSampleDetail(context, payload) {
-      await axios.get('/sample/detail/get/', payload).then((res) => {
+      await axios.get('/sample/detail/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSampleDetail', res.data);
           context.commit('setDetailLoading', false);
@@ -104,7 +104,7 @@ export default {
       });
     },
     async confirmTestResult(_, payload) {
-      await axios.post('/sample/result/confirm/', payload).then((res) => {
+      await axios.post('/sample/result/confirm', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }
@@ -112,7 +112,7 @@ export default {
     },
     async getProofingProgress(context, payload) {
       await axios
-        .get('/sample/proofing-sheet/schedule/', payload)
+        .get('/sample/proofing-sheet/schedule', payload)
         .then((res) => {
           if (res.code === 200) {
             context.commit('setProofingProgress', res.data);
@@ -123,7 +123,7 @@ export default {
     },
     async createProofingSheet(_, payload) {
       await axios
-        .post('/sample/proofing-sheet/create/', payload)
+        .post('/sample/proofing-sheet/create', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -131,7 +131,7 @@ export default {
         });
     },
     async getProofingSheet(context, payload) {
-      await axios.get('/sample/proofing-sheet/get/', payload).then((res) => {
+      await axios.get('/sample/proofing-sheet/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setProofingSheet', res.data);
         }
@@ -139,7 +139,7 @@ export default {
     },
     async approvalProofingSheet(_, payload) {
       await axios
-        .post('/sample/proofing-sheet/approval/', payload)
+        .post('/sample/proofing-sheet/approval', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -148,7 +148,7 @@ export default {
     },
     async updateProofingSheet(_, payload) {
       await axios
-        .post('/sample/proofing-sheet/update/', payload)
+        .post('/sample/proofing-sheet/update', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -164,14 +164,14 @@ export default {
       });
     },
     async getSampleMarketList(context, payload) {
-      await axios.get('/option/sample/market/list/', payload).then((res) => {
+      await axios.get('/option/sample/market/list', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSamplemarketList', res.data);
         }
       });
     },
     async createTestApply(_, payload) {
-      await axios.post('/sample/test-apply/create/', payload).then((res) => {
+      await axios.post('/sample/test-apply/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }
@@ -185,7 +185,7 @@ export default {
       });
     },
     async reviewTestApply(_, payload) {
-      await axios.post('/sample/test-apply/review/', payload).then((res) => {
+      await axios.post('/sample/test-apply/review', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }
@@ -193,7 +193,7 @@ export default {
     },
     async getQualitySpecialist(context, payload) {
       await axios
-        .get('/sample/quality-specialist/get/', payload)
+        .get('/sample/quality-specialist/get', payload)
         .then((res) => {
           if (res.code === 200) {
             context.commit('setQualitySpecialist', res.data);
@@ -202,7 +202,7 @@ export default {
     },
     async updateQualitySpecialist(_, payload) {
       await axios
-        .post('/sample/quality-specialist/update/', payload)
+        .post('/sample/quality-specialist/update', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
