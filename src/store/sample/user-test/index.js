@@ -52,7 +52,7 @@ export default {
   actions: {
     async createTestApply(_, payload) {
       await axios
-        .post('/sample/user-test/apply/create/', payload)
+        .post('/sample/user-test/apply/create', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -60,7 +60,7 @@ export default {
         });
     },
     async getUserTest(context, payload) {
-      await axios.get('/sample/user-test/get/', payload).then((res) => {
+      await axios.get('/sample/user-test/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setUserTest', res.data);
           context.commit('setUserLoading', false);
@@ -69,7 +69,7 @@ export default {
     },
     async confirmTestResult(_, payload) {
       await axios
-        .post('/sample/user-test/result/confirm/', payload)
+        .post('/sample/user-test/result/confirm', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -78,7 +78,7 @@ export default {
     },
     async getUserTestApply(context, payload) {
       await axios
-        .get('/sample/user-test/apply/review/get/', payload)
+        .get('/sample/user-test/apply/review/get', payload)
         .then((res) => {
           if (res.code === 200) {
             context.commit('setApplyDetail', res.data);
@@ -87,7 +87,7 @@ export default {
         });
     },
     async viewUserTestApply(context, payload) {
-      await axios.get('/sample/user-test/apply/get/', payload).then((res) => {
+      await axios.get('/sample/user-test/apply/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setViewApplyDetail', res.data);
           context.state.viewLoading = false;
@@ -96,7 +96,7 @@ export default {
     },
     async reviewTestApply(_, payload) {
       await axios
-        .post('/sample/user-test/apply/review/', payload)
+        .post('/sample/user-test/apply/review', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -105,7 +105,7 @@ export default {
     },
     async getSpecialist(context, payload) {
       await axios
-        .get('/sample/user-survey-specialist/get/', payload)
+        .get('/sample/user-survey-specialist/get', payload)
         .then((res) => {
           if (res.code === 200) {
             context.commit('setSpecialist', res.data);
@@ -115,7 +115,7 @@ export default {
     },
     async updateSpecialist(_, payload) {
       await axios
-        .post('/sample/user-survey-specialist/update/', payload)
+        .post('/sample/user-survey-specialist/update', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -124,7 +124,7 @@ export default {
     },
     async getTemplate(context, payload) {
       await axios
-        .get('/sample/user-test/apply/template/get/', payload)
+        .get('/sample/user-test/apply/template/get', payload)
         .then((res) => {
           if (res.code === 200) {
             context.commit('setTemplateFile', res.data);
@@ -133,7 +133,7 @@ export default {
     },
     async createTemplate(_, payload) {
       await axios
-        .post('/sample/user-test/apply/template/submit/', payload)
+        .post('/sample/user-test/apply/template/submit', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -142,7 +142,7 @@ export default {
     },
     async createUserTest(_, payload) {
       await axios
-        .post('/sample/user-test/user/create/', payload)
+        .post('/sample/user-test/user/create', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -150,7 +150,7 @@ export default {
         });
     },
     async getUserList(context, payload) {
-      await axios.get('/sample/user-test/user/list/', payload).then((res) => {
+      await axios.get('/sample/user-test/user/list', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setUserList', res.data.list);
           context.state.total = res.data.total;
@@ -159,7 +159,7 @@ export default {
     },
     async deliverSample(_, payload) {
       await axios
-        .post('/sample/user-test/is-delivered/create/', payload)
+        .post('/sample/user-test/is-delivered/create', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -168,7 +168,7 @@ export default {
     },
     async uploadFile(_, payload) {
       await axios
-        .post('/sample/user-test/user/result/create/', payload)
+        .post('/sample/user-test/user/result/create', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -176,7 +176,7 @@ export default {
         });
     },
     async getSimpleUserDetail(context, payload) {
-      await axios.get('/sample/user-test/user/get/', payload).then((res) => {
+      await axios.get('/sample/user-test/user/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSimpleUserDetail', res.data);
         } 
@@ -184,7 +184,7 @@ export default {
     },
     async getTestQuestion(context, payload) {
       await axios
-        .get('/sample/user-test/problem/list/', payload)
+        .get('/sample/user-test/problem/list', payload)
         .then((res) => {
           if (res.code === 200) {
             context.commit('setTestQuestions', res.data);
@@ -193,7 +193,7 @@ export default {
     },
     async createTestQuestion(_, payload) {
       await axios
-        .post('/sample/user-test/problem/create/', payload)
+        .post('/sample/user-test/problem/create', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -202,7 +202,7 @@ export default {
     },
     async updateTestQuestion(_, payload) {
       await axios
-        .post('/sample/user-test/problem/update/', payload)
+        .post('/sample/user-test/problem/update', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -211,7 +211,7 @@ export default {
     },
     async submitTestResult(_, payload) {
       await axios
-        .post('/sample/user-test/result/submit/', payload)
+        .post('/sample/user-test/result/submit', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -219,7 +219,7 @@ export default {
         });
     },
     async recordTestProblem(_, payload) {
-      await axios.post('/sample/user-test/problem/record/', payload).then((res) => {
+      await axios.post('/sample/user-test/problem/record', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success('记录的问题可在产品详情页查看');
         }

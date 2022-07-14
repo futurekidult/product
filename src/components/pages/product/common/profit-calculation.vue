@@ -36,7 +36,7 @@
               type="text"
               @click="showPricingList(scope.row.market)"
             >
-              申请记录
+              记录
             </el-button>
             <span class="table-btn">|</span>
             <el-button

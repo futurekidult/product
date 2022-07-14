@@ -60,7 +60,7 @@ export default {
   },
   actions: {
     async getMouldList(context, payload) {
-      await axios.get('/mould/all/list/', payload).then((res) => {
+      await axios.get('/mould/all/list', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setMouldList', res.data.list);
           context.commit('setListLoading', false);
@@ -69,14 +69,14 @@ export default {
       });
     },
     async createMould(_, payload) {
-      await axios.post('/mould/detail/create/', payload).then((res) => {
+      await axios.post('/mould/detail/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }
       });
     },
     async getMould(context, payload) {
-      await axios.get('/mould/detail/get/', payload).then((res) => {
+      await axios.get('/mould/detail/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setMould', res.data);
           context.commit('setMouldLoading', false);
@@ -84,7 +84,7 @@ export default {
       });
     },
     async getProductDesign(context, payload) {
-      await axios.get('/mould/product-design/get/', payload).then((res) => {
+      await axios.get('/mould/product-design/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setDesignProgress', res.data);
           context.commit('setDesignLoading', false);
@@ -92,14 +92,14 @@ export default {
       });
     },
     async createProductDesign(_, payload) {
-      await axios.post('/mould/product-design/create/', payload).then((res) => {
+      await axios.post('/mould/product-design/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }
       });
     },
     async getPrototype(context, payload) {
-      await axios.get('/mould/prototype/get/', payload).then((res) => {
+      await axios.get('/mould/prototype/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setPrototypeProgress', res.data);
           context.commit('setPrototypeLoading', false);
@@ -107,21 +107,21 @@ export default {
       });
     },
     async createPrototype(_, payload) {
-      await axios.post('/mould/prototype/update/', payload).then((res) => {
+      await axios.post('/mould/prototype/update', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }
       });
     },
     async approvalPrototype(_, payload) {
-      await axios.post('/mould/prototype/approval/', payload).then((res) => {
+      await axios.post('/mould/prototype/approval', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }
       });
     },
     async getMakingMould(context, payload) {
-      await axios.get('/mould/making/get/', payload).then((res) => {
+      await axios.get('/mould/making/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setMakingMould', res.data);
           context.commit('setMakingMouldLoading', false);
@@ -129,28 +129,28 @@ export default {
       });
     },
     async createMakingMould(_, payload) {
-      await axios.post('/mould/making/create/', payload).then((res) => {
+      await axios.post('/mould/making/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }
       });
     },
     async updateMakingMould(_, payload) {
-      await axios.post('/mould/making/update/', payload).then((res) => {
+      await axios.post('/mould/making/update', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }
       });
     },
     async approvalMakingMould(_, payload) {
-      await axios.post('/mould/making/approval/', payload).then((res) => {
+      await axios.post('/mould/making/approval', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }
       });
     },
     async getTestingMould(context, payload) {
-      await axios.get('/mould/testing/get/', payload).then((res) => {
+      await axios.get('/mould/testing/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setTestingMould', res.data);
           context.commit('setTestingMouldLoading', false);
@@ -158,14 +158,14 @@ export default {
       });
     },
     async approvalTestingMould(_, payload) {
-      await axios.post('/mould/testing/approval/', payload).then((res) => {
+      await axios.post('/mould/testing/approval', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }
       });
     },
     async confirmTestingMould(_, payload) {
-      await axios.post('/mould/testing/confirm/', payload).then((res) => {
+      await axios.post('/mould/testing/confirm', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }

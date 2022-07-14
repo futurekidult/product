@@ -94,7 +94,7 @@ const store = createStore({
       });
     },
     async getPlatform(context, payload) {
-      await axios.get('/option/pricing/platform/list/', payload).then((res) => {
+      await axios.get('/option/pricing/platform/list', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setPlatform', res.data.list);
         }

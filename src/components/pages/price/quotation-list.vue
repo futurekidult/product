@@ -401,7 +401,7 @@
     width="20%"
   >
     <div class="form-desc">
-      存在低于该报价的平台对应采购目标，确认提交该报价吗
+      存有平台的对应采购目标价 &lt; 此次报价，确认提交该报价吗
     </div>
     <div style="text-align: center; margin: 40px 0 0 0">
       <el-button
