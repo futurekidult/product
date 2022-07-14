@@ -161,6 +161,7 @@
             :props="props"
             placeholder="请选择公司地址"
             clearable
+            filterable
             :disabled="isDisabled"
             style="width: 100%"
             @change="clearAddress(index)"
@@ -194,6 +195,7 @@
             :props="props"
             placeholder="请输入出货地址"
             clearable
+            filterable
             :disabled="isDisabled"
             style="width: 100%"
           />
