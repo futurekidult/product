@@ -130,7 +130,7 @@
     </el-table>
 
     <base-pagination
-      :length="$store.state.mould.mouldListLength"
+      :length="$store.state.product.selectedMouldListLength"
       :get-list="getAllMouldList"
     />
 
@@ -171,12 +171,11 @@ export default {
     async getAllMouldList(currentPage = 1, pageSize = 10) {
       let params = {
         page_size: pageSize,
-        current_page: currentPage,
-        state: 40
+        current_page: currentPage
       };
       try {
-        await this.$store.dispatch('mould/getMouldList', { params });
-        this.allMouldList = this.$store.state.mould.mouldList;
+        await this.$store.dispatch('product/getSelectedMouldList', { params });
+        this.allMouldList = this.$store.state.product.selectedMouldList;
         this.allMouldList.forEach((item) => {
           changeTimestamp(item, 'create_time');
         });

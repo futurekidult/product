@@ -38,7 +38,9 @@ export default {
       packageLoading: true,
       memberListLength: 0,
       productListLength: 0,
-      mouldListLength: 0
+      mouldListLength: 0,
+      selectedMouldList: [],
+      selectedMouldListLength: 0
     };
   },
   mutations: {
@@ -98,6 +100,9 @@ export default {
     },
     setListLoading(state, payload) {
       state.listLoading = payload;
+    },
+    setSelectedMouldList(state, payload) {
+      state.selectedMouldList = payload;
     }
   },
   actions: {
@@ -268,6 +273,14 @@ export default {
           ElMessage.success(res.message);
         }
       });
+    },
+    async getSelectedMouldList(context, payload) {
+      await axios.get('/mould/complete/list', payload).then((res) => {
+        if(res.code === 200) {
+          context.commit('setSelectedMouldList', res.data.list);
+          context.state.selectedMouldListLength = res.data.total;
+        }
+      })
     }
   }
 };
