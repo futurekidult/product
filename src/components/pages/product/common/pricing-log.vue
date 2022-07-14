@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="visible"
-    title="调价记录"
+    title="记录"
     width="30%"
     @close="cancel"
   >
