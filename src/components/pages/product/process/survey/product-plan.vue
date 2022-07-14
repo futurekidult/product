@@ -98,8 +98,14 @@
         />
       </el-form-item>
       <competitive-table :product-form="form" />
-      <el-collapse class="collapse-item">
-        <el-collapse-item title="新品信息">
+      <el-collapse 
+        v-model="activeCollapse"
+        class="collapse-item"
+      >
+        <el-collapse-item 
+          title="新品信息"
+          name="open"
+        >
           <div class="analy-form_item form-item_width">
             <el-form-item
               label="内箱尺寸/cm"
@@ -546,7 +552,8 @@ export default {
       currency: [],
       file: this.attachment,
       form: this.productForm,
-      isScenarioVisible: this.isScenarioVisible
+      isScenarioVisible: this.isScenarioVisible,
+      activeCollapse: 'open'
     };
   },
   computed: {
