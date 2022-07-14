@@ -136,6 +136,7 @@
             v-model="item.country_id"
             :disabled="isDisabled"
             clearable
+            filterable
             placeholder="请选择国家"
             @focus="getCountryList"
             @change="clearStateCity(index)"
@@ -156,6 +157,7 @@
             v-model="item.region_id"
             :disabled="isDisabled"
             clearable
+            filterable
             placeholder="请选择州/大区"
             @focus="getRegionList(item.country_id)"
           >
@@ -175,6 +177,7 @@
             v-model="item.city_id"
             :disabled="isDisabled"
             clearable
+            filterable
             placeholder="请选择城市"
             @focus="getCityList(item.country_id, item.region_id)"
           >
