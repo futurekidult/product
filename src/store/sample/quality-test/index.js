@@ -23,7 +23,7 @@ export default {
   },
   actions: {
     async getQualityDetail(context, payload) {
-      await axios.get('/sample/quality-test/get/', payload).then((res) => {
+      await axios.get('/sample/quality-test/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setQualityDetail', res.data);
           context.commit('setQualityLoading', false);
@@ -32,7 +32,7 @@ export default {
     },
     async getTestQuestion(context, payload) {
       await axios
-        .get('sample/quality-test/problem/list/', payload)
+        .get('sample/quality-test/problem/list', payload)
         .then((res) => {
           if (res.code === 200) {
             context.commit('setTestQuestion', res.data);
@@ -41,7 +41,7 @@ export default {
     },
     async confirmTestResult(_, payload) {
       await axios
-        .post('/sample/quality-test/result/confirm/', payload)
+        .post('/sample/quality-test/result/confirm', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -50,7 +50,7 @@ export default {
     },
     async createTestQuestion(_, payload) {
       await axios
-        .post('/sample/quality-test/problem/create/', payload)
+        .post('/sample/quality-test/problem/create', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -59,7 +59,7 @@ export default {
     },
     async updateTestQuestion(_, payload) {
       await axios
-        .post('/sample/quality-test/problem/update/', payload)
+        .post('/sample/quality-test/problem/update', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -68,7 +68,7 @@ export default {
     },
     async submitTestResult(_, payload) {
       await axios
-        .post('/sample/quality-test/result/submit/', payload)
+        .post('/sample/quality-test/result/submit', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -76,7 +76,7 @@ export default {
         });
     },
     async recordTestProblem(_, payload) {
-      await axios.post('/sample/agency-test/problem/record/', payload).then((res) => {
+      await axios.post('/sample/agency-test/problem/record', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success('记录的问题可在产品详情页查看');
         }

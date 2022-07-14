@@ -184,7 +184,7 @@ export default {
       });
     },
     async getMouldList(context, payload) {
-      await axios.get('/product/mould/list/', payload).then((res) => {
+      await axios.get('/product/mould/list', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setMouldList', res.data.list);
           context.commit('setMouldLoading', false);
@@ -194,7 +194,7 @@ export default {
     },
     async createMould(_, payload) {
       await axios
-        .post('/product/mould/relation/create/', payload)
+        .post('/product/mould/relation/create', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -203,7 +203,7 @@ export default {
     },
     async deleteMould(_, payload) {
       await axios
-        .post('/product/mould/relation/delete/', payload)
+        .post('/product/mould/relation/delete', payload)
         .then((res) => {
           if (res.code === 200) {
             ElMessage.success(res.message);
@@ -211,7 +211,7 @@ export default {
         });
     },
     async getSampleList(context, payload) {
-      await axios.get('/sample/part/list/', payload).then((res) => {
+      await axios.get('/sample/part/list', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSampleList', res.data.list);
           context.commit('setSampleLoading', false);
@@ -219,7 +219,7 @@ export default {
       });
     },
     async getQuestionList(context, payload) {
-      await axios.get('/product/test-problem/list/', payload).then((res) => {
+      await axios.get('/product/test-problem/list', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setQuestionList', res.data.list);
           context.commit('setQuestionLoading', false);
@@ -227,7 +227,7 @@ export default {
       });
     },
     async submitQuestionResult(_, payload) {
-      await axios.post('/product/test-problem/result/', payload).then((res) => {
+      await axios.post('/product/test-problem/result', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }
@@ -241,7 +241,7 @@ export default {
       });
     },
     async getPackageList(context, payload) {
-      await axios.get('/package/part/list/', payload).then((res) => {
+      await axios.get('/package/part/list', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setPackageList', res.data.list);
           context.commit('setPackageLoading', false);
@@ -249,14 +249,14 @@ export default {
       });
     },
     async confirmPackageResult(_, payload) {
-      await axios.post('/package/result/confirm/', payload).then((res) => {
+      await axios.post('/package/result/confirm', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }
       });
     },
     async createPackageResult(_, payload) {
-      await axios.post('/package/result/create/', payload).then((res) => {
+      await axios.post('/package/result/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }
