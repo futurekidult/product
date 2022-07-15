@@ -614,7 +614,8 @@ export default {
         small_category_id: [
           {
             required: true,
-            message: '请选择小品类'
+            message: '请选择小品类',
+            trigger: 'blur'
           }
         ],
         brand: [
@@ -665,7 +666,8 @@ export default {
         purchase_price: [
           {
             required: true,
-            message: '请输入销售价'
+            message: '请输入销售价',
+            trigger: 'blur'
           }
         ],
         selling_price_currency: [
@@ -677,7 +679,8 @@ export default {
         selling_price: [
           {
             required: true,
-            message: '请输入采购价'
+            message: '请输入采购价',
+             trigger: 'blur'
           }
         ],
         selling_point: [

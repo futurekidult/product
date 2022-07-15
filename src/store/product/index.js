@@ -128,11 +128,6 @@ export default {
         if (res.code === 200) {
           context.commit('setProductDetail', res.data);
           context.commit('setDetailLoading', false);
-          let position = {
-            is_new_category: res.data.is_new_category,
-            is_new_product: res.data.is_new_product
-          };
-          localStorage.setItem('position', JSON.stringify(position));
         }
       });
     },

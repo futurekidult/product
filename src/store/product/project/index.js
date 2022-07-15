@@ -17,7 +17,8 @@ export default {
       marketList: [],
       referencePrice: {},
       rate: '',
-      profitParams: {}
+      profitParams: {},
+      currencyList: []
     };
   },
   mutations: {
@@ -59,6 +60,9 @@ export default {
     },
     setProfitParams(state, payload) {
       state.profitParams = payload;
+    },
+    setCurrencyList(state, payload) {
+      state.currencyList = payload;
     }
   },
   actions: {
@@ -255,6 +259,13 @@ export default {
           ElMessage.success(res.message);
         }
       });
+    },
+    async getCurrencyList(context, payload) {
+      await axios.get('/option/currency/list', payload).then((res) => {
+        if(res.code === 200) {
+          context.commit('setCurrencyList', res.data.list);
+        }
+      })
     }
   }
 };

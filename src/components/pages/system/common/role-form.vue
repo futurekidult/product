@@ -38,6 +38,7 @@
           :data="privilegeList"
           multiple
           clearable
+          collapse-tags
           check-strictly
           :props="defaultProps"
         />
