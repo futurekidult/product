@@ -307,7 +307,6 @@ export default {
           }
         });
         this.productBase = this.$store.state.product.productBase;
-        localStorage.setItem('postion')
         if (this.productBase.state === 90) {
           this.mode = 'info';
         } else if (this.productBase.state === 80) {
@@ -329,6 +328,16 @@ export default {
         });
         this.productForm = this.$store.state.product.productDetail;
         this.productAttachment = this.productForm.images;
+        let val = String(this.productForm.is_new_category) + String(this.productForm.is_new_product);
+        if (val === '11') {
+          this.isNewCategoryProduct = true;
+          this.isNewCategory = true;
+          this.isNewProduct = true;
+        } else if (val === '10') {
+          this.isNewCategory = true;
+        } else if (val === '01') {
+          this.isNewProduct = true;
+        }
       } catch (err) {
         this.$store.commit('product/setDetailLoading', false);
         return;
@@ -575,19 +584,6 @@ export default {
         return;
       }
     },
-    getState() {
-      let state = JSON.parse(localStorage.getItem('position'));
-      let val = String(state.is_new_category) + String(state.is_new_product);
-      if (val === '11') {
-        this.isNewCategoryProduct = true;
-        this.isNewCategory = true;
-        this.isNewProduct = true;
-      } else if (val === '10') {
-        this.isNewCategory = true;
-      } else if (val === '01') {
-        this.isNewProduct = true;
-      }
-    },
     changeCellColor(val) {
       if (val <= 20) {
         return 'result-ing';
@@ -640,7 +636,6 @@ export default {
           break;
         case'survey':
           this.getPlatform(); 
-          this.getState();
           break;
         default:
       }

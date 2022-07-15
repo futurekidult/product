@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="$store.state.sample.detailLoading">
+  <div>
     <div class="border">
       <el-descriptions
         :title="sampleBase.product_name"
