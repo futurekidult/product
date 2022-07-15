@@ -65,7 +65,7 @@
       </el-form-item>
       <el-form-item>
         <div
-          v-for="img in productImages"
+          v-for="img in imgList"
           :key="img.id"
           class="attachment-list"
         >
@@ -559,7 +559,8 @@ export default {
       viewImgDialog: false,
       imgLink: '',
       file: this.attachment,
-      form: this.surveyForm
+      form: this.surveyForm,
+      imgList: this.productImages
     };
   },
   computed: {
@@ -607,7 +608,7 @@ export default {
     },
     async handleImgSuccess(e) {
       if(e.file.type.indexOf('image') > -1) {
-        if (this.productImages.length > 8) {
+        if (this.imgList.length > 8) {
           this.$message.error('产品图片不能传超过9张');
         } else {
           this.$store.commit('setUploadState', false);
@@ -616,7 +617,7 @@ export default {
             await this.$store.dispatch('uploadFile', form);
             if (this.$store.state.uploadState) {
               this.res = this.$store.state.fileRes;
-              this.productImages.push({
+              this.imgList.push({
                 id: this.res.id,
                 name: this.res.file_name,
                 type: this.res.type
@@ -642,7 +643,7 @@ export default {
               name: this.$store.state.fileRes.file_name,
               type: this.$store.state.fileRes.type
             };
-            this.marketForm.attachment = this.file.id;
+            this.form.attachment = this.file.id;
           }
         } catch (err) {
           return;
@@ -667,8 +668,8 @@ export default {
       this.viewImgDialog = false;
     },
     deleteImg(id) {
-      this.productImages.splice(
-        this.productImages.findIndex((e) => {
+      this.imgList.splice(
+        this.imgList.findIndex((e) => {
           return e.id === id;
         }),
         1
@@ -681,7 +682,7 @@ export default {
     submitSurveyForm() {
       let form = JSON.parse(JSON.stringify(this.form));
       form.images = [];
-      this.productImages.forEach((item) => {
+      this.imgList.forEach((item) => {
         let { id } = item;
        form.images.push(id);
       });
