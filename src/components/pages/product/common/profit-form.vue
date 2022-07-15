@@ -104,6 +104,24 @@
           >
             <div class="form-template">
               <el-form-item
+                :prop="`list.${index}.currency`"
+                :rules="profitRules.currency"
+              >
+                <el-select 
+                  v-model="item.currency"
+                  clearable
+                  placeholder="请选择货币"
+                  :disabled="currency.length === 1"
+                >
+                  <el-option
+                    v-for="cur in currency"
+                    :key="cur.key"
+                    :label="cur.desc"
+                    :value="cur.key"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item
                 style="margin-left: 6px"
                 :prop="`list.${index}.selling_price`"
                 :rules="profitRules.selling_price"
@@ -280,7 +298,15 @@ export default {
         platform: [
           {
             required: true,
-            message: '请选择平台'
+            message: '请选择平台',
+            trigger: 'blur'
+          }
+        ],
+        currency: [
+          {
+            required: true,
+            message: '请选择货币',
+            trigger: 'blur'
           }
         ],
         selling_price: [
@@ -318,7 +344,8 @@ export default {
       calculationResult: {},
       profitParams: {},
       isNegativeProfit: false,
-      isNegativeReference: false
+      isNegativeReference: false,
+      currency: []
     };
   },
   computed: {
@@ -420,6 +447,11 @@ export default {
     },
     addRow() {
       this.profitForm.list.push({});
+      if(this.currency.length === 1) {
+          this.profitForm.list.forEach((item) => {
+            item.currency = this.currency[0].key;
+          })
+        }
     },
     deleteRow() {
       this.profitForm.list.pop();
@@ -504,15 +536,34 @@ export default {
         return;
       }
     },
+    async getCurrencyList(val) {
+      try {
+        await this.$store.dispatch('product/project/getCurrencyList', { 
+          params: {
+            market: val
+          }
+        });
+        this.currency = this.$store.state.product.project.currencyList;
+        if(this.currency.length === 1) {
+          this.profitForm.list.forEach((item) => {
+            item.currency = this.currency[0].key;
+          })
+        }
+      } catch (err) {
+        return ;
+      }
+    },
     changeMarket(val) {
       if(val) {
         this.getRate(val);
         this.clearMarket();
+        this.getCurrencyList(val);
       }
     },
     clearMarket() {
        for (let key in this.profitForm.list) {
-          this.profitForm.list[key].platform = null;
+          this.profitForm.list[key].currency = '';
+          this.profitForm.list[key].platform = '';
           this.profitForm.list[key].selling_price = '';
           this.profitForm.list[key].selling_price_rmb = '';
           this.profitForm.list[key].reference_price = '';

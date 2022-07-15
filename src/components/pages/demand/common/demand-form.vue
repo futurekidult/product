@@ -614,7 +614,8 @@ export default {
         small_category_id: [
           {
             required: true,
-            message: '请选择小品类'
+            message: '请选择小品类',
+            trigger: 'blur'
           }
         ],
         brand: [
