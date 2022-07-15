@@ -575,7 +575,6 @@ export default {
         }
     },
     clearMoney(index) {
-      this.profitForm.list[index].currency = '';
       this.profitForm.list[index].selling_price = '';
       this.profitForm.list[index].selling_price_rmb = '';
       this.profitForm.list[index].reference_price = '';
