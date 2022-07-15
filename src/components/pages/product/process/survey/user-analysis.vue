@@ -160,6 +160,7 @@
             filterable
             placeholder="请选择州/大区"
             @focus="getRegionList(item.country_id)"
+            @clear="clearCity(index)"
           >
             <el-option 
               v-for="region in regionOption"
@@ -415,6 +416,8 @@ export default {
 
   mounted() {
     this.getParams();
+    this.getCountryList();
+    this.getState();
   },
   methods: {
     checkValid,
@@ -451,25 +454,45 @@ export default {
       }
     },
     async getRegionList(val) {
-      try {
-        await this.$store.dispatch('getRegionList',{ params: { country_id: val }});
-        this.regionOption = this.$store.state.regionList;
-      } catch (err) {
-        return;
+      if(val) {
+        try {
+          await this.$store.dispatch('getRegionList',{ params: { country_id: val }});
+          this.regionOption = this.$store.state.regionList;
+        } catch (err) {
+          return;
+        }
+      } else {
+       this.$message.warning('请先选择国家');
+       this.regionOption = [];
       }
     },
   async getCityList(country, region) {
-    try {
-      await this.$store.dispatch('getCityList',{ 
-        params: { 
-          country_id: country,
-          state_id: region
-         }
-      });
-      this.cityOption = this.$store.state.cityList;
-      } catch (err) {
-        return;
+    if(country && region) {
+      try {
+        await this.$store.dispatch('getCityList',{ 
+          params: { 
+            country_id: country,
+            state_id: region
+          }
+        });
+        this.cityOption = this.$store.state.cityList;
+        } catch (err) {
+          return;
+        }
+      } else {
+        this.$message.warning('请先选择国家和州/大区');
+        this.cityOption = [];
       }
+    },
+    getState() {
+      this.form.country.forEach((item) => {
+        if(item.country_id) {
+          this.getRegionList(item.country_id);
+          if(item.region_id) {
+            this.getCityList(item.country_id, item.region_id);
+          }
+        }
+      });
     },
     async updateAnalysis(val) {
       let body = val;
@@ -567,6 +590,9 @@ export default {
     },
     clearStateCity(index) {
         this.form.country[index].region_id = null;
+        this.form.country[index].city_id = null;
+    },
+    clearCity(index) {
         this.form.country[index].city_id = null;
     }
   }
