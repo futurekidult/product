@@ -666,7 +666,8 @@ export default {
         purchase_price: [
           {
             required: true,
-            message: '请输入销售价'
+            message: '请输入销售价',
+            trigger: 'blur'
           }
         ],
         selling_price_currency: [
@@ -678,7 +679,8 @@ export default {
         selling_price: [
           {
             required: true,
-            message: '请输入采购价'
+            message: '请输入采购价',
+             trigger: 'blur'
           }
         ],
         selling_point: [

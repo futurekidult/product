@@ -79,7 +79,7 @@
               :disabled="isDisabled"
               clearable
               @clear="clearMoney(index)"
-              @change="getProfitParams(profitForm.market,profitForm.list[index].platform, profitForm.list[index].selling_price, index)"
+              @change="getProfitParams(profitForm.market,profitForm.list[index].platform,profitForm.list[index].currency, profitForm.list[index].selling_price, index)"
             >
               <el-option
                 v-for="platform in platformList"
@@ -111,7 +111,9 @@
                   v-model="item.currency"
                   clearable
                   placeholder="请选择货币"
-                  :disabled="currency.length === 1"
+                  :disabled="currency.length === 1 || type === 'view'"
+                  @clear="clearCurrency(index)"
+                  @change="changeCurrency(profitForm.market, item.platform, item.selling_price, index)"
                 >
                   <el-option
                     v-for="cur in currency"
@@ -131,10 +133,12 @@
                   placeholder="请输入金额"
                   :disabled="isDisabled"
                   clearable
+                  @clear="clearPrice(index)"
                   @change="
                     getPrice(
                       profitForm.market,
                       item.platform,
+                      item.currency,
                       item.selling_price, 
                       index
                     )
@@ -312,7 +316,8 @@ export default {
         selling_price: [
           {
             required: true,
-            message: '请输入金额'
+            message: '请输入金额',
+            trigger: 'blur'
           }
         ],
         operations_specialist_id: [
@@ -372,7 +377,7 @@ export default {
     this.getMarket();
   },
   methods: {
-    async getProfitParams(market, platform, price, index) {
+    async getProfitParams(market, platform, currency, price, index) {
       if(market && platform) {
         let params = {
           market,
@@ -384,7 +389,7 @@ export default {
             params
           });
           this.profitParams = this.$store.state.product.project.profitParams;
-          this.getPrice(market, platform, price, index);
+          this.getPrice(market, platform, currency, price, index);
         } catch (err) {
           return;
         }
@@ -401,6 +406,7 @@ export default {
         if (this.type !== 'add') { 
           this.getProfitCalculation();
           this.getRate(this.id);
+          this.getCurrencyList(this.id);
         }
       } catch (err) {
         return;
@@ -422,7 +428,7 @@ export default {
           }
         });
         this.profitForm.list.forEach((item, index) => {
-          this.getPrice(this.id, item.platform, item.selling_price, index);
+          this.getPrice(this.id, item.platform, item.currency, item.selling_price, index);
           this.getProfitParams(item.market, item.platform);
         })
       } catch (err) {
@@ -489,8 +495,8 @@ export default {
         }
       });
     },
-    async getPrice(market, platform, price, index) {
-      if(market && platform && price) {
+    async getPrice(market, platform, currency, price, index) {
+      if(market && platform && currency && price) {
           try {
             await this.$store.dispatch('product/project/getReferencePrice', {
               params: {
@@ -515,9 +521,6 @@ export default {
           }
           return;
         } 
-      } else {
-         this.profitForm.list[index].selling_price_rmb = '';
-         this.profitForm.list[index].reference_price = '';
       }
     },
     async updateProfitCalculationCoefficient() {
@@ -537,20 +540,22 @@ export default {
       }
     },
     async getCurrencyList(val) {
-      try {
-        await this.$store.dispatch('product/project/getCurrencyList', { 
-          params: {
-            market: val
+      if(val) {
+        try {
+          await this.$store.dispatch('product/project/getCurrencyList', { 
+            params: {
+              market: val
+            }
+          });
+          this.currency = this.$store.state.product.project.currencyList;
+          if(this.currency.length === 1) {
+            this.profitForm.list.forEach((item) => {
+              item.currency = this.currency[0].key;
+            })
           }
-        });
-        this.currency = this.$store.state.product.project.currencyList;
-        if(this.currency.length === 1) {
-          this.profitForm.list.forEach((item) => {
-            item.currency = this.currency[0].key;
-          })
+        } catch (err) {
+          return ;
         }
-      } catch (err) {
-        return ;
       }
     },
     changeMarket(val) {
@@ -570,6 +575,19 @@ export default {
         }
     },
     clearMoney(index) {
+      this.profitForm.list[index].currency = '';
+      this.profitForm.list[index].selling_price = '';
+      this.profitForm.list[index].selling_price_rmb = '';
+      this.profitForm.list[index].reference_price = '';
+    },
+    clearPrice(index) {
+      this.profitForm.list[index].selling_price_rmb = '';
+      this.profitForm.list[index].reference_price = '';
+    },
+    changeCurrency(market, platform, price, index) {
+      this.getPrice(market, platform, price, index);
+    },
+    clearCurrency(index) {
       this.profitForm.list[index].selling_price = '';
       this.profitForm.list[index].selling_price_rmb = '';
       this.profitForm.list[index].reference_price = '';
