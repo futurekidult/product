@@ -173,245 +173,274 @@
             </div>
           </div>
         </div>
-        <el-table
-          border
-          stripe
-          empty-text="无数据"
-          :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-          :data="planList"
+        <el-form 
+          ref="form"
+          :model="form" 
+          :rules="form.rules"
         >
-          <el-table-column
-            label="序号"
-            width="60px"
-            type="index"
-          />
-          <el-table-column
-            label="事项"
-            width="200px"
+          <el-table 
+            border
+            stripe
+            empty-text="无数据"
+            :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+            :data="form.planList"
           >
-            <template #default="scope">
-              <el-select
-                v-if="(progress.state === 10 || progress.state === 30) || (progress.state ===40 && !scope.row.id)"
-                v-model="scope.row.proceeding"
-                placeholder="请选择"
-                clearable
-                @clear="clearDetail(scope.row.proceeding)"
-              >
-                <el-option
-                  v-for="item in planOptions"
-                  :key="item.key"
-                  :label="item.value"
-                  :value="item.key"
-                />
-              </el-select>
-              <span v-else>{{ scope.row.proceeding_desc }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="细节内容"
-            width="300px"
-          >
-            <template #default="scope">
-              <el-select
-                v-if="(progress.state === 10 || progress.state === 30) || (progress.state ===40 && !scope.row.id)"
-                v-model="scope.row.detail"
-                placeholder="请选择"
-                clearable
-              >
-                <el-option
-                  v-for="item in detailOptions[Number(scope.row.proceeding)].children"
-                  :key="item.key"
-                  :label="item.value"
-                  :value="item.key"
-                />
-              </el-select>
-              <span v-else>{{ scope.row.detail_desc }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="执行人"
-            width="100px"
-          >
-            <template #default="scope">
-              <el-tree-select
-                v-if="(progress.state === 10 || progress.state === 30) || (progress.state ===40 && !scope.row.id)"
-                v-model="scope.row.operator_id"
-                :data="memberList"
-                clearable
-                filterable
-                :props="defaultProps"
-              />
-              <span v-else>{{ scope.row.operator_desc }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="计划完成时间"
-            width="250px"
-          >
-            <template #default="scope">
-              <el-date-picker
-                v-if="(progress.state === 10 || progress.state === 30) || (progress.state ===40 && !scope.row.id)"
-                v-model="scope.row.estimated_finish_time"
-                type="datetime"
-                placeholder="请选择时间"
-                :default-time="defaultTime"
-              />
-              <span v-else>{{ scope.row.estimated_finish_time }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="实际完成时间"
-            width="200px"
-            prop="actual_finish_time"
-          />
-          <el-table-column label="状态">
-            <template #default="scope">
-              <div :class="changeTableCellColor(scope.row.state)">
-                {{ scope.row.state_desc }}
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="结果附件"
-            width="150px"
-          >
-            <template 
-              v-if="progress.state >= 40"
-              #default="scope"
+            <el-table-column
+              label="序号"
+              width="60px"
+              type="index"
+            />
+            <el-table-column
+              label="事项"
+              width="200px"
             >
-              <div
-                v-if="
-                  scope.row.has_approval_process === 1 ||
-                    scope.row.proceeding === 1
-                "
-                style="display: flex"
+              <template #default="scope">
+                <el-form-item 
+                  v-if="(progress.state === 10 || progress.state === 30) || (progress.state ===40 && !scope.row.id)"
+                  :prop="'planList.' + scope.$index + '.proceeding'" 
+                  :rules="form.rules.proceeding"
+                >
+                  <el-select
+                    v-model="scope.row.proceeding"
+                    placeholder="请选择"
+                    clearable
+                    @clear="clearDetail(scope.row.proceeding)"
+                  >
+                    <el-option
+                      v-for="item in planOptions"
+                      :key="item.key"
+                      :label="item.value"
+                      :value="item.key"
+                      :disabled="item.disabled"
+                    />
+                  </el-select>
+                </el-form-item>
+                <span v-else>{{ scope.row.proceeding_desc }}</span>
+              </template> 
+            </el-table-column>
+            <el-table-column
+              label="细节内容"
+              width="300px"
+            >
+              <template #default="scope">
+                <el-form-item
+                  v-if="(progress.state === 10 || progress.state === 30) || (progress.state ===40 && !scope.row.id)"
+                  :prop="'planList.' + scope.$index + '.detail'" 
+                  :rules="form.rules.detail"
+                >
+                  <el-select
+                    v-model="scope.row.detail"
+                    placeholder="请选择"
+                    clearable
+                    @focus="selectProceeding(scope.row.proceeding)"
+                  >
+                    <el-option
+                      v-for="item in detailOptions[Number(scope.row.proceeding)].children"
+                      :key="item.key"
+                      :label="item.value"
+                      :value="item.key"
+                    />
+                  </el-select>
+                </el-form-item>
+                <span v-else>{{ scope.row.detail_desc }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="执行人"
+              width="100px"
+            >
+              <template #default="scope">
+                <el-form-item
+                  v-if="(progress.state === 10 || progress.state === 30) || (progress.state ===40 && !scope.row.id)"
+                  :prop="'planList.' + scope.$index + '.operator_id'" 
+                  :rules="form.rules.operator_id"
+                >
+                  <el-tree-select
+                    v-model="scope.row.operator_id"
+                    :data="memberList"
+                    clearable
+                    filterable
+                    :props="defaultProps"
+                  />
+                </el-form-item>
+                <span v-else>{{ scope.row.operator_desc }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="计划完成时间"
+              width="250px"
+            >
+              <template #default="scope">
+                <el-form-item
+                  v-if="(progress.state === 10 || progress.state === 30) || (progress.state ===40 && !scope.row.id)"
+                  :prop="'planList.' + scope.$index + '.estimated_finish_time'" 
+                  :rules="form.rules.estimated_finish_time"
+                >
+                  <el-date-picker
+                    v-model="scope.row.estimated_finish_time"
+                    type="datetime"
+                    placeholder="请选择时间"
+                    :default-time="defaultTime"
+                  />
+                </el-form-item>
+                <span v-else>{{ scope.row.estimated_finish_time }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="实际完成时间"
+              width="200px"
+              prop="actual_finish_time"
+            />
+            <el-table-column label="状态">
+              <template #default="scope">
+                <div :class="changeTableCellColor(scope.row.state)">
+                  {{ scope.row.state_desc }}
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="结果附件"
+              width="150px"
+            >
+              <template 
+                v-if="progress.state >= 40"
+                #default="scope"
               >
-                <div v-if="JSON.stringify(scope.row.attachment) === '{}'">
-                  <el-upload
-                    action
-                    :show-file-list="false"
-                    :http-request="
-                      (e) => handleFileSuccess(e, scope.row.attachment, scope.row.id)
-                    "
-                  >
-                    <el-button type="text">
-                      上传
-                    </el-button>
-                  </el-upload>
-                </div>
-                <div v-if="(scope.row.state >= 40 || scope.row.state === 20) && scope.row.attachment.type === 12860">
-                  <el-button
-                    type="text"
-                    @click="showViewFile(scope.row.attachment.id)"
-                  >
-                    预览
-                  </el-button>
-                  <span
-                    class="table-btn"
-                  >|</span>
-                </div>
                 <div
                   v-if="
-                    JSON.stringify(scope.row.attachment) !== '{}' &&
-                      (scope.row.state === 10 || scope.row.state === 30)
+                    scope.row.has_approval_process === 1 ||
+                      scope.row.proceeding === 1
                   "
+                  style="display: flex"
                 >
-                  <el-button
-                    v-if="scope.row.attachment.type === 12860"
-                    type="text"
-                    @click="showViewFile(scope.row.attachment.id)"
+                  <div v-if="JSON.stringify(scope.row.attachment) === '{}'">
+                    <el-upload
+                      action
+                      :show-file-list="false"
+                      :http-request="
+                        (e) => handleFileSuccess(e, scope.row.attachment, scope.row.id)
+                      "
+                    >
+                      <el-button type="text">
+                        上传
+                      </el-button>
+                    </el-upload>
+                  </div>
+                  <div v-if="(scope.row.state >= 40 || scope.row.state === 20) && scope.row.attachment.type === 12860">
+                    <el-button
+                      type="text"
+                      @click="showViewFile(scope.row.attachment.id)"
+                    >
+                      预览
+                    </el-button>
+                    <span
+                      class="table-btn"
+                    >|</span>
+                  </div>
+                  <div
+                    v-if="
+                      JSON.stringify(scope.row.attachment) !== '{}' &&
+                        (scope.row.state === 10 || scope.row.state === 30)
+                    "
                   >
-                    预览
-                  </el-button>
-                  <span 
-                    v-if="scope.row.attachment.type === 12860" 
-                    class="table-btn"  
-                  >|</span>
+                    <el-button
+                      v-if="scope.row.attachment.type === 12860"
+                      type="text"
+                      @click="showViewFile(scope.row.attachment.id)"
+                    >
+                      预览
+                    </el-button>
+                    <span 
+                      v-if="scope.row.attachment.type === 12860" 
+                      class="table-btn"  
+                    >|</span>
+                    <el-button
+                      type="text"
+                      @click="deleteFile(scope.row.id)"
+                    >
+                      删除
+                    </el-button>
+                    <span 
+                      class="table-btn"
+                    >|</span>
+                  </div>
+                  <div v-if="JSON.stringify(scope.row.attachment) !== '{}'">
+                    <el-button
+                      type="text"
+                      @click="
+                        download(
+                          scope.row.attachment.id,
+                          scope.row.attachment.name
+                        )
+                      "
+                    >
+                      下载
+                    </el-button>
+                  </div>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="是否审批环节"
+              prop="has_approval_process_desc"
+            />
+            <el-table-column
+              label="操作"
+              width="200px"
+            >
+              <template #default="scope">
+                <div v-if="scope.row.state === 20 || (scope.row.state >= 40 && scope.row.has_approval_process === 1)">
                   <el-button
-                    type="text"
-                    @click="deleteFile(scope.row.id)"
+                    v-if="scope.row.state === 20"
+                    @click="approvalItemFail(scope.row.id)"
+                  >
+                    不通过
+                  </el-button>
+                  <el-button
+                    type="success"
+                    style="width: 60px"
+                    :disabled="scope.row.state >= 40"
+                    @click="approvalItemPass(scope.row.id)"
+                  >
+                    通过
+                  </el-button>
+                </div>
+                <div v-else>
+                  <el-button
+                    v-if="(progress.state === 10 || progress.state === 30) || (progress.state ===40 && !scope.row.id)"
+                    @click="deletePlanItem(scope.$index + 1)"
                   >
                     删除
                   </el-button>
-                  <span 
-                    class="table-btn"
-                  >|</span>
-                </div>
-                <div v-if="JSON.stringify(scope.row.attachment) !== '{}'">
                   <el-button
-                    type="text"
-                    @click="
-                      download(
-                        scope.row.attachment.id,
-                        scope.row.attachment.name
-                      )
+                    v-if="
+                      buttonState.plan === 0 &&
+                        buttonState.review_pass === 0 &&
+                        (scope.row.state === 10 || scope.row.state === 30)
                     "
+                    @click="editOperator(scope.row.id,scope.row.operator_id)"
                   >
-                    下载
+                    编辑
+                  </el-button>
+                  <el-button
+                    v-if="
+                      buttonState.plan === 0 &&
+                        buttonState.review_pass === 0 &&
+                        scope.row.state !== 20 && scope.row.id
+                    "
+                    type="primary"
+                    style="width: 60px"
+                    :disabled="scope.row.state >= 40"
+                    @click="finishItem(scope.row.id)"
+                  >
+                    完成
                   </el-button>
                 </div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="是否审批环节"
-            prop="has_approval_process_desc"
-          />
-          <el-table-column
-            label="操作"
-            width="200px"
-          >
-            <template #default="scope">
-              <div v-if="scope.row.state === 20 || (scope.row.state >= 40 && scope.row.has_approval_process === 1)">
-                <el-button
-                  v-if="scope.row.state === 20"
-                  @click="approvalItemFail(scope.row.id)"
-                >
-                  不通过
-                </el-button>
-                <el-button
-                  type="success"
-                  style="width: 60px"
-                  :disabled="scope.row.state >= 40"
-                  @click="approvalItemPass(scope.row.id)"
-                >
-                  通过
-                </el-button>
-              </div>
-              <div v-else>
-                <el-button
-                  v-if="(progress.state === 10 || progress.state === 30) || (progress.state ===40 && !scope.row.id)"
-                  @click="deletePlanItem(scope.$index + 1)"
-                >
-                  删除
-                </el-button>
-                <el-button
-                  v-if="
-                    buttonState.plan === 0 &&
-                      buttonState.review_pass === 0 &&
-                      (scope.row.state === 10 || scope.row.state === 30)
-                  "
-                  @click="editOperator(scope.row.id,scope.row.operator_id)"
-                >
-                  编辑
-                </el-button>
-                <el-button
-                  v-if="
-                    buttonState.plan === 0 &&
-                      buttonState.review_pass === 0 &&
-                      scope.row.state !== 20 && scope.row.id
-                  "
-                  type="primary"
-                  style="width: 60px"
-                  :disabled="scope.row.state >= 40"
-                  @click="finishItem(scope.row.id)"
-                >
-                  完成
-                </el-button>
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-form>
+        
         <el-button
           style="margin: 15px 0"
           :disabled="progress.state === 50 || progress.state === 20"
@@ -593,8 +622,22 @@ export default {
         disabled: 'disabled'
       },
       viewId: 0,
-      defaultTime: new Date(2000,1,1,23,59,59)
+      defaultTime: new Date(2000,1,1,23,59,59),
+      form: {
+        rules: {
+          proceeding: [{ required: true, message: '请选择' }],
+          detail: [{ required: true, message: '请选择' }],
+          operator_id: [{ required: true, message: '请选择'}],
+          estimated_finish_time: [{ required: true, message: '请选择日期'}]
+        },
+        planList: this.planList
+      }
     };
+  },
+  watch: {
+    planList(val) {
+      this.form.planList = val;
+    }
   },
   mounted() {
     this.getParams();
@@ -620,18 +663,18 @@ export default {
           return;
         }
       }
-      this.planOptions.push({ key: 0, value: '请选择' });
+      this.planOptions.push({ key: 0, value: '请选择', disabled: true });
       this.detailOptions[0] = {
         children: [
           {
-            key: 0,
+            key: '',
             value: ''
           }
         ]
       };
     },
-    async submitUserSurveyPlan(body) {
-      try {
+     async submitUserSurveyPlan(body) {
+       try {
         await this.$store.dispatch(
           'product/survey/user/submitUserSurveyPlan',
           body
@@ -791,10 +834,10 @@ export default {
         proceeding: 0,
         operator_id: this.userId
       };
-      this.planList.push(row);
+      this.form.planList.push(row);
     },
     deletePlanItem(id) {
-      this.planList.splice(id - 1, 1);
+      this.form.planList.splice(id - 1, 1);
     },
     editOperator(id,operator) {
       this.operatorVisible = true;
@@ -815,37 +858,45 @@ export default {
       this.finishSurveyItem(id);
     },
     submitPlan() {
-      let planArr = JSON.parse(JSON.stringify(this.planList));
-      planArr.forEach((item) => {
-        item.estimated_finish_time = timestamp(item.estimated_finish_time);
-        if(item.actual_finish_time) {
-           item.actual_finish_time = timestamp(item.actual_finish_time);
+      this.$refs.form.validate((valid) => {
+        if(valid) {
+          let planArr = JSON.parse(JSON.stringify(this.form.planList));
+          planArr.forEach((item) => {
+            item.estimated_finish_time = timestamp(item.estimated_finish_time);
+            if(item.actual_finish_time) {
+              item.actual_finish_time = timestamp(item.actual_finish_time);
+            }
+          });
+        let val = {
+          product_id: +this.$route.params.productId,
+          survey_schedule_id: this.progress.id,
+          plan: planArr
+        };
+        if (this.progress.state !== 30) {
+          this.submitUserSurveyPlan(val);
+        } else {
+          this.updateUserSurveyPlan(val);
         }
-      });
-      let val = {
-        product_id: +this.$route.params.productId,
-        survey_schedule_id: this.progress.id,
-        plan: planArr
-      };
-      if (this.progress.state !== 30) {
-        this.submitUserSurveyPlan(val);
-      } else {
-        this.updateUserSurveyPlan(val);
-      }
+       }
+     })
     },
     addSurveyPlanItem() {
-     for (let i = this.length; i < this.planList.length; i++) {
-       this.addItem.push(this.planList[i]);
-      }
-     if( this.addItem.length !== 0) {
-      let itemArr = JSON.parse(JSON.stringify(this.addItem));
-       itemArr.forEach((item) => {
-          item.estimated_finish_time = timestamp(item.estimated_finish_time);
-       });
-      this.addUserSurveyPlan(itemArr);
-     } else {
-      this.$message.warning('用户调研计划表无数据提交！')
-     }
+      this.$refs.form.validate((valid) => {
+        if(valid) {
+          for (let i = this.length; i < this.form.planList.length; i++) {
+          this.addItem.push(this.form.planList[i]);
+          }
+          if( this.addItem.length !== 0) {
+            let itemArr = JSON.parse(JSON.stringify(this.addItem));
+            itemArr.forEach((item) => {
+                item.estimated_finish_time = timestamp(item.estimated_finish_time);
+            });
+            this.addUserSurveyPlan(itemArr);
+          } else {
+            this.$message.warning('用户调研计划表无数据提交！');
+         }
+        }
+      })
     },
     approvalFail() {
       this.approvalUserSurveyPlan(0);
@@ -885,7 +936,7 @@ export default {
       }
     },
     clearDetail(id) {
-      this.planList.map((item) => {
+      this.form.planList.map((item) => {
         if (item.proceeding === id) {
           item.detail = '';   
         }
@@ -957,6 +1008,11 @@ export default {
         return 'result-pass';
       } else {
         return 'result-fail';
+      }
+    },
+    selectProceeding(val) {
+      if(val === 0 || val === '') {
+        this.$message.warning('请选择事项！');
       }
     }
   }
