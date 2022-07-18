@@ -106,114 +106,112 @@
           title="新品信息"
           name="open"
         >
-          <div class="analy-form_item form-item_width">
-            <el-form-item
-              label="内箱尺寸/cm"
-              required
-            >
-              <div style="display: flex">
-                <el-form-item prop="inner_box_dimension_l">
-                  <el-input
-                    v-model="form.inner_box_dimension_l"
-                    class="analy-form_mar"
-                    placeholder="长度"
-                    :disabled="isDisabled"
-                    clearable
-                    maxlength="15"
-                    show-word-limit
-                  />
-                </el-form-item>
-                <el-form-item prop="inner_box_dimension_w">
-                  <el-input
-                    v-model="form.inner_box_dimension_w"
-                    class="analy-form_mar"
-                    placeholder="宽度"
-                    :disabled="isDisabled"
-                    clearable
-                    maxlength="15"
-                    show-word-limit
-                  />
-                </el-form-item>
-                <el-form-item prop="inner_box_dimension_h">
-                  <el-input
-                    v-model="form.inner_box_dimension_h"
-                    placeholder="高度"
-                    :disabled="isDisabled"
-                    clearable
-                    maxlength="15"
-                    show-word-limit
-                  />
-                </el-form-item>
-              </div>
-            </el-form-item>
-            <el-form-item
-              label="外箱尺寸/cm"
-              required
-            >
-              <div style="display: flex">
-                <el-form-item prop="outer_box_dimension_l">
-                  <el-input
-                    v-model="form.outer_box_dimension_l"
-                    class="analy-form_mar"
-                    placeholder="长度"
-                    :disabled="isDisabled"
-                    clearable
-                    maxlength="15"
-                    show-word-limit
-                  />
-                </el-form-item>
-                <el-form-item prop="outer_box_dimension_w">
-                  <el-input
-                    v-model="form.outer_box_dimension_w"
-                    class="analy-form_mar"
-                    placeholder="宽度"
-                    :disabled="isDisabled"
-                    clearable
-                    maxlength="15"
-                    show-word-limit
-                  />
-                </el-form-item>
-                <el-form-item prop="outer_box_dimension_h">
-                  <el-input
-                    v-model="form.outer_box_dimension_h"
-                    placeholder="高度"
-                    :disabled="isDisabled"
-                    clearable
-                    maxlength="15"
-                    show-word-limit
-                  />
-                </el-form-item>
-              </div>
-            </el-form-item>
-            <el-form-item
-              label="内箱重量/kg"
-              style="margin-bottom: 18px"
-              prop="inner_box_weight"
-            >
-              <el-input
-                v-model="form.inner_box_weight"
-                placeholder="请输入内箱重量"
-                :disabled="isDisabled"
-                clearable
-                maxlength="15"
-                show-word-limit
-              />
-            </el-form-item>
-            <el-form-item
-              label="外箱重量/kg"
-              style="margin-bottom: 18px"
-              prop="outer_box_weight"
-            >
-              <el-input
-                v-model="form.outer_box_weight"
-                placeholder="请输入外箱重量"
-                :disabled="isDisabled"
-                clearable
-                maxlength="15"
-                show-word-limit
-              />
-            </el-form-item>
-          </div>
+          <el-form-item
+            label="内箱尺寸/cm"
+            required
+          >
+            <div style="display: flex">
+              <el-form-item prop="inner_box_dimension_l">
+                <el-input
+                  v-model="form.inner_box_dimension_l"
+                  class="analy-form_mar"
+                  placeholder="长度"
+                  :disabled="isDisabled"
+                  clearable
+                  maxlength="15"
+                  show-word-limit
+                />
+              </el-form-item>
+              <el-form-item prop="inner_box_dimension_w">
+                <el-input
+                  v-model="form.inner_box_dimension_w"
+                  class="analy-form_mar"
+                  placeholder="宽度"
+                  :disabled="isDisabled"
+                  clearable
+                  maxlength="15"
+                  show-word-limit
+                />
+              </el-form-item>
+              <el-form-item prop="inner_box_dimension_h">
+                <el-input
+                  v-model="form.inner_box_dimension_h"
+                  placeholder="高度"
+                  :disabled="isDisabled"
+                  clearable
+                  maxlength="15"
+                  show-word-limit
+                />
+              </el-form-item>
+            </div>
+          </el-form-item>
+          <el-form-item
+            label="外箱尺寸/cm"
+            required
+          >
+            <div style="display: flex">
+              <el-form-item prop="outer_box_dimension_l">
+                <el-input
+                  v-model="form.outer_box_dimension_l"
+                  class="analy-form_mar"
+                  placeholder="长度"
+                  :disabled="isDisabled"
+                  clearable
+                  maxlength="15"
+                  show-word-limit
+                />
+              </el-form-item>
+              <el-form-item prop="outer_box_dimension_w">
+                <el-input
+                  v-model="form.outer_box_dimension_w"
+                  class="analy-form_mar"
+                  placeholder="宽度"
+                  :disabled="isDisabled"
+                  clearable
+                  maxlength="15"
+                  show-word-limit
+                />
+              </el-form-item>
+              <el-form-item prop="outer_box_dimension_h">
+                <el-input
+                  v-model="form.outer_box_dimension_h"
+                  placeholder="高度"
+                  :disabled="isDisabled"
+                  clearable
+                  maxlength="15"
+                  show-word-limit
+                />
+              </el-form-item>
+            </div>
+          </el-form-item>
+          <el-form-item
+            label="内箱重量/kg"
+            style="margin-bottom: 18px"
+            prop="inner_box_weight"
+          >
+            <el-input
+              v-model="form.inner_box_weight"
+              placeholder="请输入内箱重量"
+              :disabled="isDisabled"
+              clearable
+              maxlength="15"
+              show-word-limit
+            />
+          </el-form-item>
+          <el-form-item
+            label="外箱重量/kg"
+            style="margin-bottom: 18px"
+            prop="outer_box_weight"
+          >
+            <el-input
+              v-model="form.outer_box_weight"
+              placeholder="请输入外箱重量"
+              :disabled="isDisabled"
+              clearable
+              maxlength="15"
+              show-word-limit
+            />
+          </el-form-item>
           <el-form-item
             label="头程费用"
             style="margin-bottom: 18px"
