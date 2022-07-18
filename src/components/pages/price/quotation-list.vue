@@ -10,7 +10,7 @@
           <el-descriptions-item label="关联产品:">
             <el-button 
               type="text"
-              @click="toProduct(quotationList.related_product_id)" 
+              @click="getProductDetailDialog(quotationList.related_product_id)" 
             >
               查看
             </el-button>
@@ -461,6 +461,18 @@
       </el-button>
     </div>
   </el-dialog>
+
+  <el-dialog
+    v-model="productViewVisible"
+    title="基本信息"
+    width="30%"
+  >
+    <product-basic 
+      :attachment="productAttachment"
+      :product-form="productForm"
+      type="quotation"
+    />
+  </el-dialog>
 </template>
 
 <script>
@@ -468,12 +480,14 @@ import PurchaseForm from './common/purchase-form.vue';
 import PriceForm from './common/price-form.vue';
 import ViewForm from './common/view-form.vue';
 import { formatterTime, getOrganizationList } from '../../../utils';
+import ProductBasic from '../../common/product-basic-form.vue';
 
 export default {
   components: {
     PurchaseForm,
     PriceForm,
-    ViewForm
+    ViewForm,
+    ProductBasic
   },
   props: ['id'],
   data() {
@@ -511,7 +525,10 @@ export default {
         label: 'name',
         disabled: 'disabled'
       },
-      pricingState: 0
+      pricingState: 0,
+      productViewVisible: false,
+      productAttachment: [],
+      productForm: {}
     };
   },
   mounted() {
@@ -768,9 +785,21 @@ export default {
     toDetail(id) {
       this.$router.push(`/supplier-list/${id}`);
     },
-    toProduct(id) {
-      this.$router.push(`/product-list/${id}`);
-      this.$store.commit('setEntry', 'detail');
+   async getProductDetailDialog(id) {
+    this.$store.commit('price/setDetailLoading', true);
+      try {
+        await this.$store.dispatch('price/getProductDetail', {
+          params: {
+            id
+          }
+        });
+        this.productForm = this.$store.state.price.productDetail;
+        this.productAttachment = this.productForm.images;
+        this.productViewVisible = true;
+      } catch (err) {
+        this.$store.commit('price/setDetailLoading', false);
+        return;
+      }
     }
   }
 };
