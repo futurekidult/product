@@ -16,7 +16,9 @@ export default {
       hasHigh: 0,
       quotation: {},
       supplierOption: [],
-      priceListLength: 0
+      priceListLength: 0,
+      productDetail: {},
+      detailLoading: true
     };
   },
   mutations: {
@@ -49,6 +51,12 @@ export default {
     },
     setSupplierOption(state, payload) {
       state.supplierOption = payload;
+    },
+    setProductDetail(state, payload) {
+      state.productDetail = payload;
+    },
+    setDetailLoading(state, payload) {
+      state.detailLoading = payload;
     }
   },
   actions: {
@@ -166,6 +174,14 @@ export default {
           context.commit('setSupplierOption', res.data.list);
         }
       })
+    },
+    async getProductDetail(context, payload) {
+      await axios.get('/pricing/product/detail/get', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setProductDetail', res.data);
+          context.commit('setDetailLoading', false);
+        }
+      });
     }
   }
 };

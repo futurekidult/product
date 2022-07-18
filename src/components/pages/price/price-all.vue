@@ -89,16 +89,10 @@
           label="关联产品名称"
           prop="related_product_name"
         />
-        <el-table-column label="关联产品ID">
-          <template #default="scope">
-            <el-button 
-              type="text"
-              @click="toProduct( scope.row.related_product_id)"
-            >
-              {{ scope.row.related_product_id }}
-            </el-button>
-          </template>
-        </el-table-column>
+        <el-table-column 
+          label="关联产品ID"
+          prop="related_product_id"
+        />
         <el-table-column
           label="市场"
           prop="market_desc"
@@ -227,10 +221,6 @@ export default {
     },
     toQuotation(id) {
       this.$router.push(`/price-list/${id}`);
-    },
-    toProduct(id) {
-      this.$router.push(`/product-list/${id}`);
-      this.$store.commit('setEntry', 'detail');
     }
   }
 };
