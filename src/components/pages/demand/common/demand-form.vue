@@ -195,7 +195,7 @@
         <el-form-item
           :label="'竞品链接' + (index + 1)"
           :prop="`competitive_product.${index}.link`"
-          :rules="$store.state.demand.demandDetail.state !== 20 && type === 'detail' ? [] : demandRules.link"
+          :rules="type === 'detail' ? [] : demandRules.link"
         >
           <el-input
             v-model="item.link"
@@ -226,7 +226,7 @@
         <el-form-item
           :label="'对标理由' + (index + 1)"
           :prop="`competitive_product.${index}.benchmarking_reason`"
-          :rules="$store.state.demand.demandDetail.state !== 20 && type === 'detail' ? [] : demandRules.benchmarking_reason"
+          :rules="type === 'detail' ? [] : demandRules.benchmarking_reason"
         >
           <el-input
             v-model="item.benchmarking_reason"
