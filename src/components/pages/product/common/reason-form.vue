@@ -22,6 +22,7 @@
           placeholder="请输入内容"
           maxlength="200"
           show-word-limit
+          :disabled="type !=='ignore'"
         />
       </el-form-item>
       <div
