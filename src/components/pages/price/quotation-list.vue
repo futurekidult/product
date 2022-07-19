@@ -591,10 +591,10 @@ export default {
         let high = this.targetList.every((item) => {
           return +item.target_price < +price;
         });
-        if (low) {
-          this.lowVisible = true;
-        } else if (high){
+        if (high) {
           this.highVisible = true;
+        } else if (low){
+          this.lowVisible = true;
         } else {
           this.submitQuotation();
         }
