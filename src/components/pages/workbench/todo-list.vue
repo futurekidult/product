@@ -76,6 +76,9 @@ export default {
     toDetail(taskId, id) {
       let taskArr = getTask(taskId);
       if (taskArr.length === 1) {
+        if(taskId === 760) {
+          this.$store.commit('supplier/setActionType', 'approval');
+        } 
         this.$router.push(`/${taskArr[0]}-list/${id}`);
       } else {
         this.$router.push(`/${taskArr[0]}-list/${id}`);
