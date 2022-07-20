@@ -15,7 +15,7 @@
               v-model="chooseForm.name"
               clearable
               placeholder="请输入供应商名称"
-              @clear="getSupplierList()"
+              @clear="searchSupplier"
             />
           </el-form-item>
           <el-form-item label="采购员">
@@ -25,7 +25,7 @@
               clearable
               filterable
               :props="defaultProps"
-              @clear="getSupplierList()"
+              @clear="searchSupplier"
             />
           </el-form-item>
           <el-form-item label="状态">
@@ -33,7 +33,7 @@
               v-model="chooseForm.state"
               clearable
               placeholder="请选择"
-              @clear="getSupplierList()"
+              @clear="searchSupplier"
             >
               <el-option
                 v-for="item in supplierState"
@@ -47,7 +47,7 @@
         <div>
           <el-button
             type="primary"
-            @click="getSupplierList()"
+            @click="searchSupplier"
           >
             查询
           </el-button>
@@ -187,7 +187,10 @@
 
       <base-pagination
         :length="$store.state.supplier.supplierListLength"
-        :get-list="getSupplierList"
+        :current-page="currentPage"
+        :page-num="pageSize"
+        @change-size="changePageSize"
+        @change-page="changeCurrentPage"
       />
     </div>
   </div>
@@ -248,7 +251,9 @@ export default {
         disabled: 'disabled'
       },
       deleteDialogVisible: false,
-      deleteId: 0
+      deleteId: 0,
+      currentPage: 1,
+      pageSize: 10
     };
   },
   mounted() {
@@ -273,11 +278,11 @@ export default {
         }
       }
     },
-    async getSupplierList(currentPage = 1, pageSize = 10) {
+    async getSupplierList() {
       this.$store.commit('supplier/setSupplierLoading', true);
       let params = this.chooseForm;
-      params['current_page'] = currentPage;
-      params['page_size'] = pageSize;
+      params['current_page'] = this.currentPage;
+      params['page_size'] = this.pageSize;
       try {
         await this.$store.dispatch('supplier/getSupplierList', { params });
         this.supplierList = this.$store.state.supplier.supplierList;
@@ -311,7 +316,8 @@ export default {
     },
     resetForm() {
       this.chooseForm = {};
-      this.getSupplierList();
+      this.pageSize = 10;
+      this.searchSupplier();
     },
     showDeleteDialog(id) {
       this.deleteDialogVisible = true;
@@ -340,6 +346,18 @@ export default {
     },
     closeBlackDialog() {
       this.blackDialogVisible = false;
+    },
+    changeCurrentPage(val) {
+      this.currentPage = val;
+      this.getSupplierList();
+    },
+    changePageSize(val) {
+      this.pageSize = val;
+      this.getSupplierList();
+    },
+    searchSupplier() {
+      this.currentPage = 1;
+      this.getSupplierList();
     }
   }
 };

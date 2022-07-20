@@ -65,7 +65,10 @@
 
     <base-pagination
       :length="total"
-      :get-list="getTestQuestion"
+      :current-page="currentPage"
+      :page-num="pageSize"
+      @change-size="changePageSize"
+      @change-page="changeCurrentPage"
     />
   </div>
 
@@ -109,18 +112,20 @@ export default {
       questionList: [],
       questionId: 0,
       question: {},
-      total:0
+      total:0,
+      currentPage: 1,
+      pageSize: 10
     };
   },
   mounted() {
     this.getTestQuestion();
   },
   methods: {
-    async getTestQuestion(currentPage = 1, pageSize = 10) {
+    async getTestQuestion() {
       let params = {
         sample_id: +this.$route.params.id,
-        current_page: currentPage,
-        page_size: pageSize
+        current_page: this.currentPage,
+        page_size: this.pageSize
       };
       try {
         await this.$store.dispatch(`sample/${this.type}/getTestQuestion`, {
@@ -175,6 +180,14 @@ export default {
     },
     recordProblem(id) {
       this.recordTestProblem(id);
+    },
+    changeCurrentPage(val) {
+      this.currentPage = val;
+      this.getTestQuestion();
+    },
+    changePageSize(val) {
+      this.pageSize = val;
+      this.getTestQuestion();
     }
   }
 };

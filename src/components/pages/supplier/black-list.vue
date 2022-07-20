@@ -75,7 +75,10 @@
 
     <base-pagination
       :length="$store.state.supplier.blackListLength"
-      :get-list="getBlackList"
+      :current-page="currentPage"
+      :page-num="pageSize"
+      @change-size="changePageSize"
+      @change-page="changeCurrentPage"
     />
   </div>
 
@@ -105,18 +108,20 @@ export default {
     return {
       blackList: [],
       whiteDialogVisible: false,
-      supplierWhiteId: 0
+      supplierWhiteId: 0,
+      currentPage: 1,
+      pageSize: 10
     };
   },
   mounted() {
     this.getBlackList();
   },
   methods: {
-    async getBlackList(currentPage = 1, pageSize = 10) {
+    async getBlackList() {
       this.$store.commit('supplier/setBlackLoading', true);
       let params = {
-        current_page: currentPage,
-        page_size: pageSize
+        current_page: this.currentPage,
+        page_size: this.pageSize
       };
       try {
         await this.$store.dispatch('supplier/getBlackList', { params });
@@ -148,6 +153,14 @@ export default {
     },
     toDetail(id) {
       this.$router.push(`/supplier-list/${id}`);
+    },
+    changeCurrentPage(val) {
+      this.currentPage = val;
+      this.getBlackList();
+    },
+    changePageSize(val) {
+      this.pageSize = val;
+      this.getBlackList();
     }
   }
 };

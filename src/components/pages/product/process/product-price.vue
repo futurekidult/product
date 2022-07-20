@@ -62,11 +62,6 @@
         </template>
       </el-table-column>
     </el-table>
-
-    <base-pagination
-      :length="pricingList.length"
-      :get-list="getPricing"
-    />
   </div>
 </template>
 

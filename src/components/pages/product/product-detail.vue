@@ -83,7 +83,13 @@
             label="项目成员"
             name="member"
           >
-            <related-member :project-member="projectMember" />
+            <related-member 
+              :project-member="projectMember"
+              :current-page="memberCurrentPage"
+              :page-size="memberPageSize"
+              @change-page="(val) => changeCurrentPage(val, 'member')"
+              @change-size="(val) => changePageSize(val, 'member')"
+            />
           </el-tab-pane>
           <el-tab-pane
             label="项目调研"
@@ -143,6 +149,10 @@
           >
             <mould-message
               :mould-list="mouldList"
+              :current-page="mouldCurrentPage"
+              :page-size="mouldPageSize"
+              @change-page="(val) => changeCurrentPage(val, 'mould')"
+              @change-size="(val) => changePageSize(val, 'mould')"
             />
           </el-tab-pane>
           <el-tab-pane
@@ -150,21 +160,39 @@
             label="样品信息"
             name="sample"
           >
-            <sample-message :sample-list="sampleList" />
+            <sample-message 
+              :sample-list="sampleList" 
+              :current-page="sampleCurrentPage"
+              :page-size="samplePageSize"
+              @change-page="(val) => changeCurrentPage(val, 'sample')"
+              @change-size="(val) => changePageSize(val, 'sample')"
+            />
           </el-tab-pane>
           <el-tab-pane
             v-if="productBase.state >= 40"
             label="测试问题"
             name="question"
           >
-            <question-all :question-list="questionList" />
+            <question-all 
+              :question-list="questionList"
+              :current-page="questionCurrentPage"
+              :page-size="questionPageSize"
+              @change-page="changeCurrentPage"
+              @change-size="changePageSize"
+            />
           </el-tab-pane>
           <el-tab-pane
             v-if="productBase.state >= 40"
             label="下单信息"
             name="order"
           >
-            <product-order :order-list="orderList" />
+            <product-order 
+              :order-list="orderList" 
+              :current-page="orderCurrentPage"
+              :page-size="orderPageSize"
+              @change-page="(val) => changeCurrentPage(val, 'order')"
+              @change-size="(val) => changePageSize(val, 'order')"
+            />
           </el-tab-pane>
           <el-tab-pane
             v-if="productBase.state >= 40"
@@ -174,6 +202,10 @@
             <product-package
               :change-color="changeCellColor"
               :package-list="packageList"
+              :current-page="packageCurrentPage"
+              :page-size="packagePageSize"
+              @change-page="(val) => changeCurrentPage(val, 'package')"
+              @change-size="(val) => changePageSize(val, 'package')"
             />
           </el-tab-pane>
         </el-tabs>
@@ -281,7 +313,20 @@ export default {
       isNewProduct: false,
       isNewCategoryProduct: false,
       isGetData: false,
-      isGetProjectData: false
+      isGetProjectData: false,
+      memberCurrentPage: 1,
+      memberPageSize: 10,
+      mouldCurrentPage: 1,
+      mouldPageSize: 10,
+      sampleCurrentPage: 1,
+      samplePageSize: 10,
+      questionCurrentPage: 1,
+      questionPageSize: 10,
+      orderCurrentPage: 1,
+      orderPageSize: 10,
+      packageCurrentPage: 1,
+      packagePageSize: 10
+
     };
   },
   computed: {
@@ -343,14 +388,14 @@ export default {
         return;
       }
     },
-    async getProjectMember(currentPage = 1, pageSize = 10) {
+    async getProjectMember() {
       this.$store.commit('product/setMemberLoading', true);
       try {
         await this.$store.dispatch('product/getProjectMember', {
           params: {
             id: +this.$route.params.productId,
-            page_size: pageSize,
-            current_page: currentPage
+            page_size: this.memberPageSize,
+            current_page: this.memberCurrentPage
           }
         });
         this.projectMember = this.$store.state.product.projectMember;
@@ -362,11 +407,9 @@ export default {
         return;
       }
     },
-    async getPricingList(currentPage = 1, pageSize = 10) {
+    async getPricingList() {
       this.$store.commit('product/setPricingLoading', true);
       let params = {
-        current_page: currentPage,
-        page_size: pageSize,
         product_id: +this.$route.params.productId
       };
       try {
@@ -382,11 +425,11 @@ export default {
         return;
       }
     },
-    async getMouldList(currentPage = 1, pageSize = 10) {
+    async getMouldList() {
       this.$store.commit('product/setMouldLoading', true);
       let params = {
-        page_size: pageSize,
-        current_page: currentPage,
+        page_size: this.mouldCurrentPage,
+        current_page: this.mouldPageSize,
         product_id: +this.$route.params.productId
       };
       try {
@@ -400,12 +443,12 @@ export default {
         return;
       }
     },
-    async getSampleList(currentPage = 1, pageSize = 10) {
+    async getSampleList() {
       this.$store.commit('product/setSampleLoading', true);
       let params = {
         product_id: +this.$route.params.productId,
-        current_page: currentPage,
-        page_size: pageSize
+        current_page: this.sampleCurrentPage,
+        page_size: this.samplePageSize
       };
       try {
         await this.$store.dispatch('product/getSampleList', { params });
@@ -420,12 +463,12 @@ export default {
         return;
       }
     },
-    async getQuestionList(currentPage = 1, pageSize = 10) {
+    async getQuestionList() {
       this.$store.commit('product/setQuestionLoading', true);
       let params = {
         product_id: +this.$route.params.productId,
-        current_page: currentPage,
-        page_size: pageSize
+        current_page: this.questionCurrentPage,
+        page_size: this.questionPageSize
       };
       try {
         await this.$store.dispatch('product/getQuestionList', { params });
@@ -439,12 +482,12 @@ export default {
         return;
       }
     },
-    async getPackageList(currentPage = 1, pageSize = 10) {
+    async getPackageList() {
       this.$store.commit('product/setPackageLoading', true);
       let params = {
         product_id: +this.$route.params.productId,
-        current_page: currentPage,
-        page_size: pageSize
+        current_page: this.packageCurrentPage,
+        page_size: this.packagePageSize
       };
       try {
         await this.$store.dispatch('product/getPackageList', { params });
@@ -458,14 +501,14 @@ export default {
         return;
       }
     },
-    async getOrderList(currentPage = 1, pageSize = 10) {
+    async getOrderList() {
       this.$store.commit('product/order/setOrderLoading', true);
       try {
         await this.$store.dispatch('product/order/getOrderList', {
           params: {
             product_id: +this.$route.params.productId,
-            current_page: currentPage,
-            page_size: pageSize
+            current_page: this.orderCurrentPage,
+            page_size: this.orderCurrentPage
           }
         });
         this.orderList = this.$store.state.product.order.orderList;
@@ -597,6 +640,8 @@ export default {
           this.getProductDetail();
           break;
         case 'member':
+          this.memberCurrentPage = 1;
+          this.memberPageSize = 10;
           this.getProjectMember();
           break;
         case 'price':
@@ -604,22 +649,32 @@ export default {
           this.getProductBase();
           break;
         case 'mould':
+          this.mouldCurrentPage = 1;
+          this.mouldPageSize = 10;
           this.getMouldList();
           this.getProductBase();
           break;
         case 'sample':
+          this.sampleCurrentPage = 1;
+          this.samplePageSize = 10;
           this.getSampleList();
           this.getProductBase();
           break;
         case 'question':
+          this.questionCurrentPage = 1;
+          this.questionPageSize = 10;
           this.getQuestionList();
           this.getProductBase();
           break;
         case 'package':
+          this.packageCurrentPage = 1;
+          this.packagePageSize = 10;
           this.getPackageList();
           this.getProductBase();
           break;
         case 'order':
+          this.orderCurrentPage = 1;
+          this.orderPageSize = 10;
           this.getOrderList();
           this.getProductBase();
           break;
@@ -658,6 +713,64 @@ export default {
     },
     closeViewReasonForm() {
       this.viewReasonVisible = false;
+    },
+    changeCurrentPage(val,type) {
+      switch(type) {
+        case 'member':   
+          this.memberCurrentPage = val;
+          this.getProjectMember();
+          break;
+        case 'mould':   
+          this.mouldCurrentPage = val;
+          this.getMouldList();
+          break;
+        case 'sample':   
+          this.sampleCurrentPage = val;
+          this.getSampleList();
+          break;
+        case 'question':   
+          this.questionCurrentPage = val;
+          this.getQuestionList();
+          break;
+        case 'order':   
+          this.orderCurrentPage = val;
+          this.getOrderList();
+          break;
+        case 'package':   
+          this.packageCurrentPage = val;
+          this.getPackageList();
+          break;
+        default:
+      }
+    },
+    changePageSize(val, type) {
+      switch(type) {
+        case 'member':   
+          this.memberPageSize = val;
+          this.getProjectMember();
+          break;
+        case 'mould':   
+          this.mouldPageSize = val;
+          this.getMouldList();
+          break;
+        case 'sample':   
+          this.samplePageSize = val;
+          this.getSampleList();
+          break;
+        case 'question':   
+          this.questionPageSize = val;
+          this.getQuestionList();
+          break;
+        case 'order':   
+          this.orderPageSize = val;
+          this.getOrderList();
+          break;
+        case 'package':   
+          this.packagePageSize = val;
+          this.getPackageList();
+          break;
+        default:
+      }
     }
   }
 };

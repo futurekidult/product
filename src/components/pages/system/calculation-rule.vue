@@ -9,7 +9,7 @@
           v-model="selectedMarket"
           placeholder="请选择市场"
           clearable
-          @change="getCalculationRuleList()"
+          @change="searchCalculationRules"
         >
           <el-option
             v-for="item in market"
@@ -22,7 +22,7 @@
           v-model="selectedPlatform"
           placeholder="请选择平台"
           clearable
-          @change="getCalculationRuleList()"
+          @change="searchCalculationRules"
         >
           <el-option
             v-for="item in platform"
@@ -68,7 +68,10 @@
 
       <base-pagination
         :length="$store.state.system.calculationRuleListLength"
-        :get-list="getCalculationRuleList"
+        :current-page="currentPage"
+        :page-num="pageSize"
+        @change-size="changePageSize"
+        @change-page="changeCurrentPage"
       />
     </div>
   </div>
@@ -332,7 +335,9 @@ export default {
             message: '请输入'
           }
         ]
-      }
+      },
+      currentPage: 1,
+      pageSize: 10
     };
   },
   mounted() {
@@ -354,11 +359,11 @@ export default {
         }
       }
     },
-    async getCalculationRuleList(currentPage = 1, pageSize = 10) {
+    async getCalculationRuleList() {
       this.$store.commit('system/setCalculationRuleListLoading', true);
       let params = {
-        current_page: currentPage,
-        page_size: pageSize,
+        current_page: this.currentPage,
+        page_size: this.pageSize,
         market: this.selectedMarket,
         platform: this.selectedPlatform
       };
@@ -420,6 +425,19 @@ export default {
           this.updateCalculationRule(this.calculationRuleForm);
         }
       });
+    },
+    changePageSize(val) {
+      this.pageSize = val;
+      this.getCalculationRuleList();
+    },
+    changeCurrentPage(val) {
+      this.currentPage = val;
+      this.getCalculationRuleList();
+    },
+    searchCalculationRules() {
+      this.currentPage = 1;
+      this.pageSize = 10;
+      this.getCalculationRuleList();
     }
   }
 };

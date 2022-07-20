@@ -60,7 +60,10 @@
 
       <base-pagination
         :length="$store.state.system.rateListLength"
-        :get-list="getRateList"
+        :current-page="currentPage"
+        :page-num="pageSize"
+        @change-size="changePageSize"
+        @change-page="changeCurrentPage"
       />
     </div>
   </div>
@@ -197,18 +200,20 @@ export default {
           }
         ]
       },
-      deleteDialogVisible: false
+      deleteDialogVisible: false,
+      currentPage: 1,
+      pageSize: 10
     };
   },
   mounted() {
     this.getRateList();
   },
   methods: {
-    async getRateList(currentPage = 1, pageSize = 10) {
+    async getRateList() {
       this.$store.commit('system/setRateListLoading', true);
       let params = {
-        current_page: currentPage,
-        page_size: pageSize
+        current_page: this.currentPage,
+        page_size: this.pageSize
       };
       try {
         await this.$store.dispatch('system/getRateList', { params });
@@ -260,6 +265,14 @@ export default {
     },
     closeDeleteDialog() {
       this.deleteDialogVisible = false;
+    },
+    changeCurrentPage(val) {
+      this.currentPage = val;
+      this.getRateList();
+    },
+    changePageSize(val) {
+      this.pageSize = val;
+      this.getRateList();
     }
   }
 };

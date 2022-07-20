@@ -59,8 +59,11 @@
     </el-table>
 
     <base-pagination
-      :length="orderList.length"
-      :get-list="getOrder"
+      :length="$store.state.product.order.orderListLength"
+      :current-page="page"
+      :page-num="pageNum"
+      @change-size="changePageSize"
+      @change-page="changeCurrentPage"
     />
   </div>
 </template>
@@ -68,7 +71,22 @@
 <script>
 export default {
   inject: ['getOrder'],
-  props: ['orderList'],
+  props: ['orderList', 'currentPage', 'pageSize'],
+  emits: ['change-page', 'change-size'],
+  data() {
+    return {
+      page: this.currentPage,
+      pageNum: this.pageSize
+    }
+  },
+  watch: {
+    currentPage(val) {
+      this.page = val;
+    },
+    pageSize(val) {
+      this.pageNum = val;
+    }
+  },
   methods: {
     toDetail(id) {
       this.$router.push(`/product-list/${this.$route.params.productId}/${id}`);
@@ -80,7 +98,15 @@ export default {
       } else {
         return 'result-pass';
       }
-    }
+    },
+    changeCurrentPage(val) {
+      this.page = val;
+      this.$emit('change-page', this.page);
+    },
+    changePageSize(val) {
+      this.pageNum = val;
+      this.$emit('change-size', this.pageNum);
+    } 
   }
 };
 </script>

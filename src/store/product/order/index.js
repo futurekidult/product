@@ -13,7 +13,8 @@ export default {
       orderLoading: true,
       skuLoading: true,
       contractLoading: true,
-      preProductLoading: true
+      preProductLoading: true,
+      orderListLength: 0
     };
   },
   mutations: {
@@ -51,6 +52,7 @@ export default {
         if (res.code === 200) {
           context.commit('setOrderList', res.data.list);
           context.commit('setOrderLoading', false);
+          context.state.orderListLength = res.data.total;
         }
       });
     },
