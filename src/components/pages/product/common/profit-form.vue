@@ -512,6 +512,8 @@ export default {
               this.calculationResult.selling_price_rmb;
             this.profitForm.list[index].reference_price =
               this.calculationResult.reference_price;
+            this.isNegativeProfit = false;
+            this.isNegativeReference = false;
         } catch (err) {
          if(err.message === '45035') {
             this.isNegativeProfit = true;
