@@ -39,6 +39,7 @@ export const downloadFile = (val, name) => {
 
 export const previewFile = (val) => {
   let a = document.createElement('a');
+  a.target = '_blank';
   a.href = val;
   a.click();
 };
