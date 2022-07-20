@@ -15,7 +15,7 @@
               v-model="chooseForm.product_name"
               placeholder="请输入内容"
               clearable
-              @clear="getPriceList()"
+              @clear="searchPrincing"
             />
           </el-form-item>
           <el-form-item label="品类">
@@ -23,7 +23,7 @@
               v-model="chooseForm.category"
               placeholder="请选择品类"
               clearable
-              @clear="getPriceList()"
+              @clear="searchPrincing"
             >
               <el-option
                 v-for="item in categoryList"
@@ -38,7 +38,7 @@
               v-model="chooseForm.state"
               placeholder="请选择状态"
               clearable
-              @clear="getPriceList()"
+              @clear="searchPrincing"
             >
               <el-option
                 v-for="item in pricingEnum"
@@ -52,7 +52,7 @@
         <div>
           <el-button
             type="primary"
-            @click="getPriceList()"
+            @click="searchPrincing"
           >
             查询
           </el-button>
@@ -140,7 +140,10 @@
 
       <base-pagination
         :length="$store.state.price.priceListLength"
-        :get-list="getPriceList"
+        :current-page="currentPage"
+        :page-num="pageSize"
+        @change-size="changePageSize"
+        @change-page="changeCurrentPage"
       />
     </div>
   </div>
@@ -158,7 +161,9 @@ export default {
       },
       priceList: [],
       pricingEnum: [],
-      categoryList: []
+      categoryList: [],
+      currentPage: 1,
+      pageSize: 10
     };
   },
   mounted() {
@@ -189,11 +194,11 @@ export default {
         return;
       }
     },
-    async getPriceList(currentPage = 1, pageSize = 10) {
+    async getPriceList() {
       this.$store.commit('price/setPriceLoading', true);
       let params = this.chooseForm;
-      params['current_page'] = currentPage;
-      params['page_size'] = pageSize;
+      params['current_page'] = this.currentPage;
+      params['page_size'] = this.pageSize;
       try {
         await this.$store.dispatch('price/getPriceList', { params });
         this.priceList = this.$store.state.price.priceList;
@@ -210,7 +215,8 @@ export default {
     },
     resetForm() {
       this.chooseForm = {};
-      this.getPriceList();
+      this.pageSize = 10;
+      this.searchPrincing();
     },
     changeCellColor(val) {
       if (val >= 30) {
@@ -221,6 +227,18 @@ export default {
     },
     toQuotation(id) {
       this.$router.push(`/price-list/${id}`);
+    },
+    changeCurrentPage(val) {
+      this.currentPage = val;
+      this.getPriceList();
+    },
+    changePageSize(val) {
+      this.pageSize = val;
+      this.getPriceList();
+    },
+    searchPrincing() {
+      this.currentPage = 1;
+      this.getPriceList();
     }
   }
 };

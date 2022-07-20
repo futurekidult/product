@@ -133,7 +133,10 @@
 
       <base-pagination
         :length="$store.state.sample.user.total"
-        :get-list="getList"
+        :current-page="currentPage"
+        :page-num="pageSize"
+        @change-size="changePageSize"
+        @change-page="changeCurrentPage"
       />
     </div>
     <user-form
@@ -166,6 +169,7 @@ import SampleResult from './sample-result.vue';
 import ViewUser from './view-user.vue';
 import {
   downloadFile,
+  formatterTime,
   getFile,
   previewFile
 } from '../../../../utils';
@@ -176,13 +180,11 @@ export default {
     SampleResult,
     ViewUser
   },
-  inject: ['getList'],
   provide() {
     return {
-      getUser: this.getList
+      getUser: this.getUserList
     };
   },
-  props: ['userList'],
   data() {
     return {
       userVisible: false,
@@ -191,10 +193,35 @@ export default {
       viewUserVisible: false,
       viewUserid: 0,
       file: {},
-      userId: 0
+      userId: 0,
+      userList: [],
+      currentPage: 1,
+      pageSize: 10
     };
   },
+  mounted() {
+    this.getUserList();
+  },
   methods: {
+    async getUserList() {
+      try {
+        await this.$store.dispatch('sample/user/getUserList', {
+          params: {
+            sample_id: +this.$route.params.id,
+            current_page: this.currentPage,
+            page_size: this.pageSize
+          }
+        });
+        this.userList = this.$store.state.sample.user.userList;
+        this.userList.forEach((item) => {
+          item.create_time = formatterTime(item.create_time);
+          item.delivery_time = formatterTime(item.delivery_time);
+          item.upload_time = formatterTime(item.upload_time);
+        });
+      } catch (err) {
+        return;
+      }
+    },
     async deliverSample(testId, userId) {
       let body = {
         user_test_apply_id: testId,
@@ -282,6 +309,14 @@ export default {
       } else {
         return 'result-ing';
       }
+    },
+    changeCurrentPage(val) {
+      this.currentPage = val;
+      this.getUserList();
+    },
+    changePageSize(val) {
+      this.pageSize = val;
+      this.getUserList();
     }
   }
 };

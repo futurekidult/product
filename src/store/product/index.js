@@ -40,7 +40,10 @@ export default {
       productListLength: 0,
       mouldListLength: 0,
       selectedMouldList: [],
-      selectedMouldListLength: 0
+      selectedMouldListLength: 0,
+      sampleListLength: 0,
+      questionListLength: 0,
+      packageListLength: 0
     };
   },
   mutations: {
@@ -215,6 +218,7 @@ export default {
         if (res.code === 200) {
           context.commit('setSampleList', res.data.list);
           context.commit('setSampleLoading', false);
+          context.state.sampleListLength = res.data.total;
         }
       });
     },
@@ -223,6 +227,7 @@ export default {
         if (res.code === 200) {
           context.commit('setQuestionList', res.data.list);
           context.commit('setQuestionLoading', false);
+          context.state.questionListLength = res.data.total;
         }
       });
     },
@@ -245,6 +250,7 @@ export default {
         if (res.code === 200) {
           context.commit('setPackageList', res.data.list);
           context.commit('setPackageLoading', false);
+          context.state.packageListLength = res.data.total;
         }
       });
     },

@@ -40,11 +40,6 @@
         </template>
       </el-table-column>
     </el-table>
-
-    <base-pagination
-      :length="$store.state.workbench.notificationListLength"
-      :get-list="getList"
-    />
   </div>
 </template>
 

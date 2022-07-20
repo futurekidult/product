@@ -60,7 +60,10 @@
     </el-table>
     <base-pagination
       :length="$store.state.product.memberListLength"
-      :get-list="getMember"
+      :current-page="page"
+      :page-num="pageNum"
+      @change-size="changePageSize"
+      @change-page="changeCurrentPage"
     />
   </div>
 
@@ -118,7 +121,8 @@ export default {
     BasePagination
   },
   inject: ['getMember'],
-  props: ['projectMember'],
+  props: ['projectMember', 'pageSize', 'currentPage'],
+  emits: ['change-page', 'change-size'],
   data() {
     return {
       addDialog: false,
@@ -126,8 +130,18 @@ export default {
       deleteDialog: false,
       userMsg: {},
       editId: 0,
-      deleteId: 0
+      deleteId: 0,
+      page: this.currentPage,
+      pageNum: this.pageSize
     };
+  },
+  watch: {
+    currentPage(val) {
+      this.page = val;
+    },
+    pageSize(val) {
+      this.pageNum = val;
+    }
   },
   methods: {
     async deleteProjectMember() {
@@ -168,6 +182,14 @@ export default {
     },
     submitDeteleResult() {
       this.deleteProjectMember();
+    },
+    changeCurrentPage(val) {
+      this.page = val;
+      this.$emit('change-page', this.page);
+    },
+    changePageSize(val) {
+      this.pageNum = val;
+      this.$emit('change-size', this.pageNum);
     }
   }
 };

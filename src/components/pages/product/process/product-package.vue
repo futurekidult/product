@@ -67,8 +67,11 @@
     </el-table>
 
     <base-pagination
-      :length="packageList.length"
-      :get-list="getPackage"
+      :length="$store.state.product.packageListLength"
+      :current-page="page"
+      :page-num="pageNum"
+      @change-size="changePageSize"
+      @change-page="changeCurrentPage"
     />
   </div>
   <el-dialog
@@ -123,13 +126,24 @@
 <script>
 export default {
   inject: ['getPackage'],
-  props: ['changeColor', 'packageList'],
+  props: ['changeColor', 'packageList', 'currentPage', 'pageSize'],
+  emits: ['change-page', 'change-size'],
   data() {
     return {
       packageId: 0,
       resultForm: {},
-      resultFormVisible: false
+      resultFormVisible: false,
+      page: this.currentPage,
+      pageNum: this.pageSize
     };
+  },
+  watch: {
+    currentPage(val) {
+      this.page = val;
+    },
+    pageSize(val) {
+      this.pageNum = val;
+    }
   },
   methods: {
     async confirmPackageResult(id) {
@@ -169,6 +183,14 @@ export default {
           this.createPackageResult(this.resultForm);
         }
       });
+    },
+    changeCurrentPage(val) {
+      this.page = val;
+      this.$emit('change-page', this.page);
+    },
+    changePageSize(val) {
+      this.pageNum = val;
+      this.$emit('change-size', this.pageNum);
     }
   }
 };

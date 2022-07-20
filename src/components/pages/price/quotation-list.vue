@@ -194,7 +194,10 @@
         </el-table>
         <base-pagination
           :length="quotationList.total"
-          :get-list="getQuotationList"
+          :current-page="currentPage"
+          :page-num="pageSize"
+          @change-size="changePageSize"
+          @change-page="changeCurrentPage"
         />
       </div>
     </div>
@@ -528,7 +531,9 @@ export default {
       pricingState: 0,
       productViewVisible: false,
       productAttachment: [],
-      productForm: {}
+      productForm: {},
+      currentPage: 1,
+      pageSize: 10
     };
   },
   mounted() {
@@ -538,12 +543,12 @@ export default {
     });
   },
   methods: {
-    async getQuotationList(currentPage = 1, pageSize = 10) {
+    async getQuotationList() {
       this.$store.commit('price/setQuotationLoading', true);
       let params = {
         pricing_id: +this.$route.params.id,
-        current_page: currentPage,
-        page_size: pageSize
+        current_page: this.currentPage,
+        page_size: this.pageSize
       };
       try {
         await this.$store.dispatch('price/getQuotationList', { params });
@@ -800,6 +805,14 @@ export default {
         this.$store.commit('price/setDetailLoading', false);
         return;
       }
+    },
+   changeCurrentPage(val) {
+      this.currentPage = val;
+      this.getQuotationList();
+    },
+    changePageSize(val) {
+      this.pageSize = val;
+      this.getQuotationList();
     }
   }
 };

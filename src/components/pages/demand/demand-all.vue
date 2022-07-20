@@ -16,7 +16,7 @@
               v-model="chooseForm.name"
               clearable
               placeholder="请输入产品名称"
-              @clear="getDemandList()"
+              @clear="searchDemand"
             />
           </el-form-item>
           <el-form-item label="创建人">
@@ -26,7 +26,7 @@
               clearable
               filterable
               :props="defaultProps"
-              @clear="getDemandList()"
+              @clear="searchDemand"
             />
           </el-form-item>
           <el-form-item label="状态">
@@ -34,7 +34,7 @@
               v-model="chooseForm.state"
               clearable
               placeholder="请选择需求状态"
-              @clear="getDemandList()"
+              @clear="searchDemand"
             >
               <el-option
                 v-for="item in demandState"
@@ -48,7 +48,7 @@
         <div>
           <el-button
             type="primary"
-            @click="getDemandList()"
+            @click="searchDemand"
           >
             查询
           </el-button>
@@ -161,7 +161,10 @@
 
       <base-pagination
         :length="$store.state.demand.demandListLength"
-        :get-list="getDemandList"
+        :current-page="currentPage"
+        :page-num="pageSize"
+        @change-size="changePageSize"
+        @change-page="changeCurrentPage"
       />
     </div>
 
@@ -202,7 +205,9 @@ export default {
         children: 'children',
         label: 'name',
         disabled: 'disabled'
-      }
+      },
+      currentPage: 1,
+      pageSize: 10
     };
   },
   computed: {
@@ -235,11 +240,11 @@ export default {
         }
       }
     },
-    async getDemandList(currentPage = 1, pageSize = 10) {
+    async getDemandList() {
       this.$store.commit('demand/setDemandLoading', true);
       let params = this.chooseForm;
-      params['current_page'] = currentPage;
-      params['page_size'] = pageSize;
+      params['current_page'] = this.currentPage;
+      params['page_size'] = this.pageSize;
       try {
         await this.$store.dispatch('demand/getDemandList', {
           params
@@ -282,7 +287,8 @@ export default {
     },
     resetForm() {
       this.chooseForm = {};
-      this.getDemandList();
+      this.pageSize = 10;
+      this.searchDemand();
     },
     changeCellColor(val) {
       if (val === 20) {
@@ -294,6 +300,18 @@ export default {
       } else {
         return '';
       }
+    },
+    changeCurrentPage(val) {
+      this.currentPage = val;
+      this.getDemandList();
+    },
+    changePageSize(val) {
+      this.pageSize = val;
+      this.getDemandList();
+    },
+    searchDemand() {
+      this.currentPage = 1;
+      this.getDemandList();
     }
   }
 };

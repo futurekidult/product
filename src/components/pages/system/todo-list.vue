@@ -9,12 +9,12 @@
         <el-input
           v-model="keyword"
           clearable
-          @clear="getTodoList()"
+          @clear="searchTodo"
         >
           <template #append>
             <el-button
               type="primary"
-              @click="getTodoList()"
+              @click="searchTodo"
             >
               搜索
             </el-button>
@@ -27,12 +27,12 @@
           clearable
           filterable
           :props="defaultProps"
-          @clear="getTodoList()"
+          @clear="searchTodo"
         />
         <el-button
           type="primary"
           style="margin-left: 12px"
-          @click="getTodoList()"
+          @click="searchTodo"
         >
           查询
         </el-button>
@@ -77,7 +77,10 @@
 
       <base-pagination
         :length="$store.state.system.todoListLength"
-        :get-list="getTodoList"
+        :current-page="currentPage"
+        :page-num="pageSize"
+        @change-size="changePageSize"
+        @change-page="changeCurrentPage"
       />
     </div>
   </div>
@@ -147,7 +150,9 @@ export default {
         label: 'name',
         disabled: 'disabled'
       },
-      operatorForm: {}
+      operatorForm: {},
+      currentPage: 1,
+      pageSize: 10
     };
   },
   mounted() {
@@ -158,11 +163,11 @@ export default {
     
   },
   methods: {
-    async getTodoList(currentPage = 1, pageSize = 10) {
+    async getTodoList() {
       this.$store.commit('system/setTodoLoading', true);
       let params = {
-        current_page: currentPage,
-        page_size: pageSize,
+        current_page: this.currentPage,
+        page_size: this.pageSize,
         keyword: this.keyword,
         operator: this.operator
       };
@@ -200,10 +205,23 @@ export default {
     resetForm() {
       this.keyword = '';
       this.operator = '';
-      this.getTodoList();
+      this.pageSize = 10;
+      this.searchTodo();
     },
     closeForm() {
       this.operatorVisible = false;
+    },
+    changeCurrentPage(val) {
+      this.currentPage = val;
+      this.getTodoList();
+    },
+    changePageSize(val) {
+      this.pageSize = val;
+      this.getTodoList();
+    },
+    searchTodo() {
+      this.currentPage = 1;
+      this.getTodoList();
     }
   }
 };

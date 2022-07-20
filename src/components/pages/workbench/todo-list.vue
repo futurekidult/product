@@ -50,11 +50,6 @@
         </template>
       </el-table-column>
     </el-table>
-
-    <base-pagination
-      :length="$store.state.workbench.todoListLength"
-      :get-list="getList"
-    />
   </div>
 </template>
 
