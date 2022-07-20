@@ -7,7 +7,7 @@
           :column="5"
           style="width: 80%"
         >
-          <el-descriptions-item label="关联产品:">
+          <el-descriptions-item label="产品信息:">
             <el-button 
               type="text"
               @click="getProductDetailDialog(quotationList.related_product_id)" 
