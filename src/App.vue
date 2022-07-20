@@ -320,4 +320,8 @@ body {
 .tag-position {
   margin-left: 20px;
 }
+
+.el-select-dropdown__wrap {
+  max-height: 1000px !important;
+}
 </style>
