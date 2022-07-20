@@ -194,7 +194,7 @@
           </el-form-item>
           <el-form-item>
             <div class="desc">
-              系统根据利润核算规则自动计算
+              系统根据利润核算规则自动计算(当产品定位为老产品时，无采购参考价)
             </div>
           </el-form-item>
           <div 
