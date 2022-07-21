@@ -344,6 +344,15 @@
                     "
                   >
                     <el-button
+                      type="text"
+                      @click="deleteFile(scope.row.id)"
+                    >
+                      删除
+                    </el-button>
+                    <span 
+                      class="table-btn"
+                    >|</span>
+                    <el-button
                       v-if="scope.row.attachment.type === 12860"
                       type="text"
                       @click="showViewFile(scope.row.attachment.id)"
@@ -353,15 +362,6 @@
                     <span 
                       v-if="scope.row.attachment.type === 12860" 
                       class="table-btn"  
-                    >|</span>
-                    <el-button
-                      type="text"
-                      @click="deleteFile(scope.row.id)"
-                    >
-                      删除
-                    </el-button>
-                    <span 
-                      class="table-btn"
                     >|</span>
                   </div>
                   <div v-if="JSON.stringify(scope.row.attachment) !== '{}'">

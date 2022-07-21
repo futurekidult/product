@@ -563,17 +563,19 @@
             {{ item.name }}
           </div>
           <div style="display: flex">
-            <div v-if="!isDisabled">
-              <el-button
-                type="text"
-                @click="
-                  deleteFileItem(vatInvoiceFile, item.id, 'vat_invoice_file')
-                "
-              >
-                删除
-              </el-button>
-              <span class="table-btn">|</span>
-            </div>
+            <el-button
+              v-if="!isDisabled"
+              type="text"
+              @click="
+                deleteFileItem(vatInvoiceFile, item.id, 'vat_invoice_file')
+              "
+            >
+              删除
+            </el-button>
+            <span 
+              v-if="!isDisabled"
+              class="table-btn"
+            >|</span>
             <el-button
               type="text"
               @click="showViewDialog(item.id)"
@@ -618,21 +620,23 @@
             {{ item.name }}
           </div>
           <div style="display: flex">
-            <div v-if="!isDisabled">
-              <el-button
-                type="text"
-                @click="
-                  deleteFileItem(
-                    accountOpeningLicenseFile,
-                    item.id,
-                    'account_opening_license_file'
-                  )
-                "
-              >
-                删除
-              </el-button>
-              <span class="table-btn">|</span>
-            </div>
+            <el-button
+              v-if="!isDisabled"
+              type="text"
+              @click="
+                deleteFileItem(
+                  accountOpeningLicenseFile,
+                  item.id,
+                  'account_opening_license_file'
+                )
+              "
+            >
+              删除
+            </el-button>
+            <span 
+              v-if="!isDisabled"
+              class="table-btn"
+            >|</span>
             <el-button
               type="text"
               @click="showViewDialog(item.id)"
@@ -676,21 +680,23 @@
             {{ item.name }}
           </div>
           <div style="display: flex">
-            <div v-if="!isDisabled">
-              <el-button
-                type="text"
-                @click="
-                  deleteFileItem(
-                    businessLicenseFile,
-                    item.id,
-                    'business_license_file'
-                  )
-                "
-              >
-                删除
-              </el-button>
-              <span class="table-btn">|</span>
-            </div>
+            <el-button
+              v-if="!isDisabled"
+              type="text"
+              @click="
+                deleteFileItem(
+                  businessLicenseFile,
+                  item.id,
+                  'business_license_file'
+                )
+              "
+            >
+              删除
+            </el-button>
+            <span 
+              v-if="!isDisabled"
+              class="table-btn"
+            >|</span>
             <el-button
               type="text"
               @click="showViewDialog(item.id)"
@@ -751,15 +757,17 @@
               >
                 下载
               </el-button>
-              <div v-if="purchaseEvaluationFile.type === 12860">
-                <span class="table-btn">|</span>
-                <el-button
-                  type="text"
-                  @click="showViewFile(purchaseEvaluationFile.id)"
-                >
-                  预览
-                </el-button>
-              </div>
+              <span 
+                v-if="purchaseEvaluationFile.type === 12860"
+                class="table-btn"
+              >|</span>
+              <el-button
+                v-if="purchaseEvaluationFile.type === 12860"
+                type="text"
+                @click="showViewFile(purchaseEvaluationFile.id)"
+              >
+                预览
+              </el-button>
             </div>
           </div>
         </div>
@@ -812,15 +820,17 @@
               >
                 下载
               </el-button>
-              <div v-if="qualityEvaluationFile.type === 12860">
-                <span class="table-btn">|</span>
-                <el-button
-                  type="text"
-                  @click="showViewFile(purchaseEvaluationFile.id)"
-                >
-                  预览
-                </el-button>
-              </div>
+              <span 
+                v-if="qualityEvaluationFile.type === 12860"
+                class="table-btn"
+              >|</span>
+              <el-button
+                v-if="qualityEvaluationFile.type === 12860"
+                type="text"
+                @click="showViewFile(purchaseEvaluationFile.id)"
+              >
+                预览
+              </el-button>
             </div>
           </div>
         </div>

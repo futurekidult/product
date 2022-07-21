@@ -39,15 +39,6 @@
         >
           <div>{{ attachment.name }}</div>
           <div style="display: flex">
-            <div v-if="attachment.type === 12860">
-              <el-button
-                type="text"
-                @click="showViewFile(attachment.id)"
-              >
-                预览
-              </el-button>
-              <span class="table-btn">|</span>
-            </div>
             <el-button
               v-if="type === 'create'"
               type="text"
@@ -61,6 +52,17 @@
               @click="download(attachment.id, attachment.name)"
             >
               下载
+            </el-button>
+            <span 
+              v-if="attachment.type === 12860"
+              class="table-btn"
+            >|</span>
+            <el-button
+              v-if="attachment.type === 12860"
+              type="text"
+              @click="showViewFile(attachment.id)"
+            >
+              预览
             </el-button>
           </div>
         </div>

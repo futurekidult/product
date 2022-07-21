@@ -62,15 +62,17 @@
           {{ item.name }}
         </div>
         <div style="display: flex">
-          <div v-if="type !== 'detail' || state === 20">
-            <el-button
-              type="text"
-              @click="deleteProductImg(item.id, imagesList)"
-            >
-              删除
-            </el-button>
-            <span class="table-btn">|</span>
-          </div>
+          <el-button
+            v-if="type !== 'detail' || state === 20"
+            type="text"
+            @click="deleteProductImg(item.id, imagesList)"
+          >
+            删除
+          </el-button>
+          <span 
+            v-if="type !== 'detail' || state === 20"
+            class="table-btn"
+          >|</span>
           <el-button
             type="text"
             @click="showViewDialog(item.id)"
@@ -174,15 +176,17 @@
               {{ image.name }}
             </div>
             <div style="display: flex">
-              <div v-if="type !== 'detail' || state === 20">
-                <el-button
-                  type="text"
-                  @click="deleteProductImg(image.id, attachment[index].images)"
-                >
-                  删除
-                </el-button>
-                <span class="table-btn">|</span>
-              </div>
+              <el-button
+                v-if="type !== 'detail' || state === 20"
+                type="text"
+                @click="deleteProductImg(image.id, attachment[index].images)"
+              >
+                删除
+              </el-button>
+              <span 
+                v-if="type !== 'detail' || state === 20"
+                class="table-btn"
+              >|</span>
               <el-button
                 type="text"
                 @click="showViewDialog(image.id)"
