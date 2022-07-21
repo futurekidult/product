@@ -54,8 +54,8 @@ img {
   -webkit-transform: translate(-50%,-50%);
   transform: translate(-50%,-50%);
   display: block;
-  max-width: 100%;
-  max-height: 100%;
+  max-width: 80%;
+  max-height: 80%;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
