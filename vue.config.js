@@ -30,6 +30,11 @@ module.exports = {
       })();
       return args;
     });
+    config.plugin('html')
+      .tap((args) => {
+        args[0].title = '新品开发系统';
+        return args;
+      });
   }
 };
 
