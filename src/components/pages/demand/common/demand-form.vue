@@ -6,7 +6,6 @@
     class="demand-form"
     style="width: 60%"
     :model="demandForm"
-    :rules="$store.state.demand.demandDetail.state !== 20 && type === 'detail' ? {}: demandRules"
   >
     <el-form-item
       label="产品名称"
@@ -261,6 +260,7 @@
       label="核心参数"
       prop="parameter"
       class="form-item_width"
+      :rules="type === 'detail' ? [] : demandRules.parameter"
     >
       <el-input
         v-model="demandForm.parameter"
@@ -277,7 +277,10 @@
         :required="isRequired"
       >
         <div style="display: flex">
-          <el-form-item prop="product_dimension_l">
+          <el-form-item 
+            prop="product_dimension_l"
+            :rules="type === 'detail' ? [] : demandRules.product_dimension_l"
+          >
             <el-input
               v-model="demandForm.product_dimension_l"
               class="analy-form_mar"
@@ -288,7 +291,10 @@
               show-word-limit
             />
           </el-form-item>
-          <el-form-item prop="product_dimension_w">
+          <el-form-item 
+            prop="product_dimension_w"
+            :rules="type === 'detail' ? [] : demandRules.product_dimension_w"
+          >
             <el-input
               v-model="demandForm.product_dimension_w"
               class="analy-form_mar"
@@ -299,7 +305,10 @@
               show-word-limit
             />
           </el-form-item>
-          <el-form-item prop="product_dimension_h">
+          <el-form-item 
+            prop="product_dimension_h"
+            :rules="type === 'detail' ? [] : demandRules.product_dimension_h"
+          >
             <el-input
               v-model="demandForm.product_dimension_h"
               placeholder="高度"
@@ -316,7 +325,10 @@
         :required="isRequired"
       >
         <div style="display: flex">
-          <el-form-item prop="packing_dimension_l">
+          <el-form-item 
+            prop="packing_dimension_l"
+            :rules="type === 'detail' ? [] : demandRules.packing_dimension_l"
+          >
             <el-input
               v-model="demandForm.packing_dimension_l"
               class="analy-form_mar"
@@ -327,7 +339,10 @@
               show-word-limit
             />
           </el-form-item>
-          <el-form-item prop="packing_dimension_w">
+          <el-form-item 
+            prop="packing_dimension_w"
+            :rules="type === 'detail' ? [] : demandRules.packing_dimension_w"
+          >
             <el-input
               v-model="demandForm.packing_dimension_w"
               class="analy-form_mar"
@@ -338,7 +353,10 @@
               show-word-limit
             />
           </el-form-item>
-          <el-form-item prop="packing_dimension_h">
+          <el-form-item 
+            prop="packing_dimension_h"
+            :rules="type === 'detail' ? [] : demandRules.packing_dimension_h"
+          >
             <el-input
               v-model="demandForm.packing_dimension_h"
               placeholder="高度"
@@ -354,6 +372,7 @@
         label="毛重/kg"
         prop="rough_weight"
         class="form-item_width"
+        :rules="type === 'detail' ? [] : demandRules.rough_weight"
       >
         <el-input
           v-model="demandForm.rough_weight"
@@ -368,6 +387,7 @@
         label="出货量"
         prop="shipments"
         class="form-item_width"
+        :rules="type === 'detail' ? [] : demandRules.shipments"
       >
         <el-input
           v-model="demandForm.shipments"
@@ -384,7 +404,10 @@
         :required="isRequired"
       >
         <div style="display: flex">
-          <el-form-item prop="selling_price_currency">
+          <el-form-item 
+            prop="selling_price_currency"
+            :rules="type === 'detail' ? [] : demandRules.selling_price_currency"
+          >
             <el-select
               v-model="demandForm.selling_price_currency"
               class="analy-form_mar"
@@ -402,7 +425,10 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item prop="selling_price">
+          <el-form-item 
+            prop="selling_price"
+            :rules="type === 'detail' ? [] : demandRules.selling_price"
+          >
             <el-input
               v-model="demandForm.selling_price"
               class="analy-form_mar"
@@ -431,7 +457,10 @@
         :required="isRequired"
       >
         <div style="display: flex">
-          <el-form-item prop="purchase_price_currency">
+          <el-form-item 
+            prop="purchase_price_currency"
+            :rules="type === 'detail' ? [] : demandRules.purchase_price_currency"
+          >
             <el-select
               v-model="demandForm.purchase_price_currency"
               class="analy-form_mar"
@@ -449,7 +478,10 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item prop="purchase_price">
+          <el-form-item 
+            prop="purchase_price"
+            :rules="type === 'detail' ? [] : demandRules.purchase_price"
+          >
             <el-input
               v-model="demandForm.purchase_price"
               class="analy-form_mar"
@@ -477,6 +509,7 @@
       label="特别卖点"
       prop="selling_point"
       class="form-item_width"
+      :rules="type === 'detail' ? [] : demandRules.selling_point"
     >
       <el-input
         v-model="demandForm.selling_point"
@@ -493,6 +526,7 @@
       label="需求洞察来源"
       prop="demand_source"
       class="form-item_width"
+      :rules="type === 'detail' ? [] : demandRules.demand_source"
     >
       <el-select
         v-model="demandForm.demand_source"
@@ -512,6 +546,7 @@
       label="痛点"
       prop="pain_spot"
       class="form-item_width"
+      :rules="type === 'detail' ? [] : demandRules.pain_spot"
     >
       <el-input
         v-model="demandForm.pain_spot"
@@ -528,6 +563,7 @@
       label="需求点"
       prop="demand_point"
       class="form-item_width"
+      :rules="type === 'detail' ? [] : demandRules.demand_point"
     >
       <el-input
         v-model="demandForm.demand_point"
@@ -544,6 +580,7 @@
       label="产品信息"
       prop="information"
       class="form-item_width"
+      :rules="type === 'detail' ? [] : demandRules.information"
     >
       <el-input
         v-model="demandForm.information"
