@@ -428,8 +428,8 @@ export default {
     async getMouldList() {
       this.$store.commit('product/setMouldLoading', true);
       let params = {
-        page_size: this.mouldCurrentPage,
-        current_page: this.mouldPageSize,
+        page_size: this.mouldPageSize,
+        current_page: this.mouldCurrentPage,
         product_id: +this.$route.params.productId
       };
       try {
@@ -508,7 +508,7 @@ export default {
           params: {
             product_id: +this.$route.params.productId,
             current_page: this.orderCurrentPage,
-            page_size: this.orderCurrentPage
+            page_size: this.orderPageSize
           }
         });
         this.orderList = this.$store.state.product.order.orderList;
