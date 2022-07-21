@@ -89,20 +89,22 @@
           </div>
           <div style="display: flex">
             <el-button
+              v-if="!isDisabled"
+              type="text"
+              @click="deleteImg(item.id)"
+            >
+              删除
+            </el-button>
+            <span 
+              v-if="!isDisabled"
+              class="table-btn"
+            >|</span>
+            <el-button
               type="text"
               @click="showViewDialog(item.id)"
             >
               预览
             </el-button>
-            <div v-if="!isDisabled">
-              <span class="table-btn">|</span>
-              <el-button
-                type="text"
-                @click="deleteImg(item.id)"
-              >
-                删除
-              </el-button>
-            </div>
           </div>
         </div>
       </el-form-item>

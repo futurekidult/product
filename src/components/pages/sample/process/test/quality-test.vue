@@ -91,15 +91,6 @@
         >
           <div>{{ file.name }}</div>
           <div style="display: flex">
-            <div v-if="file.type === 12860">
-              <el-button
-                type="text"
-                @click="showViewFile(file.id)"
-              >
-                预览
-              </el-button>
-              <span class="table-btn">|</span>
-            </div>
             <el-button
               v-if="submitState !== 1"
               type="text"
@@ -113,6 +104,17 @@
               @click="download(file.id, file.name)"
             >
               下载
+            </el-button>
+            <span
+              v-if="file.type === 12860"
+              class="table-btn"
+            >|</span>
+            <el-button
+              v-if="file.type === 12860"
+              type="text"
+              @click="showViewFile(file.id)"
+            >
+              预览
             </el-button>
           </div>
         </div>
