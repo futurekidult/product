@@ -234,7 +234,7 @@ export default {
       } else if (val === 20 || val === 10) {
         return 'result-ing';
       } else {
-        return 'result-ignore';
+        return 'result-fail';
       }
     },
     toRelatedProduct(id) {
