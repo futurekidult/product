@@ -322,6 +322,6 @@ body {
 }
 
 .el-select-dropdown__wrap {
-  max-height: 1000px !important;
+  max-height: 900px !important;
 }
 </style>
