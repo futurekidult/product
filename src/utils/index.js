@@ -33,6 +33,7 @@ export const timestamp = (val) => {
 export const downloadFile = (val, name) => {
   let link = document.createElement('a');
   link.href = val;
+  link.target = '_blank';
   link.download = name;
   link.click();
 };
