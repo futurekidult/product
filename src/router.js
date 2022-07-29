@@ -26,7 +26,7 @@ import RoleList from './components/pages/system/role-list.vue';
 import PrivilegeList from './components/pages/system/privilege-list.vue';
 import CalculationRule from './components/pages/system/calculation-rule.vue';
 import RateList from './components/pages/system/rate-list.vue';
-import TodoList from './components/pages/system/todo-list.vue';
+import SystemTodo from './components/pages/system/system-todo.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -263,7 +263,7 @@ const router = createRouter({
         {
           path: '/system-list/todo-list',
           name: 'todo list',
-          component: TodoList,
+          component: SystemTodo,
           meta: {
             title: '待办转移'
           }

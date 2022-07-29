@@ -6,7 +6,6 @@ import BaseBreadcrumb from './components/common/base-breadcrumb.vue';
 import BasePagination from './components/common/base-pagination.vue';
 import BaseTag from './components/common/base-tag.vue';
 import 'element-plus/dist/index.css';
-import ElementPlus from 'element-plus';
 
 let version = process.env.VERSION;
 let localVersion = localStorage.getItem('projectVersion');
@@ -24,6 +23,5 @@ app.component('BaseTag', BaseTag);
 app.use(router);
 app.use(store);
 
-app.use(ElementPlus);
 
 app.mount('#app');
