@@ -46,7 +46,7 @@
           router
         >
           <div 
-            v-for="item in list"
+            v-for="item in menuList"
             :key="item.id"
           >
             <el-menu-item 
