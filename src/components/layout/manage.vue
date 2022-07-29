@@ -45,74 +45,56 @@
           unique-opened
           router
         >
-          <el-menu-item index="/work-bench">
-            <template #title>
-              <span>工作台</span>
-            </template>
-          </el-menu-item>
-          <el-menu-item index="/demand-list">
-            <template #title>
-              <span>需求管理</span>
-            </template>
-          </el-menu-item>
-          <el-menu-item index="/product-list">
-            <template #title>
-              <span>新品管理</span>
-            </template>
-          </el-menu-item>
-          <el-menu-item index="/price-list">
-            <template #title>
-              <span>定价管理</span>
-            </template>
-          </el-menu-item>
-          <el-menu-item index="/mould-list">
-            <template #title>
-              <span>模具管理</span>
-            </template>
-          </el-menu-item>
-          <el-menu-item index="/sample-list">
-            <template #title>
-              <span>样品管理</span>
-            </template>
-          </el-menu-item>
-          <el-menu-item index="/supplier-list">
-            <template #title>
-              <span>供应商管理</span>
-            </template>
-          </el-menu-item>
-          <el-sub-menu index="/system-list">
-            <template #title>
-              <span>系统管理</span>
-            </template>
-            <el-menu-item index="/system-list/organization-list">
-              组织管理
-            </el-menu-item>
-            <el-menu-item index="/system-list/admin-list">
-              用户管理
-            </el-menu-item>
-            <el-menu-item index="/system-list/role-list">
-              角色管理
-            </el-menu-item>
-            <el-menu-item index="/system-list/privilege-list">
-              权限管理
-            </el-menu-item>
-            <el-sub-menu index="/system-list/basic-data">
+          <div 
+            v-for="item in menuList"
+            :key="item.id"
+          >
+            <el-menu-item 
+              v-if="!item.children"
+              :index="item.link"
+            >
               <template #title>
-                <span>基础数据</span>
+                <span>{{ item.name }}</span>
               </template>
-              <el-menu-item
-                index="/system-list/basic-data/profit-calculation/rule"
-              >
-                核算利润规则
-              </el-menu-item>
-              <el-menu-item index="/system-list/basic-data/rate-list">
-                汇率表
-              </el-menu-item>
-            </el-sub-menu>
-            <el-menu-item index="/system-list/todo-list">
-              待办管理
             </el-menu-item>
-          </el-sub-menu>
+            <el-sub-menu 
+              v-else
+              :index="item.link"
+            >
+              <template #title>
+                <span>{{ item.name }}</span>
+              </template> 
+              <div
+                v-for="sub in item.children"
+                :key="sub.id"
+              >
+                <el-menu-item 
+                  v-if="!sub.children"
+                  :index="sub.link"
+                >
+                  {{ sub.name }}
+                </el-menu-item>
+                <el-sub-menu 
+                  v-else
+                  :index="sub.link"
+                >
+                  <template #title>
+                    <span> {{ sub.name }}</span>
+                  </template>
+                  <div
+                    v-for="subItem in sub.children"
+                    :key="subItem.id"
+                  >
+                    <el-menu-item 
+                      :index="subItem.link"
+                    >
+                      {{ subItem.name }}
+                    </el-menu-item>
+                  </div>
+                </el-sub-menu>
+              </div>
+            </el-sub-menu>
+          </div>
         </el-menu>
       </el-aside>
       <el-main style="padding: 10px">
@@ -128,17 +110,37 @@ export default {
   components: {
     UserFilled
   },
+  data() {
+    return {
+      menuList: []
+    }
+  },
   computed: {
     defaultActive() {
       const { path } = this.$route;
       return path;
     }
   },
+  mounted() {
+    this.getMenuList();
+  },
   methods: {
     async logout() {
-      await this.$store.dispatch('logoutSystem');
-      localStorage.removeItem('token');
-      window.location.href = '/';
+      try{
+        await this.$store.dispatch('logoutSystem');
+        localStorage.removeItem('token');
+        window.location.href = '/';
+      } catch(err) {
+        return;
+      }
+    },
+    async getMenuList() {
+      try {
+        await this.$store.dispatch('getMenuList');
+        this.menuList = this.$store.state.menuList;
+      } catch (err) {
+        return;
+      }
     }
   }
 };
