@@ -35,7 +35,8 @@ const store = createStore({
       activeTab: '',
       entry: '',
       regionList: [],
-      cityList: []
+      cityList: [],
+      menuList: []
     };
   },
   mutations: {
@@ -74,6 +75,9 @@ const store = createStore({
     },
     setCityList(state, payload) {
       state.cityList = payload;
+    },
+    setMenuList(state, payload) {
+      state.menuList = payload;
     }
   },
   actions: {
@@ -166,6 +170,13 @@ const store = createStore({
           ElMessage.success(res.message);
         }
       });
+    },
+    async getMenuList(context) {
+      await axios.get('/menu/list').then((res) => {
+        if(res.code === 200) {
+          context.commit('setMenuList', res.data.list);
+        }
+      })
     }
   }
 });
