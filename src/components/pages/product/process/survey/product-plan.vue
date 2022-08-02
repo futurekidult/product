@@ -605,7 +605,9 @@ export default {
       }
     },
     async handleFileSuccess(e) {
-      if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
+      if(e.file.size > 5 * 1024 * 1024 ) {
+        this.$message.warning('附件大小超过限制，请重新上传！');
+      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
         if (this.file.length > 4) {
           this.$message.error('附件个数不能传超过5张');
         } else {
@@ -624,8 +626,6 @@ export default {
             return;
           }
         }
-      } else if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
       } else {
         this.$message.warning('上传的附件格式有误！');
       } 

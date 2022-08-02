@@ -140,8 +140,10 @@ export default {
   },
   methods: {
     async handleFileSuccess(e) {
-     if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
-       this.$store.commit('setUploadState', false);
+      if(e.file.size > 5 * 1024 * 1024 ) {
+        this.$message.warning('附件大小超过限制，请重新上传！');
+      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
+        this.$store.commit('setUploadState', false);
         let form = getFile(e);
         try {
           await this.$store.dispatch('uploadFile', form);
@@ -156,8 +158,6 @@ export default {
         } catch (err) {
           return;
         }
-      } else if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
       } else {
         this.$message.warning('上传的附件格式有误！');
      }

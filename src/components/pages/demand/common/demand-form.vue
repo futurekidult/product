@@ -950,7 +950,9 @@ export default {
       this.attachment.pop();
     },
     async handleProductImageSuccess(e) {
-      if(e.file.type.indexOf('image') > -1) {
+      if(e.file.size > 5 * 1024 * 1024 ) {
+        this.$message.warning('附件大小超过限制，请重新上传！');
+      } else if(e.file.type.indexOf('image') > -1) {
         if (this.imagesList.length > 8) {
           this.$message.error('产品图片最多传9张');
         } else {
@@ -970,14 +972,14 @@ export default {
             return;
           }
        }
-      } else if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
       } else {
         this.$message.warning('上传的产品图片格式有误！');
       }
     },
     async handleCProductImageSuccess(e, index) {
-      if(e.file.type.indexOf('image') > -1) {
+      if(e.file.size > 5 * 1024 * 1024 ) {
+        this.$message.warning('附件大小超过限制，请重新上传！');
+      } else if(e.file.type.indexOf('image') > -1) {
         if (this.attachment[index].images.length > 8) {
           this.$message.error(`第${index + 1}组竞品中的竞品图片最多传9张`);
         } else {
@@ -997,8 +999,6 @@ export default {
             return;
           }
         }
-      } else if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
       } else {
         this.$message.warning(`上传的第${index + 1}组竞品中的竞品图片格式有误！`);
       }
