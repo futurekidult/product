@@ -1027,7 +1027,9 @@ export default {
       }
     },
     async handleFileArrSuccess(e, arr, str) {
-      if(e.file.type.indexOf('image') > -1) {
+      if(e.file.size > 5 * 1024 * 1024 ) {
+        this.$message.warning('附件大小超过限制，请重新上传！');
+      } else if(e.file.type.indexOf('image') > -1) {
         if (arr.length > 8) {
           this.$emssage.error(`${str}不能传超过9张`);
         } else {
@@ -1047,11 +1049,13 @@ export default {
           }
         }
       } else {
-        this.$message.error(`上传的${str}格式有误！`);
+        this.$message.warning(`上传的${str}格式有误！`);
       }
     },
     async handleFileSuccess(e, obj, str) {
-      if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
+      if(e.file.size > 5 * 1024 * 1024 ) {
+        this.$message.warning('附件大小超过限制，请重新上传！');
+      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
         this.$store.commit('setUploadState', false);
         let form = getFile(e);
         try {
@@ -1065,7 +1069,7 @@ export default {
           return;
         }
       } else {
-        this.$message.error(`上传的${str}格式有误！`);
+        this.$message.warning(`上传的${str}格式有误！`);
       }
     },
     handleFileArr(oldArr, key) {

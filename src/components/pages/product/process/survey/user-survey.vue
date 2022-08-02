@@ -943,7 +943,9 @@ export default {
       });
     },
     async handleFileSuccess(e, attachment, id) {
-      if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
+      if(e.file.size > 5 * 1024 * 1024 ) {
+        this.$message.warning('附件大小超过限制，请重新上传！');
+      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
         this.$store.commit('setUploadState', false);
         let form = getFile(e);
         try {
@@ -959,7 +961,7 @@ export default {
           return;
         }
       } else {
-        this.$message.error('上传的附件格式有误！');
+        this.$message.warning('上传的附件格式有误！');
       } 
     },
     async download(id, name) {
