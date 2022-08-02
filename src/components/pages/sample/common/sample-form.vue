@@ -303,8 +303,10 @@ export default {
         } catch (err) {
           return;
         }
+      } else if(e.file.size > 5 * 1024 * 1024 ) {
+        this.$message.warning('附件大小超过限制，请重新上传！');
       } else {
-        this.$message.error('上传的附加格式有误！');
+        this.$message.warning('上传的附加格式有误！');
       }
     },
     cancel() {

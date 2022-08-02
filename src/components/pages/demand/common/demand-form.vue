@@ -970,8 +970,10 @@ export default {
             return;
           }
        }
+      } else if(e.file.size > 5 * 1024 * 1024 ) {
+        this.$message.warning('附件大小超过限制，请重新上传！');
       } else {
-          this.$message.error('上传的产品图片格式有误！');
+        this.$message.warning('上传的产品图片格式有误！');
       }
     },
     async handleCProductImageSuccess(e, index) {
@@ -995,8 +997,10 @@ export default {
             return;
           }
         }
+      } else if(e.file.size > 5 * 1024 * 1024 ) {
+        this.$message.warning('附件大小超过限制，请重新上传！');
       } else {
-        this.$message.error(`上传的第${index + 1}组竞品中的竞品图片格式有误！`);
+        this.$message.warning(`上传的第${index + 1}组竞品中的竞品图片格式有误！`);
       }
     },
     deleteProductImg(id, arr) {
