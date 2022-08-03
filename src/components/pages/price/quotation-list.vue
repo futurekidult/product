@@ -788,7 +788,11 @@ export default {
       this.highVisible = false;
     },
     toDetail(id) {
-      this.$router.push(`/supplier-list/${id}`);
+      if(this.$store.state.menuData.links.indexOf('/supplier-list') > -1) {
+        this.$router.push(`/supplier-list/${id}`);
+      } else {
+        this.$message.error('无权限访问');
+      }
     },
    async getProductDetailDialog(id) {
     this.$store.commit('price/setDetailLoading', true);

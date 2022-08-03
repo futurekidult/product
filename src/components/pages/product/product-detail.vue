@@ -699,7 +699,11 @@ export default {
       this.getRequest(tab.props.name);
     },
     toRelatedDemand(id) {
-      this.$router.push(`/demand-list/${id}`);
+      if(this.$store.state.menuData.links.indexOf('/demand-list') > -1) {
+        this.$router.push(`/demand-list/${id}`);
+      } else {
+        this.$message.error('无权限访问');
+      }
     },
     showTerminateForm() {
       this.terminateProjectVisible = true;

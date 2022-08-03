@@ -89,8 +89,12 @@ export default {
   },
   methods: {
     toDetail(id) {
-      this.$router.push(`/product-list/${this.$route.params.productId}/${id}`);
-      this.$store.commit('setEntry', 'detail');
+      if(this.$store.state.menuData.links.indexOf('/product-list') > -1) {
+        this.$router.push(`/product-list/${this.$route.params.productId}/${id}`);
+        this.$store.commit('setEntry', 'detail');
+      } else {
+        this.$message.error('无权限访问');
+      }
     },
     changeCellColor(val) {
       if (val <= 30) {

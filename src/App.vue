@@ -325,4 +325,12 @@ body {
 .el-select-dropdown__wrap {
   max-height: 900px !important;
 }
+
+.el-menu--collapse .el-sub-menu__title span {
+  display: none !important;
+}
+
+.el-menu--collapse .el-sub-menu .el-sub-menu__icon-arrow {
+  display: none !important;
+}
 </style>
