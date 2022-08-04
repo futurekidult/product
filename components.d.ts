@@ -24,7 +24,6 @@ declare module 'vue' {
     DemandList: typeof import('./src/components/pages/demand/demand-list.vue')['default']
     DemandReview: typeof import('./src/components/pages/demand/demand-detail/demand-review/demand-review.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
-    ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElBadge: typeof import('element-plus/es')['ElBadge']
     ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']
     ElBreadcrumbItem: typeof import('element-plus/es')['ElBreadcrumbItem']
