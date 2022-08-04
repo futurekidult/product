@@ -27,9 +27,7 @@
         </el-tooltip>
       </div>
       <div class="header-right">
-        <div style="font-size: 14px">
-          欢迎您，{{ $store.state.userInfo.name }}
-        </div>
+        <div>欢迎您，{{ $store.state.userInfo.name }}</div>
         <el-divider
           direction="vertical"
           class="header-right_divider"
@@ -250,6 +248,7 @@ export default {
   display: flex;
   height: 43px;
   line-height: 43px;
+  font-size: 14px;
 }
 
 .header-right > div {
@@ -301,14 +300,5 @@ export default {
  
  .el-menu-vertical:not(.el-menu--collapse) {
   width: 200px;
-}
-
-.nav-img {
-  display: flex;
-  align-items: center;
-}
-
-.nav-img img {
-  width: 100px;
 }
 </style>

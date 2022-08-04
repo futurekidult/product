@@ -333,4 +333,13 @@ body {
 .el-menu--collapse .el-sub-menu .el-sub-menu__icon-arrow {
   display: none !important;
 }
+
+.nav-img {
+  display: flex;
+  align-items: center;
+}
+
+.nav-img img {
+  width: 100px;
+}
 </style>
