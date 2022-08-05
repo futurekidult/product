@@ -237,11 +237,11 @@
   />
 
   <confirm-dialog 
-  v-if="confirmDialogVisible"
-  :dialog-visible="confirmDialogVisible"
-  dialog-content="是否确认项目所有事项已完成"
-  type="product finish"
-  @hide-dialog="closeConfirmDialog"
+    v-if="confirmDialogVisible"
+    :dialog-visible="confirmDialogVisible"
+    dialog-content="是否确认项目所有事项已完成"
+    type="product finish"
+    @hide-dialog="closeConfirmDialog"
   />
 </template>
 
