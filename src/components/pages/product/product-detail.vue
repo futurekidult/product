@@ -57,14 +57,14 @@
 
           <div>
             <el-button
-              v-if="productBase.state <= 70 "
+              v-if="productBase.state  <= 50 "
               type="danger"
               @click="showTerminateForm"
             >
               项目终止
             </el-button>
             <el-button
-              v-if="productBase.state <= 70"
+              v-if="productBase.state === 70"
               type="success"
               @click="showConfirmDialog"
             >
