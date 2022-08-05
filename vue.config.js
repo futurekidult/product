@@ -1,7 +1,6 @@
 const AutoImport = require('unplugin-auto-import/webpack')
 const Components = require('unplugin-vue-components/webpack')
 const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
-const path = require('path')
 
 module.exports = {
   devServer: {
@@ -35,19 +34,12 @@ module.exports = {
       })();
       return args;
     });
-    config.plugin('html')
-      .tap((args) => {
-        args[0].title = '新品开发系统';
-        return args;
-      });
+    config.plugin('html').tap((args) => {
+      args[0].title = '新品开发系统';
+      return args;
+    });
   },
   configureWebpack: {
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, './src'),
-        'assets': path.resolve(__dirname, './src/assets')
-      }
-    },
     plugins: [
       AutoImport({
         resolvers: [ElementPlusResolver({
@@ -60,9 +52,7 @@ module.exports = {
         })]
       })
     ]
-  },
-  publicPath: './',
-  assetsDir: 'static'
+  }
 };
 
 const format = (num) => {
