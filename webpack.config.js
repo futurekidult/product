@@ -8,5 +8,8 @@ module.exports = {
         exclude: /node_modules/
       }
     ]
+  },
+  dev: {
+    host: '0.0.0.0'
   }
 };

@@ -55,13 +55,22 @@
             </el-descriptions-item>
           </el-descriptions>
 
-          <el-button
-            :disabled="productBase.state === 90"
-            type="danger"
-            @click="showTerminateForm"
-          >
-            终止项目
-          </el-button>
+          <div>
+            <el-button
+              v-if="productBase.state <= 70 "
+              type="danger"
+              @click="showTerminateForm"
+            >
+              项目终止
+            </el-button>
+            <el-button
+              v-if="productBase.state <= 70"
+              type="success"
+              @click="showConfirmDialog"
+            >
+              项目完成
+            </el-button>
+          </div>
         </div>
       </div>
 
@@ -226,6 +235,14 @@
     :reason="reason"
     @hide-dialog="closeViewReasonForm"
   />
+
+  <confirm-dialog 
+  v-if="confirmDialogVisible"
+  :dialog-visible="confirmDialogVisible"
+  dialog-content="是否确认项目所有事项已完成"
+  type="product finish"
+  @hide-dialog="closeConfirmDialog"
+  />
 </template>
 
 <script>
@@ -325,8 +342,8 @@ export default {
       orderCurrentPage: 1,
       orderPageSize: 10,
       packageCurrentPage: 1,
-      packagePageSize: 10
-
+      packagePageSize: 10,
+      confirmDialogVisible: false
     };
   },
   computed: {
@@ -775,6 +792,12 @@ export default {
           break;
         default:
       }
+    },
+    showConfirmDialog() {
+      this.confirmDialogVisible = true;
+    },
+    closeConfirmDialog() {
+      this.confirmDialogVisible = false;
     }
   }
 };

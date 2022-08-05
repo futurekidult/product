@@ -254,13 +254,6 @@ export default {
         }
       });
     },
-    async confirmPackageResult(_, payload) {
-      await axios.post('/package/result/confirm', payload).then((res) => {
-        if (res.code === 200) {
-          ElMessage.success(res.message);
-        }
-      });
-    },
     async createPackageResult(_, payload) {
       await axios.post('/package/result/create', payload).then((res) => {
         if (res.code === 200) {
@@ -280,6 +273,13 @@ export default {
         if(res.code === 200) {
           context.commit('setSelectedMouldList', res.data.list);
           context.state.selectedMouldListLength = res.data.total;
+        }
+      })
+    },
+    async confirmProductResult(_, payload) {
+      await axios.post('/product/result/confirm', payload).then((res) => {
+        if(res.code === 200) {
+          ElMessage.success(res.message);
         }
       })
     }

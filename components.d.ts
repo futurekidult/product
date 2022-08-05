@@ -13,7 +13,7 @@ declare module 'vue' {
     BlackList: typeof import('./src/components/pages/supplier/black-list.vue')['default']
     CalculationRule: typeof import('./src/components/pages/system/calculation-rule.vue')['default']
     CompetitiveTable: typeof import('./src/components/pages/product/common/competitive-table.vue')['default']
-    ConfirmDialog: typeof import('./src/components/pages/supplier/common/confirm-dialog.vue')['default']
+    ConfirmDialog: typeof import('./src/components/common/confirm-dialog.vue')['default']
     ContractList: typeof import('./src/components/pages/product/process/order/contract-list.vue')['default']
     ContractReport: typeof import('./src/components/pages/product/common/contract-report.vue')['default']
     DemandAll: typeof import('./src/components/pages/demand/demand-all.vue')['default']
