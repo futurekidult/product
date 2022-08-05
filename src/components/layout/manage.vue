@@ -2,7 +2,21 @@
   <el-container>
     <el-header>
       <div class="header-left">
-        <div>
+         <el-tooltip
+          :disabled="disabled"
+          effect="light"
+          content="点击收缩"
+          placement="right-start"
+        >
+          <el-icon 
+            :size="30"
+             class="toggle-btn"
+            @click="openCollapse"
+            >
+            <Fold />
+          </el-icon>
+        </el-tooltip>
+        <div class="nav-img">
           <img src="../../assets/images/logo.png">
         </div>
         <el-divider
@@ -14,14 +28,6 @@
         </div>
       </div>
       <div class="header-right">
-        <div style="padding: 4px 0">
-          <el-avatar
-            :size="25"
-            style="padding: 5px"
-          >
-            <user-filled />
-          </el-avatar>
-        </div>
         <div>欢迎您，{{ $store.state.userInfo.name }}</div>
         <el-divider
           direction="vertical"
@@ -37,22 +43,32 @@
       </div>
     </el-header>
     <el-container>
-      <el-aside width="240px">
+      <el-aside 
+        width="auto" 
+      >
         <el-menu
           background-color="#545c64"
-          text-color="#ffffff"
-          :default-active="defaultActive"
-          unique-opened
+          text-color="#fff"
+          :default-active="$route.path"
+          :collapse="isCollapse"
+          :default-openeds="$store.state.menuData.openeds"
           router
+          class="el-menu-vertical"
         >
           <div 
-            v-for="item in menuList"
+            v-for="item in $store.state.menuData.list"
             :key="item.id"
           >
             <el-menu-item 
-              v-if="!item.children"
+              v-if="item.children.length === 0 "
               :index="item.link"
             >
+              <el-icon>
+                <component 
+                  :is="item.icon"
+                  class="menu-icon"
+                />
+              </el-icon>
               <template #title>
                 <span>{{ item.name }}</span>
               </template>
@@ -60,40 +76,65 @@
             <el-sub-menu 
               v-else
               :index="item.link"
+              style="color: #000"
             >
               <template #title>
+                <component 
+                  :is="item.icon"
+                  class="menu-icon"
+                />
                 <span>{{ item.name }}</span>
-              </template> 
+              </template>
               <div
                 v-for="sub in item.children"
                 :key="sub.id"
               >
                 <el-menu-item 
-                  v-if="!sub.children"
+                  v-if="sub.children.length === 0"
                   :index="sub.link"
                 >
-                  {{ sub.name }}
+                  <el-icon>
+                    <component 
+                      :is="sub.icon"
+                      class="menu-icon"
+                    />
+                  </el-icon>
+                  <template #title>
+                    <span>{{ sub.name }}</span>
+                  </template>
                 </el-menu-item>
                 <el-sub-menu 
                   v-else
                   :index="sub.link"
+                  style="color: #000"
                 >
                   <template #title>
+                    <el-icon>
+                      <component 
+                        :is="sub.icon"
+                        class="menu-icon"
+                      />
+                    </el-icon>
                     <span> {{ sub.name }}</span>
                   </template>
-                  <div
+                  <el-menu-item 
                     v-for="subItem in sub.children"
                     :key="subItem.id"
+                    :index="subItem.link"
                   >
-                    <el-menu-item 
-                      :index="subItem.link"
-                    >
-                      {{ subItem.name }}
-                    </el-menu-item>
-                  </div>
+                    <el-icon>
+                      <component 
+                        :is="subItem.icon"
+                        class="menu-icon"
+                      />
+                    </el-icon>
+                    <template #title>
+                      <span>{{ subItem.name }}</span>
+                    </template>
+                  </el-menu-item>
                 </el-sub-menu>
               </div>
-            </el-sub-menu>
+            </el-sub-menu> 
           </div>
         </el-menu>
       </el-aside>
@@ -105,24 +146,50 @@
 </template>
 
 <script>
-import { UserFilled } from '@element-plus/icons-vue';
+import { 
+  Fold, 
+  Notebook,
+  Document,
+  Box,
+  Money,
+  Medal,
+  CopyDocument,
+  OfficeBuilding,
+  Setting,
+  House,
+  User,
+  Key,
+  SetUp,
+  DocumentChecked,
+  CoffeeCup,
+  Coin,
+  Postcard
+  } from '@element-plus/icons-vue';
 export default {
   components: {
-    UserFilled
+    Fold,
+    Notebook,
+    Document,
+    Box,
+    Money,
+    Medal,
+    CopyDocument,
+    OfficeBuilding,
+    Setting,
+    House,
+    Key,
+    User,
+    SetUp,
+    DocumentChecked,
+    CoffeeCup,
+    Coin,
+    Postcard
   },
   data() {
     return {
-      menuList: []
+      isCollapse: false,
+      disabled: false
     }
-  },
-  computed: {
-    defaultActive() {
-      const { path } = this.$route;
-      return path;
-    }
-  },
-  mounted() {
-    this.getMenuList();
   },
   methods: {
     async logout() {
@@ -134,13 +201,9 @@ export default {
         return;
       }
     },
-    async getMenuList() {
-      try {
-        await this.$store.dispatch('getMenuList');
-        this.menuList = this.$store.state.menuList;
-      } catch (err) {
-        return;
-      }
+    openCollapse() {
+      this.isCollapse = !this.isCollapse;
+      this.disabled = !this.disabled;
     }
   }
 };
@@ -157,10 +220,13 @@ export default {
 
 .header-left {
   display: flex;
+  align-items: center;
 }
 
 .header-left > div {
-  height: 43px;
+  height: 33px;
+  margin-left: 8px;
+  margin-right: 8px;
 }
 
 .system {
@@ -177,7 +243,7 @@ export default {
 
 .el-submenu__title:hover,
 .el-menu-item:hover {
-  background-color: #3a3f4d;
+  background-color: #3a3f4d;;
 }
 
 .header-right {
@@ -185,6 +251,7 @@ export default {
   display: flex;
   height: 43px;
   line-height: 43px;
+  font-size: 14px;
 }
 
 .header-right > div {
@@ -196,5 +263,45 @@ export default {
   height: 20px;
   margin: 12px 5px;
   color: #fff;
+}
+
+.exit-btn:hover {
+  color: #f8ba2b;
+}
+
+.toggle-btn {
+  margin-right: 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  color: #fff;
+  margin-right: 8px;
+}
+
+.toggle-btn:hover,
+.toggle-btn:focus {
+  color: #f8ba2b;
+}
+
+.el-menu-item.is-active {
+  font-weight: 700;
+  color: #f8ba2b;
+}
+
+.el-sub-menu__title.is-active {
+  font-weight: 700;
+  color: #f8ba2b;
+ }
+
+ .menu-icon {
+    height: 18px;
+    vertical-align: middle;
+    margin-right: 5px;
+    width: 24px;
+    text-align: center;
+    font-size: 18px;
+ }
+ 
+ .el-menu-vertical:not(.el-menu--collapse) {
+  width: 200px;
 }
 </style>

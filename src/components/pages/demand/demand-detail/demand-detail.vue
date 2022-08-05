@@ -115,8 +115,12 @@ export default {
       }
     },
     toProductDetail(id) {
-      this.$router.push(`/product-list/${id}`);
-      this.$store.commit('setEntry', 'detail');
+      if(this.$store.state.menuData.links.indexOf('/product-list') > -1) {
+        this.$router.push(`/product-list/${id}`);
+        this.$store.commit('setEntry', 'detail');
+      } else {
+        this.$message.error('无权限访问');
+      }
     },
     changeColor(val) {
       if (val === 20) {

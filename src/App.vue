@@ -71,7 +71,7 @@ body {
 .el-main {
   position: relative;
   background: #f0f6f7;
-  height: 100vh;
+  height: calc(100vh - 60px);
 }
 
 .border {
@@ -324,5 +324,22 @@ body {
 
 .el-select-dropdown__wrap {
   max-height: 900px !important;
+}
+
+.el-menu--collapse .el-sub-menu__title span {
+  display: none !important;
+}
+
+.el-menu--collapse .el-sub-menu .el-sub-menu__icon-arrow {
+  display: none !important;
+}
+
+.nav-img {
+  display: flex;
+  align-items: center;
+}
+
+.nav-img img {
+  width: 100px;
 }
 </style>

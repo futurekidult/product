@@ -36,7 +36,7 @@ const store = createStore({
       entry: '',
       regionList: [],
       cityList: [],
-      menuList: []
+      menuData: {}
     };
   },
   mutations: {
@@ -78,6 +78,9 @@ const store = createStore({
     },
     setMenuList(state, payload) {
       state.menuList = payload;
+    },
+    setMenuData(state, payload) {
+      state.menuData = payload;
     }
   },
   actions: {
@@ -160,6 +163,7 @@ const store = createStore({
       await axios.get('/admin/info').then((res) => {
         if (res.code === 200) {
           context.commit('setUserInfo', res.data);
+          context.commit('setMenuData', res.data.menu);
           localStorage.setItem('center_group', JSON.stringify(res.data.center_group));
         }
       });
@@ -170,13 +174,6 @@ const store = createStore({
           ElMessage.success(res.message);
         }
       });
-    },
-    async getMenuList(context) {
-      await axios.get('/menu/list').then((res) => {
-        if(res.code === 200) {
-          context.commit('setMenuList', res.data.list);
-        }
-      })
     }
   }
 });

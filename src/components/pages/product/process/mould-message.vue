@@ -246,8 +246,12 @@ export default {
       this.mouldId = id;
     },
     toDetail(id) {
-      this.$router.push(`/mould-list/${id}`);
-      this.$store.commit('setActiveTab', 'design');
+      if(this.$store.state.menuData.links.indexOf('/mould-list') > -1) {
+        this.$router.push(`/mould-list/${id}`);
+        this.$store.commit('setActiveTab', 'design');
+      } else {
+        this.$message.error('无权限访问');
+      }
     },
     changeCurrentPage(val) {
       this.page = val;

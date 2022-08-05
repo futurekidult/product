@@ -105,8 +105,12 @@ export default {
   },
   methods: {
     toDetail(id) {
-      this.$router.push(`/sample-list/${id}`);
-      this.$store.commit('setActiveTab', 'base');
+      if(this.$store.state.menuData.links.indexOf('/sample-list') > -1) {
+        this.$router.push(`/sample-list/${id}`);
+        this.$store.commit('setActiveTab', 'base');
+      } else {
+        this.$message.error('无权限访问');
+      }
     },
     changeCellColor(val) {
       if (val <= 20) {

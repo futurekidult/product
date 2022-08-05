@@ -245,7 +245,7 @@ const router = createRouter({
           }
         },
         {
-          path: '/system-list/basic-data/profit-calculation/rule',
+          path: '/system-list/basic-data/profit-calculation-rule',
           name: 'rule',
           component: CalculationRule,
           meta: {

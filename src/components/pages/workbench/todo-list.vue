@@ -74,11 +74,19 @@ export default {
         if(taskId === 760) {
           this.$store.commit('supplier/setActionType', 'approval');
         } 
-        this.$router.push(`/${taskArr[0]}-list/${id}`);
+        if(this.$store.state.menuData.links.indexOf(`/${taskArr[0]}-list`) > -1) {
+          this.$router.push(`/${taskArr[0]}-list/${id}`);
+        } else {
+          this.$message.error('无权限访问');
+        }
       } else {
-        this.$router.push(`/${taskArr[0]}-list/${id}`);
-        this.$store.commit('setActiveTab', taskArr[1]);
-        this.$store.commit('setEntry', 'workbench');
+         if(this.$store.state.menuData.links.indexOf(`/${taskArr[0]}-list`) > -1) {
+          this.$router.push(`/${taskArr[0]}-list/${id}`);
+          this.$store.commit('setActiveTab', taskArr[1]);
+          this.$store.commit('setEntry', 'workbench');
+        } else {
+          this.$message.error('无权限访问');
+        }
       }
     }
   }
