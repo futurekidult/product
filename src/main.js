@@ -5,6 +5,7 @@ import store from './store/index';
 import BaseBreadcrumb from './components/common/base-breadcrumb.vue';
 import BasePagination from './components/common/base-pagination.vue';
 import BaseTag from './components/common/base-tag.vue';
+import ConfirmDialog from './components/common/confirm-dialog.vue';
 import 'element-plus/dist/index.css';
 import { ElMessage } from 'element-plus';
 
@@ -20,6 +21,7 @@ const app = createApp(App);
 app.component('BaseBreadcrumb', BaseBreadcrumb);
 app.component('BasePagination', BasePagination);
 app.component('BaseTag', BaseTag);
+app.component('ConfirmDialog', ConfirmDialog);
 
 app.use(router);
 app.use(store);

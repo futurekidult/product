@@ -19,25 +19,32 @@
       <el-table-column
         label="关联定价ID"
         prop="pricing_id"
+        width="100px"
       />
       <el-table-column
         label="运营负责人"
         prop="operations_principal"
+         width="200px"
       />
       <el-table-column
         label="计划完成时间"
         prop="estimated_finish_time"
+        width="200px"
       />
       <el-table-column
         label="实际完成时间"
         prop="actual_finish_time"
+        width="200px"
       />
       <el-table-column
         label="结果文件地址"
         prop="result_path"
         show-overflow-tooltip
       />
-      <el-table-column label="状态">
+      <el-table-column 
+        label="状态"
+        width="200px"
+      >
         <template #default="scope">
           <div :class="changeColor(scope.row.state)">
             {{ scope.row.state_desc }}
@@ -46,7 +53,7 @@
       </el-table-column>
       <el-table-column
         label="操作"
-        width="300px"
+        width="150px"
       >
         <template #default="scope">
           <el-button 
@@ -54,13 +61,6 @@
             @click="showResultForm(scope.row.id)"
           >
             上传结果
-          </el-button>
-          <el-button
-            type="primary"
-            :disabled="scope.row.state === 20"
-            @click="confirmResult(scope.row.id)"
-          >
-            结果确认
           </el-button>
         </template>
       </el-table-column>
@@ -146,16 +146,6 @@ export default {
     }
   },
   methods: {
-    async confirmPackageResult(id) {
-      try {
-        await this.$store.dispatch('product/confirmPackageResult', {
-          id
-        });
-        this.getPackage();
-      } catch (err) {
-        return;
-      }
-    },
     async createPackageResult(val) {
       let body = val;
       body.id = this.packageId;
@@ -173,9 +163,6 @@ export default {
     },
     closeResultForm() {
       this.resultFormVisible = false;
-    },
-    confirmResult(id) {
-      this.confirmPackageResult(id);
     },
     submitResult() {
       this.$refs.resultForm.validate((valid) => {
