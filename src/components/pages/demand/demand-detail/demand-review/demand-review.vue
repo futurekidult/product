@@ -663,8 +663,8 @@ export default {
   methods: {
     async reviewDemandForm(val) {
      let body = val;
-      body['demand_id'] = +this.$route.params.id;
-      try {
+     body['demand_id'] = +this.$route.params.id;
+     try {
         await this.$store.dispatch('demand/reviewDemandForm', body);
         this.$router.push('/demand-list');
       } catch (err) {

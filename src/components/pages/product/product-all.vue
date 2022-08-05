@@ -408,9 +408,9 @@ export default {
     },
     toDemand(id) {
        if(this.$store.state.menuData.links.indexOf('/demand-list') > -1) {
-        this.$router.push(`/demand-list/${id}`);
+          this.$router.push(`/demand-list/${id}`);
        } else {
-        this.$message.error('无权限访问');
+          this.$message.error('无权限访问');
        }
     },
     changeCellColor(val) {
