@@ -2,6 +2,20 @@
   <el-container>
     <el-header>
       <div class="header-left">
+         <el-tooltip
+          :disabled="disabled"
+          effect="light"
+          content="点击收缩"
+          placement="right-start"
+        >
+          <el-icon 
+            :size="30"
+             class="toggle-btn"
+            @click="openCollapse"
+            >
+            <Fold />
+          </el-icon>
+        </el-tooltip>
         <div class="nav-img">
           <img src="../../assets/images/logo.png">
         </div>
@@ -12,19 +26,6 @@
         <div class="system">
           新品开发系统1.0.0
         </div>
-        <el-tooltip
-          :disabled="disabled"
-          effect="light"
-          content="点击收缩"
-          placement="right-start"
-        >
-          <el-button
-            class="toggle-btn"
-            @click="openCollapse"
-          >
-            <el-icon><Fold /></el-icon>
-          </el-button>
-        </el-tooltip>
       </div>
       <div class="header-right">
         <div>欢迎您，{{ $store.state.userInfo.name }}</div>
@@ -46,7 +47,7 @@
         width="auto" 
       >
         <el-menu
-          background-color="#3a3f4d"
+          background-color="#545c64"
           text-color="#fff"
           :default-active="$route.path"
           :collapse="isCollapse"
@@ -224,6 +225,8 @@ export default {
 
 .header-left > div {
   height: 33px;
+  margin-left: 8px;
+  margin-right: 8px;
 }
 
 .system {
@@ -240,7 +243,7 @@ export default {
 
 .el-submenu__title:hover,
 .el-menu-item:hover {
-  background-color: #ABB2B9;;
+  background-color: #3a3f4d;;
 }
 
 .header-right {
@@ -267,24 +270,24 @@ export default {
 }
 
 .toggle-btn {
-  margin-left: 20px;
+  margin-right: 10px;
+  margin-left: 10px;
+  cursor: pointer;
+  color: #fff;
+  margin-right: 8px;
 }
 
 .toggle-btn:hover,
 .toggle-btn:focus {
   color: #f8ba2b;
-  background: #fff;
-  border-color: #fff ;
 }
 
 .el-menu-item.is-active {
-  background: #4E525A !important;
   font-weight: 700;
   color: #f8ba2b;
 }
 
 .el-sub-menu__title.is-active {
-  background: #4E525A !important;
   font-weight: 700;
   color: #f8ba2b;
  }

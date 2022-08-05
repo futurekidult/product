@@ -71,7 +71,7 @@ body {
 .el-main {
   position: relative;
   background: #f0f6f7;
-  height: 100vh;
+  height: calc(100vh - 60px);
 }
 
 .border {

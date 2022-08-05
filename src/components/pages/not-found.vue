@@ -72,6 +72,8 @@ export default {
 
 .header-left > div {
   height: 33px;
+  margin-left: 8px;
+  margin-right: 8px;
 }
 
 .system {
@@ -87,7 +89,7 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: calc(100vh - 60px);
 }
 
 .not-found div {
