@@ -740,7 +740,7 @@
             <el-button
               v-if="!isDisabled"
               type="text"
-              @click="deleteQualityFile(purchaseEvaluationFile.id)"
+              @click="deletePurchaseFile(purchaseEvaluationFile.id)"
             >
               删除
             </el-button>
