@@ -202,7 +202,8 @@ body {
 .system-item,
 .todo-title,
 .select-item,
-.sample-item {
+.sample-item,
+.demand-title {
   display: flex;
   justify-content: space-between;
 }

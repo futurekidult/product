@@ -66,7 +66,7 @@
       v-loading="$store.state.demand.demandLoading"
       class="border"
     >
-      <div class="select-title">
+      <div class="select-title  demand-title">
         <div>
           <span class="line">|</span> 需求列表
           <el-button

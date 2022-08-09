@@ -27,7 +27,6 @@
 
 <script>
 export default {
-  inject: ['getBase'],
   props: ['dialogContent', 'dialogVisible', 'type', 'id', 'getList'],
   emits: ['hide-dialog'],
   data() {
@@ -49,14 +48,14 @@ export default {
             });
             this.visible = false;
             this.$emit('hide-dialog', this.visible);
-            this.getBase();
+            this.getList();
           } catch (err) {
             return;
           }
           break;
         case 'draft delete': 
           try {
-            this.$store.dispatch('demand/deleteDraftItem', {
+            await this.$store.dispatch('demand/deleteDraftItem', {
               demand_id: this.id
             });
             this.visible = false;

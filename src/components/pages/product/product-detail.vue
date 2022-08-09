@@ -239,6 +239,7 @@
   <confirm-dialog 
     v-if="confirmDialogVisible"
     :dialog-visible="confirmDialogVisible"
+    :get-list="getProductBase"
     dialog-content="是否确认项目所有事项已完成"
     type="product finish"
     @hide-dialog="closeConfirmDialog"

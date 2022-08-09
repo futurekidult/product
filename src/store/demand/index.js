@@ -101,7 +101,7 @@ export default {
       await axios.get('/demand/draft/list', payload).then((res) => {
         if(res.code === 200) {
           context.commit('setDraftList', res.data.list);
-          context.commit('draftListLength', res.data.total);
+          context.commit('setDraftListLength', res.data.total);
         }
       });
     },
