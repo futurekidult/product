@@ -67,7 +67,15 @@
       class="border"
     >
       <div class="select-title">
-        <span class="line">|</span> 需求列表
+        <div>
+          <span class="line">|</span> 需求列表
+          <el-button
+            type="text"
+            @click="toDraft"
+          >
+            我的草稿
+          </el-button>
+        </div>
         <el-button
           type="primary"
           class="create"
@@ -142,18 +150,10 @@
         <el-table-column label="操作">
           <template #default="scope">
             <el-button
-              v-if="scope.row.state !== 10"
               type="text"
               @click="toDetail(scope.row.id)"
             >
               查看详情
-            </el-button>
-            <el-button
-              v-else
-              type="text"
-              @click="toEdit(scope.row.id)"
-            >
-              编辑
             </el-button>
           </template>
         </el-table-column>
@@ -278,9 +278,6 @@ export default {
       this.$router.push(`/demand-list/${id}`);
       this.$store.commit('demand/setDemandDetailLoading', true);
     },
-    toEdit(id) {
-      this.$router.push(`/demand-list/edit/${id}`);
-    },
     toProductDetail(id) {
       if(this.$store.state.menuData.links.indexOf('/product-list') > -1) {
         this.$router.push(`/product-list/${id}`);
@@ -316,6 +313,9 @@ export default {
     searchDemand() {
       this.currentPage = 1;
       this.getDemandList();
+    },
+    toDraft() {
+      this.$router.push('/draft-list');
     }
   }
 };

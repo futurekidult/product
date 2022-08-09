@@ -4,6 +4,7 @@ import WorkBench from './components/pages/workbench/workbench-list.vue';
 import DemandList from './components/pages/demand/demand-list.vue';
 import DemandCreate from './components/pages/demand/demand-create.vue';
 import DemandEdit from './components/pages/demand/demand-edit.vue';
+import DraftList from './components/pages/demand/draft-list.vue'
 import DemandDetail from './components/pages/demand/demand-detail/demand-detail.vue';
 import SupplyList from './components/pages/supplier/supply-list.vue';
 import SupplierCreate from './components/pages/supplier/supplier-create.vue';
@@ -72,6 +73,14 @@ const router = createRouter({
               props: true
             }
           ]
+        },
+        {
+          path: '/draft-list',
+          name: 'draft list',
+          component: DraftList,
+          meta: {
+            title: '我的草稿'
+          }
         },
         {
           path: '/create-demand',
