@@ -27,7 +27,6 @@
             collapse-tags
             :props="defaultProps"
             show-checkbox
-            @focus="getOrganizationList"
             @clear="getAdminList"
           />
         </el-form-item>
@@ -194,6 +193,7 @@ export default {
   },
   mounted() {
     this.getAdminList();
+    this.getOrganizationList();
   },
   methods: {
     async getOrganizationList() {
@@ -201,7 +201,7 @@ export default {
       try {
         await this.$store.dispatch('system/getOrganizationList');
       } catch (err) {
-         this.$store.commit('system/setOrganizationLoading', false);
+        this.$store.commit('system/setOrganizationLoading', false);
         return;
       }
     },
@@ -276,14 +276,6 @@ export default {
       } catch (err) {
         return;
       }
-    },
-    handleSizeChange(val) {
-      this.pageSize = val;
-      this.getAdminList();
-    },
-    handleCurrentChange(val) {
-      this.page = val;
-      this.getAdminList();
     },
     resetForm() {
       this.chooseForm = {};

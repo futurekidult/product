@@ -12,8 +12,9 @@ export default {
       demandDetail: {},
       demandDetailLoading: true,
       optionLoading: true,
-      isDraft: false,
-      demandListLength: 0
+      demandListLength: 0,
+      draftList: [],
+      draftListLength: 0
     };
   },
   mutations: {
@@ -35,8 +36,11 @@ export default {
     setDemandDetailLoading(state, payload) {
       state.demandDetailLoading = payload;
     },
-    setDraft(state, payload) {
-      state.isDraft = payload;
+    setDraftList(state, payload) {
+      state.draftList = payload;
+    },
+    setDraftListLength(state, payload) {
+      state.draftListLength = payload;
     }
   },
   actions: {
@@ -92,6 +96,21 @@ export default {
           ElMessage.success(res.message);
         }
       });
+    },
+    async getDraftList(context, payload) {
+      await axios.get('/demand/draft/list', payload).then((res) => {
+        if(res.code === 200) {
+          context.commit('setDraftList', res.data.list);
+          context.commit('setDraftListLength', res.data.total);
+        }
+      });
+    },
+    async deleteDraftItem(_, payload) {
+      await axios.post('/demand/draft/delete', payload).then((res) => {
+        if(res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      })
     }
   }
 };
