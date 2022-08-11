@@ -21,6 +21,11 @@ module.exports = {
         multiline: 1
       }
     ],
+    'vue/no-v-for-template-key': 'off',
+    'vue/require-prop-types': 'off',
+    'vue/no-v-model-argument': 'off',
+    'vue/no-mutating-props': 'off',
+    'vue/no-multiple-template-root': 'off',
     'no-new-object': 'error',
     'object-shorthand': 'error',
     'no-prototype-builtins': 'error',

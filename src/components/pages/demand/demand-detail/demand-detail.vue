@@ -1,0 +1,149 @@
+<template>
+  <div>
+    <div v-loading="$store.state.demand.demandDetailLoading">
+      <div class="border">
+        <div class="detail-title">
+          {{ demandDetail.name }}  
+          <div class="tag-position">
+            <base-tag
+              class="tag"
+              :mode="changeColor(demandDetail.state)"
+            >
+              {{ demandDetail.state_desc }}
+            </base-tag>
+          </div>
+        </div>
+
+        <el-descriptions
+          :column="4"
+        >
+          <el-descriptions-item
+            v-if="demandDetail.state === 30"
+            label="关联产品:"
+          >
+            <el-button
+              type="text"
+              @click="toProductDetail(demandDetail.product_id)"
+            >
+              查看
+            </el-button>
+          </el-descriptions-item>
+          <el-descriptions-item label="创建人:">
+            {{ demandDetail.creator_desc }}
+          </el-descriptions-item>
+          <el-descriptions-item label="创建时间:">
+            {{ demandDetail.create_time }}
+          </el-descriptions-item>
+        </el-descriptions>
+      </div>
+
+      <div class="border">
+        <div
+          class="select-title"
+          :class="demandDetail.state === 20 ? 'review-msg' : ''"
+        >
+          <div><span class="line">|</span> 需求信息</div>
+          <div v-if="demandDetail.state === 20">
+            <el-button
+              v-if="!show"
+              type="text"
+              @click="showForm"
+            >
+              展开内容
+            </el-button>
+            <el-button
+              v-else
+              type="text"
+              @click="show = !show"
+            >
+              收起内容
+            </el-button>
+          </div>
+        </div>
+        <demand-form
+          v-if="
+            (show && demandDetail.state === 20) || demandDetail.state !== 20
+          "
+          type="detail"
+        />
+
+        <demand-review
+          v-if="demandDetail.state === 20"
+          :get-detail="getDemandDetail"
+        />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { formatterTime } from '../../../../utils';
+import DemandForm from '../common/demand-form.vue';
+import DemandReview from '../demand-detail/demand-review/demand-review.vue';
+
+export default {
+  components: {
+    DemandForm,
+    DemandReview
+  },
+  props: ['id'],
+  data() {
+    return {
+      demandDetail: {},
+      show: true
+    };
+  },
+  created() {
+    this.getDemandDetail();
+  },
+  methods: {
+    async getDemandDetail() {
+      try {
+        this.$store.commit('demand/setDemandDetailLoading', true);
+        await this.$store.dispatch('demand/getDemandDetail', {
+          params: {
+            demand_id: +this.$route.params.id
+          }
+        });
+        this.demandDetail = this.$store.state.demand.demandDetail;
+        this.demandDetail.create_time = formatterTime(
+          this.demandDetail.create_time
+        );
+      } catch (err) {
+        this.$store.commit('demand/setDemandDetailLoading', false);
+        return;
+      }
+    },
+    toProductDetail(id) {
+      if(this.$store.state.menuData.links.indexOf('/product-list') > -1) {
+        this.$router.push(`/product-list/${id}`);
+        this.$store.commit('setEntry', 'detail');
+      } else {
+        this.$message.error('无权限访问');
+      }
+    },
+    changeColor(val) {
+      if (val === 20) {
+        return 'warning';
+      } else if (val === 30) {
+        return 'success';
+      } else {
+        return 'danger';
+      }
+    },
+    showForm() {
+      this.show = !this.show;
+      this.$store.commit('demand/setDemandDetailLoading', true);
+    }
+  }
+};
+</script>
+
+<style scoped>
+.review-msg {
+  display: flex;
+  justify-content: space-between;
+  background: #f6f6f6;
+  padding: 15px;
+}
+</style>

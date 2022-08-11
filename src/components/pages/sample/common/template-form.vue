@@ -1,0 +1,207 @@
+<template>
+  <el-dialog
+    v-model="visible"
+    :title="title"
+    width="30%"
+    @close="cancel"
+  >
+    <el-form
+      ref="templateForm"
+      :model="templateForm"
+      label-width="100px"
+      :rules="templateRules"
+    >
+      <el-form-item
+        label="测试模板"
+        prop="user_template_file"
+      >
+        <el-upload
+          action
+          :show-file-list="false"
+          :http-request="handleFileSuccess"
+          :disabled="type !== 'create'"
+        >
+          <el-button
+            type="primary"
+            :disabled="type !== 'create'"
+          >
+            点击上传
+          </el-button>
+        </el-upload>
+        <div class="attachment">
+          支持office文档格式,文件不能超过5MB(仅限一个)
+        </div>
+      </el-form-item>
+      <el-form-item>
+        <div
+          v-if="JSON.stringify(attachment) !== '{}'"
+          class="attachment-list"
+        >
+          <div>{{ attachment.name }}</div>
+          <div style="display: flex">
+            <el-button
+              v-if="type === 'create'"
+              type="text"
+              @click="deleteFile"
+            >
+              删除
+            </el-button>
+            <el-button
+              v-else
+              type="text"
+              @click="download(attachment.id, attachment.name)"
+            >
+              下载
+            </el-button>
+            <span 
+              v-if="attachment.type === 12860"
+              class="table-btn"
+            >|</span>
+            <el-button
+              v-if="attachment.type === 12860"
+              type="text"
+              @click="showViewFile(attachment.id)"
+            >
+              预览
+            </el-button>
+          </div>
+        </div>
+      </el-form-item>
+      <el-divider />
+      <div
+        v-if="type === 'create'"
+        style="text-align: right"
+      >
+        <el-button
+          class="close-btn"
+          @click="cancel"
+        >
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          @click="submitTemplateForm"
+        >
+          提交
+        </el-button>
+      </div>
+    </el-form>
+  </el-dialog>
+</template>
+
+<script>
+import { downloadFile, getFile, previewFile } from '../../../../utils';
+export default {
+  inject: ['getUser'],
+  props: ['id', 'dialogVisible', 'type', 'title'],
+  emits: ['hide-dialog'],
+  data() {
+    return {
+      templateForm: {},
+      visible: this.dialogVisible,
+      attachment: {},
+      templateRules: {
+        user_template_file: [
+          {
+            required: true,
+            message: '请上传附件'
+          }
+        ]
+      }
+    };
+  },
+  mounted() {
+    if (this.type === 'view') {
+      this.getTemplate();
+    }
+  },
+  methods: {
+    async getTemplate() {
+      try {
+        await this.$store.dispatch('sample/user/getTemplate', {
+          params: {
+            user_test_apply_id: this.id
+          }
+        });
+        this.templateForm = this.$store.state.sample.user.templateFile;
+        this.attachment = this.templateForm.user_template_file;
+      } catch (err) {
+        return;
+      }
+    },
+    async createTemplate(val) {
+      let body = {
+        user_test_apply_id: this.id,
+        user_template_file: val.user_template_file
+      };
+      try {
+        await this.$store.dispatch('sample/user/createTemplate', body);
+        this.visible = false;
+        this.getUser();
+      } catch (err) {
+        return;
+      }
+    },
+    async showViewFile(id) {
+      this.$store.commit('setAttachmentState', false);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          previewFile(this.$store.state.viewLink);
+        }
+      } catch (err) {
+        return;
+      }
+    },
+    async download(id, name) {
+      this.$store.commit('setAttachmentState', false);
+      try {
+        await this.$store.dispatch('getViewLink', { params: { id } });
+        if (this.$store.state.attachmentState) {
+          downloadFile(this.$store.state.viewLink, name);
+        }
+      } catch (err) {
+        return;
+      }
+    },
+    cancel() {
+      this.visible = false;
+      this.$emit('hide-dialog', this.visible);
+    },
+    async handleFileSuccess(e) {
+      if(e.file.size > 5 * 1024 * 1024 ) {
+        this.$message.warning('附件大小超过限制，请重新上传！');
+      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
+        this.$store.commit('setUploadState', false);
+        let form = getFile(e);
+        try {
+          await this.$store.dispatch('uploadFile', form);
+          if (this.$store.state.uploadState) {
+            this.attachment = {
+              id: this.$store.state.fileRes.id,
+              name: this.$store.state.fileRes.file_name,
+              type: this.$store.state.fileRes.type
+            };
+          }
+        } catch (err) {
+          return;
+        }
+      } else {
+        this.$message.warning('上传的附件格式有误！');
+      }
+    },
+    deleteFile() {
+      this.attachment = {};
+      this.templateForm.user_template_file = '';
+    },
+    submitTemplateForm() {
+      this.templateForm.user_template_file = this.attachment.id;
+      this.$refs.templateForm.validate((valid) => {
+        if (valid) {
+          this.createTemplate(this.templateForm);
+        }
+      });
+    }
+  }
+};
+</script>

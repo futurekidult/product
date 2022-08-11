@@ -1,0 +1,59 @@
+@startmindmap
+title 新品列表
+
++_ ProductList
+++_ BaseBreadcrumb
+++_ ProductAll
++++_ BasePagiantion
+
+@endmindmap
+
+@startmindmap
+title 新品详情
+
++_ ProductDetail
+++ TerminateForm
+++_ BaseTag
+++_ ProductBasic(调研中)
+++_ RelatedMember(调研中)
++++_ MemberForm
++++_ BasePagination
+++_ ProductSurvey(调研中)
++++_ MarketSurvey
++++_ PlatformSurvey
++++_ UserAnalysis
++++_ ProductPlan
+++++_ SurveySchedule
+++++_ CompetitiveTable
++++_ RiskSurvey
++++_ UserSurvey
+++++_ SurveyForm
+++_ ProjectSetup(立项中)
++++_ ProfitCalculation
+++++_ ProfitForm
+++++_ PricingAdjust
+++++_ PricingLog
+++++_ ProfitEdit
++++_ ProcessTable
+++_ ProductPrice(定价阶段)
++++_ BasePagination
+++_ ProductPatent(样品阶段)
++++_ ContractReport
++++_ PatentApply
+++++_ CompetitiveTable
+++_ MouldMessage(定价阶段)
++++_ BasePagination
+++_ SampleMessage(样品阶段)
++++_ BasePagination
+++_ QuestionAll(样品阶段)
++++_ BasePagination
+++_ ProductOrder(下单阶段)
++++_ BasePagination
++++_ OrderDetail
+++++_ SkuName
+++++_ ContractList
+++++_ ProductionSample
+++_ ProductPackage(包材阶段)
++++_ BasePagination
+
+@endmindmap
