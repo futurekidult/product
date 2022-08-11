@@ -4,6 +4,7 @@ import WorkBench from './components/pages/workbench/workbench-list.vue';
 import DemandList from './components/pages/demand/demand-list.vue';
 import DemandCreate from './components/pages/demand/demand-create.vue';
 import DemandEdit from './components/pages/demand/demand-edit.vue';
+import DraftList from './components/pages/demand/draft-list.vue'
 import DemandDetail from './components/pages/demand/demand-detail/demand-detail.vue';
 import SupplyList from './components/pages/supplier/supply-list.vue';
 import SupplierCreate from './components/pages/supplier/supplier-create.vue';
@@ -26,7 +27,7 @@ import RoleList from './components/pages/system/role-list.vue';
 import PrivilegeList from './components/pages/system/privilege-list.vue';
 import CalculationRule from './components/pages/system/calculation-rule.vue';
 import RateList from './components/pages/system/rate-list.vue';
-import TodoList from './components/pages/system/todo-list.vue';
+import SystemTodo from './components/pages/system/system-todo.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -72,6 +73,14 @@ const router = createRouter({
               props: true
             }
           ]
+        },
+        {
+          path: '/draft-list',
+          name: 'draft list',
+          component: DraftList,
+          meta: {
+            title: '我的草稿'
+          }
         },
         {
           path: '/create-demand',
@@ -245,7 +254,7 @@ const router = createRouter({
           }
         },
         {
-          path: '/system-list/basic-data/profit-calculation/rule',
+          path: '/system-list/basic-data/profit-calculation-rule',
           name: 'rule',
           component: CalculationRule,
           meta: {
@@ -263,7 +272,7 @@ const router = createRouter({
         {
           path: '/system-list/todo-list',
           name: 'todo list',
-          component: TodoList,
+          component: SystemTodo,
           meta: {
             title: '待办转移'
           }

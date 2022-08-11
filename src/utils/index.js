@@ -13,7 +13,7 @@ export const formatterTime = (val) => {
       date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
     }:`;
     let second = `${
-      date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
+      date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds()
     }`;
     return year + month + day + hour + minute + second;
   } else {
@@ -33,12 +33,14 @@ export const timestamp = (val) => {
 export const downloadFile = (val, name) => {
   let link = document.createElement('a');
   link.href = val;
+  link.target = '_blank';
   link.download = name;
   link.click();
 };
 
 export const previewFile = (val) => {
   let a = document.createElement('a');
+  a.target = '_blank';
   a.href = val;
   a.click();
 };

@@ -103,8 +103,11 @@
     </el-table>
 
     <base-pagination
-      :length="questionList.length"
-      :get-list="getQuestion"
+      :length="$store.state.product.questionListLength"
+      :current-page="page"
+      :page-num="pageNum"
+      @change-size="changePageSize"
+      @change-page="changeCurrentPage"
     />
   </div>
   <reason-form
@@ -166,7 +169,8 @@ export default {
     ReasonForm
   },
   inject: ['getQuestion'],
-  props: ['questionList'],
+  props: ['questionList', 'currentPage', 'pageSize'],
+  emits: ['change-page', 'change-size'],
   data() {
     return {
       ignoreFormVisible: false,
@@ -176,8 +180,18 @@ export default {
       consequence: '',
       reasonId: 0,
       resolveDialog: false,
-      resolveId: 0
+      resolveId: 0,
+      page: this.currentPage,
+      pageNum: this.pageSize
     };
+  },
+  watch: {
+    currentPage(val) {
+      this.page = val;
+    },
+    pageSize(val) {
+      this.pageNum = val;
+    }
   },
   methods: {
     async submitQuestionResult(id, val, reason = '') {
@@ -237,8 +251,20 @@ export default {
       }
     },
     toSampleDetail(id) {
-      this.$router.push(`/sample-list/${id}`);
-      this.$store.commit('setActiveTab', 'base');
+      if(this.$store.state.menuData.links.indexOf('/sample-list') > -1) {
+        this.$router.push(`/sample-list/${id}`);
+        this.$store.commit('setActiveTab', 'base');
+      } else {
+        this.$message.error('无权限访问');
+      }
+    },
+    changeCurrentPage(val) {
+      this.page = val;
+      this.$emit('change-page', this.page);
+    },
+    changePageSize(val) {
+      this.pageNum = val;
+      this.$emit('change-size', this.pageNum);
     }
   }
 };

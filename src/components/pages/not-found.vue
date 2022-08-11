@@ -2,7 +2,7 @@
   <el-container>
     <el-header>
       <div class="header-left">
-        <div>
+        <div class="nav-img">
           <img src="../../assets/images/logo.png">
         </div>
         <el-divider
@@ -14,14 +14,6 @@
         </div>
       </div>
       <div class="header-right">
-        <div style="padding: 4px 0">
-          <el-avatar
-            :size="25"
-            style="padding: 5px"
-          >
-            <user-filled />
-          </el-avatar>
-        </div>
         <div>欢迎您，{{ $store.state.userInfo.name }}</div>
         <el-divider
           direction="vertical"
@@ -50,12 +42,7 @@
 </template>
 
 <script>
-import { UserFilled } from '@element-plus/icons-vue';
-
 export default {
-  components: {
-    UserFilled
-  },
   methods: {
     toIndex() {
       this.$router.push('/');
@@ -80,10 +67,13 @@ export default {
 
 .header-left {
   display: flex;
+  align-items: center;
 }
 
 .header-left > div {
-  height: 43px;
+  height: 33px;
+  margin-left: 8px;
+  margin-right: 8px;
 }
 
 .system {
@@ -99,7 +89,7 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: calc(100vh - 60px);
 }
 
 .not-found div {
@@ -112,6 +102,7 @@ export default {
   display: flex;
   height: 43px;
   line-height: 43px;
+  font-size: 14px;
 }
 
 .header-right > div {

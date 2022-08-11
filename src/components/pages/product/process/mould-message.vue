@@ -60,7 +60,10 @@
 
     <base-pagination
       :length="$store.state.product.mouldListLength"
-      :get-list="getMould"
+      :current-page="page"
+      :page-num="pageNum"
+      @change-size="changePageSize"
+      @change-page="changeCurrentPage"
     />
   </div>
 
@@ -131,7 +134,10 @@
 
     <base-pagination
       :length="$store.state.product.selectedMouldListLength"
-      :get-list="getAllMouldList"
+      :current-page="allCurrentPage"
+      :page-num="allPageSize"
+      @change-size="changeAllPageSize"
+      @change-page="changeAllCurrentPage"
     />
 
     <el-divider style="margin: 68px 0px 20px" />
@@ -156,7 +162,8 @@
 import { changeTimestamp } from '../../../../utils';
 export default {
   inject: [ 'getMould'],
-  props: ['mouldList'],
+  props: ['mouldList', 'currentPage', 'pageSize'],
+  emits: ['change-page', 'change-size'],
   data() {
     return {
       mouldSelectedVisible: false,
@@ -164,14 +171,26 @@ export default {
       mouldIds: [],
       deleteDialog: false,
       mouldId: 0,
-      allMouldList: []
+      allMouldList: [],
+      page: this.currentPage,
+      pageNum: this.pageSize,
+      allCurrentPage: 1,
+      allPageSize: 10
     };
   },
+  watch: {
+    currentPage(val) {
+      this.page = val;
+    },
+    pageSize(val) {
+      this.pageNum = val;
+    }
+  },
   methods: {
-    async getAllMouldList(currentPage = 1, pageSize = 10) {
+    async getAllMouldList() {
       let params = {
-        page_size: pageSize,
-        current_page: currentPage
+        page_size: this.allPageSize,
+        current_page: this.allCurrentPage
       };
       try {
         await this.$store.dispatch('product/getSelectedMouldList', { params });
@@ -227,9 +246,29 @@ export default {
       this.mouldId = id;
     },
     toDetail(id) {
-      this.$router.push(`/mould-list/${id}`);
-      this.$store.commit('setActiveTab', 'design');
-    }
+      if(this.$store.state.menuData.links.indexOf('/mould-list') > -1) {
+        this.$router.push(`/mould-list/${id}`);
+        this.$store.commit('setActiveTab', 'design');
+      } else {
+        this.$message.error('无权限访问');
+      }
+    },
+    changeCurrentPage(val) {
+      this.page = val;
+      this.$emit('change-page', this.page);
+    },
+    changePageSize(val) {
+      this.pageNum = val;
+      this.$emit('change-size', this.pageNum);
+    },
+     changeAllCurrentPage(val) {
+      this.currentPage = val;
+      this.getAllMouldList();
+    },
+    changeAllPageSize(val) {
+      this.pageSize = val;
+      this.getAllMouldList();
+    } 
   }
 };
 </script>

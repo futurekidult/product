@@ -78,15 +78,6 @@
         >
           <div>{{ attachment.name }}</div>
           <div style="display: flex">
-            <div v-if="attachment.type === 12860">
-              <el-button
-                type="text"
-                @click="showViewFile(attachment.id)"
-              >
-                预览
-              </el-button>
-              <span class="table-btn">|</span>
-            </div>
             <el-button
               v-if="type === 'apply'"
               type="text"
@@ -100,6 +91,17 @@
               @click="download(attachment.id, attachment.name)"
             >
               下载
+            </el-button>
+            <span 
+              v-if="attachment.type === 12860"
+              class="table-btn"
+            >|</span>
+            <el-button
+              v-if="attachment.type === 12860"
+              type="text"
+              @click="showViewFile(attachment.id)"
+            >
+              预览
             </el-button>
           </div>
         </div>
@@ -164,15 +166,6 @@
           >
             <div>{{ requiredAttachment.name }}</div>
             <div style="display: flex">
-              <div v-if="requiredAttachment.type === 12860">
-                <el-button
-                  type="text"
-                  @click="showViewFile(requiredAttachment.id)"
-                >
-                  预览
-                </el-button>
-                <span class="table-btn">|</span>
-              </div>
               <el-button
                 v-if="type !== 'view'"
                 type="text"
@@ -188,6 +181,17 @@
                 "
               >
                 下载
+              </el-button>
+              <span 
+                v-if="requiredAttachment.type === 12860"
+                class="table-btn"
+              >|</span>
+              <el-button
+                v-if="requiredAttachment.type === 12860"
+                type="text"
+                @click="showViewFile(requiredAttachment.id)"
+              >
+                预览
               </el-button>
             </div>
           </div>
@@ -411,7 +415,9 @@ export default {
       this.$emit('hide-dialog', this.visible);
     },
     async handleRequirementFileSuccess(e) {
-      if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
+      if(e.file.size > 5 * 1024 * 1024 ) {
+        this.$message.warning('附件大小超过限制，请重新上传！');
+      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
         this.$store.commit('setUploadState', false);
         let form = getFile(e);
         try {
@@ -428,7 +434,7 @@ export default {
           return;
         }
       } else {
-        this.$message.error('上传的附件格式有误！');
+        this.$message.warning('上传的附件格式有误！');
       }
     },
     submitForm() {
@@ -449,7 +455,9 @@ export default {
       });
     },
     async handleFileSuccess(e) {
-      if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
+      if(e.file.size > 5 * 1024 * 1024 ) {
+        this.$message.warning('附件大小超过限制，请重新上传！');
+      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
         this.$store.commit('setUploadState', false);
         let form = getFile(e);
         try {
@@ -466,7 +474,7 @@ export default {
           return;
         }
       } else {
-        this.$message.error('上传的附件格式有误！');
+        this.$message.warning('上传的附件格式有误！');
       }
     },
     deleteFile() {

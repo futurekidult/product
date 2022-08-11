@@ -5,8 +5,9 @@ import store from './store/index';
 import BaseBreadcrumb from './components/common/base-breadcrumb.vue';
 import BasePagination from './components/common/base-pagination.vue';
 import BaseTag from './components/common/base-tag.vue';
+import ConfirmDialog from './components/common/confirm-dialog.vue';
 import 'element-plus/dist/index.css';
-import ElementPlus from 'element-plus';
+import { ElMessage } from 'element-plus';
 
 let version = process.env.VERSION;
 let localVersion = localStorage.getItem('projectVersion');
@@ -20,10 +21,11 @@ const app = createApp(App);
 app.component('BaseBreadcrumb', BaseBreadcrumb);
 app.component('BasePagination', BasePagination);
 app.component('BaseTag', BaseTag);
+app.component('ConfirmDialog', ConfirmDialog);
 
 app.use(router);
 app.use(store);
+app.config.globalProperties.$message = ElMessage;
 
-app.use(ElementPlus);
 
 app.mount('#app');

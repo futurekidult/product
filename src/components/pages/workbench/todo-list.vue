@@ -50,11 +50,6 @@
         </template>
       </el-table-column>
     </el-table>
-
-    <base-pagination
-      :length="$store.state.workbench.todoListLength"
-      :get-list="getList"
-    />
   </div>
 </template>
 
@@ -67,7 +62,7 @@ export default {
     changeCellColor(val) {
       if (val <= 20) {
         return 'result-ing';
-      } else if (val === 30) {
+      } else if (val === 30 || val === 50) {
         return 'result-fail';
       } else {
         return 'result-pass';
@@ -79,11 +74,19 @@ export default {
         if(taskId === 760) {
           this.$store.commit('supplier/setActionType', 'approval');
         } 
-        this.$router.push(`/${taskArr[0]}-list/${id}`);
+        if(this.$store.state.menuData.links.indexOf(`/${taskArr[0]}-list`) > -1) {
+          this.$router.push(`/${taskArr[0]}-list/${id}`);
+        } else {
+          this.$message.error('无权限访问');
+        }
       } else {
-        this.$router.push(`/${taskArr[0]}-list/${id}`);
-        this.$store.commit('setActiveTab', taskArr[1]);
-        this.$store.commit('setEntry', 'workbench');
+         if(this.$store.state.menuData.links.indexOf(`/${taskArr[0]}-list`) > -1) {
+          this.$router.push(`/${taskArr[0]}-list/${id}`);
+          this.$store.commit('setActiveTab', taskArr[1]);
+          this.$store.commit('setEntry', 'workbench');
+        } else {
+          this.$message.error('无权限访问');
+        }
       }
     }
   }

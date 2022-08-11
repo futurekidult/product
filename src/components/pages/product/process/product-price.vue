@@ -62,11 +62,6 @@
         </template>
       </el-table-column>
     </el-table>
-
-    <base-pagination
-      :length="pricingList.length"
-      :get-list="getPricing"
-    />
   </div>
 </template>
 
@@ -76,7 +71,11 @@ export default {
   props: ['changeColor', 'pricingList'],
   methods: {
     toDetail(id) {
-      this.$router.push(`/price-list/${id}`);
+      if(this.$store.state.menuData.links.indexOf('/price-list') > -1) {
+        this.$router.push(`/price-list/${id}`);
+      } else {
+        this.$message.error('无权限访问');
+      }
     }
   }
 };

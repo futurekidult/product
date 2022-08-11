@@ -89,20 +89,22 @@
           </div>
           <div style="display: flex">
             <el-button
+              v-if="!isDisabled"
+              type="text"
+              @click="deleteImg(item.id)"
+            >
+              删除
+            </el-button>
+            <span 
+              v-if="!isDisabled"
+              class="table-btn"
+            >|</span>
+            <el-button
               type="text"
               @click="showViewDialog(item.id)"
             >
               预览
             </el-button>
-            <div v-if="!isDisabled">
-              <span class="table-btn">|</span>
-              <el-button
-                type="text"
-                @click="deleteImg(item.id)"
-              >
-                删除
-              </el-button>
-            </div>
           </div>
         </div>
       </el-form-item>
@@ -170,28 +172,30 @@ export default {
       }
     },
     async handleImgSuccess(e) {
-      if(e.file.type.indexOf('image') > -1) {
+      if(e.file.size > 5 * 1024 * 1024 ) {
+        this.$message.warning('附件大小超过限制，请重新上传！');
+      } else if(e.file.type.indexOf('image') > -1) {
          if (this.imgList.length > 8) {
           this.$message.error('附件最多传9张');
-        } else {
-          this.$store.commit('setUploadState', false);
-          let form = getFile(e);
-          try {
-            await this.$store.dispatch('uploadFile', form);
-            if (this.$store.state.uploadState) {
-              this.res = this.$store.state.fileRes;
-              this.imgList.push({
-                id: this.res.id,
-                name: this.res.file_name,
-                type: this.res.type
-              });
+          } else {
+            this.$store.commit('setUploadState', false);
+            let form = getFile(e);
+            try {
+              await this.$store.dispatch('uploadFile', form);
+              if (this.$store.state.uploadState) {
+                this.res = this.$store.state.fileRes;
+                this.imgList.push({
+                  id: this.res.id,
+                  name: this.res.file_name,
+                  type: this.res.type
+                });
+              }
+            } catch (err) {
+              return;
             }
-          } catch (err) {
-            return;
           }
-        }
       } else {
-        this.$message.error('上传的图片格式有误！');
+        this.$message.warning('上传的图片格式有误！');
       }
     }, 
     async showViewDialog(id) {

@@ -72,31 +72,31 @@
             {{ file.name }}
           </div>
           <div style="display: flex">
-            <div v-if="file.type === 12860">
-              <el-button
-                type="text"
-                @click="showViewFile(file.id)"
-              >
-                预览
-              </el-button>
-              <span class="table-btn">|</span>
-            </div>
-            <div style="display: flex">
-              <el-button
-                v-if="!isDisabled"
-                type="text"
-                @click="deleteFile"
-              >
-                删除
-              </el-button>
-              <el-button
-                v-else
-                type="text"
-                @click="download(file.id, file.name)"
-              >
-                下载
-              </el-button>
-            </div>
+            <el-button
+              v-if="!isDisabled"
+              type="text"
+              @click="deleteFile"
+            >
+              删除
+            </el-button>
+            <el-button
+              v-else
+              type="text"
+              @click="download(file.id, file.name)"
+            >
+              下载
+            </el-button>
+            <span 
+              v-if="file.type === 12860"
+              class="table-btn"
+            >|</span>
+            <el-button
+              v-if="file.type === 12860"
+              type="text"
+              @click="showViewFile(file.id)"
+            >
+              预览
+            </el-button>
           </div>
         </div>
       </el-form-item>
@@ -140,8 +140,10 @@ export default {
   },
   methods: {
     async handleFileSuccess(e) {
-     if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
-       this.$store.commit('setUploadState', false);
+      if(e.file.size > 5 * 1024 * 1024 ) {
+        this.$message.warning('附件大小超过限制，请重新上传！');
+      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
+        this.$store.commit('setUploadState', false);
         let form = getFile(e);
         try {
           await this.$store.dispatch('uploadFile', form);
@@ -156,8 +158,8 @@ export default {
         } catch (err) {
           return;
         }
-     } else {
-      this.$message.error('上传的附件格式有误！');
+      } else {
+        this.$message.warning('上传的附件格式有误！');
      }
     },
     async submitRequest() {

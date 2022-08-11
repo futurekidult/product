@@ -27,7 +27,6 @@
             collapse-tags
             :props="defaultProps"
             show-checkbox
-            @focus="getOrganizationList"
             @clear="getAdminList"
           />
         </el-form-item>
@@ -49,7 +48,7 @@
       <div>
         <el-button
           type="primary"
-          @click="getAdminList"
+          @click="searchAdmin"
         >
           查询
         </el-button>
@@ -102,19 +101,13 @@
         </el-table-column>
       </el-table>
 
-      <div 
-        class="pagination" 
-      >
-        <el-pagination
-          v-model:currentPage="page"
-          v-model:page-size="pageSize"
-          layout="total,sizes,prev,pager,next,jumper"
-          :total="$store.state.system.adminListLength"
-          :page-sizes="[10, 20, 30, 50]"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
-      </div>
+      <base-pagination 
+        :length="$store.state.system.adminListLength"
+        :current-page="currentPage"
+        :page-num="pageSize"
+        @change-size="changePageSize"
+        @change-page="changeCurrentPage"
+      />
     </div>
   </div>
   <el-dialog
@@ -184,7 +177,7 @@ export default {
         label: 'name',
         disabled: 'disabled'
       },
-      page: 1,
+      currentPage: 1,
       pageSize: 10,
       state: [
         {
@@ -200,6 +193,7 @@ export default {
   },
   mounted() {
     this.getAdminList();
+    this.getOrganizationList();
   },
   methods: {
     async getOrganizationList() {
@@ -207,13 +201,13 @@ export default {
       try {
         await this.$store.dispatch('system/getOrganizationList');
       } catch (err) {
-         this.$store.commit('system/setOrganizationLoading', false);
+        this.$store.commit('system/setOrganizationLoading', false);
         return;
       }
     },
     async getAdminList() {
        let params = {
-        current_page:  this.page,
+        current_page:  this.currentPage,
         page_size: this.pageSize,
         name: this.chooseForm.name,
         dept_ids: !this.chooseForm.dept_ids ? '' : this.chooseForm.dept_ids.join(','),
@@ -283,16 +277,21 @@ export default {
         return;
       }
     },
-    handleSizeChange(val) {
+    resetForm() {
+      this.chooseForm = {};
+      this.pageSize = 10;
+      this.searchAdmin();
+    },
+    changeCurrentPage(val) {
+      this.currentPage = val;
+      this.getAdminList();
+    },
+    changePageSize(val) {
       this.pageSize = val;
       this.getAdminList();
     },
-    handleCurrentChange(val) {
-      this.page = val;
-      this.getAdminList();
-    },
-    resetForm() {
-      this.chooseForm = {};
+    searchAdmin() {
+      this.currentPage = 1;
       this.getAdminList();
     }
   }

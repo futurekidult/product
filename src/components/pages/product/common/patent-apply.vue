@@ -251,6 +251,8 @@ export default {
         await this.$store.dispatch('product/patent/patentReview', body);
         this.visible = false;
         this.getPatent();
+        this.getPatentProgress();
+        this.getPatentContract();
       } catch (err) {
         return;
       }

@@ -78,20 +78,6 @@
                 下载
               </el-button>
             </div>
-            <div
-              v-if="
-                JSON.stringify(scope.row.test_result_file) !== '{}' &&
-                  scope.row.button_state.is_upload === 0
-              "
-            >
-              <span class="table-btn">|</span>
-              <el-button
-                type="text"
-                @click="deleteFile"
-              >
-                删除
-              </el-button>
-            </div>
           </div>
         </template>
       </el-table-column>
@@ -133,7 +119,10 @@
 
       <base-pagination
         :length="$store.state.sample.user.total"
-        :get-list="getList"
+        :current-page="currentPage"
+        :page-num="pageSize"
+        @change-size="changePageSize"
+        @change-page="changeCurrentPage"
       />
     </div>
     <user-form
@@ -147,7 +136,7 @@
       :id="testUserId"
       :user-id="userId"
       :dialog-visible="resultFormVisible"
-      :get-list="getList"
+      :get-list="getUserList"
       @hide-dialog="closeResultForm"
     />
 
@@ -166,7 +155,7 @@ import SampleResult from './sample-result.vue';
 import ViewUser from './view-user.vue';
 import {
   downloadFile,
-  getFile,
+  formatterTime,
   previewFile
 } from '../../../../utils';
 
@@ -176,13 +165,11 @@ export default {
     SampleResult,
     ViewUser
   },
-  inject: ['getList'],
   provide() {
     return {
-      getUser: this.getList
+      getUser: this.getUserList
     };
   },
-  props: ['userList'],
   data() {
     return {
       userVisible: false,
@@ -190,11 +177,35 @@ export default {
       testUserId: 0,
       viewUserVisible: false,
       viewUserid: 0,
-      file: {},
-      userId: 0
+      userId: 0,
+      userList: [],
+      currentPage: 1,
+      pageSize: 10
     };
   },
+  mounted() {
+    this.getUserList();
+  },
   methods: {
+    async getUserList() {
+      try {
+        await this.$store.dispatch('sample/user/getUserList', {
+          params: {
+            sample_id: +this.$route.params.id,
+            current_page: this.currentPage,
+            page_size: this.pageSize
+          }
+        });
+        this.userList = this.$store.state.sample.user.userList;
+        this.userList.forEach((item) => {
+          item.create_time = formatterTime(item.create_time);
+          item.delivery_time = formatterTime(item.delivery_time);
+          item.upload_time = formatterTime(item.upload_time);
+        });
+      } catch (err) {
+        return;
+      }
+    },
     async deliverSample(testId, userId) {
       let body = {
         user_test_apply_id: testId,
@@ -203,31 +214,9 @@ export default {
       };
       try {
         await this.$store.dispatch('sample/user/deliverSample', body);
-        this.getList();
+        this.getUserList();
       } catch (err) {
         return;
-      }
-    },
-    async handleFileSuccess(e) {
-      if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
-        this.$store.commit('setUploadState', false);
-        let form = getFile(e);
-        try {
-          await this.$store.dispatch('uploadFile', form);
-          if (this.$store.state.uploadState) {
-            this.show = true;
-            this.file = {
-              id: this.$store.state.fileRes.id,
-              name: this.$store.state.fileRes.file_name,
-              type: this.$store.state.fileRes.type
-            };
-            this.getList();
-          }
-        } catch (err) {
-          return;
-        }
-      } else {
-        this.$message.error('上传的附件格式有误！');
       }
     },
     async download(id, name) {
@@ -251,9 +240,6 @@ export default {
       } catch (err) {
         return;
       }
-    },
-    deleteFile() {
-      this.file = {};
     },
     showResultForm(id, userId) {
       this.resultFormVisible = true;
@@ -282,6 +268,14 @@ export default {
       } else {
         return 'result-ing';
       }
+    },
+    changeCurrentPage(val) {
+      this.currentPage = val;
+      this.getUserList();
+    },
+    changePageSize(val) {
+      this.pageSize = val;
+      this.getUserList();
     }
   }
 };

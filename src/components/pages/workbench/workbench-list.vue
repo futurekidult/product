@@ -23,12 +23,12 @@
                 placeholder="输入要搜索的内容"
                 style="width: 50%"
                 clearable
-                @clear="getTodoList()"
+                @clear="searchTodo"
               >
                 <template #append>
                   <el-button
                     type="primary"
-                    @click="getTodoList()"
+                    @click="searchTodo"
                   >
                     搜索
                   </el-button>
@@ -39,8 +39,8 @@
                 placeholder="请选择"
                 style="margin-left: 15px; width: 50%"
                 clearable
-                @clear="getTodoList()"
-                @change="getTodoList()"
+                @clear="searchTodo"
+                @change="searchTodo"
               >
                 <el-option
                   v-for="item in workbenchState"
@@ -55,6 +55,14 @@
             :todo-list="todoList"
             :get-list="getTodoList"
           />
+          
+          <base-pagination
+            :length="$store.state.workbench.todoListLength"
+            :current-page="currentPage"
+            :page-num="pageSize"
+            @change-size="changePageSize"
+            @change-page="changeCurrentPage"
+          />
         </div>
       </el-tab-pane>
       <el-tab-pane
@@ -64,6 +72,14 @@
         <inform-list
           :notification-list="notificationList"
           :get-list="getNotificationList"
+        />
+
+        <base-pagination
+          :length="$store.state.workbench.notificationListLength"
+          :current-page="informCurrentPage"
+          :page-num="informPageSize"
+          @change-size="changeInformPageSize"
+          @change-page="changeInformCurrentPage"
         />
       </el-tab-pane>
     </el-tabs>
@@ -88,7 +104,11 @@ export default {
       notificationList: [],
       chooseForm: {},
       workbenchState: [],
-      count: 0
+      count: 0,
+      currentPage: 1,
+      pageSize: 10,
+      informCurrentPage: 1,
+      informPageSize: 10
     };
   },
   mounted() {
@@ -119,11 +139,11 @@ export default {
         }
       }
     },
-    async getTodoList(currentPage = 1, pageSize = 10) {
+    async getTodoList() {
       this.$store.commit('workbench/setTodoListLoading', true);
       let params = this.chooseForm;
-      params['current_page'] = currentPage;
-      params['page_size'] = pageSize;
+      params['current_page'] = this.currentPage;
+      params['page_size'] = this.pageSize;
       try {
         await this.$store.dispatch('workbench/getTodoList', { params });
         this.todoList = this.$store.state.workbench.todoList;
@@ -136,11 +156,11 @@ export default {
         return;
       }
     },
-    async getNotificationList(currentPage = 1, pageSize = 10) {
+    async getNotificationList() {
       this.$store.commit('workbench/setNotificationListLoading', true);
       let params = {
-        current_page: currentPage,
-        page_size: pageSize
+        current_page: this.informCurrentPage,
+        page_size: this.informPageSize
       };
       try {
         await this.$store.dispatch('workbench/getNotificationList', { params });
@@ -155,11 +175,35 @@ export default {
     },
     handleClick(tab) {
       if (tab.props.name === 'todolist') {
+        this.currentPage = 1;
+        this.pageSize = 10;
         this.getTodoCount();
         this.getTodoList();
       } else {
+        this.informCurrentPage = 1;
+        this.informPageSize = 10;
         this.getNotificationList();
       }
+    },
+    changeCurrentPage(val) {
+      this.currentPage = val;
+      this.getTodoList();
+    },
+    changePageSize(val) {
+      this.pageSize = val;
+       this.getTodoList();
+    },
+    searchTodo(){
+      this.currentPage = 1;
+      this.getTodoList();
+    },
+    changeInformPageSize(val) {
+      this.informPageSize = val;
+      this.getNotificationList();
+    },
+    changeInformCurrentPage(val) {
+      this.informCurrentPage = val;
+      this.getNotificationList();
     }
   }
 };

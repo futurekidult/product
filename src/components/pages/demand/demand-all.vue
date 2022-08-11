@@ -16,7 +16,7 @@
               v-model="chooseForm.name"
               clearable
               placeholder="请输入产品名称"
-              @clear="getDemandList()"
+              @clear="searchDemand"
             />
           </el-form-item>
           <el-form-item label="创建人">
@@ -26,7 +26,7 @@
               clearable
               filterable
               :props="defaultProps"
-              @clear="getDemandList()"
+              @clear="searchDemand"
             />
           </el-form-item>
           <el-form-item label="状态">
@@ -34,7 +34,7 @@
               v-model="chooseForm.state"
               clearable
               placeholder="请选择需求状态"
-              @clear="getDemandList()"
+              @clear="searchDemand"
             >
               <el-option
                 v-for="item in demandState"
@@ -48,7 +48,7 @@
         <div>
           <el-button
             type="primary"
-            @click="getDemandList()"
+            @click="searchDemand"
           >
             查询
           </el-button>
@@ -66,8 +66,16 @@
       v-loading="$store.state.demand.demandLoading"
       class="border"
     >
-      <div class="select-title">
-        <span class="line">|</span> 需求列表
+      <div class="select-title  demand-title">
+        <div>
+          <span class="line">|</span> 需求列表
+          <el-button
+            type="text"
+            @click="toDraft"
+          >
+            我的草稿
+          </el-button>
+        </div>
         <el-button
           type="primary"
           class="create"
@@ -142,18 +150,10 @@
         <el-table-column label="操作">
           <template #default="scope">
             <el-button
-              v-if="scope.row.state !== 10"
               type="text"
               @click="toDetail(scope.row.id)"
             >
               查看详情
-            </el-button>
-            <el-button
-              v-else
-              type="text"
-              @click="toEdit(scope.row.id)"
-            >
-              编辑
             </el-button>
           </template>
         </el-table-column>
@@ -161,7 +161,10 @@
 
       <base-pagination
         :length="$store.state.demand.demandListLength"
-        :get-list="getDemandList"
+        :current-page="currentPage"
+        :page-num="pageSize"
+        @change-size="changePageSize"
+        @change-page="changeCurrentPage"
       />
     </div>
 
@@ -202,7 +205,9 @@ export default {
         children: 'children',
         label: 'name',
         disabled: 'disabled'
-      }
+      },
+      currentPage: 1,
+      pageSize: 10
     };
   },
   computed: {
@@ -235,11 +240,11 @@ export default {
         }
       }
     },
-    async getDemandList(currentPage = 1, pageSize = 10) {
+    async getDemandList() {
       this.$store.commit('demand/setDemandLoading', true);
       let params = this.chooseForm;
-      params['current_page'] = currentPage;
-      params['page_size'] = pageSize;
+      params['current_page'] = this.currentPage;
+      params['page_size'] = this.pageSize;
       try {
         await this.$store.dispatch('demand/getDemandList', {
           params
@@ -273,16 +278,18 @@ export default {
       this.$router.push(`/demand-list/${id}`);
       this.$store.commit('demand/setDemandDetailLoading', true);
     },
-    toEdit(id) {
-      this.$router.push(`/demand-list/edit/${id}`);
-    },
     toProductDetail(id) {
-      this.$router.push(`/product-list/${id}`);
-      this.$store.commit('setEntry', 'detail');
+      if(this.$store.state.menuData.links.indexOf('/product-list') > -1) {
+        this.$router.push(`/product-list/${id}`);
+        this.$store.commit('setEntry', 'detail');
+      } else {
+        this.$message.error('无权限访问');
+      }
     },
     resetForm() {
       this.chooseForm = {};
-      this.getDemandList();
+      this.pageSize = 10;
+      this.searchDemand();
     },
     changeCellColor(val) {
       if (val === 20) {
@@ -294,6 +301,21 @@ export default {
       } else {
         return '';
       }
+    },
+    changeCurrentPage(val) {
+      this.currentPage = val;
+      this.getDemandList();
+    },
+    changePageSize(val) {
+      this.pageSize = val;
+      this.getDemandList();
+    },
+    searchDemand() {
+      this.currentPage = 1;
+      this.getDemandList();
+    },
+    toDraft() {
+      this.$router.push('/draft-list');
     }
   }
 };

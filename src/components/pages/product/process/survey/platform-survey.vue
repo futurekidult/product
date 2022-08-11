@@ -373,15 +373,6 @@
             {{ file.name }}
           </div>
           <div style="display: flex">
-            <div v-if="file.type === 12860">
-              <el-button
-                type="text"
-                @click="showViewFile(file.id)"
-              >
-                预览
-              </el-button>
-              <span class="table-btn">|</span>
-            </div>
             <el-button
               v-if="!isDisabled"
               type="text"
@@ -395,6 +386,17 @@
               @click="download(file.id, file.name)"
             >
               下载
+            </el-button>
+            <span 
+              v-if="file.type === 12860"
+              class="table-btn"
+            >|</span>
+            <el-button
+              v-if="file.type === 12860"
+              type="text"
+              @click="showViewFile(file.id)"
+            >
+              预览
             </el-button>
           </div>
         </div>
@@ -607,7 +609,9 @@ export default {
       }
     },
     async handleImgSuccess(e) {
-      if(e.file.type.indexOf('image') > -1) {
+      if(e.file.size > 5 * 1024 * 1024 ) {
+        this.$message.warning('附件大小超过限制，请重新上传！');
+      } else if(e.file.type.indexOf('image') > -1) {
         if (this.imgList.length > 8) {
           this.$message.error('产品图片不能传超过9张');
         } else {
@@ -628,11 +632,13 @@ export default {
           }
         }
       } else {
-        this.$message.error('上传的产品图片有误！');
+        this.$message.warning('上传的产品图片有误！');
       }
     },
     async handleFileSuccess(e) {
-      if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
+      if(e.file.size > 5 * 1024 * 1024 ) {
+        this.$message.warning('附件大小超过限制，请重新上传！');
+      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
         this.$store.commit('setUploadState', false);
         let form = getFile(e);
         try {
@@ -649,7 +655,7 @@ export default {
           return;
         }
       } else {
-        this.$message.error('上传的附件格式有误！');
+        this.$message.warning('上传的附件格式有误！');
       }
     },
     async showViewDialog(id) {

@@ -1,5 +1,8 @@
 <template>
-  <div class="pagination">
+  <div 
+    v-if="length > pageSize"
+    class="pagination"
+  >
     <el-pagination
       v-model:currentPage="page"
       v-model:page-size="pageSize"
@@ -14,21 +17,30 @@
 
 <script>
 export default {
-  props: ['length', 'getList'],
+  props: ['length', 'getList', 'currentPage', 'pageNum'],
+  emits: ['change-page', 'change-size'],
   data() {
     return {
-      page: 1,
-      pageSize: 10
+      page: this.currentPage,
+      pageSize: this.pageNum
     };
+  },
+  watch: {
+    currentPage(val) {
+      this.page = val;
+    },
+    pageNum(val) {
+      this.pageSize = val;
+    }
   },
   methods: {
     handleSizeChange(val) {
       this.pageSize = val;
-      this.getList(this.page, this.pageSize);
+      this.$emit('change-size', this.pageSize);
     },
     handleCurrentChange(val) {
       this.page = val;
-      this.getList(this.page, this.pageSize);
+      this.$emit('change-page', this.page);
     }
   }
 };

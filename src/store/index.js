@@ -35,7 +35,8 @@ const store = createStore({
       activeTab: '',
       entry: '',
       regionList: [],
-      cityList: []
+      cityList: [],
+      menuData: {}
     };
   },
   mutations: {
@@ -74,6 +75,12 @@ const store = createStore({
     },
     setCityList(state, payload) {
       state.cityList = payload;
+    },
+    setMenuList(state, payload) {
+      state.menuList = payload;
+    },
+    setMenuData(state, payload) {
+      state.menuData = payload;
     }
   },
   actions: {
@@ -156,6 +163,7 @@ const store = createStore({
       await axios.get('/admin/info').then((res) => {
         if (res.code === 200) {
           context.commit('setUserInfo', res.data);
+          context.commit('setMenuData', res.data.menu);
           localStorage.setItem('center_group', JSON.stringify(res.data.center_group));
         }
       });

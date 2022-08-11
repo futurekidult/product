@@ -15,7 +15,7 @@
               v-model="chooseForm.name"
               placeholder="请输入内容"
               clearable
-              @clear="getMouldList()"
+              @clear="searchMould"
             />
           </el-form-item>
           <el-form-item label="创建人">
@@ -25,7 +25,7 @@
               clearable
               filterable
               :props="defaultProps"
-              @clear="getMouldList()"
+              @clear="searchMould"
             />
           </el-form-item>
           <el-form-item label="状态">
@@ -33,7 +33,7 @@
               v-model="chooseForm.state"
               clearable
               placeholder="请选择状态"
-              @clear="getMouldList()"
+              @clear="searchMould"
             >
               <el-option
                 v-for="item in mouldState"
@@ -47,7 +47,7 @@
         <div>
           <el-button
             type="primary"
-            @click="getMouldList()"
+            @click="searchMould"
           >
             查询
           </el-button>
@@ -135,7 +135,10 @@
 
       <base-pagination
         :length="$store.state.mould.mouldListLength"
-        :get-list="getMouldList"
+        :current-page="currentPage"
+        :page-num="pageSize"
+        @change-size="changePageSize"
+        @change-page="changeCurrentPage"
       />
 
       <el-dialog
@@ -224,7 +227,9 @@ export default {
         label: 'name',
         disabled: 'disabled'
       },
-      defaultTime: new Date(2000,1,1,23,59,59)
+      defaultTime: new Date(2000,1,1,23,59,59),
+      currentPage: 1,
+      pageSize: 10
     };
   },
   mounted() {
@@ -249,11 +254,11 @@ export default {
         }
       }
     },
-    async getMouldList(currentPage = 1, pageSize = 10) {
+    async getMouldList() {
       this.$store.commit('mould/setListLoading', true);
       let params = this.chooseForm;
-      params['current_page'] = currentPage;
-      params['page_size'] = pageSize;
+      params['current_page'] = this.currentPage;
+      params['page_size'] = this.pageSize;
       try {
         await this.$store.dispatch('mould/getMouldList', { params });
         this.mouldList = this.$store.state.mould.mouldList;
@@ -302,7 +307,8 @@ export default {
     },
     resetForm() {
       this.chooseForm = {};
-      this.getMouldList();
+      this.pageSize = 10;
+      this.searchMould();
     },
     submitMouldForm() {
       this.$refs.mouldForm.validate((valid) => {
@@ -310,6 +316,18 @@ export default {
           this.createMould(this.mouldForm);
         }
       });
+    },
+    changeCurrentPage(val) {
+      this.currentPage = val;
+      this.getMouldList();
+    },
+    changePageSize(val) {
+      this.pageSize = val;
+      this.getMouldList();
+    },
+    searchMould() {
+      this.currentPage = 1;
+      this.getMouldList();
     }
   }
 };

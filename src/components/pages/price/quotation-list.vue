@@ -7,7 +7,7 @@
           :column="5"
           style="width: 80%"
         >
-          <el-descriptions-item label="关联产品:">
+          <el-descriptions-item label="产品信息:">
             <el-button 
               type="text"
               @click="getProductDetailDialog(quotationList.related_product_id)" 
@@ -194,7 +194,10 @@
         </el-table>
         <base-pagination
           :length="quotationList.total"
-          :get-list="getQuotationList"
+          :current-page="currentPage"
+          :page-num="pageSize"
+          @change-size="changePageSize"
+          @change-page="changeCurrentPage"
         />
       </div>
     </div>
@@ -528,7 +531,9 @@ export default {
       pricingState: 0,
       productViewVisible: false,
       productAttachment: [],
-      productForm: {}
+      productForm: {},
+      currentPage: 1,
+      pageSize: 10
     };
   },
   mounted() {
@@ -538,12 +543,12 @@ export default {
     });
   },
   methods: {
-    async getQuotationList(currentPage = 1, pageSize = 10) {
+    async getQuotationList() {
       this.$store.commit('price/setQuotationLoading', true);
       let params = {
         pricing_id: +this.$route.params.id,
-        current_page: currentPage,
-        page_size: pageSize
+        current_page: this.currentPage,
+        page_size: this.pageSize
       };
       try {
         await this.$store.dispatch('price/getQuotationList', { params });
@@ -783,7 +788,11 @@ export default {
       this.highVisible = false;
     },
     toDetail(id) {
-      this.$router.push(`/supplier-list/${id}`);
+      if(this.$store.state.menuData.links.indexOf('/supplier-list') > -1) {
+        this.$router.push(`/supplier-list/${id}`);
+      } else {
+        this.$message.error('无权限访问');
+      }
     },
    async getProductDetailDialog(id) {
     this.$store.commit('price/setDetailLoading', true);
@@ -800,6 +809,14 @@ export default {
         this.$store.commit('price/setDetailLoading', false);
         return;
       }
+    },
+   changeCurrentPage(val) {
+      this.currentPage = val;
+      this.getQuotationList();
+    },
+    changePageSize(val) {
+      this.pageSize = val;
+      this.getQuotationList();
     }
   }
 };

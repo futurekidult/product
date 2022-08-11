@@ -65,7 +65,16 @@ http.interceptors.response.use(async (res) => {
   return res.data;
   }, (err) => {
     if(err.response) {
-      ElMessage.error('服务器出错');
+      let { status } = err.response;
+      if(status === 413) {
+        ElMessage.warning('附件大小超过限制，请重新上传！');
+      } else if(status === 500){
+        ElMessage.error('服务器出错！');
+      } else if(status === 404) {
+        ElMessage.error('找不到页面！');
+      } else {
+        ElMessage.error('未知错误！');
+      }
     }
 });
 

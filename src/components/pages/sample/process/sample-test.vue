@@ -127,9 +127,9 @@
           />
         </el-tab-pane>
         <el-tab-pane
+          v-if="hasUserTest"
           label="用户测试"
           name="user"
-          v-if="hasUserTest"
         >
           <user-test
             v-if="activeName === 'user'"
@@ -142,7 +142,6 @@
             :button-state="userButtonState"
             :apply-list="userApplyList"
             :change-color="changeColor"
-            :user-list="userList"
           />
         </el-tab-pane>
       </el-tabs>
@@ -220,7 +219,7 @@ import QualityTest from './test/quality-test.vue';
 import AgencyTest from './test/agency-test.vue';
 import UserTest from './test/user-test.vue';
 import TestForm from '../common/test-form.vue';
-import { changeTimestamp, formatterTime, getOrganizationList } from '../../../../utils';
+import { changeTimestamp,getOrganizationList } from '../../../../utils';
 
 export default {
   components: {
@@ -232,8 +231,7 @@ export default {
   inject: ['getTest','getQualityDetail'],
   provide() {
     return {
-      getUser: this.getUserTest,
-      getList: this.getUserList
+      getUser: this.getUserTest
     };
   },
   props: ['applyList', 'buttonState','qualityProgress','qualityAttachment','qualitySubmitState','qualityId','qualityTestId', 'hasUserTest'],
@@ -266,7 +264,6 @@ export default {
         label: 'name',
         disabled: 'disabled'
       },
-      userList: [],
       isGetData: false
     };
   },
@@ -350,25 +347,6 @@ export default {
         return;
       }
     },
-    async getUserList(currentPage = 1, pageSize = 10) {
-      try {
-        await this.$store.dispatch('sample/user/getUserList', {
-          params: {
-            sample_id: +this.$route.params.id,
-            current_page: currentPage,
-            page_size: pageSize
-          }
-        });
-        this.userList = this.$store.state.sample.user.userList;
-        this.userList.forEach((item) => {
-          item.create_time = formatterTime(item.create_time);
-          item.delivery_time = formatterTime(item.delivery_time);
-          item.upload_time = formatterTime(item.upload_time);
-        });
-      } catch (err) {
-        return;
-      }
-    },
     showApplyForm() {
       this.testApplyVisible = true;
     },
@@ -423,7 +401,6 @@ export default {
         this.getAgencyTest();
       } else {
         this.getUserTest();
-        this.getUserList();
       }
       this.activeName = tab.props.name;
     }

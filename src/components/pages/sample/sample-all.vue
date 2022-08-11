@@ -16,7 +16,7 @@
               v-model="chooseForm.product_name"
               placeholder="请输入内容"
               clearable
-              @clear="getSampleList()"
+              @clear="searchSample"
             />
           </el-form-item>
           <el-form-item label="品类">
@@ -24,7 +24,7 @@
               v-model="chooseForm.product_category"
               placeholder="请选择"
               clearable
-              @clear="getSampleList()"
+              @clear="searchSample"
             >
               <el-option
                 v-for="item in categoryList"
@@ -39,7 +39,7 @@
               v-model="chooseForm.state"
               placeholder="请选择"
               clearable
-              @clear="getSampleList()"
+              @clear="searchSample"
             >
               <el-option
                 v-for="item in sampleState"
@@ -53,7 +53,7 @@
         <div>
           <el-button
             type="primary"
-            @click="getSampleList()"
+            @click="searchSample"
           >
             查询
           </el-button>
@@ -150,7 +150,10 @@
 
       <base-pagination 
         :length="$store.state.sample.sampleListLength"
-        :get-list="getSampleList"
+        :current-page="currentPage"
+        :page-num="pageSize"
+        @change-size="changePageSize"
+        @change-page="changeCurrentPage"
       />
     </div>
   </div>
@@ -164,7 +167,9 @@ export default {
       chooseForm: {},
       sampleList: [],
       categoryList: [],
-      sampleState: []
+      sampleState: [],
+      currentPage: 1,
+      pageSize: 10
     };
   },
   mounted() {
@@ -195,11 +200,11 @@ export default {
         return;
       }
     },
-    async getSampleList(currentPage = 1, pageSize = 10) {
+    async getSampleList() {
       this.$store.commit('sample/setListLoading', true);
       let params = this.chooseForm;
-      params['current_page'] = currentPage;
-      params['page_size'] = pageSize;
+      params['current_page'] = this.currentPage;
+      params['page_size'] = this.pageSize;
       try {
         await this.$store.dispatch('sample/getSampleList', { params });
         this.sampleList = this.$store.state.sample.sampleList;
@@ -216,7 +221,8 @@ export default {
     },
     resetForm() {
       this.chooseForm = {};
-      this.getSampleList();
+      this.pageSize = 10;
+      this.searchSample();
     },
     toDetail(id) {
       this.$router.push(`/sample-list/${id}`);
@@ -228,12 +234,28 @@ export default {
       } else if (val === 20 || val === 10) {
         return 'result-ing';
       } else {
-        return 'result-ignore';
+        return 'result-fail';
       }
     },
     toRelatedProduct(id) {
-      this.$router.push(`/product-list/${id}`);
-      this.$store.commit('setEntry', 'detail');
+      if(this.$store.state.menuData.links.indexOf('/product-list') > -1) {
+        this.$router.push(`/product-list/${id}`);
+        this.$store.commit('setEntry', 'detail');
+      } else {
+        this.$message.error('无权限访问');
+      }
+    },
+    changeCurrentPage(val) {
+      this.currentPage = val;
+      this.getSampleList();
+    },
+    changePageSize(val) {
+      this.pageSize = val;
+      this.getSampleList();
+    },
+    searchSample() {
+      this.currentPage = 1;
+      this.getSampleList();
     }
   }
 };

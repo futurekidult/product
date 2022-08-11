@@ -1,3 +1,7 @@
+const AutoImport = require('unplugin-auto-import/webpack')
+const Components = require('unplugin-vue-components/webpack')
+const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
+
 module.exports = {
   devServer: {
     proxy: {
@@ -30,6 +34,24 @@ module.exports = {
       })();
       return args;
     });
+    config.plugin('html').tap((args) => {
+      args[0].title = '新品开发系统';
+      return args;
+    });
+  },
+  configureWebpack: {
+    plugins: [
+      AutoImport({
+        resolvers: [ElementPlusResolver({
+          importStyle: false
+          })]
+      }),
+      Components({
+        resolvers: [ElementPlusResolver({
+          importStyle: false
+        })]
+      })
+    ]
   }
 };
 

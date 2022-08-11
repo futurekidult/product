@@ -249,7 +249,7 @@ export default {
         .post('/project/profit-calculation/coefficient/update', payload)
         .then((res) => {
           if (res.code === 200) {
-            ElMessage.success(res.configmessage);
+            ElMessage.success(res.message);
           }
         });
     },

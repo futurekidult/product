@@ -75,8 +75,11 @@
     </el-table>
 
     <base-pagination
-      :length="sampleList.length"
-      :get-list="getSample"
+      :length="$store.state.product.sampleListLength"
+      :current-page="page"
+      :page-num="pageNum"
+      @change-size="changePageSize"
+      @change-page="changeCurrentPage"
     />
   </div>
 </template>
@@ -84,11 +87,30 @@
 <script>
 export default {
   inject: ['getSample'],
-  props: ['sampleList'],
+  props: ['sampleList', 'currentPage', 'pageSize'],
+  emits: ['change-page', 'change-size'],
+  data() {
+    return {
+      page: this.currentPage,
+      pageNum: this.pageSize
+    }
+  },
+  watch: {
+    currentPage(val) {
+      this.page = val;
+    },
+    pageSize(val) {
+      this.pageNum = val;
+    }
+  },
   methods: {
     toDetail(id) {
-      this.$router.push(`/sample-list/${id}`);
-      this.$store.commit('setActiveTab', 'base');
+      if(this.$store.state.menuData.links.indexOf('/sample-list') > -1) {
+        this.$router.push(`/sample-list/${id}`);
+        this.$store.commit('setActiveTab', 'base');
+      } else {
+        this.$message.error('无权限访问');
+      }
     },
     changeCellColor(val) {
       if (val <= 20) {
@@ -98,6 +120,14 @@ export default {
       } else {
         return 'result-fail';
       }
+    },
+    changeCurrentPage(val) {
+      this.page = val;
+      this.$emit('change-page', this.page);
+    },
+    changePageSize(val) {
+      this.pageNum = val;
+      this.$emit('change-size', this.pageNum);
     }
   }
 };

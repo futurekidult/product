@@ -366,15 +366,6 @@
             {{ item.name }}
           </div>
           <div style="display: flex">
-            <div v-if="item.type === 12860">
-              <el-button
-                type="text"
-                @click="showViewFile(item.id)"
-              >
-                预览
-              </el-button>
-              <span class="table-btn">|</span>
-            </div>
             <el-button
               v-if="!isDisabled"
               type="text"
@@ -388,6 +379,17 @@
               @click="download(item.id, item.name)"
             >
               下载
+            </el-button>
+            <span 
+              v-if="item.type === 12860"
+              class="table-btn"
+            >|</span>
+            <el-button
+              v-if="item.type === 12860"
+              type="text"
+              @click="showViewFile(item.id)"
+            >
+              预览
             </el-button>
           </div>
         </div>
@@ -603,24 +605,30 @@ export default {
       }
     },
     async handleFileSuccess(e) {
-      if (this.file.length > 4) {
-        this.$message.error('附件个数不能传超过5张');
-      } else {
-      this.$store.commit('setUploadState', false);
-      let form = getFile(e);
-      try {
-        await this.$store.dispatch('uploadFile', form);
-        if (this.$store.state.uploadState) {
-          this.file.push({
-              id: this.$store.state.fileRes.id,
-              name: this.$store.state.fileRes.file_name,
-              type: this.$store.state.fileRes.type
-            });
+      if(e.file.size > 5 * 1024 * 1024 ) {
+        this.$message.warning('附件大小超过限制，请重新上传！');
+      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
+        if (this.file.length > 4) {
+          this.$message.error('附件个数不能传超过5张');
+        } else {
+          this.$store.commit('setUploadState', false);
+          let form = getFile(e);
+          try {
+            await this.$store.dispatch('uploadFile', form);
+            if (this.$store.state.uploadState) {
+              this.file.push({
+                  id: this.$store.state.fileRes.id,
+                  name: this.$store.state.fileRes.file_name,
+                  type: this.$store.state.fileRes.type
+                });
+            }
+          } catch (err) {
+            return;
+          }
         }
-      } catch (err) {
-        return;
-      }
-      }
+      } else {
+        this.$message.warning('上传的附件格式有误！');
+      } 
     },
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);

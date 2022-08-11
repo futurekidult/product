@@ -15,6 +15,7 @@
               v-model="chooseForm.name"
               placeholder="请输入内容"
               clearable
+              @clear="searchProduct"
             />
           </el-form-item>
           <el-form-item label="品类">
@@ -22,6 +23,7 @@
               v-model="chooseForm.category_id"
               placeholder="请选择"
               clearable
+              @clear="searchProduct"
             >
               <el-option
                 v-for="item in categoryList"
@@ -36,6 +38,7 @@
               v-model="chooseForm.state"
               clearable
               placeholder="请选择状态"
+              @clear="searchProduct"
             >
               <el-option
                 v-for="item in productState"
@@ -49,7 +52,7 @@
         <div>
           <el-button
             type="primary"
-            @click="getProductList()"
+            @click="searchProduct"
           >
             查询
           </el-button>
@@ -146,7 +149,10 @@
 
       <base-pagination
         :length="$store.state.product.productListLength"
-        :get-list="getProductList"
+        :current-page="currentPage"
+        :page-num="pageSize"
+        @change-size="changePageSize"
+        @change-page="changeCurrentPage"
       />
 
       <el-dialog
@@ -270,7 +276,9 @@ export default {
       productList: [],
       categoryList: [],
       productState: [],
-      viewImgDialog: false
+      viewImgDialog: false,
+      currentPage: 1,
+      pageSize: 10
     };
   },
   mounted() {
@@ -323,7 +331,9 @@ export default {
       }
     },
     async handleFileSuccess(e) {
-      if(e.file.type.indexOf('image') > -1) {
+      if(e.file.size > 5 * 1024 * 1024 ) {
+        this.$message.warning('附件大小超过限制，请重新上传！');
+      } else if(e.file.type.indexOf('image') > -1) {
         if (this.imgList.length > 8) {
           this.$message.error('产品图片最多传9张');
         } else {
@@ -344,14 +354,14 @@ export default {
           }
         }
       } else {
-        this.$message.error('上传的产品图片格式有误！');
+        this.$message.warning('上传的产品图片格式有误！');
       }
     },
-    async getProductList(currentPage = 1, pageSize = 10) {
+    async getProductList() {
       this.$store.commit('product/setListLoading', true);
       let params = this.chooseForm;
-      params['current_page'] = currentPage;
-      params['page_size'] = pageSize;
+      params['current_page'] = this.currentPage;
+      params['page_size'] = this.pageSize;
       try {
         await this.$store.dispatch('product/getProductList', { params });
         this.productList = this.$store.state.product.productList;
@@ -397,7 +407,11 @@ export default {
       );
     },
     toDemand(id) {
-      this.$router.push(`/demand-list/${id}`);
+       if(this.$store.state.menuData.links.indexOf('/demand-list') > -1) {
+          this.$router.push(`/demand-list/${id}`);
+       } else {
+          this.$message.error('无权限访问');
+       }
     },
     changeCellColor(val) {
       if (val === 30 || val === 90) {
@@ -410,7 +424,8 @@ export default {
     },
     resetForm() {
       this.chooseForm = {};
-      this.getProductList();
+      this.pageSize = 10;
+      this.searchProduct();
     },
     async showViewDialog(id) {
       this.$store.commit('setAttachmentState', false);
@@ -428,6 +443,18 @@ export default {
     closeViewDialog() {
       this.viewImgDialog = false;
       this.editVisible = true;
+    },
+    changeCurrentPage(val) {
+      this.currentPage = val;
+      this.getProductList();
+    },
+    changePageSize(val) {
+      this.pageSize = val;
+      this.getProductList();
+    },
+    searchProduct() {
+      this.currentPage = 1;
+      this.getProductList();
     }
   }
 };
