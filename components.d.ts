@@ -17,6 +17,7 @@ declare module 'vue' {
     ContractList: typeof import('./src/components/pages/product/process/order/contract-list.vue')['default']
     ContractReport: typeof import('./src/components/pages/product/common/contract-report.vue')['default']
     DemandAll: typeof import('./src/components/pages/demand/demand-all.vue')['default']
+    DemandBasic: typeof import('./src/components/pages/demand/common/demand-basic.vue')['default']
     DemandCreate: typeof import('./src/components/pages/demand/demand-create.vue')['default']
     DemandDetail: typeof import('./src/components/pages/demand/demand-detail/demand-detail.vue')['default']
     DemandEdit: typeof import('./src/components/pages/demand/demand-edit.vue')['default']
