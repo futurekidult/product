@@ -125,7 +125,7 @@
       <div
         v-for="(item, index) in form.country"
         :key="index"
-        class="form-template"
+        :class="!isCountryVisible ? 'form-template' : 'form-include_delete'"
       >
         <el-form-item
           :label="'国家' + (index + 1)"
@@ -190,6 +190,14 @@
             />
           </el-select>
         </el-form-item>
+        <base-delete 
+          :id="index"
+          mode="user_analysis-btn"
+          content=""
+          :show="form.country.length > 1 && progress.state !== 50"
+          :list="form.country"
+          @get-list="(val) => getReturnData(val, 'country')"
+        />
       </div>
       <el-form-item v-if="progress.state !== 50">
         <el-button
@@ -199,15 +207,6 @@
         >
           + 新增
         </el-button>
-        <el-button
-          v-if="isCountryVisible"
-          class="user-btn"
-          type="danger"
-          :disabled="isDisabled"
-          @click="deleteStateCity"
-        >
-          - 删除
-        </el-button>
       </el-form-item>
       <el-form-item
         v-for="(item, index) in form.usage_scenario"
@@ -216,14 +215,24 @@
         :prop="`usage_scenario[${index}]`"
         :rules="[{ required: true,message: '请输入使用场景'}, checkValid(15)]"
       >
-        <el-input
-          v-model="form.usage_scenario[index]"
-          placeholder="请输入使用场景"
-          clearable
-          :disabled="isDisabled"
-          maxlength="15"
-          show-word-limit
-        />
+        <div class="usage-scenario_include-delete">
+          <el-input
+            v-model="form.usage_scenario[index]"
+            placeholder="请输入使用场景"
+            clearable
+            :disabled="isDisabled"
+            maxlength="15"
+            show-word-limit
+          />
+          <base-delete 
+            :id="index"
+            mode="user_analysis-btn"
+            content=""
+            :show="form.usage_scenario.length > 1 && progress.state !== 50"
+            :list="form.usage_scenario"
+            @get-list="(val) => getReturnData(val, 'usage')"
+          />
+        </div>
       </el-form-item>
       <el-form-item v-if="progress.state !== 50">
         <el-button
@@ -232,15 +241,6 @@
           @click="addUsageScenario"
         >
           + 新增
-        </el-button>
-        <el-button
-          v-if="isScenarioVisible"
-          class="user-btn"
-          type="danger"
-          :disabled="isDisabled"
-          @click="deleteUsageScenario"
-        >
-          - 删除
         </el-button>
       </el-form-item>
       <el-form-item label="备注">
@@ -415,7 +415,6 @@ export default {
       return this.progress.state === 10 ? false : true;
     }
   },
-
   mounted() {
     this.getParams();
     this.getCountryList();
@@ -580,24 +579,19 @@ export default {
         this.isScenarioVisible = true;
       }
     },
-    deleteStateCity() {
-      this.form.country.pop();
-      if (this.form.country.length === 1) {
-        this.isCountryVisible = false;
-      }
-    },
-    deleteUsageScenario() {
-      this.form.usage_scenario.pop();
-      if (this.form.usage_scenario.length === 1) {
-        this.isScenarioVisible = false;
-      }
-    },
     clearStateCity(index) {
         this.form.country[index].region_id = null;
         this.form.country[index].city_id = null;
     },
     clearCity(index) {
         this.form.country[index].city_id = null;
+    },
+    getReturnData(val, str) {
+      if(str === 'country') {
+        this.form.country = val;
+      } else {
+        this.form.usage_scenario = val;
+      }
     }
   }
 };

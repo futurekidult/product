@@ -132,17 +132,18 @@
             @change="checkEmail('email', item.email, index + 1)"
           />
         </el-form-item>
+        <base-delete 
+          :id="index"
+          mode="supplier-btn"
+          content="删除联系人"
+          :show="!isDisabled && supplierForm.contacts.length !== 1"
+          :list="supplierForm.contacts"
+          @get-list="(val) => getReturnData(val, 'contacts')"
+        />
       </div>
       <el-form-item v-if="!isDisabled">
         <el-button @click="addRow('contacts')">
           + 新增联系人
-        </el-button>
-        <el-button
-          v-if="supplierForm.contacts.length !== 1"
-          type="danger"
-          @click="deleteRow('contacts')"
-        >
-          - 删除联系人
         </el-button>
       </el-form-item>
       <div
@@ -200,17 +201,19 @@
             style="width: 100%"
           />
         </el-form-item>
+        <el-form-item />
+        <base-delete 
+          :id="index"
+          mode="supplier-btn"
+          content="删除地址"
+          :show="!isDisabled && supplierForm.addresses.length !== 1"
+          :list="supplierForm.addresses"
+          @get-list="(val) => getReturnData(val, 'addresses')"
+        />
       </div>
       <el-form-item v-if="!isDisabled">
         <el-button @click="addRow('addresses')">
           + 新增地址
-        </el-button>
-        <el-button
-          v-if="supplierForm.addresses.length !== 1"
-          type="danger"
-          @click="deleteRow('addresses')"
-        >
-          - 删除地址
         </el-button>
       </el-form-item>
       <div class="form-item">
@@ -1011,9 +1014,6 @@ export default {
     addRow(val) {
       this.supplierForm[val].push({});
     },
-    deleteRow(val) {
-      this.supplierForm[val].pop();
-    },
     async showViewDialog(id) {
       this.$store.commit('setAttachmentState', false);
       try {
@@ -1156,6 +1156,13 @@ export default {
     },
     clearAddress(index) {        
       this.supplierForm.addresses[index].detail = '';
+    },
+    getReturnData(e, str) {
+      if(str === 'contacts') {
+        this.supplierForm.contacts = e;
+      } else {
+        this.supplierForm.addresses = e;
+      }
     }
   }
 };

@@ -25,14 +25,24 @@
         :rules="[{ required: true, message: '请输入使用场景'}, checkValid(15)]"
         class="form-item_width"
       >
-        <el-input
-          v-model="form.usage_scenario[index]"
-          placeholder="请输入使用场景"
-          maxlength="15"
-          show-word-limit
-          clearable
-          :disabled="isDisabled"
-        />
+        <div class="usage-scenario_include-delete">
+          <el-input
+            v-model="form.usage_scenario[index]"
+            placeholder="请输入使用场景"
+            maxlength="15"
+            show-word-limit
+            clearable
+            :disabled="isDisabled"
+          />
+          <base-delete 
+            :id="index"
+            mode="user_analysis-btn"
+            content=""
+            :show="form.usage_scenario.length > 1 && progress.state !== 50"
+            :list="form.usage_scenario"
+            @get-list="(val) => getReturnData(val, 'usage')"
+          />
+        </div>
       </el-form-item>
       <el-form-item v-if="progress.state !== 50">
         <el-button
@@ -41,15 +51,6 @@
           @click="addUsageScenario"
         >
           + 新增
-        </el-button>
-        <el-button
-          v-if="isScenarioVisible"
-          class="user-btn"
-          type="danger"
-          :disabled="isDisabled"
-          @click="deleteUsageScenario"
-        >
-          - 删除
         </el-button>
       </el-form-item>
       <el-form-item
