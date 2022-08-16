@@ -63,6 +63,7 @@ export default {
           case 'demand':
           case 'demand create':
           case 'demand edit':
+          case 'demand review':
           case 'draft list':
             prefix = prefix.concat({
               path: '/demand-list',

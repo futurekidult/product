@@ -150,6 +150,17 @@
         <el-table-column label="操作">
           <template #default="scope">
             <el-button
+              v-if="scope.row.state === 20"
+              type="text"
+              @click="toReview(scope.row.id)"
+            >
+              需求评审
+            </el-button>
+            <span 
+              v-if="scope.row.state === 20"
+              class="table-btn"
+            >|</span>
+            <el-button
               type="text"
               @click="toDetail(scope.row.id)"
             >
@@ -207,7 +218,8 @@ export default {
         disabled: 'disabled'
       },
       currentPage: 1,
-      pageSize: 10
+      pageSize: 10,
+      show: true
     };
   },
   computed: {
@@ -316,6 +328,9 @@ export default {
     },
     toDraft() {
       this.$router.push('/draft-list');
+    },
+    toReview(id) {
+      this.$router.push(`/demand-list/review/${id}`)
     }
   }
 };

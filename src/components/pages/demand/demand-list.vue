@@ -18,7 +18,8 @@ export default {
   },
   computed: {
     isParent() {
-      return this.$route.name !== 'demand detail' && this.$route.name !== 'demand edit';
+      return this.$route.name !== 'demand detail' &&
+      this.$route.name !== 'demand edit' && this.$route.name !== 'demand review';
     }
   }
 };
