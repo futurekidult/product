@@ -393,7 +393,6 @@
       <el-form-item
         label="销售价格"
         style="margin-bottom: 18px"
-        :required="isRequired"
       >
         <div style="display: flex">
           <el-form-item 
@@ -690,21 +689,8 @@ export default {
         purchase_price: [
           {
             required: true,
-            message: '请输入销售价',
-            trigger: 'blur'
-          }
-        ],
-        selling_price_currency: [
-          {
-            required: true,
-            message: '请选择币种'
-          }
-        ],
-        selling_price: [
-          {
-            required: true,
             message: '请输入采购价',
-             trigger: 'blur'
+            trigger: 'blur'
           }
         ],
         selling_point: [
