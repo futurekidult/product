@@ -195,11 +195,12 @@
     </div>
   </div>
 
-  <confirm-dialog
+  <confirm-dialog 
     v-if="blackDialogVisible"
     :id="supplierBlackId"
     :dialog-visible="blackDialogVisible"
-    type="black"
+    dialog-content="确定将该供应商加入黑名单"
+    type="black enter"
     :get-list="getSupplierList"
     @hide-dialog="closeBlackDialog"
   />
@@ -231,12 +232,8 @@
 
 <script>
 import { formatterTime, getOrganizationList } from '../../../utils';
-import ConfirmDialog from './common/confirm-dialog.vue';
 
 export default {
-  components: {
-    ConfirmDialog
-  },
   data() {
     return {
       chooseForm: {},
