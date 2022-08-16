@@ -40,54 +40,35 @@ export default {
       this.$emit('hide-dialog', this.visible);
     },
     async submitConfirm() {
-      switch(this.type) {
-        case 'product finish':
-          try {
+      try {
+        switch(this.type) {
+          case 'product finish':
             await this.$store.dispatch('product/confirmProductResult', { 
               product_id: +this.$route.params.productId
             });
-            this.visible = false;
-            this.$emit('hide-dialog', this.visible);
-            this.getList();
-          } catch (err) {
-            return;
-          }
           break;
-        case 'draft delete': 
-          try {
+          case 'draft delete': 
             await this.$store.dispatch('demand/deleteDraftItem', {
               demand_id: this.id
             });
-            this.visible = false;
-            this.$emit('hide-dialog', this.visible);
-            this.getList();
-          } catch (err) {
-            return;
-          }
           break;
-        case 'black enter':
-          try {
+          case 'black enter':
             await this.$store.dispatch('supplier/setBlackSupplier', {
               id: this.id
             });
-            this.visible = false;
-            this.getList();
-          } catch (err) {
-            return;
-          }
           break;
-        case 'black delete': 
-          try {
+          case 'black delete': 
             await this.$store.dispatch('supplier/setWhiteSupplier', {
               id: this.id
             });
-            this.visible = false;
-            this.getList();
-          } catch (err) {
-            return;
-          }
           break;
-        default:
+          default:
+        }
+        this.visible = false;
+        this.$emit('hide-dialog', this.visible);
+        this.getList();
+      } catch (err) {
+        return;
       }
     }
   }
