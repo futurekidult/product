@@ -65,6 +65,28 @@ export default {
             return;
           }
           break;
+        case 'black enter':
+          try {
+            await this.$store.dispatch('supplier/setBlackSupplier', {
+              id: this.id
+            });
+            this.visible = false;
+            this.getList();
+          } catch (err) {
+            return;
+          }
+          break;
+        case 'black delete': 
+          try {
+            await this.$store.dispatch('supplier/setWhiteSupplier', {
+              id: this.id
+            });
+            this.visible = false;
+            this.getList();
+          } catch (err) {
+            return;
+          }
+          break;
         default:
       }
     }
