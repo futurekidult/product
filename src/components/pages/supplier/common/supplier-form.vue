@@ -134,9 +134,9 @@
         </el-form-item>
         <base-delete 
           :id="index"
-          mode="supplier-btn"
+          mode="supplier-delete_btn"
           content="删除联系人"
-          :show="!isDisabled && supplierForm.contacts.length !== 1"
+          :show="!isDisabled && supplierForm.contacts.length > 1"
           :list="supplierForm.contacts"
           @get-list="(val) => getReturnData(val, 'contacts')"
         />
@@ -204,9 +204,9 @@
         <el-form-item />
         <base-delete 
           :id="index"
-          mode="supplier-btn"
+          mode="supplier-delete_btn"
           content="删除地址"
-          :show="!isDisabled && supplierForm.addresses.length !== 1"
+          :show="!isDisabled && supplierForm.addresses.length > 1"
           :list="supplierForm.addresses"
           @get-list="(val) => getReturnData(val, 'addresses')"
         />

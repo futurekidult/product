@@ -4,16 +4,14 @@
     style="display: flex;"
     :class="mode"
     class="delete-item"
+    @click="deleteItem"
   >
-    <div @click="deleteItem">
-      <img 
-        src="../../assets/images/delete.png"
-      >
-    </div>
+    <el-icon class="delete-icon">
+      <Delete :size="20" />
+    </el-icon>
     <el-button
       type="text"
       class="delete-btn"
-      @click="deleteItem"
     >
       {{ content }}
     </el-button>
@@ -21,7 +19,11 @@
 </template>
 
 <script>
+import { Delete } from '@element-plus/icons-vue';
 export default {
+  components: {
+    Delete
+  },
   props: ['mode', 'show' , 'id' , 'list', 'content'],
   emits: ['get-list'],
   data() {
@@ -48,13 +50,18 @@ export default {
   cursor: pointer;
 }
 
+.delete-item:hover,
+.delete-btn:hover {
+  color: red;
+}
+
 .delete-btn {
    height: 20px; 
    color: #606266;
 }
 
-.delete-btn:hover {
-  color: red;
+.delete-icon {
+    height: 20px;
 }
 
 .demand-btn {
@@ -73,8 +80,13 @@ export default {
   margin-bottom: 10px;
 }
 
-.supplier-btn {
+.supplier-delete_btn {
   margin-left: 150px;
   margin-bottom: 10px;
+}
+
+.order-delete_btn {
+  margin-left: 20px;
+  margin-top: 8px;
 }
 </style>

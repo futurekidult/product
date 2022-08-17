@@ -68,8 +68,8 @@
         </el-form-item>
         <base-delete 
           :id="index"
-          mode="user_analysis-btn"
-          content="删除SKU"
+          mode="order-delete_btn"
+          content=""
           :show="deleteVisible && schedule.state !== 40"
           :list="form.sku"
           @get-list="getFormSku"

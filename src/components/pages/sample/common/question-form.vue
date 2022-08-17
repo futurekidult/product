@@ -46,7 +46,7 @@
           <base-delete 
             :id="index"
             mode="test-question_btn"
-            content=""
+            content="删除测试问题"
             :show="questionForm.list.length > 1"
             :list="questionForm.list"
             @get-list="getQuestionList"
@@ -58,7 +58,7 @@
           style="margin: 15px 0"
           @click="addRow"
         >
-          + 新增
+          + 新增测试问题
         </el-button>
       </el-form-item>
       <el-divider />
