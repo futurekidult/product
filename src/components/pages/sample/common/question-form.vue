@@ -46,7 +46,7 @@
           <base-delete 
             :id="index"
             mode="test-question_btn"
-            content="删除测试问题"
+            content="移除"
             :show="questionForm.list.length > 1"
             :list="questionForm.list"
             @get-list="getQuestionList"

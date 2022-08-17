@@ -125,7 +125,7 @@
             <base-delete 
               :id="index"
               mode="demand-btn"
-              content="删除市场"
+              content="移除"
               :show="reviewForm.market.length > 1"
               :list="reviewForm.market"
               @get-list="getReviewFormMarket"

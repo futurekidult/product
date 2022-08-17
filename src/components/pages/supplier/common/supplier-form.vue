@@ -135,7 +135,7 @@
         <base-delete 
           :id="index"
           mode="supplier-delete_btn"
-          content="删除联系人"
+          content="移除"
           :show="!isDisabled && supplierForm.contacts.length > 1"
           :list="supplierForm.contacts"
           @get-list="(val) => getReturnData(val, 'contacts')"
@@ -205,7 +205,7 @@
         <base-delete 
           :id="index"
           mode="supplier-delete_btn"
-          content="删除地址"
+          content="移除"
           :show="!isDisabled && supplierForm.addresses.length > 1"
           :list="supplierForm.addresses"
           @get-list="(val) => getReturnData(val, 'addresses')"

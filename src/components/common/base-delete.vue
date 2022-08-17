@@ -50,18 +50,15 @@ export default {
   cursor: pointer;
 }
 
-.delete-item:hover,
+.delete-item,
+.delete-btn,
 .delete-btn:hover {
   color: red;
 }
 
-.delete-btn {
-   height: 20px; 
-   color: #606266;
-}
-
+.delete-btn,
 .delete-icon {
-    height: 20px;
+   height: 20px; 
 }
 
 .demand-btn {

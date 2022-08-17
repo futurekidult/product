@@ -74,7 +74,7 @@
           <base-delete 
             :id="index"
             mode="test-user_btn"
-            content="删除用户信息"
+            content="移除"
             :show="userForm.list.length > 1"
             :list="userForm.list"
             @get-list="getTestUserList"
