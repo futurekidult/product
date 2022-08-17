@@ -153,6 +153,7 @@ body {
   display: flex;
   justify-content: space-between;
   padding: 0 10px;
+  margin-top: 10px;
 }
 
 .attachment-list div {
@@ -342,5 +343,17 @@ body {
 
 .nav-img img {
   width: 100px;
+}
+
+.form-include_delete {
+  display: grid;
+  grid-template-columns: 33% 33% 33% 4%;
+  width: 100%;
+}
+
+.usage-scenario_include-delete {
+  display: grid;
+  grid-template-columns: 100% 4%;
+  width: 100%;
 }
 </style>

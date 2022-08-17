@@ -6,6 +6,7 @@ import BaseBreadcrumb from './components/common/base-breadcrumb.vue';
 import BasePagination from './components/common/base-pagination.vue';
 import BaseTag from './components/common/base-tag.vue';
 import ConfirmDialog from './components/common/confirm-dialog.vue';
+import BaseDelete from './components/common/base-delete.vue';
 import 'element-plus/dist/index.css';
 import { ElMessage } from 'element-plus';
 
@@ -22,6 +23,7 @@ app.component('BaseBreadcrumb', BaseBreadcrumb);
 app.component('BasePagination', BasePagination);
 app.component('BaseTag', BaseTag);
 app.component('ConfirmDialog', ConfirmDialog);
+app.component('BaseDelete', BaseDelete);
 
 app.use(router);
 app.use(store);

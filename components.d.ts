@@ -7,6 +7,7 @@ declare module 'vue' {
     AdminList: typeof import('./src/components/pages/system/admin-list.vue')['default']
     AgencyTest: typeof import('./src/components/pages/sample/process/test/agency-test.vue')['default']
     BaseBreadcrumb: typeof import('./src/components/common/base-breadcrumb.vue')['default']
+    BaseDelete: typeof import('./src/components/common/base-delete.vue')['default']
     BaseDialog: typeof import('./src/components/common/base-dialog.vue')['default']
     BasePagination: typeof import('./src/components/common/base-pagination.vue')['default']
     BaseTag: typeof import('./src/components/common/base-tag.vue')['default']

@@ -139,124 +139,134 @@
         show-word-limit
       />
     </el-form-item>
-    <el-scrollbar height="440px">
-      <div
-        v-for="(item, index) in demandForm.competitive_product"
-        :key="index"
-        class="form-item_width"
+    <el-collapse
+      v-model="active" 
+      class="collapse-item" 
+      style="margin-left: 15px"
+    >
+      <el-collapse-item 
+        title="竞品信息"
+        :name="'msg'"
       >
-        <el-form-item
-          :label="'竞品图片' + (index + 1)"
-          :prop="`competitive_product.${index}.images `"
+        <div
+          v-for="(item, index) in demandForm.competitive_product"
+          :key="index"
+          class="form-item_width"
         >
-          <el-upload
-            action
-            :show-file-list="false"
-            :http-request="(e) => handleCProductImageSuccess(e, index)"
-            :disabled="isDisabled"
+          <el-form-item
+            :label="'竞品图片' + (index + 1)"
+            :prop="`competitive_product.${index}.images `"
           >
-            <el-button
-              type="primary"
+            <el-upload
+              action
+              :show-file-list="false"
+              :http-request="(e) => handleCProductImageSuccess(e, index)"
               :disabled="isDisabled"
             >
-              点击上传
-            </el-button>
-          </el-upload>
-          <div class="attachment">
-            请上传png/jpg/jpeg等图片格式,单个文件不能超过5MB
-          </div>
-        </el-form-item>
-        <el-form-item>
-          <div
-            v-for="(image, idx) in attachment[index].images"
-            :key="idx"
-            class="attachment-list"
+              <el-button
+                type="primary"
+                :disabled="isDisabled"
+              >
+                点击上传
+              </el-button>
+            </el-upload>
+            <div class="attachment">
+              请上传png/jpg/jpeg等图片格式,单个文件不能超过5MB
+            </div>
+          </el-form-item>
+          <el-form-item>
+            <div
+              v-for="(image, idx) in demandForm.competitive_product[index].images"
+              :key="idx"
+              class="attachment-list"
+            >
+              <div>
+                {{ image.name }}
+              </div>
+              <div style="display: flex">
+                <el-button
+                  v-if="type !== 'detail'"
+                  type="text"
+                  @click="deleteProductImg(image.id, demandForm.competitive_product[index].images)"
+                >
+                  删除
+                </el-button>
+                <span 
+                  v-if="type !== 'detail'"
+                  class="table-btn"
+                >|</span>
+                <el-button
+                  type="text"
+                  @click="showViewDialog(image.id)"
+                >
+                  预览
+                </el-button>
+              </div>
+            </div>
+          </el-form-item>
+          <el-form-item
+            :label="'竞品链接' + (index + 1)"
+            :prop="`competitive_product.${index}.link`"
+            :rules="demandRules.link"
           >
-            <div>
-              {{ image.name }}
-            </div>
-            <div style="display: flex">
-              <el-button
-                v-if="type !== 'detail'"
-                type="text"
-                @click="deleteProductImg(image.id, attachment[index].images)"
-              >
-                删除
-              </el-button>
-              <span 
-                v-if="type !== 'detail'"
-                class="table-btn"
-              >|</span>
-              <el-button
-                type="text"
-                @click="showViewDialog(image.id)"
-              >
-                预览
-              </el-button>
-            </div>
-          </div>
-        </el-form-item>
-        <el-form-item
-          :label="'竞品链接' + (index + 1)"
-          :prop="`competitive_product.${index}.link`"
-          :rules="demandRules.link"
-        >
-          <el-input
-            v-model="item.link"
-            placeholder="请输入竞品链接"
-            type="textarea"
-            :rows="6"
-            :disabled="isDisabled"
-            clearable
-            maxlength="200"
-            show-word-limit
+            <el-input
+              v-model="item.link"
+              placeholder="请输入竞品链接"
+              type="textarea"
+              :rows="6"
+              :disabled="isDisabled"
+              clearable
+              maxlength="200"
+              show-word-limit
+            />
+          </el-form-item>
+          <el-form-item
+            :label="'竞品参数' + (index + 1)"
+            :prop="`competitive_product.${index}.parameter`"
+          >
+            <el-input
+              v-model="item.parameter"
+              placeholder="请输入竞品参数"
+              type="textarea"
+              :rows="6"
+              :disabled="isDisabled"
+              clearable
+              maxlength="200"
+              show-word-limit
+            />
+          </el-form-item>
+          <el-form-item
+            :label="'对标理由' + (index + 1)"
+            :prop="`competitive_product.${index}.benchmarking_reason`"
+            :rules="demandRules.benchmarking_reason"
+          >
+            <el-input
+              v-model="item.benchmarking_reason"
+              placeholder="请输入对标理由"
+              type="textarea"
+              :rows="6"
+              :disabled="isDisabled"
+              clearable
+              maxlength="200"
+              show-word-limit
+            />
+          </el-form-item>
+          <base-delete 
+            :id="index"
+            mode="demand-btn"
+            content="移除"
+            :show="demandForm.competitive_product.length > 1 && type !== 'detail'"
+            :list="demandForm.competitive_product"
+            @get-list="getDemandComponentProduct"
           />
+        </div>
+        <el-form-item v-if="type !== 'detail'">
+          <el-button @click="addRow">
+            + 新增竞品
+          </el-button>
         </el-form-item>
-        <el-form-item
-          :label="'竞品参数' + (index + 1)"
-          :prop="`competitive_product.${index}.parameter`"
-        >
-          <el-input
-            v-model="item.parameter"
-            placeholder="请输入竞品参数"
-            type="textarea"
-            :rows="6"
-            :disabled="isDisabled"
-            clearable
-            maxlength="200"
-            show-word-limit
-          />
-        </el-form-item>
-        <el-form-item
-          :label="'对标理由' + (index + 1)"
-          :prop="`competitive_product.${index}.benchmarking_reason`"
-          :rules="demandRules.benchmarking_reason"
-        >
-          <el-input
-            v-model="item.benchmarking_reason"
-            placeholder="请输入对标理由"
-            type="textarea"
-            :rows="6"
-            :disabled="isDisabled"
-            clearable
-            maxlength="200"
-            show-word-limit
-          />
-        </el-form-item>
-      </div>
-    </el-scrollbar>
-    <el-form-item v-if="type !== 'detail'">
-      <el-button @click="addRow">
-        + 新增竞品
-      </el-button>
-      <el-button
-        v-if="demandForm.competitive_product.length !== 1"
-        type="danger"
-        @click="deleteRow"
-      >
-        - 删除竞品
-      </el-button>
-    </el-form-item>
+      </el-collapse-item>
+    </el-collapse>
     <el-form-item
       label="核心参数"
       prop="parameter"
@@ -797,11 +807,6 @@ export default {
       isRequired: false,
       bigCategoryList: [],
       smallCategoryList: [],
-      attachment: [
-        {
-          images: []
-        }
-      ],
       currency: [],
       resource: [],
       res: {},
@@ -809,7 +814,8 @@ export default {
       imgLink: '',
       viewImgDialog: false,
       isGetRules: false,
-      isGetData: false
+      isGetData: false,
+      active: 'msg'
     };
   },
   computed: {
@@ -847,11 +853,6 @@ export default {
         if(this.type === 'detail') {
           this.isDisabled = true;
         }
-        if(demandDetail.competitive_product.length === 0) {
-          this.demandForm.competitive_product = this.attachment;
-        } else {
-          this.attachment = JSON.parse(JSON.stringify(this.demandForm.competitive_product));
-        } 
         this.bigCategoryList.map((item) => {
           if (item.id === this.demandForm.big_category_id) {
             this.smallCategoryList = item.children;
@@ -913,14 +914,12 @@ export default {
       this.isGetRules = true;
     },
     addRow() {
-      this.demandForm.competitive_product.push({});
-      this.attachment.push({
+      this.demandForm.competitive_product.push({
         images: []
       });
     },
     deleteRow() {
       this.demandForm.competitive_product.pop({});
-      this.attachment.pop();
     },
     async handleProductImageSuccess(e) {
       if(e.file.size > 5 * 1024 * 1024 ) {
@@ -953,7 +952,7 @@ export default {
       if(e.file.size > 5 * 1024 * 1024 ) {
         this.$message.warning('附件大小超过限制，请重新上传！');
       } else if(e.file.type.indexOf('image') > -1) {
-        if (this.attachment[index].images.length > 8) {
+        if (this.demandForm.competitive_product[index].images.length > 8) {
           this.$message.error(`第${index + 1}组竞品中的竞品图片最多传9张`);
         } else {
           this.$store.commit('setUploadState', false);
@@ -962,7 +961,7 @@ export default {
             await this.$store.dispatch('uploadFile', form);
             if (this.$store.state.uploadState) {
               this.CRes = this.$store.state.fileRes;
-              this.attachment[index].images.push({
+              this.demandForm.competitive_product[index].images.push({
                 id: this.CRes.id,
                 name: this.CRes.file_name,
                 type: this.CRes.type
@@ -984,31 +983,38 @@ export default {
         1
       );
     },
-    getForm() {
-      this.demandForm.images = [];
-      this.imagesList.forEach((item) => {
-        let { id } = item;
-        this.demandForm.images.push(id);
-      });
-      let fileArr = JSON.parse(JSON.stringify(this.attachment));
+    getForm(str, val) {
+      let form = JSON.parse(JSON.stringify(this.demandForm));
+      let fileArr = JSON.parse(JSON.stringify(form.competitive_product));
       for (let index in fileArr) {
         let imgArr = [];
         let { images } = fileArr[index];
         for (let i in images) {
           let { id } = images[i];
           imgArr.push(id);
-          this.demandForm.competitive_product[index].images = imgArr;
+          form.competitive_product[index].images = imgArr;
         }
       }
+      if(str !== 'review') {
+        form.state = val;
+      }
+      form.id = +this.$route.params.id;
+      return form;
+    },
+    getProductImages() {
+       let imgArr = [];
+      this.imagesList.forEach((item) => {
+        let { id } = item;
+        imgArr.push(id);
+      });
+      this.demandForm.images = imgArr;
     },
     submitDemandForm(val) {
-      this.getForm();
+      this.getProductImages();
       this.demandRules = val === 10 ? {} : this.demandRules;
       this.$refs.demandForm.validate((valid) => {
         if (valid) {
-          let form = JSON.parse(JSON.stringify(this.demandForm));
-          form.state = val;
-          form.id = +this.$route.params.id;
+          let form = this.getForm('create', val);
           this.createDemandForm(form);
         }
       });
@@ -1074,14 +1080,16 @@ export default {
       await this.$store.dispatch('demand/updateDemandForm', body);
     },
     updateDemandForm() {
-      this.getForm();
+      this.getProductImages();
       this.$refs.demandForm.validate((valid) => {
         if (valid) {
-          let form = this.demandForm;
-          form.id = +this.$route.params.id;
+          let form = this.getForm('review');
           this.updateReviewDemand(form);
         }
       });
+    },
+    getDemandComponentProduct(val) {
+      this.demandForm.competitive_product = val;
     }
   }
 };

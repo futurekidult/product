@@ -66,6 +66,14 @@
             clearable
           />
         </el-form-item>
+        <base-delete 
+          :id="index"
+          mode="order-delete_btn"
+          content=""
+          :show="deleteVisible && schedule.state !== 40"
+          :list="form.sku"
+          @get-list="getFormSku"
+        />
       </div>
       <el-form-item v-if="schedule.state !== 40">
         <el-button
@@ -73,14 +81,6 @@
           @click="addSku"
         >
           + 新增SKU
-        </el-button>
-        <el-button
-          v-if="deleteVisible"
-          type="danger"
-          :disabled="isDisabled"
-          @click="deleteSku"
-        >
-          + 删除SKU
         </el-button>
       </el-form-item>
       <el-form-item
@@ -318,14 +318,11 @@ export default {
         this.deleteVisible = true;
       }
     },
-    deleteSku() {
-      this.form.sku.pop();
-      if (this.form.sku.length === 1) {
-        this.deleteVisible = false;
-      }
-    },
     clearSku(index) {
       this.form.sku[index].name = '';
+    },
+    getFormSku(val) {
+      this.form.sku = val;
     }
   }
 };

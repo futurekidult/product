@@ -6,7 +6,7 @@
         <div>
           <span class="line">|</span> 需求信息
         </div>
-        <div >
+        <div>
           <el-button
             v-if="!show"
             type="text"
@@ -122,17 +122,18 @@
                 </el-checkbox>
               </el-checkbox-group>
             </el-form-item>
+            <base-delete 
+              :id="index"
+              mode="demand-btn"
+              content="移除"
+              :show="reviewForm.market.length > 1"
+              :list="reviewForm.market"
+              @get-list="getReviewFormMarket"
+            />
           </div>
           <el-form-item>
             <el-button @click="addRow">
               + 新增市场
-            </el-button>
-            <el-button
-              v-if="reviewForm.market.length > 1"
-              type="danger"
-              @click="deleteRow"
-            >
-              - 删除市场
             </el-button>
           </el-form-item>
           <el-divider />
@@ -721,9 +722,6 @@ export default {
     addRow() {
       this.reviewForm.market.push({});
     },
-    deleteRow() {
-      this.reviewForm.market.pop();
-    },
     async getMarket() {
       if (localStorage.getItem('params')) {
         let { demand } = JSON.parse(localStorage.getItem('params'));
@@ -743,8 +741,11 @@ export default {
         this.reviewForm.market[index].platform.length = 0;
       }
     },
-      showForm() {
+    showForm() {
       this.show = !this.show;
+    },
+    getReviewFormMarket(val) {
+      this.reviewForm.market = val;
     }
   }
 };
