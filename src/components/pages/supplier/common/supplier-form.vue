@@ -539,6 +539,7 @@
       >
         <base-upload 
           type="file"
+          tag="采购供应商评估表"
           url="purchase-evaluation"
           :file="purchaseEvaluationFile"
           :is-disabled="isDisabled"
@@ -551,6 +552,7 @@
       >
         <base-upload 
           type="file"
+          tag="质检供应商评估表"
           url="quality-evaluation"
           :file="qualityEvaluationFile"
           :is-disabled="isDisabled"
