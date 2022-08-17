@@ -86,4 +86,9 @@ export default {
   margin-left: 20px;
   margin-top: 8px;
 }
+
+.project-delete_btn { 
+  margin-left: 110px; 
+  margin-bottom: 10px; 
+}
 </style>
