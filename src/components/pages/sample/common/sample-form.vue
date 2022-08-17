@@ -76,60 +76,17 @@
         />
       </el-form-item>
       <el-form-item 
-        label="上传附件" 
+        label="打样单" 
         prop="proofing_sheet_file"
       >
-        <el-upload
-          action
-          :show-file-list="false"
-          :http-request="handleFileSuccess"
-          :disabled="disabled"
-        >
-          <el-button
-            type="primary"
-            :disabled="disabled"
-          >
-            点击上传
-          </el-button>
-        </el-upload>
-        <div class="attachment">
-          支持office文档格式,文件不能超过5MB(仅限一个)
-        </div>
-      </el-form-item>
-      <el-form-item>
-        <div
-          v-if="JSON.stringify(attachment) !== '{}'"
-          class="attachment-list"
-        >
-          <div>{{ attachment.name }}</div>
-          <div style="display: flex">
-            <el-button
-              v-if="type === 'create' || type === 'edit'"
-              type="text"
-              @click="deleteFile"
-            >
-              删除
-            </el-button>
-            <el-button
-              v-else
-              type="text"
-              @click="download(attachment.id, attachment.name)"
-            >
-              下载
-            </el-button>
-            <span 
-              v-if="attachment.type === 12860"
-              class="table-btn"
-            >|</span>
-            <el-button
-              v-if="attachment.type === 12860"
-              type="text"
-              @click="showViewFile(attachment.id)"
-            >
-              预览
-            </el-button>
-          </div>
-        </div>
+        <base-upload 
+          type="file"
+          tag="打样单"
+          url="proofing-sheet"
+          :file="attachment"
+          :is-disabled="disabled"
+          @get-file="getUploadFile"
+        />
       </el-form-item>
       <el-divider />
       <div v-if="type !== 'view'">
@@ -175,10 +132,7 @@
 
 <script>
 import {
-  downloadFile,
   formatterTime,
-  getFile,
-  previewFile,
   timestamp
 } from '../../../../utils';
 export default {
@@ -287,28 +241,6 @@ export default {
         return;
       }
     },
-    async handleFileSuccess(e) {
-      if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
-        this.$store.commit('setUploadState', false);
-        let form = getFile(e);
-        try {
-          await this.$store.dispatch('uploadFile', form);
-          if (this.$store.state.uploadState) {
-            this.attachment = {
-              id: this.$store.state.fileRes.id,
-              name: this.$store.state.fileRes.file_name,
-              type: this.$store.state.fileRes.type
-            };
-          }
-        } catch (err) {
-          return;
-        }
-      } else {
-        this.$message.warning('上传的附加格式有误！');
-      }
-    },
     cancel() {
       this.visible = false;
       this.$emit('hide-dialog', this.visible);
@@ -343,37 +275,14 @@ export default {
         }
       });
     },
-    deleteFile() {
-      this.attachment = {};
-      this.proofingForm.proofing_sheet_file = '';
-    },
-    async showViewFile(id) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          previewFile(this.$store.state.viewLink);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    async download(id, name) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          downloadFile(this.$store.state.viewLink, name);
-        }
-      } catch (err) {
-        return;
-      }
-    },
     submitProofingSheetApproval(val) {
       this.approvalProofingSheet({
         id: this.proofingForm.id,
         approval_result: val
       });
+    },
+    getUploadFile(e) {
+      this.attachment = e;
     }
   }
 };

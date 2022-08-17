@@ -978,7 +978,10 @@ export default {
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
       try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
+        await this.$store.dispatch('getViewLink', { 
+          params: { id }, 
+          url: 'user-survey-report'
+        });
         if (this.$store.state.attachmentState) {
           previewFile(this.$store.state.viewLink);
         }

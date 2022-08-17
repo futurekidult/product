@@ -32,55 +32,15 @@
       class="form-item_width"
       :rules="demandRules.images"
     >
-      <el-upload
-        action
-        :show-file-list="false"
-        :http-request="handleProductImageSuccess"
-        :disabled="isDisabled"
-      >
-        <el-button
-          type="primary"
-          :disabled="isDisabled"
-        >
-          点击上传
-        </el-button>
-      </el-upload>
-      <div class="attachment">
-        请上传 jpg/png/jepg等图片格式, 单个文件不超过 5MB
-      </div>
-    </el-form-item>
-    <el-form-item 
-      v-if="demandForm.images !== []"  
-      class="form-item_width"
-    >
-      <div
-        v-for="(item, index) in imagesList"
-        :key="index"
-        class="attachment-list"
-      >
-        <div>
-          {{ item.name }}
-        </div>
-        <div style="display: flex">
-          <el-button
-            v-if="type !== 'detail'"
-            type="text"
-            @click="deleteProductImg(item.id, imagesList)"
-          >
-            删除
-          </el-button>
-          <span 
-            v-if="type !== 'detail'"
-            class="table-btn"
-          >|</span>
-          <el-button
-            type="text"
-            @click="showViewDialog(item.id)"
-          >
-            预览
-          </el-button>
-        </div>
-      </div>
+      <base-upload 
+        type="image"
+        :is-disabled="isDisabled"
+        :list="imagesList"
+        tag="产品图片"
+        count="8"
+        url="demand-prod-img"
+        @get-file="(val) => getUploadFile(val, 'images')"
+      />
     </el-form-item>
     <div class="form-item form-item_width">
       <el-form-item
@@ -157,52 +117,15 @@
             :label="'竞品图片' + (index + 1)"
             :prop="`competitive_product.${index}.images `"
           >
-            <el-upload
-              action
-              :show-file-list="false"
-              :http-request="(e) => handleCProductImageSuccess(e, index)"
-              :disabled="isDisabled"
-            >
-              <el-button
-                type="primary"
-                :disabled="isDisabled"
-              >
-                点击上传
-              </el-button>
-            </el-upload>
-            <div class="attachment">
-              请上传png/jpg/jpeg等图片格式,单个文件不能超过5MB
-            </div>
-          </el-form-item>
-          <el-form-item>
-            <div
-              v-for="(image, idx) in demandForm.competitive_product[index].images"
-              :key="idx"
-              class="attachment-list"
-            >
-              <div>
-                {{ image.name }}
-              </div>
-              <div style="display: flex">
-                <el-button
-                  v-if="type !== 'detail'"
-                  type="text"
-                  @click="deleteProductImg(image.id, demandForm.competitive_product[index].images)"
-                >
-                  删除
-                </el-button>
-                <span 
-                  v-if="type !== 'detail'"
-                  class="table-btn"
-                >|</span>
-                <el-button
-                  type="text"
-                  @click="showViewDialog(image.id)"
-                >
-                  预览
-                </el-button>
-              </div>
-            </div>
+            <base-upload 
+              type="image"
+              :is-disabled="isDisabled"
+              :list="demandForm.competitive_product[index].images"
+              tag="竞品图片"
+              count="8"
+              url="demand-competitive-img"
+              @get-file="(val) => getUploadFile(val, 'CPImages', index)"
+            />
           </el-form-item>
           <el-form-item
             :label="'竞品链接' + (index + 1)"
@@ -609,23 +532,12 @@
       </el-button>
     </el-form-item>
   </el-form>
-
-  <view-dialog
-    v-if="viewImgDialog"
-    :link="imgLink"
-    :visible="viewImgDialog"
-    @hide-dialog="closeViewDialog"
-  />
 </template>
 
 <script>
-import { getFile, checkValid } from '../../../../utils';
-import ViewDialog from '../../../common/view-dialog.vue';
+import { checkValid } from '../../../../utils';
 
 export default {
-  components: {
-    ViewDialog
-  },
   props: ['type', 'id'],
   data() {
     return {
@@ -811,8 +723,6 @@ export default {
       resource: [],
       res: {},
       CRes: {},
-      imgLink: '',
-      viewImgDialog: false,
       isGetRules: false,
       isGetData: false,
       active: 'msg'
@@ -918,71 +828,6 @@ export default {
         images: []
       });
     },
-    deleteRow() {
-      this.demandForm.competitive_product.pop({});
-    },
-    async handleProductImageSuccess(e) {
-      if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if(e.file.type.indexOf('image') > -1) {
-        if (this.imagesList.length > 8) {
-          this.$message.error('产品图片最多传9张');
-        } else {
-          this.$store.commit('setUploadState', false);
-          let form = getFile(e);
-          try {
-            await this.$store.dispatch('uploadFile', form);
-            if (this.$store.state.uploadState) {
-              this.res = this.$store.state.fileRes;
-              this.imagesList.push({
-                id: this.res.id,
-                name: this.res.file_name,
-                type: this.res.type
-              });
-            }
-          } catch (err) {
-            return;
-          }
-       }
-      } else {
-        this.$message.warning('上传的产品图片格式有误！');
-      }
-    },
-    async handleCProductImageSuccess(e, index) {
-      if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if(e.file.type.indexOf('image') > -1) {
-        if (this.demandForm.competitive_product[index].images.length > 8) {
-          this.$message.error(`第${index + 1}组竞品中的竞品图片最多传9张`);
-        } else {
-          this.$store.commit('setUploadState', false);
-          let form = getFile(e);
-          try {
-            await this.$store.dispatch('uploadFile', form);
-            if (this.$store.state.uploadState) {
-              this.CRes = this.$store.state.fileRes;
-              this.demandForm.competitive_product[index].images.push({
-                id: this.CRes.id,
-                name: this.CRes.file_name,
-                type: this.CRes.type
-              });
-            }
-          } catch (err) {
-            return;
-          }
-        }
-      } else {
-        this.$message.warning(`上传的第${index + 1}组竞品中的竞品图片格式有误！`);
-      }
-    },
-    deleteProductImg(id, arr) {
-      arr.splice(
-        arr.findIndex((e) => {
-          return e.id === id;
-        }),
-        1
-      );
-    },
     getForm(str, val) {
       let form = JSON.parse(JSON.stringify(this.demandForm));
       let fileArr = JSON.parse(JSON.stringify(form.competitive_product));
@@ -1002,7 +847,7 @@ export default {
       return form;
     },
     getProductImages() {
-       let imgArr = [];
+      let imgArr = [];
       this.imagesList.forEach((item) => {
         let { id } = item;
         imgArr.push(id);
@@ -1032,21 +877,6 @@ export default {
           return;
         }
       }
-    },
-    async showViewDialog(id) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          this.viewImgDialog = true;
-          this.imgLink = this.$store.state.viewLink;
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    closeViewDialog() {
-      this.viewImgDialog = false;
     },
     async getRmb(val) {
       if(this.demandForm[`${val}_price`] && this.demandForm[`${val}_price_currency`]) {
@@ -1090,6 +920,13 @@ export default {
     },
     getDemandComponentProduct(val) {
       this.demandForm.competitive_product = val;
+    },
+    getUploadFile(e, str, idx) {
+      if(str === 'CPImages') {
+        this.demandForm.competitive_product[idx].images = e;
+      } else {
+        this.imagesList = e;
+      }
     }
   }
 };

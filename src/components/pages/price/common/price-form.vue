@@ -352,7 +352,7 @@
                 :value="item.key"
               />
             </el-select>
-          </el-form-item>
+          </el-form-item>  
           <el-form-item prop="sea_freight_cost">
             <el-input
               v-model="quotationForm.sea_freight_cost"
@@ -382,48 +382,16 @@
         </div>
       </el-form-item>
       <el-form-item
-        label="上传附件"
+        label="报价单"
         prop="quotation_file"
       >
-        <el-upload
-          action
-          :show-file-list="false"
-          :http-request="handleFileSuccess"
-        >
-          <el-button type="primary">
-            点击上传
-          </el-button>
-        </el-upload>
-        <div class="attachment">
-          支持office文档格式,文件不能超过5MB(仅限一个)
-        </div>
-      </el-form-item>
-      <el-form-item>
-        <div
-          v-if="show"
-          class="attachment-list"
-        >
-          <div>{{ attachment.name }}</div>
-          <div style="display: flex">
-            <el-button
-              type="text"
-              @click="deleteFile"
-            >
-              删除
-            </el-button>
-            <span 
-              v-if="attachment.type === 12860"
-              class="table-btn"
-            >|</span>
-            <el-button
-              v-if="attachment.type === 12860"
-              type="text"
-              @click="showViewFile(attachment.id)"
-            >
-              预览
-            </el-button>
-          </div>
-        </div>
+        <base-upload 
+          type="file"
+          tag="报价单"
+          url="quotation"
+          :file="attachment"
+          @get-file="getUploadFile"
+        />
       </el-form-item>
       <div style="text-align: right">
         <el-button
@@ -445,8 +413,6 @@
 
 <script>
 import {
-  getFile,
-  previewFile,
   timestamp,
   checkValid
 } from '../../../../utils/index.js';
@@ -711,45 +677,6 @@ export default {
         }
       });
     },
-    async handleFileSuccess(e) {
-      if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
-        this.$store.commit('setUploadState', false);
-        let form = getFile(e);
-        try {
-          await this.$store.dispatch('uploadFile', form);
-          if (this.$store.state.uploadState) {
-            this.show = true;
-            this.attachment = {
-              id: this.$store.state.fileRes.id,
-              name: this.$store.state.fileRes.file_name,
-              type: this.$store.state.fileRes.type
-            };
-          }
-        } catch (err) {
-          return;
-        }
-      } else {
-        this.$message.warning('上传的附件格式有误！');
-     }
-    },
-    deleteFile() {
-      this.attachment = {};
-      this.quotationForm.quotation_file = '';
-      this.show = false;
-    },
-    async showViewFile(id) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          previewFile(this.$store.state.viewLink);
-        }
-      } catch (err) {
-        return;
-      }
-    },
     async getSupplier(val) {
       try {
         await this.$store.dispatch('price/getSupplierOption');
@@ -824,6 +751,9 @@ export default {
     clearAddQuotationResult() {
       this.quotationForm.appended_reason = '';
       this.hasAdd = false;
+    },
+    getUploadFile(e) {
+      this.attachment = e;
     }
   }
 };

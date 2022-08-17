@@ -260,46 +260,14 @@
           若没有海运费的金额请填0
         </div>
       </el-form-item>
-      <el-form-item label="上传附件">
-        <el-upload
-          :show-file-list="false"
-          action
-          disabled
-        >
-          <el-button
-            type="primary"
-            disabled
-          >
-            点击上传
-          </el-button>
-        </el-upload>
-        <div class="attachment">
-          支持office文档格式,文件不能超过5MB(仅限一个)
-        </div>
-      </el-form-item>
-      <el-form-item>
-        <div class="attachment-list">
-          <div>{{ attachment.name }}</div>
-          <div style="display: flex">
-            <el-button
-              type="text"
-              @click="download(attachment.id, attachment.name)"
-            >
-              下载
-            </el-button>
-            <span 
-              v-if="attachment.type === 12860"
-              class="table-btn"
-            >|</span>
-            <el-button
-              v-if="attachment.type === 12860"
-              type="text"
-              @click="showViewFile(attachment.id)"
-            >
-              预览
-            </el-button>
-          </div>
-        </div>
+      <el-form-item label="报价单">
+        <base-upload 
+          type="file"
+          tag="报价单"
+          url="quotation"
+          :file="attachment"
+          :is-disabled="true"
+        />
       </el-form-item>
     </el-form>
   </el-dialog>
@@ -307,9 +275,7 @@
 
 <script>
 import {
-  downloadFile,
-  formatterTime,
-  previewFile
+  formatterTime
 } from '../../../../utils/index.js';
 
 export default {
@@ -363,28 +329,6 @@ export default {
         } catch (err) {
           return;
         }
-      }
-    },
-    async download(id, name) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          downloadFile(this.$store.state.viewLink, name);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    async showViewFile(id) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          previewFile(this.$store.state.viewLink);
-        }
-      } catch (err) {
-        return;
       }
     }
   }

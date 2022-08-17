@@ -71,7 +71,7 @@
           <div v-if="manualFile !== undefined && manualFile.type === 12860">
             <el-button
               type="text"
-              @click="showViewFile(manualFile.id)"
+              @click="showViewFile(manualFile.id, 'manual-file')"
             >
               预览
             </el-button>
@@ -130,7 +130,7 @@
           <div v-if="diecutsFile !== undefined && diecutsFile.type === 12860">
             <el-button
               type="text"
-              @click="showViewFile(diecutsFile.id)"
+              @click="showViewFile(diecutsFile.id, 'diecuts-file')"
             >
               预览
             </el-button>
@@ -260,10 +260,13 @@ export default {
         this.$message.warning('上传的附件格式有误！');
        }
     },
-    async showViewFile(id) {
+    async showViewFile(id, str) {
       this.$store.commit('setAttachmentState', false);
       try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
+        await this.$store.dispatch('getViewLink', { 
+          params: { id },
+          url:  str === 'manual-file' ? 'product-manual' : 'diecuts'
+        });
         if (this.$store.state.attachmentState) {
           previewFile(this.$store.state.viewLink);
         }

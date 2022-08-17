@@ -119,7 +119,7 @@
             </el-button>
           </el-upload>
           <div class="attachment">
-            支持office文档格式,文件不能超过5MB(仅限一个)
+            支持office文档格式,文件不能超过5MB
           </div>
         </el-form-item>
         <el-form-item>
@@ -233,7 +233,10 @@ export default {
     async showViewFile(id) {
       this.$store.commit('setAttachmentState', false);
       try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
+        await this.$store.dispatch('getViewLink', { 
+          params: { id },
+          url: this.type === 'contract' ? 'patent-contract' : 'patent-report'
+        });
         if (this.$store.state.attachmentState) {
           previewFile(this.$store.state.viewLink);
         }
