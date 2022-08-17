@@ -139,125 +139,134 @@
         show-word-limit
       />
     </el-form-item>
-    <el-scrollbar height="440px">
-      <div
-        v-for="(item, index) in demandForm.competitive_product"
-        :key="index"
-        class="form-item_width"
+    <el-collapse
+      v-model="active" 
+      class="collapse-item" 
+      style="margin-left: 15px"
+    >
+      <el-collapse-item 
+        title="竞品信息"
+        :name="'msg'"
       >
-        <el-form-item
-          :label="'竞品图片' + (index + 1)"
-          :prop="`competitive_product.${index}.images `"
+        <div
+          v-for="(item, index) in demandForm.competitive_product"
+          :key="index"
+          class="form-item_width"
         >
-          <el-upload
-            action
-            :show-file-list="false"
-            :http-request="(e) => handleCProductImageSuccess(e, index)"
-            :disabled="isDisabled"
+          <el-form-item
+            :label="'竞品图片' + (index + 1)"
+            :prop="`competitive_product.${index}.images `"
           >
-            <el-button
-              type="primary"
+            <el-upload
+              action
+              :show-file-list="false"
+              :http-request="(e) => handleCProductImageSuccess(e, index)"
               :disabled="isDisabled"
             >
-              点击上传
-            </el-button>
-          </el-upload>
-          <div class="attachment">
-            请上传png/jpg/jpeg等图片格式,单个文件不能超过5MB
-          </div>
-        </el-form-item>
-        <el-form-item>
-          <div
-            v-for="(image, idx) in demandForm.competitive_product[index].images"
-            :key="idx"
-            class="attachment-list"
+              <el-button
+                type="primary"
+                :disabled="isDisabled"
+              >
+                点击上传
+              </el-button>
+            </el-upload>
+            <div class="attachment">
+              请上传png/jpg/jpeg等图片格式,单个文件不能超过5MB
+            </div>
+          </el-form-item>
+          <el-form-item>
+            <div
+              v-for="(image, idx) in demandForm.competitive_product[index].images"
+              :key="idx"
+              class="attachment-list"
+            >
+              <div>
+                {{ image.name }}
+              </div>
+              <div style="display: flex">
+                <el-button
+                  v-if="type !== 'detail'"
+                  type="text"
+                  @click="deleteProductImg(image.id, demandForm.competitive_product[index].images)"
+                >
+                  删除
+                </el-button>
+                <span 
+                  v-if="type !== 'detail'"
+                  class="table-btn"
+                >|</span>
+                <el-button
+                  type="text"
+                  @click="showViewDialog(image.id)"
+                >
+                  预览
+                </el-button>
+              </div>
+            </div>
+          </el-form-item>
+          <el-form-item
+            :label="'竞品链接' + (index + 1)"
+            :prop="`competitive_product.${index}.link`"
+            :rules="demandRules.link"
           >
-            <div>
-              {{ image.name }}
-            </div>
-            <div style="display: flex">
-              <el-button
-                v-if="type !== 'detail'"
-                type="text"
-                @click="deleteProductImg(image.id, demandForm.competitive_product[index].images)"
-              >
-                删除
-              </el-button>
-              <span 
-                v-if="type !== 'detail'"
-                class="table-btn"
-              >|</span>
-              <el-button
-                type="text"
-                @click="showViewDialog(image.id)"
-              >
-                预览
-              </el-button>
-            </div>
-          </div>
-        </el-form-item>
-        <el-form-item
-          :label="'竞品链接' + (index + 1)"
-          :prop="`competitive_product.${index}.link`"
-          :rules="demandRules.link"
-        >
-          <el-input
-            v-model="item.link"
-            placeholder="请输入竞品链接"
-            type="textarea"
-            :rows="6"
-            :disabled="isDisabled"
-            clearable
-            maxlength="200"
-            show-word-limit
+            <el-input
+              v-model="item.link"
+              placeholder="请输入竞品链接"
+              type="textarea"
+              :rows="6"
+              :disabled="isDisabled"
+              clearable
+              maxlength="200"
+              show-word-limit
+            />
+          </el-form-item>
+          <el-form-item
+            :label="'竞品参数' + (index + 1)"
+            :prop="`competitive_product.${index}.parameter`"
+          >
+            <el-input
+              v-model="item.parameter"
+              placeholder="请输入竞品参数"
+              type="textarea"
+              :rows="6"
+              :disabled="isDisabled"
+              clearable
+              maxlength="200"
+              show-word-limit
+            />
+          </el-form-item>
+          <el-form-item
+            :label="'对标理由' + (index + 1)"
+            :prop="`competitive_product.${index}.benchmarking_reason`"
+            :rules="demandRules.benchmarking_reason"
+          >
+            <el-input
+              v-model="item.benchmarking_reason"
+              placeholder="请输入对标理由"
+              type="textarea"
+              :rows="6"
+              :disabled="isDisabled"
+              clearable
+              maxlength="200"
+              show-word-limit
+            />
+          </el-form-item>
+          <base-delete 
+            :id="index"
+            mode="demand-btn"
+            content="移除"
+            :show="demandForm.competitive_product.length !== 1 && type !== 'detail'"
+            :list="demandForm.competitive_product"
+            @get-list="getDemandComponentProduct"
           />
+        </div>
+        <el-form-item v-if="type !== 'detail'">
+          <el-button @click="addRow">
+            + 新增竞品
+          </el-button>
         </el-form-item>
-        <el-form-item
-          :label="'竞品参数' + (index + 1)"
-          :prop="`competitive_product.${index}.parameter`"
-        >
-          <el-input
-            v-model="item.parameter"
-            placeholder="请输入竞品参数"
-            type="textarea"
-            :rows="6"
-            :disabled="isDisabled"
-            clearable
-            maxlength="200"
-            show-word-limit
-          />
-        </el-form-item>
-        <el-form-item
-          :label="'对标理由' + (index + 1)"
-          :prop="`competitive_product.${index}.benchmarking_reason`"
-          :rules="demandRules.benchmarking_reason"
-        >
-          <el-input
-            v-model="item.benchmarking_reason"
-            placeholder="请输入对标理由"
-            type="textarea"
-            :rows="6"
-            :disabled="isDisabled"
-            clearable
-            maxlength="200"
-            show-word-limit
-          />
-        </el-form-item>
-        <base-delete 
-          :id="index"
-          mode="demand-btn"
-          content="删除竞品"
-          :show="demandForm.competitive_product.length !== 1 && type !== 'detail'"
-          :list="demandForm.competitive_product"
-          @get-list="getDemandComponentProduct"
-        />
-      </div>
-    </el-scrollbar>
-    <el-form-item v-if="type !== 'detail'">
-      <el-button @click="addRow">
-        + 新增竞品
-      </el-button>
-    </el-form-item>
+      </el-collapse-item>
+    </el-collapse>
     <el-form-item
       label="核心参数"
       prop="parameter"
@@ -805,7 +814,8 @@ export default {
       imgLink: '',
       viewImgDialog: false,
       isGetRules: false,
-      isGetData: false
+      isGetData: false,
+      active: 'msg'
     };
   },
   computed: {
