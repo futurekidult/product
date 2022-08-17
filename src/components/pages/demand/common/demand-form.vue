@@ -255,7 +255,7 @@
             :id="index"
             mode="demand-btn"
             content="移除"
-            :show="demandForm.competitive_product.length !== 1 && type !== 'detail'"
+            :show="demandForm.competitive_product.length > 1 && type !== 'detail'"
             :list="demandForm.competitive_product"
             @get-list="getDemandComponentProduct"
           />
