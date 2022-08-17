@@ -967,7 +967,10 @@ export default {
     async download(id, name) {
       this.$store.commit('setAttachmentState', false);
       try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
+        await this.$store.dispatch('getViewLink', { 
+          params: { id },
+          url: 'user-survey-report'
+        });
         if (this.$store.state.attachmentState) {
           downloadFile(this.$store.state.viewLink, name);
         }

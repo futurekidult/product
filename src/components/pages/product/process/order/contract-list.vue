@@ -86,7 +86,7 @@
             >|</span>
             <el-button
               type="text"
-              @click="download(manualFile.id, manualFile.name)"
+              @click="download(manualFile.id, manualFile.name, 'manual-file')"
             >
               下载
             </el-button>
@@ -145,7 +145,7 @@
             >|</span>
             <el-button
               type="text"
-              @click="download(diecutsFile.id, diecutsFile.name)"
+              @click="download(diecutsFile.id, diecutsFile.name, 'diecuts-file')"
             >
               下载
             </el-button>
@@ -281,10 +281,13 @@ export default {
         this.diecutsFile = {};
       }
     },
-    async download(id, name) {
+    async download(id, name, str) {
       this.$store.commit('setAttachmentState', false);
       try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
+        await this.$store.dispatch('getViewLink', { 
+          params: { id },
+          url:  str === 'manual-file' ? 'product-manual' : 'diecuts'
+         });
         if (this.$store.state.attachmentState) {
           downloadFile(this.$store.state.viewLink, name);
         }
