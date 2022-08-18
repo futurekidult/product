@@ -103,7 +103,7 @@
         label-width="100px"
       >
         <el-form-item
-          label="文件"
+          :label="type === 'contract' ? '合同附件' : '专利报告  '"
           prop="file"
           :rules="[{ required: true, message: '请上传附件'}]"
         >

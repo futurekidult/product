@@ -40,7 +40,7 @@
             content=""
             :show="form.usage_scenario.length > 1 && progress.state !== 50"
             :list="form.usage_scenario"
-            @get-list="(val) => getReturnData(val, 'usage')"
+            @get-list=" getReturnData"
           />
         </div>
       </el-form-item>
@@ -580,6 +580,9 @@ export default {
     },
     getUploadFile(e) {
       this.file = e;
+    },
+    getReturnData(val) {
+      this.form.usage_scenario = val;
     }
   }
 };

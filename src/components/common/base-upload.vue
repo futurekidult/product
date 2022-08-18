@@ -183,7 +183,7 @@ export default {
       if(e.file.size > 5 * 1024 * 1024 ) {
         this.$message.warning('附件大小超过限制，请重新上传！');
       } else if(condition) {
-        if((this.type === 'image' && this.imgList.length > this.count) || (this.type === 'file-list' && this.file.length > this.count)) {
+        if((this.type === 'image' && this.imgList.length > this.count) || (this.type === 'file-list' && this.fileArr.length > this.count)) {
           this.$message.warning(`最多传${+this.count + 1}个`);
         } else {
           this.$store.commit('setUploadState', false);
@@ -231,8 +231,8 @@ export default {
         1
         );
       } else {
-        this.file.splice(
-        this.file.findIndex((e) => {
+        this.fileArr.splice(
+        this.fileArr.findIndex((e) => {
           return e.id === id;
         }),
         1
