@@ -44,7 +44,7 @@
       <el-button
         v-if="attachment.type === 12860"
         type="text"
-        @click="showViewFile(attachment.id)"
+        @click="download(attachment.id, attachment.name, 'preview')"
       >
         预览
       </el-button>
@@ -55,7 +55,7 @@
       <el-button
         v-if="isDisabled"
         type="text"
-        @click="download(attachment.id, attachment.name)"
+        @click="download(attachment.id, attachment.name, 'download')"
       >
         下载
       </el-button>
@@ -87,7 +87,7 @@
         >|</span>
         <el-button
           type="text"
-          @click="showViewFile(item.id)"
+          @click="download(item.id, item.name, 'preview')"
         >
           预览
         </el-button>
@@ -121,7 +121,7 @@
         <el-button
           v-if="item.type === 12860"
           type="text"
-          @click="showViewFile(item.id)"
+          @click="download(item.id, item.name, 'preview')"
         >
           预览
         </el-button>
@@ -132,7 +132,7 @@
         <el-button
           v-if="isDisabled"
           type="text"
-          @click="download(item.id, item.name)"
+          @click="download(item.id, item.name, 'download')"
         >
           下载
         </el-button>
@@ -148,7 +148,7 @@
 </template>
 
 <script>
-import { downloadFile, getFile, previewFile } from '../../utils';
+import { downloadFile, getFile } from '../../utils';
 import ViewDialog from './view-dialog.vue'
 
 export default {
@@ -178,6 +178,17 @@ export default {
     }
   },
   methods: {
+    getEmitData() {
+      let emitFile = null;
+      if(this.type === 'file') {
+        emitFile = this.attachment;
+      } else if(this.type === 'image') {
+        emitFile = this.imgList;
+      } else {
+        emitFile = this.fileArr;
+      }
+      return emitFile;
+    },
     async handleFileSuccess(e) {
       let condition = this.type === 'file' || this.type === 'file-list' ? (e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') : (e.file.type.indexOf('image') > -1 && e.file.type !== 'image/gif');
       if(e.file.size > 5 * 1024 * 1024 ) {
@@ -190,27 +201,20 @@ export default {
           let form = getFile(e);
           try {
             await this.$store.dispatch('uploadFile', form);
+            let result = {
+              id: this.$store.state.fileRes.id,
+              name: this.$store.state.fileRes.file_name,
+              type: this.$store.state.fileRes.type
+            }
             if (this.$store.state.uploadState) {
               if(this.type === 'file') {
-                this.attachment = {
-                  id: this.$store.state.fileRes.id,
-                  name: this.$store.state.fileRes.file_name,
-                  type: this.$store.state.fileRes.type
-                };
+                this.attachment = result;
               } else if(this.type === 'image'){
-                this.imgList.push({
-                  id: this.$store.state.fileRes.id,
-                  name: this.$store.state.fileRes.file_name,
-                  type: this.$store.state.fileRes.type
-                });
+                this.imgList.push(result);
               } else {
-                this.fileArr.push({
-                  id: this.$store.state.fileRes.id,
-                  name: this.$store.state.fileRes.file_name,
-                  type: this.$store.state.fileRes.type
-                });
+                this.fileArr.push(result);
               }
-               this.$emit('get-file', this.type === 'file' ? this.attachment : this.type === 'image' ? this.imgList : this.fileArr);
+               this.$emit('get-file', this.getEmitData());
             }
           } catch (err) {
             return;
@@ -238,28 +242,9 @@ export default {
         1
         );
       }
-      this.$emit('get-file', this.type === 'file' ? this.attachment : this.type === 'image' ? this.imgList : this.fileArr);
+      this.$emit('get-file', this.getEmitData());
     },
-    async showViewFile(id) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { 
-          params: { id },
-          url: this.url
-        });
-        if (this.$store.state.attachmentState) {
-          if(this.type === 'file') {
-            previewFile(this.$store.state.viewLink);
-          } else {
-            this.viewImgDialog = true;
-            this.imgLink = this.$store.state.viewLink;
-          }
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    async download(id, name) {
+    async download(id, name , type) {
       this.$store.commit('setAttachmentState', false);
       try {
         await this.$store.dispatch('getViewLink', { 
@@ -267,7 +252,16 @@ export default {
           url: this.url
          });
         if (this.$store.state.attachmentState) {
-          downloadFile(this.$store.state.viewLink, name);
+          if(type === 'download' ){
+            downloadFile(this.$store.state.viewLink, name, 'download');
+          } else {
+             if(this.type !== 'image') {
+                downloadFile(this.$store.state.viewLink, name, 'preview');
+              } else {
+                this.viewImgDialog = true;
+                this.imgLink = this.$store.state.viewLink;
+              }
+          }
         }
       } catch (err) {
         return;

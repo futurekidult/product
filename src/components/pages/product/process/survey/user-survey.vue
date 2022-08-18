@@ -329,7 +329,7 @@
                   <div v-if="(scope.row.state >= 40 || scope.row.state === 20) && scope.row.attachment.type === 12860">
                     <el-button
                       type="text"
-                      @click="showViewFile(scope.row.attachment.id)"
+                      @click="download(scope.row.attachment.id, attachment.name, 'preview')"
                     >
                       预览
                     </el-button>
@@ -355,7 +355,7 @@
                     <el-button
                       v-if="scope.row.attachment.type === 12860"
                       type="text"
-                      @click="showViewFile(scope.row.attachment.id)"
+                      @click="download(scope.row.attachment.id, attachment.name, 'preview')"
                     >
                       预览
                     </el-button>
@@ -370,7 +370,8 @@
                       @click="
                         download(
                           scope.row.attachment.id,
-                          scope.row.attachment.name
+                          scope.row.attachment.name,
+                          'download'
                         )
                       "
                     >
@@ -572,7 +573,6 @@ import {
   downloadFile,
   getFile,
   getOrganizationList,
-  previewFile,
   timestamp
 } from '../../../../../utils';
 import SurveyForm from '../../common/survey-form.vue';
@@ -964,7 +964,7 @@ export default {
         this.$message.warning('上传的附件格式有误！');
       } 
     },
-    async download(id, name) {
+    async download(id, name, type) {
       this.$store.commit('setAttachmentState', false);
       try {
         await this.$store.dispatch('getViewLink', { 
@@ -972,21 +972,11 @@ export default {
           url: 'user-survey-report'
         });
         if (this.$store.state.attachmentState) {
-          downloadFile(this.$store.state.viewLink, name);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    async showViewFile(id) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { 
-          params: { id }, 
-          url: 'user-survey-report'
-        });
-        if (this.$store.state.attachmentState) {
-          previewFile(this.$store.state.viewLink);
+          if(type === 'download') {
+            downloadFile(this.$store.state.viewLink, name,'download');
+          } else {
+           downloadFile(this.$store.state.viewLink, name,'preview');
+          }
         }
       } catch (err) {
         return;
