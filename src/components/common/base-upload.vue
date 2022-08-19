@@ -44,7 +44,7 @@
       <el-button
         v-if="attachment.type === 12860"
         type="text"
-        @click="download(attachment.id, attachment.name, 'preview')"
+        @click="previewOrDownload(attachment.id, attachment.name, 'preview')"
       >
         预览
       </el-button>
@@ -55,7 +55,7 @@
       <el-button
         v-if="isDisabled"
         type="text"
-        @click="download(attachment.id, attachment.name, 'download')"
+        @click="previewOrDownload(attachment.id, attachment.name, 'download')"
       >
         下载
       </el-button>
@@ -87,7 +87,7 @@
         >|</span>
         <el-button
           type="text"
-          @click="download(item.id, item.name, 'preview')"
+          @click="previewOrDownload(item.id, item.name, 'preview')"
         >
           预览
         </el-button>
@@ -121,7 +121,7 @@
         <el-button
           v-if="item.type === 12860"
           type="text"
-          @click="download(item.id, item.name, 'preview')"
+          @click="previewOrDownload(item.id, item.name, 'preview')"
         >
           预览
         </el-button>
@@ -132,7 +132,7 @@
         <el-button
           v-if="isDisabled"
           type="text"
-          @click="download(item.id, item.name, 'download')"
+          @click="previewOrDownload(item.id, item.name, 'download')"
         >
           下载
         </el-button>
@@ -148,7 +148,7 @@
 </template>
 
 <script>
-import { downloadFile, getFile } from '../../utils';
+import { previewOrDownloadFile, getFile } from '../../utils';
 import ViewDialog from './view-dialog.vue'
 
 export default {
@@ -244,7 +244,7 @@ export default {
       }
       this.$emit('get-file', this.getEmitData());
     },
-    async download(id, name , type) {
+    async previewOrDownload(id, name , type) {
       this.$store.commit('setAttachmentState', false);
       try {
         await this.$store.dispatch('getViewLink', { 
@@ -253,10 +253,10 @@ export default {
          });
         if (this.$store.state.attachmentState) {
           if(type === 'download' ){
-            downloadFile(this.$store.state.viewLink, name, 'download');
+            previewOrDownloadFile(this.$store.state.viewLink, name, 'download');
           } else {
              if(this.type !== 'image') {
-                downloadFile(this.$store.state.viewLink, name, 'preview');
+                previewOrDownloadFile(this.$store.state.viewLink, name, 'preview');
               } else {
                 this.viewImgDialog = true;
                 this.imgLink = this.$store.state.viewLink;

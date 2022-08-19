@@ -71,7 +71,7 @@
           <div v-if="manualFile !== undefined && manualFile.type === 12860">
             <el-button
               type="text"
-              @click="download(manualFile.id, manualFile.name,'manual-file', 'preview')"
+              @click="previewOrDownload(manualFile.id, manualFile.name,'manual-file', 'preview')"
             >
               预览
             </el-button>
@@ -86,7 +86,7 @@
             >|</span>
             <el-button
               type="text"
-              @click="download(manualFile.id, manualFile.name, 'manual-file', 'download')"
+              @click="previewOrDownload(manualFile.id, manualFile.name, 'manual-file', 'download')"
             >
               下载
             </el-button>
@@ -130,7 +130,7 @@
           <div v-if="diecutsFile !== undefined && diecutsFile.type === 12860">
             <el-button
               type="text"
-              @click="download(diecutsFile.id, diecutsFile.name, 'diecuts-file', 'preview')"
+              @click="previewOrDownload(diecutsFile.id, diecutsFile.name, 'diecuts-file', 'preview')"
             >
               预览
             </el-button>
@@ -145,7 +145,7 @@
             >|</span>
             <el-button
               type="text"
-              @click="download(diecutsFile.id, diecutsFile.name, 'diecuts-file', 'download')"
+              @click="previewOrDownload(diecutsFile.id, diecutsFile.name, 'diecuts-file', 'download')"
             >
               下载
             </el-button>
@@ -184,7 +184,7 @@
 </template>
 
 <script>
-import { downloadFile, getFile } from '../../../../../utils';
+import { previewOrDownloadFile, getFile } from '../../../../../utils';
 export default {
   inject: ['getContract', 'changeColor', 'getProgress'],
   props: [
@@ -267,7 +267,7 @@ export default {
         this.diecutsFile = {};
       }
     },
-    async download(id, name, str, type) {
+    async previewOrDownload(id, name, str, type) {
       this.$store.commit('setAttachmentState', false);
       try {
         await this.$store.dispatch('getViewLink', { 
@@ -276,9 +276,9 @@ export default {
          });
         if (this.$store.state.attachmentState) {
           if(type === 'download') {
-            downloadFile(this.$store.state.viewLink, name, 'download');
+            previewOrDownloadFile(this.$store.state.viewLink, name, 'download');
           } else {
-            downloadFile(this.$store.state.viewLink, name, 'preview');
+            previewOrDownloadFile(this.$store.state.viewLink, name, 'preview');
           }
         }
       } catch (err) {

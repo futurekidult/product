@@ -56,7 +56,7 @@
             <div v-if="JSON.stringify(scope.row.test_result_file) !== '{}' && scope.row.test_result_file.type === 12860">
               <el-button
                 type="text"
-                @click="download(scope.row.test_result_file.id, scope.row.test_result_file.name, 'preview')"
+                @click="previewOrDownload(scope.row.test_result_file.id, scope.row.test_result_file.name, 'preview')"
               >
                 预览
               </el-button>
@@ -69,7 +69,7 @@
               <el-button
                 type="text"
                 @click="
-                  download(
+                  previewOrDownload(
                     scope.row.test_result_file.id,
                     scope.row.test_result_file.name,
                     'download'
@@ -155,7 +155,7 @@ import UserForm from './user-form.vue';
 import SampleResult from './sample-result.vue';
 import ViewUser from './view-user.vue';
 import {
-  downloadFile,
+  previewOrDownloadFile,
   formatterTime
 } from '../../../../utils';
 
@@ -219,15 +219,15 @@ export default {
         return;
       }
     },
-    async download(id, name, type) {
+    async previewOrDownload(id, name, type) {
       this.$store.commit('setAttachmentState', false);
       try {
         await this.$store.dispatch('getViewLink', { params: { id } });
         if (this.$store.state.attachmentState) {
           if(type === 'download') {
-            downloadFile(this.$store.state.viewLink, name, 'download');
+            previewOrDownloadFile(this.$store.state.viewLink, name, 'download');
           } else {
-            downloadFile(this.$store.state.viewLink, name, 'preview');
+            previewOrDownloadFile(this.$store.state.viewLink, name, 'preview');
           }
         }
       } catch (err) {

@@ -30,7 +30,7 @@ export const timestamp = (val) => {
   }
 };
 
-export const downloadFile = (val, name, type) => {
+export const previewOrDownloadFile = (val, name, type) => {
   let link = document.createElement('a');
   link.href = val;
   link.target = '_blank';

@@ -35,7 +35,7 @@
             >
               <el-button
                 type="text"
-                @click="download(file.id, file.name, 'download')"
+                @click="previewOrDownload(file.id, file.name, 'download')"
               >
                 下载
               </el-button>
@@ -43,7 +43,7 @@
                 <span class="table-btn">|</span>
                 <el-button
                   type="text"
-                  @click="download(file.id, file.name, 'preview')"
+                  @click="previewOrDownload(file.id, file.name, 'preview')"
                 >
                   预览
                 </el-button>
@@ -58,7 +58,7 @@
               <div v-if="data.result_file.type === 12860">
                 <el-button
                   type="text"
-                  @click="download(file.id, file.name, 'preview')"
+                  @click="previewOrDownload(file.id, file.name, 'preview')"
                 >
                   预览
                 </el-button>
@@ -142,7 +142,7 @@
               <el-button
                 v-if="file.type === 12860"
                 type="text"
-                @click="download(file.id, _, 'preview')"
+                @click="previewOrDownload(file.id, file.name, 'preview')"
               >
                 预览
               </el-button>
@@ -172,7 +172,7 @@
 </template>
 
 <script>
-import { downloadFile, getFile } from '../../../../utils';
+import { previewOrDownloadFile, getFile } from '../../../../utils';
 export default {
   inject: ['getContract'],
   props: ['data', 'type', 'getReport'],
@@ -230,7 +230,7 @@ export default {
         this.$message.warning('上传的附件格式有误！');
       }
     },
-    async download(id, name, type) {
+    async previewOrDownload(id, name, type) {
       this.$store.commit('setAttachmentState', false);
       try {
         await this.$store.dispatch('getViewLink', { 
@@ -239,9 +239,9 @@ export default {
         });
         if (this.$store.state.attachmentState) {
           if(type === 'download') {
-            downloadFile(this.$store.state.viewLink, name, 'download');
+            previewOrDownloadFile(this.$store.state.viewLink, name, 'download');
           } else {
-              downloadFile(this.$store.state.viewLink, name, 'preview');
+            previewOrDownloadFile(this.$store.state.viewLink, name, 'preview');
           }
         }
       } catch (err) {
