@@ -57,56 +57,19 @@
       :model="prototypeForm"
     >
       <el-form-item
-        label="上传附件"
+        label="手板样图片"
         prop="prototype_file"
         :rules="[{ required: true, message: '请上传附件' }]"
       >
-        <el-upload
-          action
-          :show-file-list="false"
-          :http-request="handleImgSuccess"
-          :disabled="isDisabled"
-        >
-          <el-button
-            type="primary"
-            :disabled="isDisabled"
-          >
-            点击上传
-          </el-button>
-        </el-upload>
-        <div class="attachment">
-          请上传 jpg/png/jepg等图片格式, 单个文件不超过 5MB
-        </div>
-      </el-form-item>
-      <el-form-item>
-        <div
-          v-for="(item, index) in imgList"
-          :key="index"
-          class="attachment-list"
-        >
-          <div>
-            {{ item.name }}
-          </div>
-          <div style="display: flex">
-            <el-button
-              v-if="!isDisabled"
-              type="text"
-              @click="deleteImg(item.id)"
-            >
-              删除
-            </el-button>
-            <span 
-              v-if="!isDisabled"
-              class="table-btn"
-            >|</span>
-            <el-button
-              type="text"
-              @click="showViewDialog(item.id)"
-            >
-              预览
-            </el-button>
-          </div>
-        </div>
+        <base-upload 
+          type="image"
+          count="8"
+          tag="手板样图片"
+          url="prototype"
+          :list="imgList"
+          :is-disabled="isDisabled"
+          @get-file="getUploadFile"
+        />
       </el-form-item>
       <el-form-item>
         <el-button
@@ -119,31 +82,16 @@
       </el-form-item>
     </el-form>
   </section>
-
-  <view-dialog
-    v-if="viewImgDialog"
-    :link="imgLink"
-    :visible="viewImgDialog"
-    @hide-dialog="closeViewDialog"
-  />
 </template>
 
 <script>
-import { getFile } from '../../../../utils';
-import ViewDialog from '../../../common/view-dialog.vue';
-
 export default {
-  components: {
-    ViewDialog
-  },
   inject: ['getMould'],
   props: ['changeColor', 'progress', 'getList', 'attachment'],
   data() {
     return {
       prototypeForm: {},
-      imgList: this.attachment,
-      viewImgDialog: false,
-      imgLink: ''
+      imgList: this.attachment
     };
   },
   computed: {
@@ -171,56 +119,6 @@ export default {
         return;
       }
     },
-    async handleImgSuccess(e) {
-      if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if(e.file.type.indexOf('image') > -1) {
-         if (this.imgList.length > 8) {
-          this.$message.error('附件最多传9张');
-          } else {
-            this.$store.commit('setUploadState', false);
-            let form = getFile(e);
-            try {
-              await this.$store.dispatch('uploadFile', form);
-              if (this.$store.state.uploadState) {
-                this.res = this.$store.state.fileRes;
-                this.imgList.push({
-                  id: this.res.id,
-                  name: this.res.file_name,
-                  type: this.res.type
-                });
-              }
-            } catch (err) {
-              return;
-            }
-          }
-      } else {
-        this.$message.warning('上传的图片格式有误！');
-      }
-    }, 
-    async showViewDialog(id) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          this.viewImgDialog = true;
-          this.imgLink = this.$store.state.viewLink;
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    closeViewDialog() {
-      this.viewImgDialog = false;
-    },
-    deleteImg(id) {
-      this.imgList.splice(
-        this.imgList.findIndex((e) => {
-          return e.id === id;
-        }),
-        1
-      );
-    },
     submitPrototypeForm() {
       this.prototypeForm.prototype_file = [];
       this.imgList.forEach((item) => {
@@ -244,6 +142,9 @@ export default {
       } catch (err) {
         return;
       }
+    },
+    getUploadFile(e) {
+      this.imgList = e;
     }
   }
 };

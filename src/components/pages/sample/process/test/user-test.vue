@@ -186,61 +186,18 @@
         :model="fileForm"
       >
         <el-form-item
-          label="上传附件"
+          label="测试报告"
           prop="test_result_file"
           :rules="[{ required: true, message: '请上传附件' }]"
         >
-          <el-upload
-            action
-            :show-file-list="false"
-            :http-request="handleFileSuccess"
-            :disabled="submitState === 1"
-          >
-            <el-button
-              type="primary"
-              :disabled="submitState === 1"
-            >
-              点击上传
-            </el-button>
-          </el-upload>
-          <div class="attachment">
-            支持office文档格式,文件不能超过5MB(仅限一个)
-          </div>
-        </el-form-item>
-        <el-form-item>
-          <div
-            v-if="JSON.stringify(file) !== '{}'"
-            class="attachment-list"
-          >
-            <div>{{ file.name }}</div>
-            <div style="display: flex">
-              <el-button
-                v-if="submitState !== 1"
-                type="text"
-                @click="deleteFile"
-              >
-                删除
-              </el-button>
-              <el-button
-                v-else
-                type="text"
-                @click="download(file.id, file.name)"
-              >
-                下载
-              </el-button>
-              <span
-                v-if="file.type === 12860" 
-                class="table-btn"
-              >|</span>
-              <el-button
-                v-if="file.type === 12860"
-                type="text"
-                @click="showViewFile(file.id)"
-              >
-                预览
-              </el-button>
-            </div>
-          </div>
+          <base-upload 
+            type="file"
+            tag="测试报告"
+            url="user-test-report"
+            :file="file"
+            :is-disabled="submitState === 1"
+            @get-file="getUploadFile"
+          />
         </el-form-item>
         <el-form-item v-if="submitState !== 1">
           <el-button
@@ -385,7 +342,7 @@ import UserList from '../../common/user-template.vue';
 import TestRequired from '../../common/test-requred.vue';
 import TestQuestions from '../../common/test-template.vue';
 import TemplateForm from '../../common/template-form.vue';
-import { downloadFile, getFile, getOrganizationList, previewFile } from '../../../../../utils';
+import { getOrganizationList } from '../../../../../utils';
 
 export default {
   components: {
@@ -550,54 +507,6 @@ export default {
     closeFailReason() {
       this.failFormVisible = false;
     },
-    async handleFileSuccess(e) {
-      if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
-        this.$store.commit('setUploadState', false);
-        let form = getFile(e);
-        try {
-          await this.$store.dispatch('uploadFile', form);
-          if (this.$store.state.uploadState) {
-            this.file = {
-              id: this.$store.state.fileRes.id,
-              name: this.$store.state.fileRes.file_name,
-              type: this.$store.state.fileRes.type
-            };
-          }
-        } catch (err) {
-          return;
-        }
-      } else {
-        this.$message.warning('上传的附件格式有误！');
-      }
-    },
-    async download(id, name) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          downloadFile(this.$store.state.viewLink, name);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    async showViewFile(id) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          previewFile(this.$store.state.viewLink);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    deleteFile() {
-      this.file = {};
-      this.fileForm.test_result_file = '';
-    },
     confirmResult() {
       this.confirmTestResult({
         test_result: 1
@@ -610,9 +519,10 @@ export default {
       });
     },
     submitReport() {
+      this.fileForm.test_result_file = this.file.id;
       this.$refs.fileForm.validate((valid) => {
         if (valid) {
-          this.submitTestResult(this.file.id);
+          this.submitTestResult(this.fileForm.test_result_file);
         }
       });
     },
@@ -624,7 +534,10 @@ export default {
       } else {
         return 'result-pass';
       }
-  }
+   },
+   getUploadFile(e) {
+    this.file = e;
+   }
   }
 };
 </script>

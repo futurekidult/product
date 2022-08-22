@@ -11,6 +11,7 @@ declare module 'vue' {
     BaseDialog: typeof import('./src/components/common/base-dialog.vue')['default']
     BasePagination: typeof import('./src/components/common/base-pagination.vue')['default']
     BaseTag: typeof import('./src/components/common/base-tag.vue')['default']
+    BaseUpload: typeof import('./src/components/common/base-upload.vue')['default']
     BlackList: typeof import('./src/components/pages/supplier/black-list.vue')['default']
     CalculationRule: typeof import('./src/components/pages/system/calculation-rule.vue')['default']
     CompetitiveTable: typeof import('./src/components/pages/product/common/competitive-table.vue')['default']
