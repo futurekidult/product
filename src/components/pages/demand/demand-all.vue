@@ -150,21 +150,21 @@
         <el-table-column label="操作">
           <template #default="scope">
             <el-button
-              v-if="scope.row.state === 20"
               type="text"
-              @click="toReview(scope.row.id)"
+              @click="toDetail(scope.row.id)"
             >
-              需求评审
+              查看详情
             </el-button>
             <span 
               v-if="scope.row.state === 20"
               class="table-btn"
             >|</span>
             <el-button
+              v-if="scope.row.state === 20"
               type="text"
-              @click="toDetail(scope.row.id)"
+              @click="toReview(scope.row.id)"
             >
-              查看详情
+              需求评审
             </el-button>
           </template>
         </el-table-column>
@@ -287,8 +287,7 @@ export default {
       this.$router.push('/create-demand');
     },
     toDetail(id) {
-      this.$router.push(`/demand-list/${id}`);
-      this.$store.commit('demand/setDemandDetailLoading', true);
+      this.getDemandDetail(id, 'detail');
     },
     toProductDetail(id) {
       if(this.$store.state.menuData.links.indexOf('/product-list') > -1) {
@@ -329,8 +328,34 @@ export default {
     toDraft() {
       this.$router.push('/draft-list');
     },
-    toReview(id) {
-      this.$router.push(`/demand-list/review/${id}`)
+    async getDemandDetail(id, str) {
+      let funcName = '';
+      let url = '';
+      if(str === 'review') {
+        funcName = 'demand/getDemandReviewDetail';
+        url = `/demand-list/review/${id}`;
+      } else {
+        funcName = 'demand/getDemandDetail';
+        url = `/demand-list/${id}`;
+      }
+      try {
+        await this.$store.dispatch(funcName, {
+          params: {
+            demand_id:  id
+          }
+        });
+        this.$router.push(url);
+        if(str === 'review') {
+          this.$store.commit('demand/setDemandDetailLoading', true);
+        } else {
+          this.$store.commit('demand/setDemandReviewDetailLoading', true);
+        }
+      } catch (err) {
+        return;
+      }
+    },
+    async toReview(id) {
+       this.getDemandDetail(id, 'review');
     }
   }
 };

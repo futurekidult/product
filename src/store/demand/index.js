@@ -10,7 +10,9 @@ export default {
       reasonText: '',
       categoryList: [],
       demandDetail: {},
+      demandReviewDetail: {},
       demandDetailLoading: true,
+      demandReviewDetailLoading: true,
       optionLoading: true,
       demandListLength: 0,
       draftList: [],
@@ -33,8 +35,14 @@ export default {
     setDemandDetail(state, payload) {
       state.demandDetail = payload;
     },
+    setDemandReviewDetail(state, payload) {
+      state.demandReviewDetail = payload;
+    },
     setDemandDetailLoading(state, payload) {
       state.demandDetailLoading = payload;
+    },
+    setDemandReviewDetailLoading(state, payload) {
+      state.demandReviewDetailLoading = payload;
     },
     setDraftList(state, payload) {
       state.draftList = payload;
@@ -80,6 +88,14 @@ export default {
         if (res.code === 200) {
           context.commit('setDemandDetail', res.data);
           context.commit('setDemandDetailLoading', false);
+        }
+      });
+    },
+    async getDemandReviewDetail(context, payload) {
+      await axios.get('/demand/review/detail/get', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setDemandReviewDetail', res.data);
+          context.commit('setDemandReviewDetailLoading', false);
         }
       });
     },
