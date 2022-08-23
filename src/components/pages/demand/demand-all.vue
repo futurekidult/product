@@ -328,7 +328,15 @@ export default {
     toDraft() {
       this.$router.push('/draft-list');
     },
+    async getCategoryList() {
+      try {
+        await this.$store.dispatch('demand/getCategoryList');
+      } catch (err) {
+        return;
+      }
+    },
     async getDemandDetail(id, str) {
+      this.getCategoryList();
       let funcName = '';
       let url = '';
       if(str === 'review') {

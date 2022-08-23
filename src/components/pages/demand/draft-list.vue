@@ -101,8 +101,20 @@ export default {
         return;
       }
     },
+    async getDemandDetail(id) {
+      try {
+        await this.$store.dispatch('demand/getDemandDetail', {
+          params: {
+            demand_id:  id
+          }
+        });
+        this.$router.push(`/demand-list/edit/${id}`);
+      } catch (err) {
+        return ;
+      }
+    },
     toForm(id) {
-      this.$router.push(`/demand-list/edit/${id}`);
+      this.getDemandDetail(id);
     },
     changePageSize(val) {
       this.pageSize = val;
