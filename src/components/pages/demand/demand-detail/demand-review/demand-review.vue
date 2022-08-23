@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="$store.state.demand.demandReviewDetailLoading">
     <demand-basic />
     <div class="border">
       <div class="select-title review-msg">

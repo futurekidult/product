@@ -752,14 +752,11 @@ export default {
   },
   methods: {
     async getDetail() {
-      try {
-        await this.$store.dispatch('demand/getDemandDetail', {
-          params: {
-            demand_id: +this.$route.params.id
-          }
-        });
-        let { demandDetail } = this.$store.state.demand;
-        this.demandForm = demandDetail;
+      if(this.type === 'review') {
+        this.demandForm = this.$store.state.demand.demandReviewDetail;
+      } else {
+        this.demandForm = this.$store.state.demand.demandDetail;
+      }
         if(this.type === 'detail') {
           this.isDisabled = true;
         }
@@ -770,9 +767,6 @@ export default {
         });
         this.imagesList = this.demandForm.images;
         this.isGetData = true;
-      } catch (err) {
-        return;
-      }
     },
     async getDepartment() {
       this.department = JSON.parse(localStorage.getItem('center_group'));
