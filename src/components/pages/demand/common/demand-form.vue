@@ -744,10 +744,11 @@ export default {
   },
   mounted() {
     this.getParams();
-    this.getCategoryList();
     this.getDepartment();
     if (this.type !== 'create') {
       this.getDetail();
+    } else {
+      this.getCategoryList();
     }
   },
   methods: {
@@ -757,9 +758,10 @@ export default {
       } else {
         this.demandForm = this.$store.state.demand.demandDetail;
       }
-        if(this.type === 'detail') {
+      if(this.type === 'detail') {
           this.isDisabled = true;
         }
+        this.bigCategoryList = this.$store.state.demand.categoryList;
         this.bigCategoryList.map((item) => {
           if (item.id === this.demandForm.big_category_id) {
             this.smallCategoryList = item.children;
