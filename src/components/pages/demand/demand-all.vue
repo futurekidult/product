@@ -353,11 +353,6 @@ export default {
           }
         });
         this.$router.push(url);
-        if(str === 'review') {
-          this.$store.commit('demand/setDemandDetailLoading', true);
-        } else {
-          this.$store.commit('demand/setDemandReviewDetailLoading', true);
-        }
       } catch (err) {
         return;
       }
