@@ -329,9 +329,22 @@ export default {
         }
       });
     },
+    async getDemandDetail(id) {
+      this.getCategoryList();
+      try {
+        await this.$store.dispatch('demand/getDemandDetail', {
+          params: {
+            demand_id:  id
+          }
+        });
+        this.$router.push(`/demand-list/${id}`);
+      } catch (err) {
+        return ;
+      }
+    },
     toDemand(id) {
        if(this.$store.state.menuData.links.indexOf('/demand-list') > -1) {
-          this.$router.push(`/demand-list/${id}`);
+          this.getDemandDetail(id);
        } else {
           this.$message.error('无权限访问');
        }
