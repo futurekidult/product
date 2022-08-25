@@ -180,44 +180,14 @@
             label="产品图片"
             prop="images"
           >
-            <el-upload
-              action
-              :show-file-list="false"
-              :http-request="handleFileSuccess"
-            >
-              <el-button type="primary">
-                点击上传
-              </el-button>
-            </el-upload>
-            <div class="attachment">
-              请上传png/jpg/jpeg等图片格式,单个文件不能超过5MB
-            </div>
-          </el-form-item>
-          <el-form-item>
-            <div
-              v-for="img in imgList"
-              :key="img.id"
-              class="attachment-list"
-            >
-              <div>
-                {{ img.name }}
-              </div>
-              <div style="display: flex">
-                <el-button
-                  type="text"
-                  @click="deleteImg(img.id)"
-                >
-                  删除
-                </el-button>
-                <span class="table-btn">|</span>
-                <el-button
-                  type="text"
-                  @click="showViewDialog(img.id)"
-                >
-                  预览
-                </el-button>
-              </div>
-            </div>
+            <base-upload 
+              type="image"
+              :is-disabled="false"
+              :list="imgList"
+              tag="产品图片"
+              count="8"
+              @get-file="getUploadFile"
+            />
           </el-form-item>
           <el-divider />
           <div style="text-align: right">
@@ -232,23 +202,12 @@
       </el-dialog>
     </div>
   </div>
-
-  <view-dialog
-    v-if="viewImgDialog"
-    :link="imgLink"
-    :visible="viewImgDialog"
-    @hide-dialog="closeViewDialog"
-  />
 </template>
 
 <script>
-import { formatterTime, getFile } from '../../../utils';
-import ViewDialog from '../../common/view-dialog.vue';
+import { formatterTime } from '../../../utils';
 
 export default {
-  components: {
-    ViewDialog
-  },
   data() {
     return {
       chooseForm: {},
@@ -276,7 +235,6 @@ export default {
       productList: [],
       categoryList: [],
       productState: [],
-      viewImgDialog: false,
       currentPage: 1,
       pageSize: 10
     };
@@ -330,33 +288,6 @@ export default {
         return;
       }
     },
-    async handleFileSuccess(e) {
-      if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if(e.file.type.indexOf('image') > -1) {
-        if (this.imgList.length > 8) {
-          this.$message.error('产品图片最多传9张');
-        } else {
-          this.$store.commit('setUploadState', false);
-          let form = getFile(e);
-          try {
-            await this.$store.dispatch('uploadFile', form);
-            if (this.$store.state.uploadState) {
-              this.res = this.$store.state.fileRes;
-              this.imgList.push({
-                id: this.res.id,
-                name: this.res.file_name,
-                type: this.res.type
-              });
-            }
-          } catch (err) {
-            return;
-          }
-        }
-      } else {
-        this.$message.warning('上传的产品图片格式有误！');
-      }
-    },
     async getProductList() {
       this.$store.commit('product/setListLoading', true);
       let params = this.chooseForm;
@@ -398,14 +329,6 @@ export default {
         }
       });
     },
-    deleteImg(id) {
-      this.imgList.splice(
-        this.imgList.findIndex((e) => {
-          return e.id === id;
-        }),
-        1
-      );
-    },
     toDemand(id) {
        if(this.$store.state.menuData.links.indexOf('/demand-list') > -1) {
           this.$router.push(`/demand-list/${id}`);
@@ -427,19 +350,6 @@ export default {
       this.pageSize = 10;
       this.searchProduct();
     },
-    async showViewDialog(id) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          this.viewImgDialog = true;
-          this.editVisible = false;
-          this.imgLink = this.$store.state.viewLink;
-        }
-      } catch (err) {
-        return;
-      }
-    },
     closeViewDialog() {
       this.viewImgDialog = false;
       this.editVisible = true;
@@ -455,6 +365,9 @@ export default {
     searchProduct() {
       this.currentPage = 1;
       this.getProductList();
+    },
+    getUploadFile(e) {
+      this.imgList = e;
     }
   }
 };

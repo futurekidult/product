@@ -43,62 +43,17 @@
       :rules="marketRules"
     >
       <el-form-item
-        label="上传附件"
+        label="调研报告"
         prop="attachment"
       >
-        <el-upload
-          action
-          :show-file-list="false"
-          :http-request="handleFileSuccess"
-          :disabled="isDisabled"
-        >
-          <el-button
-            type="primary"
-            :disabled="isDisabled"
-          >
-            点击上传
-          </el-button>
-        </el-upload>
-        <div class="attachment">
-          支持office文档格式,文件不能超过5MB(仅限一个)
-        </div>
-      </el-form-item>
-      <el-form-item>
-        <div
-          v-if="JSON.stringify(file) !== '{}'"
-          class="attachment-list"
-        >
-          <div>
-            {{ file.name }}
-          </div>
-          <div style="display: flex">
-            <el-button
-              v-if="!isDisabled"
-              type="text"
-              @click="deleteFile"
-            >
-              删除
-            </el-button>
-            <el-button
-              v-else
-              type="text"
-              @click="download(file.id, file.name)"
-            >
-              下载
-            </el-button>
-            <span 
-              v-if="file.type === 12860"
-              class="table-btn"
-            >|</span>
-            <el-button
-              v-if="file.type === 12860"
-              type="text"
-              @click="showViewFile(file.id)"
-            >
-              预览
-            </el-button>
-          </div>
-        </div>
+        <base-upload 
+          type="file"
+          tag="调研报告"
+          url="market-survey-report"
+          :file="file"
+          :is-disabled="isDisabled"
+          @get-file="getUploadFile"
+        />
       </el-form-item>
       <el-form-item>
         <el-button
@@ -114,8 +69,6 @@
 </template>
 
 <script>
-import { downloadFile, getFile, previewFile } from '../../../../../utils';
-
 export default {
   inject: ['getBase'],
   props: ['changeColor', 'progress', 'attachment', 'getList'],
@@ -139,29 +92,6 @@ export default {
     }
   },
   methods: {
-    async handleFileSuccess(e) {
-      if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
-        this.$store.commit('setUploadState', false);
-        let form = getFile(e);
-        try {
-          await this.$store.dispatch('uploadFile', form);
-          if (this.$store.state.uploadState) {
-            this.file = {
-              id: this.$store.state.fileRes.id,
-              name: this.$store.state.fileRes.file_name,
-              type: this.$store.state.fileRes.type
-            };
-            this.marketForm.attachment = this.file.id;
-          }
-        } catch (err) {
-          return;
-        }
-      } else {
-        this.$message.warning('上传的附件格式有误！');
-     }
-    },
     async submitRequest() {
       let params = {
         product_id: +this.$route.params.productId,
@@ -187,31 +117,8 @@ export default {
         }
       });
     },
-    deleteFile() {
-      this.file = {};
-      this.marketForm.attachment = '';
-    },
-    async download(id, name) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          downloadFile(this.$store.state.viewLink, name);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    async showViewFile(id) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          previewFile(this.$store.state.viewLink);
-        }
-      } catch (err) {
-        return;
-      }
+    getUploadFile(e) {
+      this.file = e;
     }
   }
 };

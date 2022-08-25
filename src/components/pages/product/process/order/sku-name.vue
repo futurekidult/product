@@ -66,6 +66,14 @@
             clearable
           />
         </el-form-item>
+        <base-delete 
+          :id="index"
+          mode="order-delete_btn"
+          content=""
+          :show="deleteVisible && schedule.state !== 40"
+          :list="form.sku"
+          @get-list="getFormSku"
+        />
       </div>
       <el-form-item v-if="schedule.state !== 40">
         <el-button
@@ -74,72 +82,19 @@
         >
           + 新增SKU
         </el-button>
-        <el-button
-          v-if="deleteVisible"
-          type="danger"
-          :disabled="isDisabled"
-          @click="deleteSku"
-        >
-          + 删除SKU
-        </el-button>
       </el-form-item>
       <el-form-item
-        label="上传附件"
+        label="实际项目计划书"
         prop="project_plan_file"
       >
-        <el-upload
-          action
-          :show-file-list="false"
-          :http-request="handleFileSuccess"
-          :disabled="isDisabled"
-        >
-          <el-button
-            type="primary"
-            :disabled="isDisabled"
-          >
-            点击上传
-          </el-button>
-        </el-upload>
-        <div class="attachment">
-          支持office文档格式,文件不能超过5MB(仅限一个)
-        </div>
-      </el-form-item>
-      <el-form-item
-        v-if="JSON.stringify(file) !== '{}'"
-        prop="project_plan_file"
-      >
-        <div class="attachment-list">
-          <div>
-            {{ file.name }}
-          </div>
-          <div style="display: flex">
-            <el-button
-              v-if="isDisabled"
-              type="text"
-              @click="download(file.id, file.name)"
-            >
-              下载
-            </el-button>
-            <el-button
-              v-else
-              type="text"
-              @click="deleteFile"
-            >
-              删除
-            </el-button>
-            <span
-              v-if="file.type === 12860" 
-              class="table-btn"
-            >|</span>
-            <el-button
-              v-if="file.type === 12860" 
-              type="text"
-              @click="showViewFile(file.id)"
-            >
-              预览
-            </el-button>
-          </div>
-        </div>
+        <base-upload 
+          type="file"
+          tag="实际项目计划书"
+          url="project-plan"
+          :file="file"
+          :is-disabled="isDisabled"
+          @get-file="getUploadFile"
+        />
       </el-form-item>
       <el-form-item>
         <el-button
@@ -186,7 +141,6 @@
 </template>
 
 <script>
-import { downloadFile, getFile, previewFile } from '../../../../../utils';
 export default {
   inject: ['getSku', 'changeColor','getProgress'],
   props: ['skuForm', 'attachment', 'skuEntrySchedule', 'schedule', 'skuId'],
@@ -245,54 +199,6 @@ export default {
         return;
       }
     },
-    async showViewFile(id) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          previewFile(this.$store.state.viewLink);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    async handleFileSuccess(e) {
-      if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
-          this.$store.commit('setUploadState', false);
-          let form = getFile(e);
-          try {
-            await this.$store.dispatch('uploadFile', form);
-            if (this.$store.state.uploadState) {
-              this.file = {
-                id: this.$store.state.fileRes.id,
-                name: this.$store.state.fileRes.file_name,
-                type: this.$store.state.fileRes.type
-              };
-            }
-          } catch (err) {
-            return;
-          }
-        } else {
-          this.$message.warning('上传的附件格式有误！');
-        }
-    },
-    async download(id, name) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          downloadFile(this.$store.state.viewLink, name);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    deleteFile() {
-      this.file = {};
-      this.form.project_plan_file = '';
-    },
     submitSkuForm() {
       this.form.project_plan_file = this.file.id;
       this.$refs.skuForm.validate((valid) => {
@@ -318,14 +224,14 @@ export default {
         this.deleteVisible = true;
       }
     },
-    deleteSku() {
-      this.form.sku.pop();
-      if (this.form.sku.length === 1) {
-        this.deleteVisible = false;
-      }
-    },
     clearSku(index) {
       this.form.sku[index].name = '';
+    },
+    getFormSku(val) {
+      this.form.sku = val;
+    },
+    getUploadFile(e) {
+      this.file = e;
     }
   }
 };

@@ -71,7 +71,7 @@
           <div v-if="manualFile !== undefined && manualFile.type === 12860">
             <el-button
               type="text"
-              @click="showViewFile(manualFile.id)"
+              @click="previewOrDownload(manualFile.id, manualFile.name,'manual-file', 'preview')"
             >
               预览
             </el-button>
@@ -86,7 +86,7 @@
             >|</span>
             <el-button
               type="text"
-              @click="download(manualFile.id, manualFile.name)"
+              @click="previewOrDownload(manualFile.id, manualFile.name, 'manual-file', 'download')"
             >
               下载
             </el-button>
@@ -130,7 +130,7 @@
           <div v-if="diecutsFile !== undefined && diecutsFile.type === 12860">
             <el-button
               type="text"
-              @click="showViewFile(diecutsFile.id)"
+              @click="previewOrDownload(diecutsFile.id, diecutsFile.name, 'diecuts-file', 'preview')"
             >
               预览
             </el-button>
@@ -145,7 +145,7 @@
             >|</span>
             <el-button
               type="text"
-              @click="download(diecutsFile.id, diecutsFile.name)"
+              @click="previewOrDownload(diecutsFile.id, diecutsFile.name, 'diecuts-file', 'download')"
             >
               下载
             </el-button>
@@ -184,7 +184,7 @@
 </template>
 
 <script>
-import { downloadFile, getFile, previewFile } from '../../../../../utils';
+import { previewOrDownloadFile, getFile } from '../../../../../utils';
 export default {
   inject: ['getContract', 'changeColor', 'getProgress'],
   props: [
@@ -260,17 +260,6 @@ export default {
         this.$message.warning('上传的附件格式有误！');
        }
     },
-    async showViewFile(id) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          previewFile(this.$store.state.viewLink);
-        }
-      } catch (err) {
-        return;
-      }
-    },
     deleteFile(val) {
       if (val === 'manual') {
         this.manualFile = {};
@@ -278,12 +267,19 @@ export default {
         this.diecutsFile = {};
       }
     },
-    async download(id, name) {
+    async previewOrDownload(id, name, str, type) {
       this.$store.commit('setAttachmentState', false);
       try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
+        await this.$store.dispatch('getViewLink', { 
+          params: { id },
+          url:  str === 'manual-file' ? 'product-manual' : 'diecuts'
+         });
         if (this.$store.state.attachmentState) {
-          downloadFile(this.$store.state.viewLink, name);
+          if(type === 'download') {
+            previewOrDownloadFile(this.$store.state.viewLink, name, 'download');
+          } else {
+            previewOrDownloadFile(this.$store.state.viewLink, name, 'preview');
+          }
         }
       } catch (err) {
         return;

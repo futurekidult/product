@@ -18,7 +18,7 @@
         <el-input
           v-model="demandForm.user_experience_duration"
           placeholder="请输入天数"
-          :disabled="isDisbaled"
+          :disabled="isDisabled"
           clearable
         />
       </el-form-item>
@@ -30,7 +30,7 @@
           v-model="demandForm.estimated_finish_time"
           type="datetime"
           placeholder="请选择日期"
-          :disabled="isDisbaled"
+          :disabled="isDisabled"
           clearable
           :default-time="defaultTime"
         />
@@ -44,7 +44,7 @@
           placeholder="请输入内容"
           type="textarea"
           :rows="6"
-          :disabled="isDisbaled"
+          :disabled="isDisabled"
           clearable
           maxlength="200"
           show-word-limit
@@ -54,57 +54,14 @@
         label="需求清单及假设"
         prop="demand_list_file"
       >
-        <el-upload
-          action
-          :show-file-list="false"
-          :http-request="handleFileSuccess"
-          :disabled="isDisbaled"
-        >
-          <el-button
-            type="primary"
-            :disabled="isDisbaled"
-          >
-            点击上传
-          </el-button>
-        </el-upload>
-        <div class="attachment">
-          支持office文档格式,文件不能超过5MB(仅限一个)
-        </div>
-      </el-form-item>
-      <el-form-item>
-        <div
-          v-if="JSON.stringify(attachment) !== '{}'"
-          class="attachment-list"
-        >
-          <div>{{ attachment.name }}</div>
-          <div style="display: flex">
-            <el-button
-              v-if="type === 'apply'"
-              type="text"
-              @click="deleteFile"
-            >
-              删除
-            </el-button>
-            <el-button
-              v-else
-              type="text"
-              @click="download(attachment.id, attachment.name)"
-            >
-              下载
-            </el-button>
-            <span 
-              v-if="attachment.type === 12860"
-              class="table-btn"
-            >|</span>
-            <el-button
-              v-if="attachment.type === 12860"
-              type="text"
-              @click="showViewFile(attachment.id)"
-            >
-              预览
-            </el-button>
-          </div>
-        </div>
+        <base-upload 
+          type="file"
+          tag="需求清单及假设"
+          url="user-demand-list"
+          :file="attachment"
+          :is-disabled="isDisabled"
+          @get-file="(val) => getUploadFile(val, 'demand_list_file')"
+        />
       </el-form-item>
       <el-divider />
       <el-form-item
@@ -142,59 +99,14 @@
           label="用户要求"
           prop="user_requirement_file"
         >
-          <el-upload
-            action
-            :show-file-list="false"
-            :http-request="handleRequirementFileSuccess"
-            :disabled="isViewDisabled"
-          >
-            <el-button
-              type="primary"
-              :disabled="isViewDisabled"
-            >
-              点击上传
-            </el-button>
-          </el-upload>
-          <div class="attachment">
-            支持office文档格式,文件不能超过5MB(仅限一个)
-          </div>
-        </el-form-item>
-        <el-form-item>
-          <div
-            v-if="JSON.stringify(requiredAttachment) !== '{}'"
-            class="attachment-list"
-          >
-            <div>{{ requiredAttachment.name }}</div>
-            <div style="display: flex">
-              <el-button
-                v-if="type !== 'view'"
-                type="text"
-                @click="deleteRequiredFile"
-              >
-                删除
-              </el-button>
-              <el-button
-                v-else
-                type="text"
-                @click="
-                  download(requiredAttachment.id, requiredAttachment.name)
-                "
-              >
-                下载
-              </el-button>
-              <span 
-                v-if="requiredAttachment.type === 12860"
-                class="table-btn"
-              >|</span>
-              <el-button
-                v-if="requiredAttachment.type === 12860"
-                type="text"
-                @click="showViewFile(requiredAttachment.id)"
-              >
-                预览
-              </el-button>
-            </div>
-          </div>
+          <base-upload 
+            type="file"
+            tag="用户要求"
+            url="user-requirement"
+            :file="requiredAttachment"
+            :is-disabled="isViewDisabled"
+            @get-file="(val) => getUploadFile(val, 'user_requirement_file')"
+          />
         </el-form-item>
         <el-form-item
           label="选择用研专员"
@@ -233,11 +145,8 @@
 
 <script>
 import {
-  downloadFile,
   formatterTime,
-  getFile,
   getOrganizationList,
-  previewFile,
   timestamp
 } from '../../../../utils';
 
@@ -326,7 +235,7 @@ export default {
         return {};
       }
     },
-    isDisbaled() {
+    isDisabled() {
       if (this.type === 'apply') {
         return false;
       } else {
@@ -414,30 +323,11 @@ export default {
       this.visible = false;
       this.$emit('hide-dialog', this.visible);
     },
-    async handleRequirementFileSuccess(e) {
-      if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
-        this.$store.commit('setUploadState', false);
-        let form = getFile(e);
-        try {
-          await this.$store.dispatch('uploadFile', form);
-          if (this.$store.state.uploadState) {
-            this.requiredAttachment = {
-              id: this.$store.state.fileRes.id,
-              name: this.$store.state.fileRes.file_name,
-              type: this.$store.state.fileRes.type
-            };
-            this.demandForm.user_requirement_file = this.requiredAttachment.id;
-          }
-        } catch (err) {
-          return;
-        }
-      } else {
-        this.$message.warning('上传的附件格式有误！');
-      }
-    },
     submitForm() {
+      this.demandForm.demand_list_file = this.attachment.id;
+      if(this.type === 'review') {
+        this.demandForm.user_requirement_file = this.requiredAttachment.id;
+      }
       this.$refs.demandForm.validate((valid) => {
         if (valid) {
           if (this.type === 'apply') {
@@ -454,57 +344,11 @@ export default {
         }
       });
     },
-    async handleFileSuccess(e) {
-      if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
-        this.$store.commit('setUploadState', false);
-        let form = getFile(e);
-        try {
-          await this.$store.dispatch('uploadFile', form);
-          if (this.$store.state.uploadState) {
-            this.attachment = {
-              id: this.$store.state.fileRes.id,
-              name: this.$store.state.fileRes.file_name,
-              type: this.$store.state.fileRes.type
-            };
-            this.demandForm.demand_list_file = this.attachment.id;
-          }
-        } catch (err) {
-          return;
-        }
+    getUploadFile(e, str) {
+      if(str === 'demand_list_file') {
+        this.attachment = e;
       } else {
-        this.$message.warning('上传的附件格式有误！');
-      }
-    },
-    deleteFile() {
-      this.attachment = {};
-      this.demandForm.demand_list_file = '';
-    },
-    deleteRequiredFile() {
-      this.requiredAttachment = {};
-      this.demandForm.user_requirement_file = '';
-    },
-    async showViewFile(id) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          previewFile(this.$store.state.viewLink);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    async download(id, name) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          downloadFile(this.$store.state.viewLink, name);
-        }
-      } catch (err) {
-        return;
+        this.requiredAttachment = e;
       }
     }
   }

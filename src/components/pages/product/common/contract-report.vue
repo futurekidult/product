@@ -35,7 +35,7 @@
             >
               <el-button
                 type="text"
-                @click="download(file.id, file.name)"
+                @click="previewOrDownload(file.id, file.name, 'download')"
               >
                 下载
               </el-button>
@@ -43,7 +43,7 @@
                 <span class="table-btn">|</span>
                 <el-button
                   type="text"
-                  @click="showViewFile(file.id)"
+                  @click="previewOrDownload(file.id, file.name, 'preview')"
                 >
                   预览
                 </el-button>
@@ -58,7 +58,7 @@
               <div v-if="data.result_file.type === 12860">
                 <el-button
                   type="text"
-                  @click="showViewFile(file.id)"
+                  @click="previewOrDownload(file.id, file.name, 'preview')"
                 >
                   预览
                 </el-button>
@@ -103,7 +103,7 @@
         label-width="100px"
       >
         <el-form-item
-          label="文件"
+          :label="type === 'contract' ? '合同附件' : '专利报告  '"
           prop="file"
           :rules="[{ required: true, message: '请上传附件'}]"
         >
@@ -119,7 +119,7 @@
             </el-button>
           </el-upload>
           <div class="attachment">
-            支持office文档格式,文件不能超过5MB(仅限一个)
+            支持office文档格式,文件不能超过5MB
           </div>
         </el-form-item>
         <el-form-item>
@@ -142,7 +142,7 @@
               <el-button
                 v-if="file.type === 12860"
                 type="text"
-                @click="showViewFile(file.id)"
+                @click="previewOrDownload(file.id, file.name, 'preview')"
               >
                 预览
               </el-button>
@@ -172,7 +172,7 @@
 </template>
 
 <script>
-import { downloadFile, getFile, previewFile } from '../../../../utils';
+import { previewOrDownloadFile, getFile } from '../../../../utils';
 export default {
   inject: ['getContract'],
   props: ['data', 'type', 'getReport'],
@@ -230,23 +230,19 @@ export default {
         this.$message.warning('上传的附件格式有误！');
       }
     },
-    async showViewFile(id) {
+    async previewOrDownload(id, name, type) {
       this.$store.commit('setAttachmentState', false);
       try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
+        await this.$store.dispatch('getViewLink', { 
+          params: { id },
+          url: this.type === 'contract' ? 'patent-contract' : 'patent-report'
+        });
         if (this.$store.state.attachmentState) {
-          previewFile(this.$store.state.viewLink);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    async download(id, name) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          downloadFile(this.$store.state.viewLink, name);
+          if(type === 'download') {
+            previewOrDownloadFile(this.$store.state.viewLink, name, 'download');
+          } else {
+            previewOrDownloadFile(this.$store.state.viewLink, name, 'preview');
+          }
         }
       } catch (err) {
         return;

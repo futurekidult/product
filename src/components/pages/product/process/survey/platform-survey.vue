@@ -46,50 +46,15 @@
         label="产品图片"
         prop="images"
       >
-        <el-upload
-          action
-          :show-file-list="false"
-          :http-request="handleImgSuccess"
-          :disabled="isDisabled"
-        >
-          <el-button
-            type="primary"
-            :disabled="isDisabled"
-          >
-            点击上传
-          </el-button>
-        </el-upload>
-        <div class="attachment">
-          请上传png/jpg/jpeg等图片格式,单个文件不能超过5MB
-        </div>
-      </el-form-item>
-      <el-form-item>
-        <div
-          v-for="img in imgList"
-          :key="img.id"
-          class="attachment-list"
-        >
-          <div>
-            {{ img.name }}
-          </div>
-          <div style="display: flex">
-            <div v-if="!isDisabled">
-              <el-button
-                type="text"
-                @click="deleteImg(img.id)"
-              >
-                删除
-              </el-button>
-              <span class="table-btn">|</span>
-            </div>
-            <el-button
-              type="text"
-              @click="showViewDialog(img.id)"
-            >
-              预览
-            </el-button>
-          </div>
-        </div>
+        <base-upload 
+          type="image"
+          tag="产品图片"
+          count="8"
+          url="platform-survey-img"
+          :is-disabled="isDisabled"
+          :list="imgList"
+          @get-file="(val) => getUploadFile(val, 'image')"
+        />
       </el-form-item>
       <el-form-item
         label="产品链接"
@@ -344,62 +309,17 @@
         </el-select>
       </el-form-item>
       <el-form-item
-        label="上传附件"
+        label="调研报告"
         prop="attachment"
       >
-        <el-upload
-          action
-          :show-file-list="false"
-          :http-request="handleFileSuccess"
-          :disabled="isDisabled"
-        >
-          <el-button
-            type="primary"
-            :disabled="isDisabled"
-          >
-            点击上传
-          </el-button>
-        </el-upload>
-        <div class="attachment">
-          支持office文档格式,文档不超过5MB(仅限一个)
-        </div>
-      </el-form-item>
-      <el-form-item>
-        <div
-          v-if="JSON.stringify(file) !== '{}'"
-          class="attachment-list"
-        >
-          <div>
-            {{ file.name }}
-          </div>
-          <div style="display: flex">
-            <el-button
-              v-if="!isDisabled"
-              type="text"
-              @click="deleteFile"
-            >
-              删除
-            </el-button>
-            <el-button
-              v-else
-              type="text"
-              @click="download(file.id, file.name)"
-            >
-              下载
-            </el-button>
-            <span 
-              v-if="file.type === 12860"
-              class="table-btn"
-            >|</span>
-            <el-button
-              v-if="file.type === 12860"
-              type="text"
-              @click="showViewFile(file.id)"
-            >
-              预览
-            </el-button>
-          </div>
-        </div>
+        <base-upload 
+          type="file"
+          tag="调研报告"
+          url="platform-survey-report"
+          :file="file"
+          :is-disabled="isDisabled"
+          @get-file="(val) => getUploadFile(val,'file')"
+        />
       </el-form-item>
       <el-form-item v-if="!isDisabled">
         <el-button
@@ -411,23 +331,10 @@
       </el-form-item>
     </el-form>
   </div>
-
-  <view-dialog
-    v-if="viewImgDialog"
-    :link="imgLink"
-    :visible="viewImgDialog"
-    @hide-dialog="closeViewDialog"
-  />
 </template>
 
 <script>
-import { downloadFile, getFile, previewFile } from '../../../../../utils';
-import ViewDialog from '../../../../common/view-dialog.vue';
-
 export default {
-  components: {
-    ViewDialog
-  },
   inject: ['getBase'],
   props: [
     'changeColor',
@@ -558,8 +465,6 @@ export default {
       trafficRichness: [],
       keywordDegree: [],
       res: {},
-      viewImgDialog: false,
-      imgLink: '',
       file: this.attachment,
       form: this.surveyForm,
       imgList: this.productImages
@@ -608,118 +513,26 @@ export default {
         return;
       }
     },
-    async handleImgSuccess(e) {
-      if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if(e.file.type.indexOf('image') > -1) {
-        if (this.imgList.length > 8) {
-          this.$message.error('产品图片不能传超过9张');
-        } else {
-          this.$store.commit('setUploadState', false);
-          let form = getFile(e);
-          try {
-            await this.$store.dispatch('uploadFile', form);
-            if (this.$store.state.uploadState) {
-              this.res = this.$store.state.fileRes;
-              this.imgList.push({
-                id: this.res.id,
-                name: this.res.file_name,
-                type: this.res.type
-              });
-            }
-          } catch (err) {
-            return;
-          }
-        }
-      } else {
-        this.$message.warning('上传的产品图片有误！');
-      }
-    },
-    async handleFileSuccess(e) {
-      if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
-        this.$store.commit('setUploadState', false);
-        let form = getFile(e);
-        try {
-          await this.$store.dispatch('uploadFile', form);
-          if (this.$store.state.uploadState) {
-            this.file = {
-              id: this.$store.state.fileRes.id,
-              name: this.$store.state.fileRes.file_name,
-              type: this.$store.state.fileRes.type
-            };
-            this.form.attachment = this.file.id;
-          }
-        } catch (err) {
-          return;
-        }
-      } else {
-        this.$message.warning('上传的附件格式有误！');
-      }
-    },
-    async showViewDialog(id) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          this.viewImgDialog = true;
-          this.imgLink = this.$store.state.viewLink;
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    closeViewDialog() {
-      this.viewImgDialog = false;
-    },
-    deleteImg(id) {
-      this.imgList.splice(
-        this.imgList.findIndex((e) => {
-          return e.id === id;
-        }),
-        1
-      );
-    },
-    deleteFile() {
-      this.file = {};
-      this.form.attachment = '';
-    },
     submitSurveyForm() {
-      let form = JSON.parse(JSON.stringify(this.form));
-      form.images = [];
+      let imgArr = [];
       this.imgList.forEach((item) => {
         let { id } = item;
-       form.images.push(id);
+       imgArr.push(id);
       });
-      form.attachment = this.file.id;
-      form.annual_sales = +form.annual_sales;
+      this.form.images = imgArr;
+      this.form.attachment = this.file.id;
       this.$refs.form.validate((valid) => {
         if (valid) {
-          this.updatePlatform(form);
+          this.form.annual_sales = +this.form.annual_sales;
+          this.updatePlatform(this.form);
         }
       });
     },
-    async download(id, name) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          downloadFile(this.$store.state.viewLink, name);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    async showViewFile(id) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          previewFile(this.$store.state.viewLink);
-        }
-      } catch (err) {
-        return;
+    getUploadFile(e, str) {
+      if(str === 'image') {
+        this.imgList = e;
+      } else {
+        this.file = e;
       }
     }
   }
