@@ -98,7 +98,10 @@
           clearable
         />
       </el-form-item>
-      <competitive-table :product-form="form" />
+      <competitive-table 
+        v-if="form.competitive_product !== undefined && form.competitive_product.length !== 0"
+        :product-form="form"
+      />
       <el-collapse 
         v-model="activeCollapse"
         class="collapse-item"
