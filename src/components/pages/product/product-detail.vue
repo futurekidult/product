@@ -57,7 +57,7 @@
 
           <div>
             <el-button
-              v-if="productBase.state  <= 50 "
+              v-if="productBase.state <= 50 "
               type="danger"
               @click="showTerminateForm"
             >
@@ -716,9 +716,29 @@ export default {
     handleClick(tab) {
       this.getRequest(tab.props.name);
     },
+    async getCategoryList() {
+      try {
+        await this.$store.dispatch('demand/getCategoryList');
+      } catch (err) {
+        return;
+      }
+    },
+    async getDemandDetail(id) {
+      this.getCategoryList();
+      try {
+        await this.$store.dispatch('demand/getDemandDetail', {
+          params: {
+            demand_id:  id
+          }
+        });
+        this.$router.push(`/demand-list/${id}`);
+      } catch (err) {
+        return ;
+      }
+    },
     toRelatedDemand(id) {
       if(this.$store.state.menuData.links.indexOf('/demand-list') > -1) {
-        this.$router.push(`/demand-list/${id}`);
+        this.getDemandDetail(id);
       } else {
         this.$message.error('无权限访问');
       }
