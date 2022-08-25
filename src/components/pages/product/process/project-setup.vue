@@ -112,63 +112,18 @@
         </div>
 
         <el-form-item
-          label="上传附件"
+          label="项目计划书"
           prop="sales_plan"
-          style="margin-bottom: 18px"
+          class="sales-plan"
         >
-          <el-upload
-            action
-            :show-file-list="false"
-            :http-request="handleFileSuccess"
-            :disabled="isDisabled"
-          >
-            <el-button
-              type="primary"
-              :disabled="isDisabled"
-            >
-              点击上传
-            </el-button>
-          </el-upload>
-          <div class="attachment">
-            支持office文档格式,文件不能超过5MB(仅限一个)
-          </div>
-        </el-form-item>
-        <el-form-item style="margin-bottom: 18px; width: 50%">
-          <div
-            v-if="JSON.stringify(file) !== '{}'"
-            class="attachment-list"
-          >
-            <div>
-              {{ file.name }}
-            </div>
-            <div style="display: flex">
-              <el-button
-                v-if="!isDisabled"
-                type="text"
-                @click="deleteFile(attachment.id)"
-              >
-                删除
-              </el-button>
-              <el-button
-                v-else
-                type="text"
-                @click="download(file.id, file.name)"
-              >
-                下载
-              </el-button>
-              <span 
-                v-if="file.type === 12860"
-                class="table-btn"
-              > |</span>
-              <el-button
-                v-if="file.type === 12860"
-                type="text"
-                @click="showViewFile(file.id)"
-              >
-                预览
-              </el-button>
-            </div>
-          </div>
+          <base-upload 
+            type="file"
+            tag="项目计划书"
+            url="sales-plan"
+            :file="file"
+            :is-disabled="isDisabled"
+            @get-file="getUploadFile"
+          />
         </el-form-item>
       </div>
       <el-form-item>
@@ -187,7 +142,6 @@
 <script>
 import ProfitCalculation from '../common/profit-calculation.vue';
 import ProcessTable from '../common/process-table.vue';
-import { getFile, downloadFile, previewFile } from '../../../../utils';
 
 export default {
   components: {
@@ -263,54 +217,6 @@ export default {
         return;
       }
     },
-    async handleFileSuccess(e) {
-      if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
-        this.$store.commit('setUploadState', false);
-        let form = getFile(e);
-        try {
-          await this.$store.dispatch('uploadFile', form);
-          if (this.$store.state.uploadState) {
-            this.file = {
-              id: this.$store.state.fileRes.id,
-              name: this.$store.state.fileRes.file_name,
-              type: this.$store.state.fileRes.type
-            };
-          }
-        } catch (err) {
-          return;
-        }
-      } else {
-        this.$message.warning('上传的附件格式有误！');
-      }
-    },
-    async download(id, name) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          downloadFile(this.$store.state.viewLink, name);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    async showViewFile(id) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          previewFile(this.$store.state.viewLink);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    deleteFile() {
-      this.file = {};
-      this.form.sales_plan = '';
-    },
     submitProjectForm() {
       this.form.sales_plan = this.file.id;
       let form = JSON.parse(JSON.stringify(this.form));
@@ -364,6 +270,9 @@ export default {
         this.getProfitCalcaulation();
         this.getProcessTable();
       }
+    },
+    getUploadFile(e) {
+      this.file = e;
     }
   }
 };
@@ -376,5 +285,11 @@ export default {
 
 .hide {
   display: none;
+}
+
+.sales-plan {
+  margin-bottom: 18px;
+  margin-bottom: 18px; 
+  width: 50%;
 }
 </style>

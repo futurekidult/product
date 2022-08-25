@@ -155,6 +155,17 @@
             >
               查看详情
             </el-button>
+            <span 
+              v-if="scope.row.state === 20"
+              class="table-btn"
+            >|</span>
+            <el-button
+              v-if="scope.row.state === 20"
+              type="text"
+              @click="toReview(scope.row.id)"
+            >
+              需求评审
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -207,7 +218,8 @@ export default {
         disabled: 'disabled'
       },
       currentPage: 1,
-      pageSize: 10
+      pageSize: 10,
+      show: true
     };
   },
   computed: {
@@ -275,8 +287,7 @@ export default {
       this.$router.push('/create-demand');
     },
     toDetail(id) {
-      this.$router.push(`/demand-list/${id}`);
-      this.$store.commit('demand/setDemandDetailLoading', true);
+      this.getDemandDetail(id, 'detail');
     },
     toProductDetail(id) {
       if(this.$store.state.menuData.links.indexOf('/product-list') > -1) {
@@ -316,6 +327,38 @@ export default {
     },
     toDraft() {
       this.$router.push('/draft-list');
+    },
+    async getCategoryList() {
+      try {
+        await this.$store.dispatch('demand/getCategoryList');
+      } catch (err) {
+        return;
+      }
+    },
+    async getDemandDetail(id, str) {
+      this.getCategoryList();
+      let funcName = '';
+      let url = '';
+      if(str === 'review') {
+        funcName = 'demand/getDemandReviewDetail';
+        url = `/demand-list/review/${id}`;
+      } else {
+        funcName = 'demand/getDemandDetail';
+        url = `/demand-list/${id}`;
+      }
+      try {
+        await this.$store.dispatch(funcName, {
+          params: {
+            demand_id:  id
+          }
+        });
+        this.$router.push(url);
+      } catch (err) {
+        return;
+      }
+    },
+    async toReview(id) {
+       this.getDemandDetail(id, 'review');
     }
   }
 };

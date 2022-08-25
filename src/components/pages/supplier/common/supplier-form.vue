@@ -15,12 +15,12 @@
       label-width="150px"
       :model="supplierForm"
       style="width: 70%"
+      :rules="type === 'create' || type === 'update' ? supplierRules : []"
     >
       <div class="form-item">
         <el-form-item
           label="供应商类型"
           prop="type"
-          :rules="[{ required: true, message: '请选择供应商类型' }]"
         >
           <el-select
             v-model="supplierForm.type"
@@ -39,10 +39,6 @@
         <el-form-item
           label="供应商名称"
           prop="name"
-          :rules="[
-            { required: true, message: '请输入供应商名称' },
-            checkValid(15)
-          ]"
         >
           <el-input
             v-model="supplierForm.name"
@@ -62,10 +58,7 @@
         <el-form-item
           :label="'联系人姓名' + (index + 1)"
           :prop="`contacts.${index}.contact`"
-          :rules="[
-            { required: true, message: '请输入联系人姓名' },
-            checkValid(15)
-          ]"
+          :rules="type === 'create' || type === 'update' ? [{ required: true, message: '请输入联系人姓名' }] : []"
         >
           <el-input
             v-model="item.contact"
@@ -79,7 +72,7 @@
         <el-form-item
           :label="'手机号码' + (index + 1)"
           :prop="`contacts.${index}.tel`"
-          :rules="[{ required: true, message: '请输入手机号' }, checkValid(15)]"
+          :rules="type === 'create' || type === 'update' ? [{ required: true, message: '请输入手机号' }] : []"
         >
           <el-input
             v-model="item.tel"
@@ -132,17 +125,18 @@
             @change="checkEmail('email', item.email, index + 1)"
           />
         </el-form-item>
+        <base-delete 
+          :id="index"
+          mode="supplier-delete_btn"
+          content="移除"
+          :show="!isDisabled && supplierForm.contacts.length > 1"
+          :list="supplierForm.contacts"
+          @get-list="(val) => getReturnData(val, 'contacts')"
+        />
       </div>
       <el-form-item v-if="!isDisabled">
         <el-button @click="addRow('contacts')">
           + 新增联系人
-        </el-button>
-        <el-button
-          v-if="supplierForm.contacts.length !== 1"
-          type="danger"
-          @click="deleteRow('contacts')"
-        >
-          - 删除联系人
         </el-button>
       </el-form-item>
       <div
@@ -153,7 +147,7 @@
         <el-form-item
           :label="'公司地址' + (index + 1)"
           :prop="`addresses.${index}.company`"
-          :rules="[{ required: true, message: '请选择公司地址' }]"
+          :rules="type === 'create' || type === 'update' ? [{ required: true, message: '请选择公司地址' }] : []"
         >
           <el-cascader
             v-model="item.company"
@@ -170,10 +164,7 @@
         <el-form-item
           :label="'详细地址' + (index + 1)"
           :prop="`addresses.${index}.detail`"
-          :rules="[
-            { required: true, message: '请输入详细地址' },
-            checkValid(30)
-          ]"
+          :rules="type === 'create' || type === 'update' ? [{ required: true, message: '请输入详细地址' }] : []"
         >
           <el-input
             v-model="item.detail"
@@ -187,7 +178,7 @@
         <el-form-item
           :label="'出货地址' + (index + 1)"
           :prop="`addresses.${index}.shipment`"
-          :rules="[{ required: true, message: '请输入出货地址' }]"
+          :rules="type === 'create' || type === 'update' ? [{ required: true, message: '请输入出货地址' }] : []"
         >
           <el-cascader
             v-model="item.shipment"
@@ -200,27 +191,25 @@
             style="width: 100%"
           />
         </el-form-item>
+        <el-form-item />
+        <base-delete 
+          :id="index"
+          mode="supplier-delete_btn"
+          content="移除"
+          :show="!isDisabled && supplierForm.addresses.length > 1"
+          :list="supplierForm.addresses"
+          @get-list="(val) => getReturnData(val, 'addresses')"
+        />
       </div>
       <el-form-item v-if="!isDisabled">
         <el-button @click="addRow('addresses')">
           + 新增地址
-        </el-button>
-        <el-button
-          v-if="supplierForm.addresses.length !== 1"
-          type="danger"
-          @click="deleteRow('addresses')"
-        >
-          - 删除地址
         </el-button>
       </el-form-item>
       <div class="form-item">
         <el-form-item
           label="公司主页链接"
           prop="site_link"
-          :rules="[
-            { required: true, message: '请输入公司主页链接' },
-            checkValid(30)
-          ]"
         >
           <el-input
             v-model="supplierForm.site_link"
@@ -234,7 +223,6 @@
         <el-form-item
           label="供应商合作等级"
           prop="cooperation_level"
-          :rules="[{ required: true, message: '请选择合作等级' }]"
         >
           <el-select
             v-model="supplierForm.cooperation_level"
@@ -253,7 +241,6 @@
         <el-form-item
           label="工厂规模(人)"
           prop="factory_scale"
-          :rules="[{ required: true, message: '请输入工厂规模' }]"
         >
           <el-input
             v-model="supplierForm.factory_scale"
@@ -267,10 +254,6 @@
         <el-form-item
           label="供应商税号"
           prop="tax_id"
-          :rules="[
-            { required: true, message: '请输入供应商税号' },
-            checkValid(20)
-          ]"
         >
           <el-input
             v-model="supplierForm.tax_id"
@@ -284,7 +267,6 @@
         <el-form-item
           label="注册资金(万元)"
           prop="registered_capital"
-          :rules="[{ required: true, message: '请输入注册资金' }]"
         >
           <el-input
             v-model="supplierForm.registered_capital"
@@ -298,7 +280,6 @@
         <el-form-item
           label="税务资格"
           prop="tax_eligibility"
-          :rules="[{ required: true, message: '请选择税务资格' }]"
         >
           <el-select
             v-model="supplierForm.tax_eligibility"
@@ -317,7 +298,6 @@
         <el-form-item
           label="付款方式"
           prop="payment_method"
-          :rules="[{ required: true, message: '请选择付款方式' }]"
         >
           <el-select
             v-model="supplierForm.payment_method"
@@ -346,7 +326,6 @@
         <el-form-item
           label="付款条件"
           prop="payment_terms"
-          :rules="[{ required: true, message: '请选择付款条件' }]"
         >
           <el-select
             v-model="supplierForm.payment_terms"
@@ -365,7 +344,6 @@
         <el-form-item
           label="主要货币"
           prop="currency"
-          :rules="[{ required: true, message: '请选择主要货币' }]"
         >
           <el-select
             v-model="supplierForm.currency"
@@ -394,10 +372,6 @@
         <el-form-item
           label="开户银行户名"
           prop="bank_username"
-          :rules="[
-            { required: true, message: '请输入开户银行' },
-            checkValid(15)
-          ]"
         >
           <el-input
             v-model="supplierForm.bank_username"
@@ -411,10 +385,6 @@
         <el-form-item
           label="开户银行名称"
           prop="bank_name"
-          :rules="[
-            { required: true, message: '请输入开户银行名称' },
-            checkValid(15)
-          ]"
         >
           <el-input
             v-model="supplierForm.bank_name"
@@ -428,7 +398,6 @@
         <el-form-item
           label="开户银行账号"
           prop="bank_account"
-          :rules="[{ required: true, message: '请输入开户银行账号' }]"
         >
           <el-input
             v-model="supplierForm.bank_account"
@@ -462,7 +431,6 @@
         <el-form-item
           label="跨行标识"
           prop="inter_bank"
-          :rules="[{ required: true, message: '请选择跨行标识' }]"
         >
           <el-select
             v-model="supplierForm.inter_bank"
@@ -481,7 +449,6 @@
         <el-form-item
           label="地域标识"
           prop="territory"
-          :rules="[{ required: true, message: '请选择地域标识' }]"
         >
           <el-select
             v-model="supplierForm.territory"
@@ -500,10 +467,6 @@
         <el-form-item
           label="主营产品"
           prop="main_products"
-          :rules="[
-            { required: true, message: '请输入主营产品' },
-            checkValid(15)
-          ]"
         >
           <el-input
             v-model="supplierForm.main_products"
@@ -517,7 +480,6 @@
         <el-form-item
           label="采购员"
           prop="purchase_specialist_id"
-          :rules="[{ required: true, message: '请选择采购员' }]"
         >
           <el-tree-select
             v-model="supplierForm.purchase_specialist_id"
@@ -532,308 +494,70 @@
       <el-form-item
         label="增值税发票"
         prop="vat_invoice_file"
-        :rules="[{ required: true, message: '请上传附件' }]"
       >
-        <el-upload
-          action
-          :show-file-list="false"
-          :http-request="
-            (e) => handleFileArrSuccess(e, vatInvoiceFile, '增值税发票')
-          "
-          :disabled="isDisabled"
-        >
-          <el-button
-            type="primary"
-            :disabled="isDisabled"
-          >
-            点击上传
-          </el-button>
-        </el-upload>
-        <div class="attachment">
-          请上传 jpg/png/jepg等图片格式, 单个文件不超过 5MB
-        </div>
-      </el-form-item>
-      <el-form-item>
-        <div
-          v-for="(item, index) in vatInvoiceFile"
-          :key="index"
-          class="attachment-list"
-        >
-          <div>
-            {{ item.name }}
-          </div>
-          <div style="display: flex">
-            <el-button
-              v-if="!isDisabled"
-              type="text"
-              @click="
-                deleteFileItem(vatInvoiceFile, item.id, 'vat_invoice_file')
-              "
-            >
-              删除
-            </el-button>
-            <span 
-              v-if="!isDisabled"
-              class="table-btn"
-            >|</span>
-            <el-button
-              type="text"
-              @click="showViewDialog(item.id)"
-            >
-              预览
-            </el-button>
-          </div>
-        </div>
+        <base-upload 
+          type="image"
+          tag="增值税发票"
+          count="8"
+          url="vat-invoice"
+          :is-disabled="isDisabled"
+          :list="vatInvoiceFile"
+          @get-file="(val) => getUploadFile(val, 'vat_invoice_file')"
+        />
       </el-form-item>
       <el-form-item
         label="开户许可证"
         prop="account_opening_license_file"
-        :rules="[{ required: true, message: '请上传附件' }]"
       >
-        <el-upload
-          action
-          :show-file-list="false"
-          :http-request="
-            (e) =>
-              handleFileArrSuccess(e, accountOpeningLicenseFile, '开户许可证')
-          "
-          :disabled="isDisabled"
-        >
-          <el-button
-            type="primary"
-            :disabled="isDisabled"
-          >
-            点击上传
-          </el-button>
-        </el-upload>
-        <div class="attachment">
-          请上传 jpg/png/jepg等图片格式, 单个文件不超过 5MB
-        </div>
-      </el-form-item>
-      <el-form-item>
-        <div
-          v-for="(item, index) in accountOpeningLicenseFile"
-          :key="index"
-          class="attachment-list"
-        >
-          <div>
-            {{ item.name }}
-          </div>
-          <div style="display: flex">
-            <el-button
-              v-if="!isDisabled"
-              type="text"
-              @click="
-                deleteFileItem(
-                  accountOpeningLicenseFile,
-                  item.id,
-                  'account_opening_license_file'
-                )
-              "
-            >
-              删除
-            </el-button>
-            <span 
-              v-if="!isDisabled"
-              class="table-btn"
-            >|</span>
-            <el-button
-              type="text"
-              @click="showViewDialog(item.id)"
-            >
-              预览
-            </el-button>
-          </div>
-        </div>
+        <base-upload 
+          type="image"
+          tag="开户许可证"
+          count="8"
+          url="account-opening-license"
+          :is-disabled="isDisabled"
+          :list="accountOpeningLicenseFile"
+          @get-file="(val) => getUploadFile(val, 'account_opening_license_file')"
+        />
       </el-form-item>
       <el-form-item
         label="营业执照"
         prop="business_license_file"
-        :rules="[{ required: true, message: '请上传附件' }]"
       >
-        <el-upload
-          action
-          :show-file-list="false"
-          :http-request="
-            (e) => handleFileArrSuccess(e, businessLicenseFile, '营业执照')
-          "
-          :disabled="isDisabled"
-        >
-          <el-button
-            type="primary"
-            :disabled="isDisabled"
-          >
-            点击上传
-          </el-button>
-        </el-upload>
-        <div class="attachment">
-          请上传 jpg/png/jepg等图片格式, 单个文件不超过 5MB
-        </div>
-      </el-form-item>
-      <el-form-item>
-        <div
-          v-for="(item, index) in businessLicenseFile"
-          :key="index"
-          class="attachment-list"
-        >
-          <div>
-            {{ item.name }}
-          </div>
-          <div style="display: flex">
-            <el-button
-              v-if="!isDisabled"
-              type="text"
-              @click="
-                deleteFileItem(
-                  businessLicenseFile,
-                  item.id,
-                  'business_license_file'
-                )
-              "
-            >
-              删除
-            </el-button>
-            <span 
-              v-if="!isDisabled"
-              class="table-btn"
-            >|</span>
-            <el-button
-              type="text"
-              @click="showViewDialog(item.id)"
-            >
-              预览
-            </el-button>
-          </div>
-        </div>
+        <base-upload 
+          type="image"
+          tag="营业执照"
+          count="8"
+          url="business-license"
+          :is-disabled="isDisabled"
+          :list="businessLicenseFile"
+          @get-file="(val) => getUploadFile(val, 'business_license_file')"
+        />
       </el-form-item>
       <el-form-item
         label="采购供应商评估表"
         prop="purchase_evaluation_file"
-        :rules="[{ required: true, message: '请上传附件' }]"
       >
-        <el-upload
-          action
-          :show-file-list="false"
-          :http-request="(e) => handleFileSuccess(e, purchaseEvaluationFile,'采购供应商评估表')"
-          :disabled="isDisabled"
-        >
-          <el-button
-            type="primary"
-            :disabled="isDisabled"
-          >
-            点击上传
-          </el-button>
-        </el-upload>
-        <div class="attachment">
-          支持office文档格式,文件不能超过5MB(仅限一个)
-        </div>
-      </el-form-item>
-      <el-form-item>
-        <div
-          v-if="JSON.stringify(purchaseEvaluationFile) !== '{}'"
-          class="attachment-list"
-        >
-          <div>
-            {{ purchaseEvaluationFile.name }}
-          </div>
-          <div style="display: flex">
-            <el-button
-              v-if="!isDisabled"
-              type="text"
-              @click="deletePurchaseFile(purchaseEvaluationFile.id)"
-            >
-              删除
-            </el-button>
-            <div style="display: flex">
-              <el-button
-                v-if="isDisabled"
-                type="text"
-                @click="
-                  download(
-                    purchaseEvaluationFile.id,
-                    purchaseEvaluationFile.name
-                  )
-                "
-              >
-                下载
-              </el-button>
-              <span 
-                v-if="purchaseEvaluationFile.type === 12860"
-                class="table-btn"
-              >|</span>
-              <el-button
-                v-if="purchaseEvaluationFile.type === 12860"
-                type="text"
-                @click="showViewFile(purchaseEvaluationFile.id)"
-              >
-                预览
-              </el-button>
-            </div>
-          </div>
-        </div>
+        <base-upload 
+          type="file"
+          tag="采购供应商评估表"
+          url="purchase-evaluation"
+          :file="purchaseEvaluationFile"
+          :is-disabled="isDisabled"
+          @get-file="(val) => getUploadFile(val,'purchase_evaluation_file')"
+        />
       </el-form-item>
       <el-form-item
         label="质检供应商评估表"
         prop="quality_evaluation_file"
-        :rules="[{ required: true, message: '请上传附件' }]"
       >
-        <el-upload
-          action
-          :show-file-list="false"
-          :http-request="(e) => handleFileSuccess(e, qualityEvaluationFile, '质检供应商评估表')"
-          :disabled="isDisabled"
-        >
-          <el-button
-            type="primary"
-            :disabled="isDisabled"
-          >
-            点击上传
-          </el-button>
-        </el-upload>
-        <div class="attachment">
-          支持office文档格式,文件不能超过5MB(仅限一个)
-        </div>
-      </el-form-item>
-      <el-form-item>
-        <div
-          v-if="JSON.stringify(qualityEvaluationFile) !== '{}'"
-          class="attachment-list"
-        >
-          <div>
-            {{ qualityEvaluationFile.name }}
-          </div>
-          <div style="display: flex">
-            <el-button
-              v-if="!isDisabled"
-              type="text"
-              @click="deleteQualityFile(qualityEvaluationFile.id)"
-            >
-              删除
-            </el-button>
-            <div style="display: flex">
-              <el-button
-                v-if="isDisabled"
-                type="text"
-                @click="
-                  download(qualityEvaluationFile.id, qualityEvaluationFile.name)
-                "
-              >
-                下载
-              </el-button>
-              <span 
-                v-if="qualityEvaluationFile.type === 12860"
-                class="table-btn"
-              >|</span>
-              <el-button
-                v-if="qualityEvaluationFile.type === 12860"
-                type="text"
-                @click="showViewFile(purchaseEvaluationFile.id)"
-              >
-                预览
-              </el-button>
-            </div>
-          </div>
-        </div>
+        <base-upload 
+          type="file"
+          tag="质检供应商评估表"
+          url="quality-evaluation"
+          :file="qualityEvaluationFile"
+          :is-disabled="isDisabled"
+          @get-file="(val) => getUploadFile(val,'quality_evaluation_file')"
+        />
       </el-form-item>
       <el-form-item>
         <div class="desc">
@@ -862,22 +586,11 @@
       </el-form-item>
     </el-form>
   </div>
-
-  <view-dialog
-    v-if="viewImgDialog"
-    :link="imgLink"
-    :visible="viewImgDialog"
-    @hide-dialog="closeViewDialog"
-  />
 </template>
 
 <script>
-import { downloadFile, getFile, getOrganizationList, previewFile } from '../../../../utils';
-import ViewDialog from '../../../common/view-dialog.vue';
+import { getOrganizationList } from '../../../../utils';
 export default {
-  components: {
-    ViewDialog
-  },
   props: ['type'],
   data() {
     return {
@@ -912,9 +625,147 @@ export default {
         label: 'name',
         children: 'children'
       },
-      viewImgDialog: false,
-      imgLink: '',
-      cityOption: []
+      cityOption: [],
+      supplierRules: {
+        type: [
+          {
+            required: true,
+            message: '请选择供应商类型'
+          }
+        ],
+        name: [
+          { 
+            required: true, 
+            message: '请输入供应商名称' 
+          }
+        ],
+        site_link: [
+          { 
+            required: true, 
+            message: '请输入公司主页链接' 
+          }
+        ],
+        cooperation_level: [
+          { 
+            required: true, 
+            message: '请选择合作等级' 
+          }
+        ],
+        factory_scale: [
+          {
+             required: true, 
+             message: '请输入工厂规模'
+          }
+        ],
+        tax_id: [
+          {
+            required: true, 
+            message: '请输入供应商税号'
+          }
+        ],
+        registered_capital: [
+          {
+            required: true, 
+            message: '请输入注册资金'
+          }
+        ],
+        tax_eligibility: [
+          {
+            required: true, 
+            message: '请选择税务资格'
+          }
+        ],
+        payment_method: [
+          {
+            required: true, 
+            message: '请选择付款方式'
+          }
+        ],
+        payment_terms: [
+          {
+            required: true, 
+            message: '请选择付款条件'
+          }
+        ],
+        currency: [
+          {
+             required: true, 
+             message: '请选择主要货币'
+          }
+        ],
+        bank_username: [
+          {
+            required: true, 
+            message: '请输入开户银行'
+          }
+        ],
+        bank_name: [
+          {
+            required: true, 
+            message: '请输入开户银行名称'
+          }
+        ],
+        bank_account: [
+          {
+            required: true, 
+            message: '请输入开户银行账号'
+          }
+        ],
+        inter_bank: [
+          {
+            required: true, 
+            message: '请选择跨行标识'
+          }
+        ],
+        territory: [
+          {
+            required: true, 
+            message: '请选择地域标识'
+          }
+        ],
+        main_products: [
+          {
+            required: true, 
+            message: '请输入主营产品'
+          }
+        ],
+        purchase_specialist_id: [
+          {
+            required: true, 
+            message: '请选择采购员'
+          }
+        ],
+        vat_invoice_file: [
+          {
+            required: true, 
+            message: '请上传附件'
+          }
+        ],
+        account_opening_license_file: [
+          {
+            required: true, 
+            message: '请上传附件'
+          }
+        ],
+        business_license_file: [
+          {
+            required: true, 
+            message: '请上传附件'
+          }
+        ],
+        purchase_evaluation_file: [
+          {
+            required: true, 
+            message: '请上传附件'
+          }
+        ],
+        quality_evaluation_file: [
+          {
+            required: true, 
+            message: '请上传附件'
+          }
+        ]
+      }
     };
   },
   computed: {
@@ -1011,135 +862,30 @@ export default {
     addRow(val) {
       this.supplierForm[val].push({});
     },
-    deleteRow(val) {
-      this.supplierForm[val].pop();
-    },
-    async showViewDialog(id) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          this.viewImgDialog = true;
-          this.imgLink = this.$store.state.viewLink;
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    async handleFileArrSuccess(e, arr, str) {
-      if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if(e.file.type.indexOf('image') > -1) {
-        if (arr.length > 8) {
-          this.$emssage.error(`${str}不能传超过9张`);
-        } else {
-          this.$store.commit('setUploadState', false);
-          let form = getFile(e);
-          try {
-            await this.$store.dispatch('uploadFile', form);
-            if (this.$store.state.uploadState) {
-              arr.push({
-                id: this.$store.state.fileRes.id,
-                name: this.$store.state.fileRes.file_name,
-                type: this.$store.state.fileRes.type
-              });
-            }
-          } catch (err) {
-            return;
-          }
-        }
-      } else {
-        this.$message.warning(`上传的${str}格式有误！`);
-      }
-    },
-    async handleFileSuccess(e, obj, str) {
-      if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
-        this.$store.commit('setUploadState', false);
-        let form = getFile(e);
-        try {
-          await this.$store.dispatch('uploadFile', form);
-          if (this.$store.state.uploadState) {
-            obj['id'] = this.$store.state.fileRes.id;
-            obj['name'] = this.$store.state.fileRes.file_name;
-            obj['type'] = this.$store.state.fileRes.type;
-          }
-        } catch (err) {
-          return;
-        }
-      } else {
-        this.$message.warning(`上传的${str}格式有误！`);
-      }
-    },
-    handleFileArr(oldArr, key) {
-      this.supplierForm[key] = [];
-      oldArr.forEach((item) => {
+ handleImgArr(key) {
+      let imgArr = [];
+      this.supplierForm[key].forEach((item) => {
         let { id } = item;
-        this.supplierForm[key].push(id);
-      });
-    },
-    deleteFileItem(arr, id, key) {
-      arr.splice(
-        arr.findIndex((e) => {
-          return e.id === id;
-        }),
-        1
-      );
-      this.supplierForm[key] = arr;
-    },
-    deleteQualityFile() {
-      this.qualityEvaluationFile = {};
-      this.submitForm.quality_evaluation_file = {};
-    },
-    deletePurchaseFile() {
-      this.purchaseEvaluationFile = {};
-      this.submitForm.purchase_evaluation_file = {};
+        imgArr.push(id);
+      })
+      return imgArr;
     },
     submitForm() {
-      this.handleFileArr(this.vatInvoiceFile, 'vat_invoice_file');
-      this.handleFileArr(
-        this.accountOpeningLicenseFile,
-        'account_opening_license_file'
-      );
-      this.handleFileArr(this.businessLicenseFile, 'business_license_file');
-      this.supplierForm.purchase_evaluation_file =
-        this.purchaseEvaluationFile.id;
-      this.supplierForm.quality_evaluation_file = this.qualityEvaluationFile.id;
       this.$refs.supplierForm.validate((valid) => {
         if (valid) {
+          let form = JSON.parse(JSON.stringify(this.supplierForm));
+          form['vat_invoice_file'] = this.handleImgArr('vat_invoice_file');
+          form['account_opening_license_file'] = this.handleImgArr('account_opening_license_file');
+          form['business_license_file'] = this.handleImgArr('business_license_file');
+          form['quality_evaluation_file'] = this.supplierForm['quality_evaluation_file'].id;
+          form['purchase_evaluation_file'] = this.supplierForm['purchase_evaluation_file'].id;
           if (this.type === 'create') {
-            this.createSupplier(this.supplierForm);
+            this.createSupplier(form);
           } else {
-            this.updateSupplier(this.supplierForm);
+            this.updateSupplier(form);
           }
         }
       });
-    },
-    closeViewDialog() {
-      this.viewImgDialog = false;
-    },
-    async showViewFile(id) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          previewFile(this.$store.state.viewLink);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    async download(id, name) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          downloadFile(this.$store.state.viewLink, name);
-        }
-      } catch (err) {
-        return;
-      }
     },
     checkEmail(str, val, index) {
       if (val) {
@@ -1148,14 +894,22 @@ export default {
         }
       }
     },
-    checkValid(val) {
-      return {
-        max: val,
-        message: `长度不超过${val}个字符`
-      };
-    },
     clearAddress(index) {        
       this.supplierForm.addresses[index].detail = '';
+    },
+    getReturnData(e, str) {
+      if(str === 'contacts') {
+        this.supplierForm.contacts = e;
+      } else {
+        this.supplierForm.addresses = e;
+      }
+    },
+    getUploadFile(e, str) {
+      if(JSON.stringify(e) === '{}') {
+        this.supplierForm[str] = '';
+      } else {
+        this.supplierForm[str] = e;
+      }
     }
   }
 };

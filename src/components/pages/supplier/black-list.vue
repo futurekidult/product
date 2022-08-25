@@ -82,11 +82,12 @@
     />
   </div>
 
-  <confirm-dialog
+  <confirm-dialog 
     v-if="whiteDialogVisible"
     :id="supplierWhiteId"
     :dialog-visible="whiteDialogVisible"
-    type="white"
+    dialog-content="确定将该供应商移除黑名单"
+    type="black delete"
     :get-list="getBlackList"
     @hide-dialog="closeWhiteDialog"
   />
@@ -94,11 +95,7 @@
 
 <script>
 import { formatterTime } from '../../../utils';
-import ConfirmDialog from './common/confirm-dialog.vue';
 export default {
-  components: {
-    ConfirmDialog
-  },
   provide() {
     return {
       getBlack: this.getBlackList

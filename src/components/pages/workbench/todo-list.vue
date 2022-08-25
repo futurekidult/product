@@ -43,7 +43,7 @@
         <template #default="scope">
           <el-button
             type="text"
-            @click="toDetail(scope.row.task_id, scope.row.related_id)"
+            @click="toDetail(scope.row.task_id, scope.row.related_id, scope.row.state)"
           >
             查看详情
           </el-button>
@@ -68,14 +68,49 @@ export default {
         return 'result-pass';
       }
     },
-    toDetail(taskId, id) {
+    async getCategoryList() {
+      try {
+        await this.$store.dispatch('demand/getCategoryList');
+      } catch (err) {
+        return;
+      }
+    },
+    async getDemandDetail(id, str) {
+      this.getCategoryList();
+      let funcName = '';
+      let url = '';
+      if(str === 'review') {
+        funcName = 'demand/getDemandReviewDetail';
+        url = `/demand-list/review/${id}`;
+      } else {
+        funcName = 'demand/getDemandDetail';
+        url = `/demand-list/${id}`;
+      }
+      try {
+        await this.$store.dispatch(funcName, {
+          params: {
+            demand_id:  id
+          }
+        });
+        this.$router.push(url);
+      } catch (err) {
+        return;
+      }
+    },
+    toDetail(taskId, id, state) {
       let taskArr = getTask(taskId);
       if (taskArr.length === 1) {
         if(taskId === 760) {
           this.$store.commit('supplier/setActionType', 'approval');
         } 
         if(this.$store.state.menuData.links.indexOf(`/${taskArr[0]}-list`) > -1) {
-          this.$router.push(`/${taskArr[0]}-list/${id}`);
+          if(taskId === 10 && state === 10) {
+            this.getDemandDetail(id, 'review');
+          } else if(taskId === 10 && state === 40){
+            this.getDemandDetail(id, 'detail');
+          } else {
+            this.$router.push(`/${taskArr[0]}-list/${id}`);
+          }
         } else {
           this.$message.error('无权限访问');
         }

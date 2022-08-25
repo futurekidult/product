@@ -43,6 +43,14 @@
               show-word-limit
             />
           </el-form-item>
+          <base-delete 
+            :id="index"
+            mode="test-question_btn"
+            content="移除"
+            :show="questionForm.list.length > 1"
+            :list="questionForm.list"
+            @get-list="getQuestionList"
+          />
         </div>
       </el-scrollbar>
       <el-form-item>
@@ -50,15 +58,7 @@
           style="margin: 15px 0"
           @click="addRow"
         >
-          + 新增
-        </el-button>
-        <el-button
-          v-if="questionForm.list.length > 1"
-          style="margin: 15px"
-          type="danger"
-          @click="deleteRow"
-        >
-          - 删除
+          + 新增测试问题
         </el-button>
       </el-form-item>
       <el-divider />
@@ -131,15 +131,15 @@ export default {
     addRow() {
       this.questionForm.list.push({});
     },
-    deleteRow() {
-      this.questionForm.list.pop();
-    },
     submitQuestionList() {
       this.$refs.questionForm.validate((valid) => {
         if (valid) {
           this.createTestQuestion(this.questionForm.list);
         }
       });
+    },
+    getQuestionList(val) {
+      this.questionForm.list = val;
     }
   }
 };

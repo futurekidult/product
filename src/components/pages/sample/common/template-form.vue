@@ -15,57 +15,14 @@
         label="测试模板"
         prop="user_template_file"
       >
-        <el-upload
-          action
-          :show-file-list="false"
-          :http-request="handleFileSuccess"
-          :disabled="type !== 'create'"
-        >
-          <el-button
-            type="primary"
-            :disabled="type !== 'create'"
-          >
-            点击上传
-          </el-button>
-        </el-upload>
-        <div class="attachment">
-          支持office文档格式,文件不能超过5MB(仅限一个)
-        </div>
-      </el-form-item>
-      <el-form-item>
-        <div
-          v-if="JSON.stringify(attachment) !== '{}'"
-          class="attachment-list"
-        >
-          <div>{{ attachment.name }}</div>
-          <div style="display: flex">
-            <el-button
-              v-if="type === 'create'"
-              type="text"
-              @click="deleteFile"
-            >
-              删除
-            </el-button>
-            <el-button
-              v-else
-              type="text"
-              @click="download(attachment.id, attachment.name)"
-            >
-              下载
-            </el-button>
-            <span 
-              v-if="attachment.type === 12860"
-              class="table-btn"
-            >|</span>
-            <el-button
-              v-if="attachment.type === 12860"
-              type="text"
-              @click="showViewFile(attachment.id)"
-            >
-              预览
-            </el-button>
-          </div>
-        </div>
+        <base-upload 
+          type="file"
+          tag="测试模板"
+          url="user-template"
+          :file="attachment"
+          :is-disabled="type !== 'create'"
+          @get-file="getUploadFile"
+        />
       </el-form-item>
       <el-divider />
       <div
@@ -90,7 +47,6 @@
 </template>
 
 <script>
-import { downloadFile, getFile, previewFile } from '../../../../utils';
 export default {
   inject: ['getUser'],
   props: ['id', 'dialogVisible', 'type', 'title'],
@@ -142,57 +98,9 @@ export default {
         return;
       }
     },
-    async showViewFile(id) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          previewFile(this.$store.state.viewLink);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    async download(id, name) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          downloadFile(this.$store.state.viewLink, name);
-        }
-      } catch (err) {
-        return;
-      }
-    },
     cancel() {
       this.visible = false;
       this.$emit('hide-dialog', this.visible);
-    },
-    async handleFileSuccess(e) {
-      if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
-        this.$store.commit('setUploadState', false);
-        let form = getFile(e);
-        try {
-          await this.$store.dispatch('uploadFile', form);
-          if (this.$store.state.uploadState) {
-            this.attachment = {
-              id: this.$store.state.fileRes.id,
-              name: this.$store.state.fileRes.file_name,
-              type: this.$store.state.fileRes.type
-            };
-          }
-        } catch (err) {
-          return;
-        }
-      } else {
-        this.$message.warning('上传的附件格式有误！');
-      }
-    },
-    deleteFile() {
-      this.attachment = {};
-      this.templateForm.user_template_file = '';
     },
     submitTemplateForm() {
       this.templateForm.user_template_file = this.attachment.id;
@@ -201,6 +109,9 @@ export default {
           this.createTemplate(this.templateForm);
         }
       });
+    },
+    getUploadFile(e) {
+      this.attachment = e;
     }
   }
 };

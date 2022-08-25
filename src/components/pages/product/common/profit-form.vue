@@ -217,6 +217,14 @@
               :disabled="isDisabled"
             />
           </el-form-item>
+          <base-delete 
+            :id="index" 
+            mode="project-delete_btn" 
+            content="移除" 
+            :show="!isDisabled && profitForm.list.length > 1" 
+            :list="profitForm.list" 
+            @get-list="getPlatform" 
+          />
         </div>
         <el-form-item v-if="!isDisabled">
           <el-button
@@ -224,14 +232,6 @@
             @click="addRow"
           >
             + 新增平台
-          </el-button>
-          <el-button
-            v-if="profitForm.list.length > 1"
-            style="margin: 15px"
-            type="danger"
-            @click="deleteRow"
-          >
-            - 删除平台
           </el-button>
         </el-form-item>
         <el-divider v-if="!isDisabled" />
@@ -459,9 +459,6 @@ export default {
           })
         }
     },
-    deleteRow() {
-      this.profitForm.list.pop();
-    },
     async createProfit(val) {
       let body = val;
       body['product_id'] = +this.$route.params.productId;
@@ -592,7 +589,10 @@ export default {
       this.profitForm.list[index].selling_price = '';
       this.profitForm.list[index].selling_price_rmb = '';
       this.profitForm.list[index].reference_price = '';
-    }
+    },
+    getPlatform(e) { 
+      this.profitForm.list = e; 
+    } 
   }
 };
 </script>

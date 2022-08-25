@@ -71,18 +71,19 @@
               clearable
             />
           </el-form-item>
+          <base-delete 
+            :id="index"
+            mode="test-user_btn"
+            content="移除"
+            :show="userForm.list.length > 1"
+            :list="userForm.list"
+            @get-list="getTestUserList"
+          />
         </div>
       </el-scrollbar>
       <el-form-item>
         <el-button @click="addRow">
           + 新增用户信息
-        </el-button>
-        <el-button
-          v-if="userForm.list.length > 1"
-          type="danger"
-          @click="deleteRow"
-        >
-          - 删除用户信息
         </el-button>
       </el-form-item>
       <el-divider />
@@ -179,15 +180,15 @@ export default {
     addRow() {
       this.userForm.list.push({});
     },
-    deleteRow() {
-      this.userForm.list.pop();
-    },
     submitUser() {
       this.$refs.userForm.validate((valid) => {
         if (valid) {
           this.createUser(this.userForm.list);
         }
       });
+    },
+    getTestUserList(val) {
+      this.userForm.list = val;
     }
   }
 };

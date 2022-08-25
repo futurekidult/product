@@ -117,7 +117,7 @@ const store = createStore({
       });
     },
     async getViewLink(context, payload) {
-      await axios.get('/attachment/view', payload).then((res) => {
+      await axios.get(`/attachment/view/${payload.url}`, payload).then((res) => {
         if (res.code === 200) {
           context.commit('setViewLink', res.data.url);
           context.commit('setAttachmentState', true);

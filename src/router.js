@@ -6,6 +6,7 @@ import DemandCreate from './components/pages/demand/demand-create.vue';
 import DemandEdit from './components/pages/demand/demand-edit.vue';
 import DraftList from './components/pages/demand/draft-list.vue'
 import DemandDetail from './components/pages/demand/demand-detail/demand-detail.vue';
+import DemandReview from './components/pages/demand/demand-detail/demand-review/demand-review.vue';
 import SupplyList from './components/pages/supplier/supply-list.vue';
 import SupplierCreate from './components/pages/supplier/supplier-create.vue';
 import SupplierDetail from './components/pages/supplier/supplier-detail.vue';
@@ -69,6 +70,15 @@ const router = createRouter({
               name: 'demand edit',
               meta: {
                 title: '编辑需求'
+              },
+              props: true
+            },
+            {
+              path: '/demand-list/review/:id',
+              component: DemandReview,
+              name: 'demand review',
+              meta: {
+                title: '需求评审'
               },
               props: true
             }

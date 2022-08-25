@@ -101,8 +101,29 @@ export default {
         return;
       }
     },
+    async getDemandDetail(id) {
+      this.getCategoryList();
+      try {
+        await this.$store.dispatch('demand/getDemandDetail', {
+          params: {
+            demand_id:  id
+          }
+        });
+        this.$router.push(`/demand-list/edit/${id}`);
+      } catch (err) {
+        return ;
+      }
+    },
+    async getCategoryList() {
+      try {
+        await this.$store.dispatch('demand/getCategoryList');
+        this.bigCategoryList = this.$store.state.demand.categoryList;
+      } catch (err) {
+        return;
+      }
+    },
     toForm(id) {
-      this.$router.push(`/demand-list/edit/${id}`);
+      this.getDemandDetail(id);
     },
     changePageSize(val) {
       this.pageSize = val;

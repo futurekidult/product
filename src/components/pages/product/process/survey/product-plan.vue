@@ -25,14 +25,24 @@
         :rules="[{ required: true, message: '请输入使用场景'}, checkValid(15)]"
         class="form-item_width"
       >
-        <el-input
-          v-model="form.usage_scenario[index]"
-          placeholder="请输入使用场景"
-          maxlength="15"
-          show-word-limit
-          clearable
-          :disabled="isDisabled"
-        />
+        <div class="usage-scenario_include-delete">
+          <el-input
+            v-model="form.usage_scenario[index]"
+            placeholder="请输入使用场景"
+            maxlength="15"
+            show-word-limit
+            clearable
+            :disabled="isDisabled"
+          />
+          <base-delete 
+            :id="index"
+            mode="user_analysis-btn"
+            content=""
+            :show="form.usage_scenario.length > 1 && progress.state !== 50"
+            :list="form.usage_scenario"
+            @get-list=" getReturnData"
+          />
+        </div>
       </el-form-item>
       <el-form-item v-if="progress.state !== 50">
         <el-button
@@ -41,15 +51,6 @@
           @click="addUsageScenario"
         >
           + 新增
-        </el-button>
-        <el-button
-          v-if="isScenarioVisible"
-          class="user-btn"
-          type="danger"
-          :disabled="isDisabled"
-          @click="deleteUsageScenario"
-        >
-          - 删除
         </el-button>
       </el-form-item>
       <el-form-item
@@ -335,64 +336,19 @@
         </el-collapse-item>
       </el-collapse>
       <el-form-item
-        label="上传附件"
+        label="产品方案"
         prop="attachment"
         class="form-item_width"
       >
-        <el-upload
-          action
-          :show-file-list="false"
-          :http-request="handleFileSuccess"
-          :disabled="isDisabled"
-        >
-          <el-button
-            type="primary"
-            :disabled="isDisabled"
-          >
-            点击上传
-          </el-button>
-        </el-upload>
-        <div class="attachment">
-          支持office文档格式,文件不能超过5MB
-        </div>
-      </el-form-item>
-      <el-form-item class="form-item_width">
-        <div
-          v-for="item in file"
-          :key="item.id"
-          class="attachment-list"
-        >
-          <div>
-            {{ item.name }}
-          </div>
-          <div style="display: flex">
-            <el-button
-              v-if="!isDisabled"
-              type="text"
-              @click="deleteFile"
-            >
-              删除
-            </el-button>
-            <el-button
-              v-else
-              type="text"
-              @click="download(item.id, item.name)"
-            >
-              下载
-            </el-button>
-            <span 
-              v-if="item.type === 12860"
-              class="table-btn"
-            >|</span>
-            <el-button
-              v-if="item.type === 12860"
-              type="text"
-              @click="showViewFile(item.id)"
-            >
-              预览
-            </el-button>
-          </div>
-        </div>
+        <base-upload 
+          type="file-list"
+          tag="产品方案"
+          count="4"
+          url="product-solution"
+          :is-disabled="isDisabled"
+          :file-list="file"
+          @get-file="getUploadFile"
+        />
       </el-form-item>
       <el-form-item v-if="!isDisabled">
         <el-button
@@ -409,12 +365,7 @@
 <script>
 import SurveySchedule from '../../common/survey- schedule.vue';
 import CompetitiveTable from '../../common/competitive-table.vue';
-import {
-  downloadFile,
-  getFile,
-  previewFile,
-  checkValid
-} from '../../../../../utils';
+import { checkValid } from '../../../../../utils';
 
 export default {
   components: {
@@ -604,54 +555,6 @@ export default {
         this.isScenarioVisible = false;
       }
     },
-    async handleFileSuccess(e) {
-      if(e.file.size > 5 * 1024 * 1024 ) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
-        if (this.file.length > 4) {
-          this.$message.error('附件个数不能传超过5张');
-        } else {
-          this.$store.commit('setUploadState', false);
-          let form = getFile(e);
-          try {
-            await this.$store.dispatch('uploadFile', form);
-            if (this.$store.state.uploadState) {
-              this.file.push({
-                  id: this.$store.state.fileRes.id,
-                  name: this.$store.state.fileRes.file_name,
-                  type: this.$store.state.fileRes.type
-                });
-            }
-          } catch (err) {
-            return;
-          }
-        }
-      } else {
-        this.$message.warning('上传的附件格式有误！');
-      } 
-    },
-    async download(id, name) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          downloadFile(this.$store.state.viewLink, name);
-        }
-      } catch (err) {
-        return;
-      }
-    },
-    async showViewFile(id) {
-      this.$store.commit('setAttachmentState', false);
-      try {
-        await this.$store.dispatch('getViewLink', { params: { id } });
-        if (this.$store.state.attachmentState) {
-          previewFile(this.$store.state.viewLink);
-        }
-      } catch (err) {
-        return;
-      }
-    },
     clearCurrency(val) {
       this.form[`${val}_cost`] = '';
     },
@@ -674,6 +577,12 @@ export default {
           this.updatePlan(this.form);
         }
       });
+    },
+    getUploadFile(e) {
+      this.file = e;
+    },
+    getReturnData(val) {
+      this.form.usage_scenario = val;
     }
   }
 };
