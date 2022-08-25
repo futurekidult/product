@@ -187,6 +187,7 @@
               tag="产品图片"
               count="8"
               @get-file="getUploadFile"
+              url="prod-img"
             />
           </el-form-item>
           <el-divider />
