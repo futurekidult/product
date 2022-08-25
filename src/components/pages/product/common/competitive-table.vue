@@ -22,6 +22,7 @@
                   .images"
                 tag="竞品图片"
                 count="8"
+                url="solution-competitive-img"
               />
             </el-form-item>
             <el-form-item
