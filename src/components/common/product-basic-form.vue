@@ -17,6 +17,7 @@
         :list="attachment"
         tag="产品图片"
         count="8"
+        url="prod-img"
       />
     </el-form-item>
     <div class="form-item">
