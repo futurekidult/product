@@ -1,5 +1,6 @@
 import { ElMessage } from 'element-plus';
 import axios from '../../utils/axios';
+import { formatterTime } from '../../utils/index'
 
 export default {
   namespaced: true,
@@ -86,6 +87,7 @@ export default {
     async getDemandDetail(context, payload) {
       await axios.get('/demand/detail/get', payload).then((res) => {
         if (res.code === 200) {
+          res.data.create_time = formatterTime(res.data.create_time);
           context.commit('setDemandDetail', res.data);
           context.commit('setDemandDetailLoading', false);
         }
@@ -94,6 +96,7 @@ export default {
     async getDemandReviewDetail(context, payload) {
       await axios.get('/demand/review/detail/get', payload).then((res) => {
         if (res.code === 200) {
+          res.data.create_time = formatterTime(res.data.create_time);
           context.commit('setDemandReviewDetail', res.data);
           context.commit('setDemandReviewDetailLoading', false);
         }

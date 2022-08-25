@@ -176,3 +176,13 @@ export const childrenFunc = (data) => {
     } 
   }
 }
+
+export const changeDemandColor = (val) => {
+  if (val === 20) {
+    return 'warning';
+  } else if (val === 30) {
+    return 'success';
+  } else {
+    return 'danger';
+  }
+}

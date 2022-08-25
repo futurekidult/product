@@ -102,6 +102,7 @@ export default {
       }
     },
     async getDemandDetail(id) {
+      this.getCategoryList();
       try {
         await this.$store.dispatch('demand/getDemandDetail', {
           params: {
@@ -111,6 +112,14 @@ export default {
         this.$router.push(`/demand-list/edit/${id}`);
       } catch (err) {
         return ;
+      }
+    },
+    async getCategoryList() {
+      try {
+        await this.$store.dispatch('demand/getCategoryList');
+        this.bigCategoryList = this.$store.state.demand.categoryList;
+      } catch (err) {
+        return;
       }
     },
     toForm(id) {

@@ -755,8 +755,10 @@ export default {
     async getDetail() {
       if(this.type === 'review') {
         this.demandForm = this.$store.state.demand.demandReviewDetail;
+        this.$store.commit('demand/setDemandReviewDetailLoading', false);
       } else {
         this.demandForm = this.$store.state.demand.demandDetail;
+        this.$store.commit('demand/setDemandDetailLoading', false);
       }
       if(this.type === 'detail') {
           this.isDisabled = true;

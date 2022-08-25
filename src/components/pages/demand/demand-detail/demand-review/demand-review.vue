@@ -1,6 +1,39 @@
 <template>
   <div v-loading="$store.state.demand.demandReviewDetailLoading">
-    <demand-basic />
+    <div class="border">
+      <div class="detail-title">
+        {{ demandReviewDetail.name }}  
+        <div class="tag-position">
+          <base-tag
+            class="tag"
+            :mode="changeDemandColor(demandReviewDetail.state)"
+          >
+            {{ demandReviewDetail.state_desc }}
+          </base-tag>
+        </div>
+      </div>
+
+      <el-descriptions :column="4">
+        <el-descriptions-item
+          v-if="demandReviewDetail.state === 30"
+          label="关联产品:"
+        >
+          <el-button
+            type="text"
+            @click="toProductDetail(demandReviewDetail.product_id)"
+          >
+            查看
+          </el-button>
+        </el-descriptions-item>
+        <el-descriptions-item label="创建人:">
+          {{ demandReviewDetail.creator_desc }}
+        </el-descriptions-item>
+        <el-descriptions-item label="创建时间:">
+          {{ demandReviewDetail.create_time }}
+        </el-descriptions-item>
+      </el-descriptions>
+    </div>
+
     <div class="border">
       <div class="select-title review-msg">
         <div>
@@ -445,13 +478,9 @@
   </div>
 </template>
 <script>
-import { timestamp,getOrganizationList } from '../../../../../utils';
-import DemandBasic from '../../common/demand-basic.vue'
+import { timestamp,getOrganizationList, changeDemandColor } from '../../../../../utils';
 
 export default {
-  components: {
-    DemandBasic
-  },
   data() {
     return {
       reviewForm: {
@@ -660,6 +689,9 @@ export default {
         String(this.reviewForm.is_new_category) +
         String(this.reviewForm.is_new_product)
       );
+    },
+    demandReviewDetail() {
+      return this.$store.state.demand.demandReviewDetail;
     }
   },
   watch: {
@@ -696,6 +728,7 @@ export default {
     });
   },
   methods: {
+    changeDemandColor,
     async reviewDemandForm(val) {
      let body = val;
      body['demand_id'] = +this.$route.params.id;
@@ -746,6 +779,14 @@ export default {
     },
     getReviewFormMarket(val) {
       this.reviewForm.market = val;
+    },
+    toProductDetail(id) {
+      if(this.$store.state.menuData.links.indexOf('/product-list') > -1) {
+        this.$router.push(`/product-list/${id}`);
+        this.$store.commit('setEntry', 'detail');
+      } else {
+        this.$message.error('无权限访问');
+      }
     }
   }
 };
