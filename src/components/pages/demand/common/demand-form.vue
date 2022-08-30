@@ -12,10 +12,14 @@
       label="产品名称"
       prop="name"
       class="form-item_width"
-      :rules="type === 'detail' ? [] : [
-        { required: true, message: '请输入产品名称' },
-        { max: 15, message: '长度不超过 15个字符' }
-      ]"
+      :rules="
+        type === 'detail'
+          ? []
+          : [
+            { required: true, message: '请输入产品名称' },
+            { max: 15, message: '长度不超过 15个字符' }
+          ]
+      "
     >
       <el-input
         v-model="demandForm.name"
@@ -32,7 +36,7 @@
       class="form-item_width"
       :rules="demandRules.images"
     >
-      <base-upload 
+      <base-upload
         type="image"
         :is-disabled="isDisabled"
         :list="imagesList"
@@ -100,11 +104,11 @@
       />
     </el-form-item>
     <el-collapse
-      v-model="active" 
-      class="collapse-item" 
+      v-model="active"
+      class="collapse-item"
       style="margin-left: 15px"
     >
-      <el-collapse-item 
+      <el-collapse-item
         title="竞品信息"
         :name="'msg'"
       >
@@ -117,7 +121,7 @@
             :label="'竞品图片' + (index + 1)"
             :prop="`competitive_product.${index}.images `"
           >
-            <base-upload 
+            <base-upload
               type="image"
               :is-disabled="isDisabled"
               :list="demandForm.competitive_product[index].images"
@@ -174,11 +178,13 @@
               show-word-limit
             />
           </el-form-item>
-          <base-delete 
+          <base-delete
             :id="index"
             mode="demand-btn"
             content="移除"
-            :show="demandForm.competitive_product.length > 1 && type !== 'detail'"
+            :show="
+              demandForm.competitive_product.length > 1 && type !== 'detail'
+            "
             :list="demandForm.competitive_product"
             @get-list="getDemandComponentProduct"
           />
@@ -210,9 +216,7 @@
         :required="isRequired"
       >
         <div style="display: flex">
-          <el-form-item 
-            prop="product_dimension_l"
-          >
+          <el-form-item prop="product_dimension_l">
             <el-input
               v-model="demandForm.product_dimension_l"
               class="analy-form_mar"
@@ -223,9 +227,7 @@
               show-word-limit
             />
           </el-form-item>
-          <el-form-item 
-            prop="product_dimension_w"
-          >
+          <el-form-item prop="product_dimension_w">
             <el-input
               v-model="demandForm.product_dimension_w"
               class="analy-form_mar"
@@ -236,9 +238,7 @@
               show-word-limit
             />
           </el-form-item>
-          <el-form-item 
-            prop="product_dimension_h"
-          >
+          <el-form-item prop="product_dimension_h">
             <el-input
               v-model="demandForm.product_dimension_h"
               placeholder="高度"
@@ -255,9 +255,7 @@
         :required="isRequired"
       >
         <div style="display: flex">
-          <el-form-item 
-            prop="packing_dimension_l"
-          >
+          <el-form-item prop="packing_dimension_l">
             <el-input
               v-model="demandForm.packing_dimension_l"
               class="analy-form_mar"
@@ -268,9 +266,7 @@
               show-word-limit
             />
           </el-form-item>
-          <el-form-item 
-            prop="packing_dimension_w"
-          >
+          <el-form-item prop="packing_dimension_w">
             <el-input
               v-model="demandForm.packing_dimension_w"
               class="analy-form_mar"
@@ -281,9 +277,7 @@
               show-word-limit
             />
           </el-form-item>
-          <el-form-item 
-            prop="packing_dimension_h"
-          >
+          <el-form-item prop="packing_dimension_h">
             <el-input
               v-model="demandForm.packing_dimension_h"
               placeholder="高度"
@@ -328,9 +322,7 @@
         style="margin-bottom: 18px"
       >
         <div style="display: flex">
-          <el-form-item 
-            prop="selling_price_currency"
-          >
+          <el-form-item prop="selling_price_currency">
             <el-select
               v-model="demandForm.selling_price_currency"
               class="analy-form_mar"
@@ -348,9 +340,7 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item 
-            prop="selling_price"
-          >
+          <el-form-item prop="selling_price">
             <el-input
               v-model="demandForm.selling_price"
               class="analy-form_mar"
@@ -379,9 +369,7 @@
         :required="isRequired"
       >
         <div style="display: flex">
-          <el-form-item 
-            prop="purchase_price_currency"
-          >
+          <el-form-item prop="purchase_price_currency">
             <el-select
               v-model="demandForm.purchase_price_currency"
               class="analy-form_mar"
@@ -399,9 +387,7 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item 
-            prop="purchase_price"
-          >
+          <el-form-item prop="purchase_price">
             <el-input
               v-model="demandForm.purchase_price"
               class="analy-form_mar"
@@ -502,7 +488,7 @@
         type="textarea"
         :rows="6"
         placeholder="请输入产品信息"
-        :disabled="isDisabled" 
+        :disabled="isDisabled"
         clearable
         maxlength="200"
         show-word-limit
@@ -523,7 +509,7 @@
       </el-button>
     </el-form-item>
     <el-form-item v-else>
-      <el-button 
+      <el-button
         v-if="type === 'review'"
         type="primary"
         @click="updateDemandForm"
@@ -753,39 +739,38 @@ export default {
   },
   methods: {
     async getDetail() {
-      if(this.type === 'review') {
-        this.demandForm = this.$store.state.demand.demandReviewDetail;
-        this.$store.commit('demand/setDemandReviewDetailLoading', false);
-      } else {
-        this.demandForm = this.$store.state.demand.demandDetail;
-        this.$store.commit('demand/setDemandDetailLoading', false);
+      this.demandForm = this.$store.state.demand.demandDetail;
+      this.$store.commit('demand/setDemandDetailLoading', false);
+      if (this.type === 'detail') {
+        this.isDisabled = true;
       }
-      if(this.type === 'detail') {
-          this.isDisabled = true;
+      this.bigCategoryList = this.$store.state.demand.categoryList;
+      this.bigCategoryList.map((item) => {
+        if (item.id === this.demandForm.big_category_id) {
+          this.smallCategoryList = item.children;
         }
-        this.bigCategoryList = this.$store.state.demand.categoryList;
-        this.bigCategoryList.map((item) => {
-          if (item.id === this.demandForm.big_category_id) {
-            this.smallCategoryList = item.children;
-          }
-        });
-        this.imagesList = this.demandForm.images;
-        this.isGetData = true;
+      });
+      this.imagesList = this.demandForm.images;
+      this.isGetData = true;
     },
     async getDepartment() {
       this.department = JSON.parse(localStorage.getItem('center_group'));
-      this.isRequired = this.department.indexOf(30) > -1 && (this.type === 'create' || this.type === 'edit');
-      if(this.type === 'review') {
+      this.isRequired =
+        this.department.indexOf(30) > -1 &&
+        (this.type === 'create' || this.type === 'edit');
+      if (this.type === 'review') {
         this.demandRules = Object.assign(this.demandRules, this.commonRules);
-        this.demandRules = Object.assign(this.demandRules, { images: [
-          {
-            required: true,
-            message: '请上传产品图片'
-          }
-        ]});
-       } else if(this.type !== 'detail') {
+        this.demandRules = Object.assign(this.demandRules, {
+          images: [
+            {
+              required: true,
+              message: '请上传产品图片'
+            }
+          ]
+        });
+      } else if (this.type !== 'detail') {
         this.getRules();
-       }
+      }
     },
     async getCategoryList() {
       try {
@@ -809,15 +794,18 @@ export default {
         20: this.operationDepartment,
         30: this.supplyChainDepartment,
         40: this.saleDepartment
-      }; 
+      };
       for (let i = 0; i < this.department.length; i++) {
         if (this.department[i] === 100) {
           continue;
         }
-        this.demandRules = Object.assign(this.demandRules,map[this.department[i]]);
+        this.demandRules = Object.assign(
+          this.demandRules,
+          map[this.department[i]]
+        );
       }
       if (Object.keys(this.demandRules).length > 0) {
-         Object.assign(this.demandRules, this.commonRules);
+        Object.assign(this.demandRules, this.commonRules);
       }
       this.isGetRules = true;
     },
@@ -838,7 +826,7 @@ export default {
           form.competitive_product[index].images = imgArr;
         }
       }
-      if(str !== 'review') {
+      if (str !== 'review') {
         form.state = val;
       }
       form.id = +this.$route.params.id;
@@ -877,7 +865,10 @@ export default {
       }
     },
     async getRmb(val) {
-      if(this.demandForm[`${val}_price`] && this.demandForm[`${val}_price_currency`]) {
+      if (
+        this.demandForm[`${val}_price`] &&
+        this.demandForm[`${val}_price_currency`]
+      ) {
         try {
           await this.$store.dispatch('getPriceRmb', {
             params: {
@@ -920,7 +911,7 @@ export default {
       this.demandForm.competitive_product = val;
     },
     getUploadFile(e, str, idx) {
-      if(str === 'CPImages') {
+      if (str === 'CPImages') {
         this.demandForm.competitive_product[idx].images = e;
       } else {
         this.imagesList = e;
