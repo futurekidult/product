@@ -288,7 +288,7 @@ export default {
       this.$router.push('/create-demand');
     },
     toDetail(id) {
-      getDemandDetail(id, 'detail', true);
+      getDemandDetail(id, 'detail');
     },
     toProductDetail(id) {
       if (this.$store.state.menuData.links.indexOf('/product-list') > -1) {
