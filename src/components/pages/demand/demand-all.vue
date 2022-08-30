@@ -66,7 +66,7 @@
       v-loading="$store.state.demand.demandLoading"
       class="border"
     >
-      <div class="select-title  demand-title">
+      <div class="select-title demand-title">
         <div>
           <span class="line">|</span> 需求列表
           <el-button
@@ -155,7 +155,7 @@
             >
               查看详情
             </el-button>
-            <span 
+            <span
               v-if="scope.row.state === 20"
               class="table-btn"
             >|</span>
@@ -202,6 +202,7 @@
 
 <script>
 import { formatterTime, getOrganizationList } from '../../../utils';
+import { getDemandDetail } from '../../../utils/demand';
 
 export default {
   data() {
@@ -233,7 +234,7 @@ export default {
   mounted() {
     this.getDemandList();
     this.getParams();
-    getOrganizationList().then( (res) => {
+    getOrganizationList().then((res) => {
       this.memberList = res;
     });
   },
@@ -287,10 +288,10 @@ export default {
       this.$router.push('/create-demand');
     },
     toDetail(id) {
-      this.getDemandDetail(id, 'detail');
+      getDemandDetail(id, 'detail', true);
     },
     toProductDetail(id) {
-      if(this.$store.state.menuData.links.indexOf('/product-list') > -1) {
+      if (this.$store.state.menuData.links.indexOf('/product-list') > -1) {
         this.$router.push(`/product-list/${id}`);
         this.$store.commit('setEntry', 'detail');
       } else {
@@ -328,37 +329,8 @@ export default {
     toDraft() {
       this.$router.push('/draft-list');
     },
-    async getCategoryList() {
-      try {
-        await this.$store.dispatch('demand/getCategoryList');
-      } catch (err) {
-        return;
-      }
-    },
-    async getDemandDetail(id, str) {
-      this.getCategoryList();
-      let funcName = '';
-      let url = '';
-      if(str === 'review') {
-        funcName = 'demand/getDemandReviewDetail';
-        url = `/demand-list/review/${id}`;
-      } else {
-        funcName = 'demand/getDemandDetail';
-        url = `/demand-list/${id}`;
-      }
-      try {
-        await this.$store.dispatch(funcName, {
-          params: {
-            demand_id:  id
-          }
-        });
-        this.$router.push(url);
-      } catch (err) {
-        return;
-      }
-    },
     async toReview(id) {
-       this.getDemandDetail(id, 'review');
+      getDemandDetail(id, 'review');
     }
   }
 };
@@ -370,4 +342,3 @@ export default {
   color: #409eff;
 }
 </style>
-

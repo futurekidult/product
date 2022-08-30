@@ -1,3 +1,5 @@
+import store from '../store/index';
+
 export const formatterTime = (val) => {
   if (val !== 0 && val !== undefined) {
     let date = new Date(val * 1000);
@@ -5,7 +7,9 @@ export const formatterTime = (val) => {
     let month = `${
       date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
     }-`;
-    let day = `${date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()}  `;
+    let day = `${
+      date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
+    }  `;
     let hour = `${
       date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()
     }:`;
@@ -22,7 +26,7 @@ export const formatterTime = (val) => {
 };
 
 export const timestamp = (val) => {
-  if(val !== undefined) {
+  if (val !== undefined) {
     let date = new Date(val);
     return date.getTime() / 1000;
   } else {
@@ -34,7 +38,7 @@ export const previewOrDownloadFile = (val, name, type) => {
   let link = document.createElement('a');
   link.href = val;
   link.target = '_blank';
-  if(type === 'download') {
+  if (type === 'download') {
     link.download = name;
   }
   link.click();
@@ -152,30 +156,30 @@ export const changeTimestamp = (obj, str) => {
 
 export const getOrganizationList = async () => {
   let data = JSON.parse(localStorage.getItem('organization'));
-  if(data) {
-     for (let key in data) {
+  if (data) {
+    for (let key in data) {
       childrenFunc(data[key]);
     }
     localStorage.setItem('list', JSON.stringify(data));
     let result = JSON.parse(localStorage.getItem('list'));
     return result;
   } else {
-     await this.$store.dispatch('getOrganizationList');
-     getOrganizationList();
+    await store.dispatch('getOrganizationList');
+    getOrganizationList();
   }
-}
+};
 
 export const childrenFunc = (data) => {
   if (data.member_list) {
     data.children = data.children.concat(data.member_list);
-    if(JSON.stringify(data.children) === '[]') {
+    if (JSON.stringify(data.children) === '[]') {
       data.disabled = true;
     }
-    for(let key in data.children) {
+    for (let key in data.children) {
       childrenFunc(data.children[key]);
-    } 
+    }
   }
-}
+};
 
 export const changeDemandColor = (val) => {
   if (val === 20) {
@@ -185,4 +189,4 @@ export const changeDemandColor = (val) => {
   } else {
     return 'danger';
   }
-}
+};

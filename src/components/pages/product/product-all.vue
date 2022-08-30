@@ -180,14 +180,14 @@
             label="产品图片"
             prop="images"
           >
-            <base-upload 
+            <base-upload
               type="image"
               :is-disabled="false"
               :list="imgList"
               tag="产品图片"
               count="8"
-              @get-file="getUploadFile"
               url="prod-img"
+              @get-file="getUploadFile"
             />
           </el-form-item>
           <el-divider />
@@ -207,6 +207,7 @@
 
 <script>
 import { formatterTime } from '../../../utils';
+import { getDemandDetail } from '../../../utils/demand';
 
 export default {
   data() {
@@ -330,25 +331,12 @@ export default {
         }
       });
     },
-    async getDemandDetail(id) {
-      this.getCategoryList();
-      try {
-        await this.$store.dispatch('demand/getDemandDetail', {
-          params: {
-            demand_id:  id
-          }
-        });
-        this.$router.push(`/demand-list/${id}`);
-      } catch (err) {
-        return ;
-      }
-    },
     toDemand(id) {
-       if(this.$store.state.menuData.links.indexOf('/demand-list') > -1) {
-          this.getDemandDetail(id);
-       } else {
-          this.$message.error('无权限访问');
-       }
+      if (this.$store.state.menuData.links.indexOf('/demand-list') > -1) {
+        getDemandDetail(id, 'detail');
+      } else {
+        this.$message.error('无权限访问');
+      }
     },
     changeCellColor(val) {
       if (val === 30 || val === 90) {

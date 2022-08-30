@@ -1,44 +1,42 @@
 <template>
-  <div v-loading="$store.state.demand.demandReviewDetailLoading">
+  <div v-loading="$store.state.demand.demandDetailLoading">
     <div class="border">
       <div class="detail-title">
-        {{ demandReviewDetail.name }}  
+        {{ demandDetail.name }}
         <div class="tag-position">
           <base-tag
             class="tag"
-            :mode="changeDemandColor(demandReviewDetail.state)"
+            :mode="changeDemandColor(demandDetail.state)"
           >
-            {{ demandReviewDetail.state_desc }}
+            {{ demandDetail.state_desc }}
           </base-tag>
         </div>
       </div>
 
       <el-descriptions :column="4">
         <el-descriptions-item
-          v-if="demandReviewDetail.state === 30"
+          v-if="demandDetail.state === 30"
           label="关联产品:"
         >
           <el-button
             type="text"
-            @click="toProductDetail(demandReviewDetail.product_id)"
+            @click="toProductDetail(demandDetail.product_id)"
           >
             查看
           </el-button>
         </el-descriptions-item>
         <el-descriptions-item label="创建人:">
-          {{ demandReviewDetail.creator_desc }}
+          {{ demandDetail.creator_desc }}
         </el-descriptions-item>
         <el-descriptions-item label="创建时间:">
-          {{ demandReviewDetail.create_time }}
+          {{ demandDetail.create_time }}
         </el-descriptions-item>
       </el-descriptions>
     </div>
 
     <div class="border">
       <div class="select-title review-msg">
-        <div>
-          <span class="line">|</span> 需求信息
-        </div>
+        <div><span class="line">|</span> 需求信息</div>
         <div>
           <el-button
             v-if="!show"
@@ -155,7 +153,7 @@
                 </el-checkbox>
               </el-checkbox-group>
             </el-form-item>
-            <base-delete 
+            <base-delete
               :id="index"
               mode="demand-btn"
               content="移除"
@@ -414,7 +412,9 @@
             <el-form-item
               label="用测负责人"
               prop="user_test_principal_id"
-              :rules="isNewProductFlag ? categoryRules.user_test_principal_id : []"
+              :rules="
+                isNewProductFlag ? categoryRules.user_test_principal_id : []
+              "
             >
               <el-tree-select
                 v-model="reviewForm.user_test_principal_id"
@@ -478,7 +478,11 @@
   </div>
 </template>
 <script>
-import { timestamp,getOrganizationList, changeDemandColor } from '../../../../../utils';
+import {
+  timestamp,
+  getOrganizationList,
+  changeDemandColor
+} from '../../../../../utils';
 
 export default {
   data() {
@@ -673,7 +677,7 @@ export default {
         label: 'name',
         disabled: 'disabled'
       },
-      defaultTime: new Date(2000,1,1,23,59,59),
+      defaultTime: new Date(2000, 1, 1, 23, 59, 59),
       show: true
     };
   },
@@ -690,8 +694,8 @@ export default {
         String(this.reviewForm.is_new_product)
       );
     },
-    demandReviewDetail() {
-      return this.$store.state.demand.demandReviewDetail;
+    demandDetail() {
+      return this.$store.state.demand.demandDetail;
     }
   },
   watch: {
@@ -723,16 +727,16 @@ export default {
   },
   mounted() {
     this.getMarket();
-    getOrganizationList().then( (res) => {
+    getOrganizationList().then((res) => {
       this.memberList = res;
     });
   },
   methods: {
     changeDemandColor,
     async reviewDemandForm(val) {
-     let body = val;
-     body['demand_id'] = +this.$route.params.id;
-     try {
+      let body = val;
+      body['demand_id'] = +this.$route.params.id;
+      try {
         await this.$store.dispatch('demand/reviewDemandForm', body);
         this.$router.push('/demand-list');
       } catch (err) {
@@ -741,7 +745,7 @@ export default {
     },
     submitDemandForm() {
       let timeForm = JSON.parse(JSON.stringify(this.reviewForm));
-        for (let item of Object.keys(timeForm)) {
+      for (let item of Object.keys(timeForm)) {
         if (item.indexOf('time') !== -1) {
           timeForm[item] = timestamp(timeForm[item]);
         }
@@ -770,7 +774,7 @@ export default {
       }
     },
     clearPlatform(index) {
-      if(this.reviewForm.market[index].platform) {
+      if (this.reviewForm.market[index].platform) {
         this.reviewForm.market[index].platform.length = 0;
       }
     },
@@ -781,7 +785,7 @@ export default {
       this.reviewForm.market = val;
     },
     toProductDetail(id) {
-      if(this.$store.state.menuData.links.indexOf('/product-list') > -1) {
+      if (this.$store.state.menuData.links.indexOf('/product-list') > -1) {
         this.$router.push(`/product-list/${id}`);
         this.$store.commit('setEntry', 'detail');
       } else {

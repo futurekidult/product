@@ -1,6 +1,6 @@
 import { ElMessage } from 'element-plus';
 import axios from '../../utils/axios';
-import { formatterTime } from '../../utils/index'
+import { formatterTime } from '../../utils/index';
 
 export default {
   namespaced: true,
@@ -11,9 +11,7 @@ export default {
       reasonText: '',
       categoryList: [],
       demandDetail: {},
-      demandReviewDetail: {},
       demandDetailLoading: true,
-      demandReviewDetailLoading: true,
       optionLoading: true,
       demandListLength: 0,
       draftList: [],
@@ -36,14 +34,8 @@ export default {
     setDemandDetail(state, payload) {
       state.demandDetail = payload;
     },
-    setDemandReviewDetail(state, payload) {
-      state.demandReviewDetail = payload;
-    },
     setDemandDetailLoading(state, payload) {
       state.demandDetailLoading = payload;
-    },
-    setDemandReviewDetailLoading(state, payload) {
-      state.demandReviewDetailLoading = payload;
     },
     setDraftList(state, payload) {
       state.draftList = payload;
@@ -85,20 +77,17 @@ export default {
       });
     },
     async getDemandDetail(context, payload) {
-      await axios.get('/demand/detail/get', payload).then((res) => {
+      let type = '';
+      if (payload.type === 'review') {
+        type = '/review';
+      } else {
+        type = '/';
+      }
+      await axios.get(`/demand${type}/detail/get`, payload).then((res) => {
         if (res.code === 200) {
           res.data.create_time = formatterTime(res.data.create_time);
           context.commit('setDemandDetail', res.data);
           context.commit('setDemandDetailLoading', false);
-        }
-      });
-    },
-    async getDemandReviewDetail(context, payload) {
-      await axios.get('/demand/review/detail/get', payload).then((res) => {
-        if (res.code === 200) {
-          res.data.create_time = formatterTime(res.data.create_time);
-          context.commit('setDemandReviewDetail', res.data);
-          context.commit('setDemandReviewDetailLoading', false);
         }
       });
     },
@@ -118,7 +107,7 @@ export default {
     },
     async getDraftList(context, payload) {
       await axios.get('/demand/draft/list', payload).then((res) => {
-        if(res.code === 200) {
+        if (res.code === 200) {
           context.commit('setDraftList', res.data.list);
           context.commit('setDraftListLength', res.data.total);
         }
@@ -126,10 +115,10 @@ export default {
     },
     async deleteDraftItem(_, payload) {
       await axios.post('/demand/draft/delete', payload).then((res) => {
-        if(res.code === 200) {
+        if (res.code === 200) {
           ElMessage.success(res.message);
         }
-      })
+      });
     }
   }
 };
