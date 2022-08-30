@@ -24,7 +24,7 @@
 
     <el-form
       ref="skuForm"
-      label-width="110px"
+      label-width="150px"
       style="width: 50%; margin: 20px 0"
       :model="form"
       :rules="skuRules"
@@ -66,7 +66,7 @@
             clearable
           />
         </el-form-item>
-        <base-delete 
+        <base-delete
           :id="index"
           mode="order-delete_btn"
           content=""
@@ -87,7 +87,7 @@
         label="实际项目计划书"
         prop="project_plan_file"
       >
-        <base-upload 
+        <base-upload
           type="file"
           tag="实际项目计划书"
           url="project-plan"
@@ -142,7 +142,7 @@
 
 <script>
 export default {
-  inject: ['getSku', 'changeColor','getProgress'],
+  inject: ['getSku', 'changeColor', 'getProgress'],
   props: ['skuForm', 'attachment', 'skuEntrySchedule', 'schedule', 'skuId'],
   data() {
     return {
