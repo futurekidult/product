@@ -780,10 +780,14 @@ export default {
         return;
       }
     },
-    async createDemandForm(body) {
+    async createDemandForm(body, type) {
       try {
         await this.$store.dispatch('demand/createDemandForm', body);
-        this.$router.push('/demand-list');
+        if (type === 10) {
+          this.$router.push('/draft-list');
+        } else {
+          this.$router.push('/demand-list');
+        }
       } catch (err) {
         return;
       }
@@ -846,7 +850,7 @@ export default {
       this.$refs.demandForm.validate((valid) => {
         if (valid) {
           let form = this.getForm('create', val);
-          this.createDemandForm(form);
+          this.createDemandForm(form, val);
         }
       });
     },
