@@ -181,7 +181,7 @@
                 v-model="reviewForm.market_survey_time"
                 type="datetime"
                 placeholder="请选择日期"
-                style="width: 80%"
+                style="width: 100%"
                 clearable
                 :default-time="defaultTime"
               />
@@ -194,7 +194,7 @@
                 v-model="reviewForm.platform_survey_time"
                 type="datetime"
                 placeholder="请选择日期"
-                style="width: 80%"
+                style="width: 100%"
                 clearable
                 :default-time="defaultTime"
               />
@@ -208,7 +208,7 @@
                 v-model="reviewForm.user_analysis_time"
                 type="datetime"
                 placeholder="请选择日期"
-                style="width: 80%"
+                style="width: 100%"
                 clearable
                 :default-time="defaultTime"
               />
@@ -222,7 +222,7 @@
                 v-model="reviewForm.product_solutions_time"
                 type="datetime"
                 placeholder="请选择日期"
-                style="width: 80%"
+                style="width: 100%"
                 clearable
                 :default-time="defaultTime"
               />
@@ -235,7 +235,7 @@
                 v-model="reviewForm.risk_survey_time"
                 type="datetime"
                 placeholder="请选择日期"
-                style="width: 80%"
+                style="width: 100%"
                 clearable
                 :default-time="defaultTime"
               />
@@ -249,7 +249,7 @@
                 v-model="reviewForm.user_survey_time"
                 type="datetime"
                 placeholder="请选择日期"
-                style="width: 80%"
+                style="width: 100%"
                 clearable
                 :default-time="defaultTime"
               />
@@ -270,7 +270,7 @@
                 clearable
                 filterable
                 :props="defaultProps"
-                style="width: 339px"
+                class="review-form_item"
               />
             </el-form-item>
             <el-form-item
@@ -283,7 +283,7 @@
                 clearable
                 filterable
                 :props="defaultProps"
-                style="width: 339px"
+                class="review-form_item"
               />
             </el-form-item>
             <el-form-item
@@ -296,7 +296,7 @@
                 clearable
                 filterable
                 :props="defaultProps"
-                style="width: 339px"
+                class="review-form_item"
               />
             </el-form-item>
             <el-form-item
@@ -309,7 +309,7 @@
                 clearable
                 filterable
                 :props="defaultProps"
-                style="width: 339px"
+                class="review-form_item"
               />
             </el-form-item>
             <el-form-item
@@ -322,7 +322,7 @@
                 clearable
                 filterable
                 :props="defaultProps"
-                style="width: 339px"
+                class="review-form_item"
               />
             </el-form-item>
             <el-form-item
@@ -335,7 +335,7 @@
                 clearable
                 filterable
                 :props="defaultProps"
-                style="width: 339px"
+                class="review-form_item"
               />
             </el-form-item>
             <el-form-item
@@ -348,7 +348,7 @@
                 clearable
                 filterable
                 :props="defaultProps"
-                style="width: 339px"
+                class="review-form_item"
               />
             </el-form-item>
             <el-form-item
@@ -361,7 +361,7 @@
                 clearable
                 filterable
                 :props="defaultProps"
-                style="width: 339px"
+                class="review-form_item"
               />
             </el-form-item>
             <el-form-item
@@ -374,7 +374,7 @@
                 clearable
                 filterable
                 :props="defaultProps"
-                style="width: 339px"
+                class="review-form_item"
               />
             </el-form-item>
             <el-form-item
@@ -390,7 +390,7 @@
                 clearable
                 filterable
                 :props="defaultProps"
-                style="width: 339px"
+                class="review-form_item"
               />
             </el-form-item>
             <el-form-item
@@ -406,7 +406,7 @@
                 clearable
                 filterable
                 :props="defaultProps"
-                style="width: 339px"
+                class="review-form_item"
               />
             </el-form-item>
             <el-form-item
@@ -422,7 +422,7 @@
                 clearable
                 filterable
                 :props="defaultProps"
-                style="width: 339px"
+                class="review-form_item"
               />
             </el-form-item>
             <el-form-item
@@ -435,7 +435,7 @@
                 clearable
                 filterable
                 :props="defaultProps"
-                style="width: 339px"
+                class="review-form_item"
               />
             </el-form-item>
           </div>
@@ -797,8 +797,8 @@ export default {
 </script>
 
 <style scoped>
-.pass-form_item {
-  width: 80%;
+.review-form_item {
+  width: 100%;
 }
 
 .pass-form_title {
