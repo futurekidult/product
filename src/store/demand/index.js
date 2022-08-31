@@ -80,8 +80,6 @@ export default {
       let type = '';
       if (payload.type === 'review') {
         type = '/review';
-      } else {
-        type = '/';
       }
       await axios.get(`/demand${type}/detail/get`, payload).then((res) => {
         if (res.code === 200) {
