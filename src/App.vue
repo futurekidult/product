@@ -5,19 +5,19 @@
 </template>
 
 <script>
-  import { defineComponent } from 'vue';
-  import { ElConfigProvider } from 'element-plus'
-  import zhCn from 'element-plus/lib/locale/lang/zh-cn'
+import { defineComponent } from 'vue';
+import { ElConfigProvider } from 'element-plus';
+import zhCn from 'element-plus/lib/locale/lang/zh-cn';
 
 export default defineComponent({
   components: {
-      ElConfigProvider
-    },
-    data() {
-      return {
-         locale: zhCn
-      }
-    },
+    ElConfigProvider
+  },
+  data() {
+    return {
+      locale: zhCn
+    };
+  },
   mounted() {
     this.clearCache();
     this.getUserInfo();
@@ -51,7 +51,7 @@ export default defineComponent({
         return;
       }
     },
-     async getOrganizationList() {
+    async getOrganizationList() {
       try {
         await this.$store.dispatch('getOrganizationList');
       } catch (err) {

@@ -4,7 +4,7 @@ import WorkBench from './components/pages/workbench/workbench-list.vue';
 import DemandList from './components/pages/demand/demand-list.vue';
 import DemandCreate from './components/pages/demand/demand-create.vue';
 import DemandEdit from './components/pages/demand/demand-edit.vue';
-import DraftList from './components/pages/demand/draft-list.vue'
+import DraftList from './components/pages/demand/draft-list.vue';
 import DemandDetail from './components/pages/demand/demand-detail/demand-detail.vue';
 import DemandReview from './components/pages/demand/demand-detail/demand-review/demand-review.vue';
 import SupplyList from './components/pages/supplier/supply-list.vue';
