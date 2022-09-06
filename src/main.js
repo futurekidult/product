@@ -10,6 +10,7 @@ import BaseDelete from './components/common/base-delete.vue';
 import BaseUpload from './components/common/base-upload.vue';
 import 'element-plus/dist/index.css';
 import { ElMessage } from 'element-plus';
+import fitTableColumns from './utils/fit-table-plugin';
 
 let version = process.env.VERSION;
 let localVersion = localStorage.getItem('projectVersion');
@@ -30,6 +31,5 @@ app.component('BaseUpload', BaseUpload);
 app.use(router);
 app.use(store);
 app.config.globalProperties.$message = ElMessage;
-
-
+fitTableColumns(app);
 app.mount('#app');

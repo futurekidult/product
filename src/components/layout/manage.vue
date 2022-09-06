@@ -136,7 +136,7 @@
           </div>
         </el-menu>
       </el-aside>
-      <el-main style="padding: 10px">
+      <el-main style="padding: 5px">
         <router-view />
       </el-main>
     </el-container>

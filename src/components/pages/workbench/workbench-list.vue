@@ -21,24 +21,20 @@
               <div style="display: flex">
                 <el-input
                   v-model="chooseForm.keyword"
-                  placeholder="输入要搜索的内容"
-                  style="width: 50%"
+                  placeholder="待办名称搜索"
                   clearable
                   @clear="searchTodo"
                 >
                   <template #append>
-                    <el-button
-                      type="primary"
-                      @click="searchTodo"
-                    >
-                      搜索
-                    </el-button>
+                    <el-icon @click="searchTodo">
+                      <Search />
+                    </el-icon>
                   </template>
                 </el-input>
                 <el-select
                   v-model="chooseForm.state"
-                  placeholder="请选择"
-                  style="margin-left: 15px; width: 50%"
+                  placeholder="请选择任务状态"
+                  style="margin-left: 15px"
                   clearable
                   @clear="searchTodo"
                   @change="searchTodo"
@@ -90,13 +86,14 @@
 import TodoList from './todo-list.vue';
 import InformList from './inform-list.vue';
 import { formatterTime } from '../../../utils';
+import { Search } from '@element-plus/icons-vue';
 
 export default {
   components: {
     TodoList,
-    InformList
+    InformList,
+    Search
   },
-
   data() {
     return {
       activeName: 'todolist',
@@ -212,7 +209,7 @@ export default {
 <style scoped>
 .el-badge {
   position: absolute;
-  left: 85px;
-  top: 105px;
+  left: 75px;
+  top: 60px;
 }
 </style>

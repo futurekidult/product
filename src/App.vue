@@ -77,12 +77,12 @@ body {
 .border {
   border: 1px solid rgba(230, 230, 230, 1);
   background: #fff;
-  padding: 20px;
-  margin-bottom: 15px;
+  padding: 10px;
+  margin-bottom: 5px;
 }
 
 .el-pagination {
-  margin: 20px 0;
+  margin: 10px 0;
   float: right;
 }
 
@@ -103,7 +103,7 @@ body {
 .nav-title {
   font-weight: 900;
   font-size: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .line {

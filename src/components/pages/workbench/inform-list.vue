@@ -4,20 +4,22 @@
       <span class="line">|</span> 通知
     </div>
     <el-table
-      :data="notificationList"
+      v-fit-columns
       border
       stripe
       empty-text="无数据"
+      :data="notificationList"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
     >
       <el-table-column
+        label="通知ID"
         prop="id"
-        label="序号"
-        width="60px"
+        width="100"
+        fixed="left"
       />
       <el-table-column
         label="通知标题"
-        width="600px"
+        fixed="left"
       >
         <template #default="scope">
           <div :class="scope.row.state === 0 ? 'is-read' : ''">
@@ -28,10 +30,16 @@
       <el-table-column
         label="通知时间"
         prop="create_time"
+        width="200"
       />
-      <el-table-column label="操作">
+      <el-table-column
+        label="操作"
+        width="100"
+        fixed="right"
+      >
         <template #default="scope">
           <el-button
+            type="text"
             :disabled="scope.row.state === 1"
             @click="noticationRead(scope.row.id)"
           >
