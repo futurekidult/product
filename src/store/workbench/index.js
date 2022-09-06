@@ -59,10 +59,10 @@ export default {
     },
     async getTodoCount(context) {
       await axios.get('/workbench/unfinished/count').then((res) => {
-        if(res.code === 200) {
+        if (res.code === 200) {
           context.commit('setCount', res.data.unfinished);
         }
-      })
+      });
     }
   }
 };

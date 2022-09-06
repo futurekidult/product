@@ -1,88 +1,88 @@
 <template>
-  <base-breadcrumb />
-  <div class="border">
-    <el-badge
-      :value="count"
-      size="mini"
-      class="item"
-    />
-    <el-tabs
-      v-model="activeName"
-      @tab-click="handleClick"
-    >
-      <el-tab-pane
-        label="待办事项"
-        name="todolist"
+  <div>
+    <base-breadcrumb />
+    <div class="border">
+      <el-badge
+        :value="count"
+        size="mini"
+        class="item"
+      />
+      <el-tabs
+        v-model="activeName"
+        @tab-click="handleClick"
       >
-        <div>
-          <div class="select-title todo-title">
-            <div><span class="line">|</span> 待办列表</div>
-            <div style="display: flex">
-              <el-input
-                v-model="chooseForm.keyword"
-                placeholder="输入要搜索的内容"
-                style="width: 50%"
-                clearable
-                @clear="searchTodo"
-              >
-                <template #append>
-                  <el-button
-                    type="primary"
-                    @click="searchTodo"
-                  >
-                    搜索
-                  </el-button>
-                </template>
-              </el-input>
-              <el-select
-                v-model="chooseForm.state"
-                placeholder="请选择"
-                style="margin-left: 15px; width: 50%"
-                clearable
-                @clear="searchTodo"
-                @change="searchTodo"
-              >
-                <el-option
-                  v-for="item in workbenchState"
-                  :key="item.key"
-                  :label="item.value"
-                  :value="item.key"
-                />
-              </el-select>
+        <el-tab-pane
+          label="待办事项"
+          name="todolist"
+        >
+          <div>
+            <div class="select-title todo-title">
+              <div><span class="line">|</span> 待办列表</div>
+              <div style="display: flex">
+                <el-input
+                  v-model="chooseForm.keyword"
+                  placeholder="输入要搜索的内容"
+                  style="width: 50%"
+                  clearable
+                  @clear="searchTodo"
+                >
+                  <template #append>
+                    <el-button
+                      type="primary"
+                      @click="searchTodo"
+                    >
+                      搜索
+                    </el-button>
+                  </template>
+                </el-input>
+                <el-select
+                  v-model="chooseForm.state"
+                  placeholder="请选择"
+                  style="margin-left: 15px; width: 50%"
+                  clearable
+                  @clear="searchTodo"
+                  @change="searchTodo"
+                >
+                  <el-option
+                    v-for="item in workbenchState"
+                    :key="item.key"
+                    :label="item.value"
+                    :value="item.key"
+                  />
+                </el-select>
+              </div>
             </div>
+            <todo-list
+              :todo-list="todoList"
+              :get-list="getTodoList"
+            />
+            <base-pagination
+              :length="$store.state.workbench.todoListLength"
+              :current-page="currentPage"
+              :page-num="pageSize"
+              @change-size="changePageSize"
+              @change-page="changeCurrentPage"
+            />
           </div>
-          <todo-list
-            :todo-list="todoList"
-            :get-list="getTodoList"
+        </el-tab-pane>
+        <el-tab-pane
+          label="通知"
+          name="inform"
+        >
+          <inform-list
+            :notification-list="notificationList"
+            :get-list="getNotificationList"
           />
-          
           <base-pagination
-            :length="$store.state.workbench.todoListLength"
-            :current-page="currentPage"
-            :page-num="pageSize"
-            @change-size="changePageSize"
-            @change-page="changeCurrentPage"
+            :length="$store.state.workbench.notificationListLength"
+            :current-page="informCurrentPage"
+            :page-num="informPageSize"
+            @change-size="changeInformPageSize"
+            @change-page="changeInformCurrentPage"
           />
-        </div>
-      </el-tab-pane>
-      <el-tab-pane
-        label="通知"
-        name="inform"
-      >
-        <inform-list
-          :notification-list="notificationList"
-          :get-list="getNotificationList"
-        />
-
-        <base-pagination
-          :length="$store.state.workbench.notificationListLength"
-          :current-page="informCurrentPage"
-          :page-num="informPageSize"
-          @change-size="changeInformPageSize"
-          @change-page="changeInformCurrentPage"
-        />
-      </el-tab-pane>
-    </el-tabs>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
   </div>
 </template>
 
@@ -122,7 +122,7 @@ export default {
         await this.$store.dispatch('workbench/getTodoCount');
         this.count = this.$store.state.workbench.count;
       } catch (err) {
-        return ;
+        return;
       }
     },
     async getParams() {
@@ -191,9 +191,9 @@ export default {
     },
     changePageSize(val) {
       this.pageSize = val;
-       this.getTodoList();
+      this.getTodoList();
     },
-    searchTodo(){
+    searchTodo() {
       this.currentPage = 1;
       this.getTodoList();
     },
