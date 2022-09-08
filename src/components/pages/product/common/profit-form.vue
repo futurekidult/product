@@ -404,8 +404,6 @@ export default {
           this.profitParams = this.$store.state.product.project.profitParams;
           if (this.type !== 'view') {
             this.getPrice(market, platform, currency, price, index);
-          } else {
-            console.log(1);
           }
         } catch (err) {
           return;
