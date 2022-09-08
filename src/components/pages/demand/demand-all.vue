@@ -86,22 +86,28 @@
         </el-button>
       </div>
       <el-table
-        :data="demandList"
+        v-fit-columns
         border
         stripe
         empty-text="无数据"
+        :data="demandList"
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       >
         <el-table-column
           prop="id"
           label="需求ID"
-          width="80px"
+          width="100"
+          fixed="left"
         />
         <el-table-column
           prop="name"
           label="产品名称"
+          fixed="left"
         />
-        <el-table-column label="关联产品ID">
+        <el-table-column
+          label="关联产品ID"
+          width="100"
+        >
           <template #default="scope">
             <el-button
               type="text"
@@ -122,14 +128,17 @@
         <el-table-column
           prop="create_time"
           label="提交时间"
-          width="200px"
+          width="200"
         />
         <el-table-column
           prop="review_finish_time"
           label="评审完成时间"
-          width="200px"
+          width="200"
         />
-        <el-table-column label="状态">
+        <el-table-column
+          label="状态"
+          width="100"
+        >
           <template #default="scope">
             <div :class="changeCellColor(scope.row.state)">
               {{ scope.row.state_desc }}
@@ -147,7 +156,10 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column
+          label="操作"
+          fixed="right"
+        >
           <template #default="scope">
             <el-button
               type="text"

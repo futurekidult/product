@@ -4,38 +4,38 @@
 
     <div class="border">
       <el-table
+        v-fit-columns
         border
         stripe
         empty-text="无数据"
-        :header-cell-style="{
-          background: '#eef1f6',
-          color: '#606266',
-          textAlign: 'center'
-        }"
         :data="draftList"
-        :cell-style="{ textAlign: 'center' }"
+        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       >
         <el-table-column
           label="需求ID"
           prop="id"
-          width="80px"
+          width="100"
+          fixed="left"
         />
         <el-table-column
           label="产品名称"
           prop="name"
+          fixed="left"
         />
         <el-table-column
           label="创建时间"
           prop="create_time"
+          width="200"
         />
         <el-table-column
           label="状态"
           prop="state_desc"
-          width="200px"
+          width="100"
         />
         <el-table-column
           label="操作"
-          width="200px"
+          width="150"
+          fixed="right"
         >
           <template #default="scope">
             <el-button
