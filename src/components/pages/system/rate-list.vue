@@ -32,11 +32,11 @@
           />
           <el-table-column
             label="欧元"
-            prop="gbp_to_cny"
+            prop="eur_to_cny"
           />
           <el-table-column
             label="英镑"
-            prop="eur_to_cny"
+            prop="gbp_to_cny"
           />
           <el-table-column
             label="日元"
@@ -95,20 +95,20 @@
         </el-form-item>
         <el-form-item
           label="欧元"
-          prop="gbp_to_cny"
+          prop="eur_to_cny"
         >
           <el-input
-            v-model="rateForm.gbp_to_cny"
+            v-model="rateForm.eur_to_cny"
             placeholder="请输入"
             clearable
           />
         </el-form-item>
         <el-form-item
           label="英镑"
-          prop="eur_to_cny"
+          prop="gbp_to_cny"
         >
           <el-input
-            v-model="rateForm.eur_to_cny"
+            v-model="rateForm.gbp_to_cny"
             placeholder="请输入"
             clearable
           />
