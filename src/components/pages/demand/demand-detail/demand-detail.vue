@@ -3,7 +3,7 @@
     <div v-loading="$store.state.demand.demandDetailLoading">
       <div class="border">
         <div class="detail-title">
-          {{ demandDetail.name }}  
+          {{ demandDetail.name }}
           <div class="tag-position">
             <base-tag
               class="tag"
@@ -37,9 +37,7 @@
 
       <div class="border">
         <div class="select-title">
-          <div>
-            <span class="line">|</span> 需求信息
-          </div>
+          <div><span class="line">|</span> 需求信息</div>
         </div>
         <demand-form type="detail" />
       </div>
@@ -49,7 +47,7 @@
 
 <script>
 import DemandForm from '../common/demand-form.vue';
-import { changeDemandColor } from '../../../../utils/index'
+import { changeDemandColor } from '../../../../utils/index';
 
 export default {
   components: {
@@ -64,7 +62,7 @@ export default {
   methods: {
     changeDemandColor,
     toProductDetail(id) {
-      if(this.$store.state.menuData.links.indexOf('/product-list') > -1) {
+      if (this.$store.state.menuData.links.indexOf('/product-list') > -1) {
         this.$router.push(`/product-list/${id}`);
         this.$store.commit('setEntry', 'detail');
       } else {
