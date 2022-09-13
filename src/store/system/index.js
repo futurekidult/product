@@ -177,7 +177,7 @@ export default {
         }
       });
     },
-    async updatProductRole(_, payload) {
+    async updateProductRole(_, payload) {
       await axios.post('/system/product-role/update', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
