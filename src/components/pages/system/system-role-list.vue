@@ -14,7 +14,7 @@
         </el-button>
       </div>
 
-      <div v-loading="$store.state.system.roleLoading">
+      <div v-loading="$store.state.system.systemRoleLoading">
         <el-table
           stripe
           border
@@ -59,7 +59,7 @@
         v-if="editVisible"
         :id="roleId"
         title="编辑角色"
-        type="edit"
+        type="system edit"
         :dialog-visible="editVisible"
         :get-list="getRoleList"
         @hide-dialog="closeEditDialog"
@@ -115,12 +115,12 @@ export default {
   },
   methods: {
     async getRoleList() {
-      this.$store.commit('system/setRoleLoading', true);
+      this.$store.commit('system/setSystemRoleLoading', true);
       try {
-        await this.$store.dispatch('system/getRoleList');
-        this.roleList = this.$store.state.system.roleList;
+        await this.$store.dispatch('system/getSystemRoleList');
+        this.roleList = this.$store.state.system.systemRoleList;
       } catch (err) {
-        this.$store.commit('system/setRoleLoading', false);
+        this.$store.commit('system/setSystemRoleLoading', false);
         return;
       }
     },

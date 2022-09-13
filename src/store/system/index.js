@@ -11,10 +11,13 @@ export default {
       privilegeLoading: true,
       adminList: [],
       adminLoading: true,
-      roleList: [],
-      roleLoading: true,
+      systemRoleList: [],
+      productRoleList: [],
+      systemRoleLoading: true,
+      ProductRoleLoading: true,
       adminRole: {},
-      role: {},
+      systemRole: {},
+      productRole: {},
       todoList: [],
       todoLoading: true,
       calculationRuleList: [],
@@ -47,17 +50,26 @@ export default {
     setAdminLoading(state, payload) {
       state.adminLoading = payload;
     },
-    setRoleList(state, payload) {
-      state.roleList = payload;
+    setSystemRoleList(state, payload) {
+      state.systemRoleList = payload;
     },
-    setRoleLoading(state, payload) {
-      state.roleLoading = payload;
+    setProductRoleList(state, payload) {
+      state.productRoleList = payload;
+    },
+    setSystemRoleLoading(state, payload) {
+      state.systemRoleLoading = payload;
+    },
+    setProductRoleLoading(state, payload) {
+      state.productRoleLoading = payload;
     },
     setAdminRole(state, payload) {
       state.adminRole = payload;
     },
-    setRole(state, payload) {
-      state.role = payload;
+    setSystemRole(state, payload) {
+      state.systemRole = payload;
+    },
+    setProductRole(state, payload) {
+      state.productRole = payload;
     },
     setTodoList(state, payload) {
       state.todoList = payload;
@@ -107,11 +119,19 @@ export default {
         }
       });
     },
-    async getRoleList(context) {
+    async getSystemRoleList(context) {
       await axios.get('/system/role/list').then((res) => {
         if (res.code === 200) {
-          context.commit('setRoleList', res.data.list);
-          context.commit('setRoleLoading', false);
+          context.commit('setSystemRoleList', res.data.list);
+          context.commit('setSystemRoleLoading', false);
+        }
+      });
+    },
+    async getProductRoleList(context) {
+      await axios.get('/system/product-role/list').then((res) => {
+        if (res.code === 200) {
+          context.commit('setProductRoleList', res.data.list);
+          context.commit('setProductRoleLoading', false);
         }
       });
     },
@@ -136,15 +156,29 @@ export default {
         }
       });
     },
-    async getRole(context, payload) {
+    async getSystemRole(context, payload) {
       await axios.get('/system/role/get', payload).then((res) => {
         if (res.code === 200) {
-          context.commit('setRole', res.data);
+          context.commit('setSystemRole', res.data);
         }
       });
     },
-    async updateRole(_, payload) {
+    async getProductRole(context, payload) {
+      await axios.get('/system/product-role/get', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setProductRole', res.data);
+        }
+      });
+    },
+    async updateSystemRole(_, payload) {
       await axios.post('/system/role/update', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
+    },
+    async updatProductRole(_, payload) {
+      await axios.post('/system/product-role/update', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }
