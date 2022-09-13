@@ -7,25 +7,10 @@ partition "**小品类选项增加【其他】选项**" {
     //新品列表编辑表单(对应的组件: product-all)//
   end note
   :小品类下拉框渲染;
-  :请求"/api/option/category/list"接口;
-  :获取到大品类和小品类数据列表以及关联关系数据list;
-  :从新品列表拿到产品id(id)、大品类id(big_category_id);
-  :根据大品类id获取到对应的小品类列表;
-  note right
-    伪代码
-    ----
-    ' 第一种方式
-    ' list.map(item => {
-    '   if(item.id === big_category_id) {
-    '     smallCategroyList = item.children;
-    '   }
-    ' })
-    ' 第二种方式
-    const index = list.findIndex(e => 
-      e.id === big_category_id
-    )
-    smallCategroyList = list[index].children;
-  end note
+  :请求"/api/product/all/list?"接口;
+  :获取到大品类id(id);
+  :请求"/api/option/category/list?id="接口;
+  :获取到对应的小品类列表;
   :获取编辑表单数据
     - 传递id(产品id)
     - 请求"/api/product/detail/get?id=?"接口(跟新品详情的基础信息是同一个接口)
@@ -49,7 +34,7 @@ partition "**用户调研申请评审新增用研专员的选择**" {
     :获取到申请id(survey_apply.id);
     :获取表单数据
       - 传递id(申请id)
-      - 请求"/api/survey/user-survey/apply/get?id=?"接口
+      - 请求"/api/survey/user-survey/review/get?id=?"接口
       - 获取到产品链接(product_link)、具体需求(concrete_demand)、期望结果(expected_result)、期望完成时间(expected_finish_time);
     if(userSurveyForm.result === 1(评审通过)) then (yes)
       :获取组织架构下拉树;
@@ -81,9 +66,9 @@ partition "**产品方案需运营主管审核**" {
     // 10:待完成, 20:审批中, 30:审批驳回, 40:审批通过, 50:已完成 //
   end note
   :请求"/api/survey/solutions/detail?id="接口, 获取到调研进度表(progress)、产品方案表单数据(report);
-  :提交,校验必填项;
   if(state === 10) then (yes)
     :表单项、提交按钮均可编辑;
+    :提交,校验必填项;
     :获取到进度id(progress.id =>survey_schedule_id)、产品id(product_id),传递请求参数,请求"/api/survey/solutions/create"接口;
   else if(state === 20) then (yes) 
     :表单项、提交按钮均不可编辑;
@@ -92,6 +77,7 @@ partition "**产品方案需运营主管审核**" {
     :点击审批按钮,请求"/api/survey/solutions/approve"接口;
   else if(state === 30) then(yes)
     :表单项、提交按钮均可编辑;
+    :提交,校验必填项;
     :获取到产品方案id(report.id=>id)、产品id(product_id),传递请求参数,请求"/api/survey/solutions/update"接口;
   else if(state === 50) then (yes)
     :表单项、提交按钮均不可编辑;
@@ -124,6 +110,7 @@ partition "**项目调研版块新增提交意见功能**" {
   split again
     :编辑;
     if(edit_state === 1) then (yes)
+      :从表格内拿出suggestion字段的内容;
       :编辑意见弹窗显示;
       :提交,校验必填项;
       :获取到意见id(id)、调研进度id(survey_schedule_id)、意见内容(suggestion);
@@ -131,6 +118,7 @@ partition "**项目调研版块新增提交意见功能**" {
       :请求成功后关闭弹窗;
       :刷新页面(请求"api/survey/market、platform、user-analysis、product-solutions、risk、user-survey/suggestion/list?"接口);
     else (no)
+      :编辑按钮置灰;
       end
     endif
   split again
@@ -142,6 +130,7 @@ partition "**项目调研版块新增提交意见功能**" {
       :请求成功后关闭弹窗;
       :刷新页面(请求"api/survey/market、platform、user-analysis、product-solutions、risk、user-survey/suggestion/list?"接口);
     else (no)
+      :删除按钮置灰;
       end
     endif
   end split
@@ -251,6 +240,7 @@ partition "**样品测试申请后新增运营补充内容环节**" {
       :请求成功后关闭弹窗;
       :刷新测试需求补充进度表(请求"/api/sample/test-content/schedule?sample_id"接口);
     else (no)
+      :补充测试内容按钮置灰;
       end
     endif
   split again
@@ -262,7 +252,7 @@ partition "**样品测试申请后新增运营补充内容环节**" {
       :获取测试内容id(id)和评审结果(review_result),请求"/api/sample/test-content/review"接口;
       :请求成功后关闭弹窗;
       :刷新测试需求补充进度表(请求"/api/sample/test-content/schedule?sample_id"接口);
-      :刷新样品测试页面(请求"/api/sample/test-apply/schedule?sample_id"接口和"/api/sample/quality-test/get?sample_id"接口);
+      :刷新品质测试页面(请求"/api/sample/quality-test/get?sample_id"接口);
     else (no)
       end;
     endif
