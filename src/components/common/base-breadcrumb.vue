@@ -39,7 +39,8 @@ export default {
         switch (matched[1].name) {
           case 'organization':
           case 'admin':
-          case 'role':
+          case 'system role':
+          case 'product role':
           case 'privilege':
           case 'todo list':
             prefix = prefix.concat({
