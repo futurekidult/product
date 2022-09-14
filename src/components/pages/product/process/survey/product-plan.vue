@@ -22,7 +22,7 @@
         :key="index"
         :label="'使用场景' + (index + 1)"
         :prop="`usage_scenario[${index}]`"
-        :rules="[{ required: true, message: '请输入使用场景'}, checkValid(15)]"
+        :rules="[{ required: true, message: '请输入使用场景' }, checkValid(15)]"
         class="form-item_width"
       >
         <div class="usage-scenario_include-delete">
@@ -34,13 +34,13 @@
             clearable
             :disabled="isDisabled"
           />
-          <base-delete 
+          <base-delete
             :id="index"
             mode="user_analysis-btn"
             content=""
             :show="form.usage_scenario.length > 1 && progress.state !== 50"
             :list="form.usage_scenario"
-            @get-list=" getReturnData"
+            @get-list="getReturnData"
           />
         </div>
       </el-form-item>
@@ -98,15 +98,18 @@
           clearable
         />
       </el-form-item>
-      <competitive-table 
-        v-if="form.competitive_product !== undefined && form.competitive_product.length !== 0"
+      <competitive-table
+        v-if="
+          form.competitive_product !== undefined &&
+            form.competitive_product.length !== 0
+        "
         :product-form="form"
       />
-      <el-collapse 
+      <el-collapse
         v-model="activeCollapse"
         class="collapse-item"
       >
-        <el-collapse-item 
+        <el-collapse-item
           title="新品信息"
           name="open"
         >
@@ -343,7 +346,7 @@
         prop="attachment"
         class="form-item_width"
       >
-        <base-upload 
+        <base-upload
           type="file-list"
           tag="产品方案"
           count="4"
@@ -376,7 +379,13 @@ export default {
     CompetitiveTable
   },
   inject: ['getBase'],
-  props: ['progress', 'attachment', 'getList', 'productForm', 'scenarioVisible'],
+  props: [
+    'progress',
+    'attachment',
+    'getList',
+    'productForm',
+    'scenarioVisible'
+  ],
   data() {
     return {
       productRules: {
