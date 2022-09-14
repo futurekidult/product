@@ -106,8 +106,7 @@ export default {
       confirmDialog: false,
       roleId: 0,
       deleteId: 0,
-      roleList: [],
-      privilegeList: []
+      roleList: []
     };
   },
   mounted() {

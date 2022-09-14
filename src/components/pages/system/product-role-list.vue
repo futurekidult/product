@@ -57,8 +57,7 @@ export default {
     return {
       editVisible: false,
       roleId: 0,
-      roleList: [],
-      privilegeList: []
+      roleList: []
     };
   },
   mounted() {

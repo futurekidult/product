@@ -14,7 +14,7 @@ export default {
       systemRoleList: [],
       productRoleList: [],
       systemRoleLoading: true,
-      ProductRoleLoading: true,
+      productRoleLoading: true,
       adminRole: {},
       systemRole: {},
       productRole: {},
