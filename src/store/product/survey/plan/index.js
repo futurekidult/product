@@ -31,6 +31,20 @@ export default {
           ElMessage.success(res.message);
         }
       });
+    },
+    async updatePlan(_, payload) {
+      await axios.post('/survey/solutions/update', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
+    },
+    async approvalPlan(_, payload) {
+      await axios.post('/survey/solutions/approve', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
     }
   }
 };

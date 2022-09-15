@@ -4,7 +4,12 @@
       调研进度表
     </div>
 
-    <survey-schedule :get-progress="progress" />
+    <survey-schedule
+      :id="productForm.id"
+      :get-progress="progress"
+      type="plan"
+      @refresh-plan="getList"
+    />
 
     <div class="survey-title">
       调研报告内容
@@ -38,13 +43,13 @@
             :id="index"
             mode="user_analysis-btn"
             content=""
-            :show="form.usage_scenario.length > 1 && progress.state !== 50"
+            :show="showDelete"
             :list="form.usage_scenario"
             @get-list="getReturnData"
           />
         </div>
       </el-form-item>
-      <el-form-item v-if="progress.state !== 50">
+      <el-form-item v-if="!isDisabled">
         <el-button
           class="project-plan_btn"
           :disabled="isDisabled"
@@ -336,7 +341,7 @@
           </el-form-item>
           <el-form-item class="form-item_width">
             <div class="desc">
-              若没有海运费的金额请填0
+              此处请填写一立方的海运单价,若没有海运费金额请填0
             </div>
           </el-form-item>
         </el-collapse-item>
@@ -521,7 +526,15 @@ export default {
   },
   computed: {
     isDisabled() {
-      return this.progress.state === 10 ? false : true;
+      return this.progress.state === 10 || this.progress.state === 30
+        ? false
+        : true;
+    },
+    showDelete() {
+      return (
+        this.form.usage_scenario.length > 1 &&
+        (this.progress.state === 10 || this.progress.state === 30)
+      );
     }
   },
   mounted() {
@@ -545,10 +558,17 @@ export default {
     },
     async updatePlan(val) {
       let body = val;
-      body['survey_schedule_id'] = this.progress.id;
+      let funcName = '';
       body['product_id'] = +this.$route.params.productId;
+      if (this.progress.state === 10) {
+        body['survey_schedule_id'] = this.progress.id;
+        funcName = 'product/survey/plan/submitPlan';
+      } else if (this.progress.state === 30) {
+        body['id'] = this.productForm.id;
+        funcName = 'product/survey/plan/updatePlan';
+      }
       try {
-        await this.$store.dispatch('product/survey/plan/submitPlan', body);
+        await this.$store.dispatch(funcName, body);
         this.getList();
         this.getBase();
       } catch (err) {
