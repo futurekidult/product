@@ -6,12 +6,17 @@ export default {
   state() {
     return {
       platform: {},
-      platformLoading: true
+      platformLoading: true,
+      ids: {}
     };
   },
   mutations: {
     setPlatform(state, payload) {
       state.platform = payload;
+      state.ids = {
+        survey_id: payload.survey_id,
+        survey_schedule_id: payload.survey_schedule_id
+      };
     },
     setPlatformLoading(state, payload) {
       state.platformLoading = payload;

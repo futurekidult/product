@@ -94,8 +94,7 @@ export default {
           }
         ]
       },
-      file: this.attachment,
-      marketSuggestion: {}
+      file: this.attachment
     };
   },
   computed: {

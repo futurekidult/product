@@ -20,9 +20,6 @@ export default {
     },
     setMarketLoading(state, payload) {
       state.marketLoading = payload;
-    },
-    setIds(state, payload) {
-      state.ids = payload;
     }
   },
   actions: {

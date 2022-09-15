@@ -330,11 +330,22 @@
         </el-button>
       </el-form-item>
     </el-form>
+
+    <survey-suggestion
+      v-if="progress.state === 50"
+      :ids="$store.state.product.survey.platform.ids"
+      type="platform"
+    />
   </div>
 </template>
 
 <script>
+import SurveySuggestion from '../../common/survey-suggestion.vue';
+
 export default {
+  components: {
+    SurveySuggestion
+  },
   inject: ['getBase'],
   props: [
     'changeColor',
