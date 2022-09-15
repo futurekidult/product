@@ -6,12 +6,17 @@ export default {
   state() {
     return {
       userAnalysis: {},
-      analysisLoading: true
+      analysisLoading: true,
+      ids: {}
     };
   },
   mutations: {
     setUserAnalysis(state, payload) {
       state.userAnalysis = payload;
+      state.ids = {
+        survey_id: payload.survey_id,
+        survey_schedule_id: payload.survey_schedule_id
+      };
     },
     setAnalysisLoading(state, payload) {
       state.analysisLoading = payload;

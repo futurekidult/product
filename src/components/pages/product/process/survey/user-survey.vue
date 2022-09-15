@@ -506,6 +506,12 @@
       </div>
     </div>
 
+    <survey-suggestion
+      v-if="progress.state === 50"
+      :ids="$store.state.product.survey.user.ids"
+      type="user-survey"
+    />
+
     <survey-form
       v-if="isVisible"
       :id="progress.id"
@@ -622,10 +628,12 @@ import {
   timestamp
 } from '../../../../../utils';
 import SurveyForm from '../../common/survey-form.vue';
+import SurveySuggestion from '../../common/survey-suggestion.vue';
 
 export default {
   components: {
-    SurveyForm
+    SurveyForm,
+    SurveySuggestion
   },
   inject: ['getBase'],
   props: [

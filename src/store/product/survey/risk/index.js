@@ -6,12 +6,17 @@ export default {
   state() {
     return {
       risk: {},
-      riskLoading: true
+      riskLoading: true,
+      ids: {}
     };
   },
   mutations: {
     setRisk(state, payload) {
       state.risk = payload;
+      state.ids = {
+        survey_id: payload.survey_id,
+        survey_schedule_id: payload.survey_schedule_id
+      };
     },
     setRiskLoading(state, payload) {
       state.riskLoading = payload;

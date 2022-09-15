@@ -278,16 +278,24 @@
         </el-button>
       </el-form-item>
     </el-form>
+
+    <survey-suggestion
+      v-if="progress.state === 50"
+      :ids="$store.state.product.survey.userAnalysis.ids"
+      type="user-analysis"
+    />
   </div>
 </template>
 
 <script>
 import { checkValid } from '../../../../../utils';
 import SurveySchedule from '../../common/survey- schedule.vue';
+import SurveySuggestion from '../../common/survey-suggestion.vue';
 
 export default {
   components: {
-    SurveySchedule
+    SurveySchedule,
+    SurveySuggestion
   },
   inject: ['getBase'],
   props: [
