@@ -231,12 +231,12 @@ export default {
       }
     },
     async getRoleList() {
-      this.$store.commit('system/setRoleLoading', true);
+      this.$store.commit('system/setSystemRoleLoading', true);
       try {
-        await this.$store.dispatch('system/getRoleList');
-        this.roleList = this.$store.state.system.roleList;
+        await this.$store.dispatch('system/getSystemRoleList');
+        this.roleList = this.$store.state.system.systemRoleList;
       } catch (err) {
-        this.$store.commit('system/setRoleLoading', false);
+        this.$store.commit('system/setSystemRoleLoading', false);
         return;
       }
     },
