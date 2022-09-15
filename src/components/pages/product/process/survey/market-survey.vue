@@ -46,7 +46,7 @@
         label="调研报告"
         prop="attachment"
       >
-        <base-upload 
+        <base-upload
           type="file"
           tag="调研报告"
           url="market-survey-report"

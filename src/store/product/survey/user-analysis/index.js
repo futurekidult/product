@@ -23,14 +23,14 @@ export default {
         if (res.code === 200) {
           context.commit('setUserAnalysis', res.data);
           context.commit('setAnalysisLoading', false);
-        } 
+        }
       });
     },
     async submitAnalysis(_, payload) {
       await axios.post('/survey/user-analysis/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
-        } 
+        }
       });
     }
   }

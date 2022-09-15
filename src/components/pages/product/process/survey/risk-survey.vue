@@ -101,8 +101,8 @@
         label="调研报告"
         style="margin-bottom: 18px"
         prop="attachment"
-      > 
-        <base-upload 
+      >
+        <base-upload
           type="file"
           tag="调研报告"
           url="risk-survey-report"

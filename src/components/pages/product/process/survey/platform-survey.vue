@@ -46,7 +46,7 @@
         label="产品图片"
         prop="images"
       >
-        <base-upload 
+        <base-upload
           type="image"
           tag="产品图片"
           count="8"
@@ -312,13 +312,13 @@
         label="调研报告"
         prop="attachment"
       >
-        <base-upload 
+        <base-upload
           type="file"
           tag="调研报告"
           url="platform-survey-report"
           :file="file"
           :is-disabled="isDisabled"
-          @get-file="(val) => getUploadFile(val,'file')"
+          @get-file="(val) => getUploadFile(val, 'file')"
         />
       </el-form-item>
       <el-form-item v-if="!isDisabled">
@@ -517,7 +517,7 @@ export default {
       let imgArr = [];
       this.imgList.forEach((item) => {
         let { id } = item;
-       imgArr.push(id);
+        imgArr.push(id);
       });
       this.form.images = imgArr;
       this.form.attachment = this.file.id;
@@ -529,7 +529,7 @@ export default {
       });
     },
     getUploadFile(e, str) {
-      if(str === 'image') {
+      if (str === 'image') {
         this.imgList = e;
       } else {
         this.file = e;
