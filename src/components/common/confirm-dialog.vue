@@ -27,7 +27,15 @@
 
 <script>
 export default {
-  props: ['dialogContent', 'dialogVisible', 'type', 'id', 'getList'],
+  props: [
+    'dialogContent',
+    'dialogVisible',
+    'type',
+    'id',
+    'getList',
+    'surveyType',
+    'ids'
+  ],
   emits: ['hide-dialog'],
   data() {
     return {
@@ -61,6 +69,16 @@ export default {
             await this.$store.dispatch('supplier/setWhiteSupplier', {
               id: this.id
             });
+            break;
+          case 'suggestion delete':
+            await this.$store.dispatch(
+              'product/survey/deleteSurveySuggestion',
+              {
+                id: this.id,
+                survey_schedule_id: this.ids.survey_schedule_id,
+                type: this.surveyType
+              }
+            );
             break;
           default:
         }
