@@ -15,7 +15,7 @@
       border
       stripe
       empty-text="无数据"
-      :data="suggestionData.list"
+      :data="suggestion.list"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
     >
       <el-table-column
@@ -65,7 +65,7 @@
     </el-table>
 
     <base-pagination
-      :length="suggestionData.total"
+      :length="suggestion.total"
       :current-page="currentPage"
       :page-num="pageSize"
       @change-size="changePageSize"
@@ -78,9 +78,9 @@
       :dialog-visible="deleteDialogVisible"
       dialog-content="是否确认删除该意见"
       type="suggestion delete"
-      survey-type="market"
+      :survey-type="type"
       :ids="ids"
-      :get-list="refreshTable"
+      :get-list="getSurveySuggestion"
       @hide-dialog="closeDeleteDialog"
     />
 
@@ -93,7 +93,7 @@
       title="提交意见"
       label="意见内容"
       prop="suggestion"
-      :get-list="refreshTable"
+      :get-list="getSurveySuggestion"
       @hide-dialog="closeCreateDialog"
     />
 
@@ -107,7 +107,7 @@
       title="修改提交意见"
       label="意见内容"
       prop="suggestion"
-      :get-list="refreshTable"
+      :get-list="getSurveySuggestion"
       :value="currentSuggestionValue"
       @hide-dialog="closeUpdateDialog"
     />
@@ -124,7 +124,7 @@ export default {
     DeleteDialog,
     SuggestionDialog
   },
-  props: ['suggestionData', 'ids', 'refreshTable', 'type'],
+  props: ['ids', 'type'],
   data() {
     return {
       deleteDialogVisible: false,
@@ -134,13 +134,17 @@ export default {
       deleteId: 0,
       updateId: 0,
       currentPage: 1,
-      pageSize: 10
+      pageSize: 10,
+      suggestion: {}
     };
   },
   computed: {
     disabled() {
-      return this.suggestionData.edit_state === 0;
+      return this.suggestion.edit_state === 0;
     }
+  },
+  mounted() {
+    this.getSurveySuggestion();
   },
   methods: {
     formatterTime,
@@ -165,13 +169,26 @@ export default {
     closeUpdateDialog() {
       this.updateDialogVisible = false;
     },
-    changePageSize(val) {
-      this.pageSize = val;
-      this.refreshTable();
-    },
     changeCurrentPage(val) {
       this.currentPage = val;
-      this.refreshTable();
+      this.getSurveySuggestion();
+    },
+    changePageSize(val) {
+      this.pageSize = val;
+      this.getSurveySuggestion();
+    },
+    async getSurveySuggestion() {
+      let params = {
+        current_page: this.currentPage,
+        page_size: this.pageSize,
+        survey_schedule_id: this.ids.survey_schedule_id,
+        survey_id: this.ids.survey_id
+      };
+      await this.$store.dispatch('product/survey/getSurveySuggestion', {
+        params,
+        type: this.type
+      });
+      this.suggestion = this.$store.state.product.survey.suggestion;
     }
   }
 };

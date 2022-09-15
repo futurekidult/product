@@ -68,9 +68,7 @@
 
     <survey-suggestion
       v-if="progress.state === 50"
-      :suggestion-data="marketSuggestion"
       :ids="$store.state.product.survey.market.ids"
-      :refresh-table="getSurveySuggestion"
       type="market"
     />
   </div>
@@ -105,16 +103,6 @@ export default {
       return this.progress.state === 10 ? false : true;
     }
   },
-  watch: {
-    'progress.state': {
-      handler(val) {
-        if (val === 50) {
-          this.getSurveySuggestion();
-        }
-      },
-      immediate: true
-    }
-  },
   methods: {
     async submitRequest() {
       let params = {
@@ -143,14 +131,6 @@ export default {
     },
     getUploadFile(e) {
       this.file = e;
-    },
-    async getSurveySuggestion() {
-      let params = {};
-      await this.$store.dispatch('product/survey/getSurveySuggestion', {
-        params,
-        type: 'market'
-      });
-      this.marketSuggestion = this.$store.state.product.survey.marketSuggestion;
     }
   }
 };

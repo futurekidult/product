@@ -45,16 +45,16 @@
 <script>
 export default {
   props: [
+    'ids',
+    'type',
     'title',
     'label',
     'prop',
-    'dialogVisible',
     'value',
     'action',
-    'ids',
+    'getList',
     'updateId',
-    'type',
-    'getList'
+    'dialogVisible'
   ],
   emits: ['hide-dialog'],
   data() {
