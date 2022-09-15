@@ -65,11 +65,24 @@
         </el-button>
       </el-form-item>
     </el-form>
+
+    <survey-suggestion
+      v-if="progress.state === 50"
+      :suggestion-data="marketSuggestion"
+      :ids="$store.state.product.survey.market.ids"
+      :refresh-table="getSurveySuggestion"
+      type="market"
+    />
   </div>
 </template>
 
 <script>
+import SurveySuggestion from '../../common/survey-suggestion.vue';
+
 export default {
+  components: {
+    SurveySuggestion
+  },
   inject: ['getBase'],
   props: ['changeColor', 'progress', 'attachment', 'getList'],
   data() {
@@ -83,12 +96,23 @@ export default {
           }
         ]
       },
-      file: this.attachment
+      file: this.attachment,
+      marketSuggestion: {}
     };
   },
   computed: {
     isDisabled() {
       return this.progress.state === 10 ? false : true;
+    }
+  },
+  watch: {
+    'progress.state': {
+      handler(val) {
+        if (val === 50) {
+          this.getSurveySuggestion();
+        }
+      },
+      immediate: true
     }
   },
   methods: {
@@ -119,6 +143,14 @@ export default {
     },
     getUploadFile(e) {
       this.file = e;
+    },
+    async getSurveySuggestion() {
+      let params = {};
+      await this.$store.dispatch('product/survey/getSurveySuggestion', {
+        params,
+        type: 'market'
+      });
+      this.marketSuggestion = this.$store.state.product.survey.marketSuggestion;
     }
   }
 };
