@@ -3,6 +3,7 @@ import { ElMessage } from 'element-plus';
 import QualityTest from './quality-test/index.js';
 import AgencyTest from './agency-test/index.js';
 import UserTest from './user-test/index.js';
+import { formatterTime } from '../../utils/index';
 
 export default {
   modules: {
@@ -17,7 +18,7 @@ export default {
       sampleDetail: {},
       detailLoading: true,
       proofingProgress: {},
-      proofingId:0,
+      proofingId: 0,
       proofingSheet: {},
       testLoading: true,
       testProgress: {},
@@ -30,7 +31,9 @@ export default {
       baseLoading: true,
       proofingLoading: true,
       listLoading: true,
-      sampleListLength: 0
+      sampleListLength: 0,
+      supply: {},
+      supplyItem: {}
     };
   },
   mutations: {
@@ -75,6 +78,12 @@ export default {
     },
     setTestLoading(state, payload) {
       state.testLoading = payload;
+    },
+    setSupply(state, payload) {
+      state.supply = payload;
+    },
+    setSupplyItem(state, payload) {
+      state.supplyItem = payload;
     }
   },
   actions: {
@@ -122,13 +131,11 @@ export default {
         });
     },
     async createProofingSheet(_, payload) {
-      await axios
-        .post('/sample/proofing-sheet/create', payload)
-        .then((res) => {
-          if (res.code === 200) {
-            ElMessage.success(res.message);
-          }
-        });
+      await axios.post('/sample/proofing-sheet/create', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
     },
     async getProofingSheet(context, payload) {
       await axios.get('/sample/proofing-sheet/get', payload).then((res) => {
@@ -147,13 +154,11 @@ export default {
         });
     },
     async updateProofingSheet(_, payload) {
-      await axios
-        .post('/sample/proofing-sheet/update', payload)
-        .then((res) => {
-          if (res.code === 200) {
-            ElMessage.success(res.message);
-          }
-        });
+      await axios.post('/sample/proofing-sheet/update', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
     },
     async getTestProgress(context, payload) {
       await axios.get('/sample/test-apply/schedule', payload).then((res) => {
@@ -192,13 +197,11 @@ export default {
       });
     },
     async getQualitySpecialist(context, payload) {
-      await axios
-        .get('/sample/quality-specialist/get', payload)
-        .then((res) => {
-          if (res.code === 200) {
-            context.commit('setQualitySpecialist', res.data);
-          }
-        });
+      await axios.get('/sample/quality-specialist/get', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setQualitySpecialist', res.data);
+        }
+      });
     },
     async updateQualitySpecialist(_, payload) {
       await axios
@@ -208,6 +211,38 @@ export default {
             ElMessage.success(res.message);
           }
         });
+    },
+    async getTestSupply(context, payload) {
+      await axios.get('/sample/supplement/schedule', payload).then((res) => {
+        if (res.code === 200) {
+          res.data.list.forEach((item) => {
+            item.submit_time = formatterTime(item.submit_time);
+            item.review_finish_time = formatterTime(item.review_finish_time);
+          });
+          context.commit('setSupply', res.data);
+        }
+      });
+    },
+    async getSupplyItem(context, payload) {
+      await axios.get('/sample/supplement/schedule', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setSupplyItem', res.data);
+        }
+      });
+    },
+    async createSupply(_, payload) {
+      await axios.post('/sample/supplement/create', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
+    },
+    async reviewSupply(_, payload) {
+      await axios.post('/sample/supplement/review', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
     }
   }
 };

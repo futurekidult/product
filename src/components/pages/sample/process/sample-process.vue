@@ -53,7 +53,12 @@ export default {
     return {
       getProofing: this.getProofingProgress,
       getTest: this.getTestProgress,
-      getQualityDetail: this.getQualityDetail
+      getQualityDetail: this.getQualityDetail,
+      getTestSupply: () => {
+        return {
+          supply: this.testSupply
+        };
+      }
     };
   },
   data() {
@@ -67,8 +72,9 @@ export default {
       qualitySubmitState: 0,
       qualityId: 0,
       progress: {},
-      qualityTestId:0,
-      hasUserTest: 0
+      qualityTestId: 0,
+      hasUserTest: 0,
+      testSupply: {}
     };
   },
   mounted() {
@@ -103,7 +109,10 @@ export default {
           }
         });
         this.proofingProgress = this.$store.state.sample.proofingProgress;
-        if(this.proofingProgress.submit_time !== undefined && this.proofingProgress.actual_finish_time !== undefined){
+        if (
+          this.proofingProgress.submit_time !== undefined &&
+          this.proofingProgress.actual_finish_time !== undefined
+        ) {
           changeTimestamp(this.proofingProgress, 'submit_time');
           changeTimestamp(this.proofingProgress, 'actual_finish_time');
         }
@@ -133,6 +142,18 @@ export default {
         return;
       }
     },
+    async getTestSupply() {
+      try {
+        await this.$store.dispatch('sample/getTestSupply', {
+          params: {
+            sample_id: +this.$route.params.id
+          }
+        });
+        this.testSupply = this.$store.state.sample.supply;
+      } catch (err) {
+        return;
+      }
+    },
     async getQualityDetail() {
       this.$store.commit('sample/quality/setQualityLoading', true);
       try {
@@ -147,7 +168,7 @@ export default {
         this.qualitySubmitState = qualityDetail.is_submit;
         this.qualityId = qualityDetail.test_apply_id;
         this.qualityTestId = qualityDetail.id;
-        if(this.qualityProgress.actual_finish_time !== undefined){
+        if (this.qualityProgress.actual_finish_time !== undefined) {
           changeTimestamp(this.qualityProgress, 'actual_finish_time');
         }
       } catch (err) {
@@ -165,6 +186,7 @@ export default {
           break;
         case 'test':
           this.getTestProgress();
+          this.getTestSupply();
           this.getQualityDetail();
           break;
         default:
