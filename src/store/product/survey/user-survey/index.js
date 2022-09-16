@@ -12,7 +12,8 @@ export default {
       userSurveyDetail: {},
       userLoading: true,
       userId: 0,
-      hasTask: 0
+      hasTask: 0,
+      ids: {}
     };
   },
   mutations: {
@@ -21,6 +22,10 @@ export default {
     },
     setProgressData(state, payload) {
       state.progress = payload;
+      state.ids = {
+        survey_id: payload.survey_id,
+        survey_schedule_id: payload.survey_schedule_id
+      };
     },
     setSurveyApply(state, payload) {
       state.surveyApply = payload;
@@ -158,11 +163,13 @@ export default {
       });
     },
     async updatePlanResultAttachment(_, payload) {
-      await axios.post('/survey/user-survey/plan/attachment', payload).then((res) => {
-        if (res.code === 200) {
-          ElMessage.success(res.message);
-        }
-      });
+      await axios
+        .post('/survey/user-survey/plan/attachment', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(res.message);
+          }
+        });
     }
   }
 };
