@@ -161,7 +161,9 @@ import {
   DocumentChecked,
   CoffeeCup,
   Coin,
-  Postcard
+  Postcard,
+  Tickets,
+  Collection
 } from '@element-plus/icons-vue';
 export default {
   components: {
@@ -181,7 +183,9 @@ export default {
     DocumentChecked,
     CoffeeCup,
     Coin,
-    Postcard
+    Postcard,
+    Tickets,
+    Collection
   },
   data() {
     return {

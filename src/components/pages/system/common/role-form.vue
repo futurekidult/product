@@ -78,12 +78,12 @@ export default {
         name: '',
         privilege_ids: []
       },
-      privilegeList:[]
+      privilegeList: []
     };
   },
   mounted() {
     this.getPrivilegeList();
-    if (this.type === 'edit') {
+    if (this.type.indexOf('edit') > -1) {
       this.getRole();
     }
   },
@@ -110,8 +110,12 @@ export default {
     async updateRole(val) {
       let body = val;
       body['id'] = this.id;
+      let funcName =
+        this.type === 'system edit'
+          ? 'system/updateSystemRole'
+          : 'system/updateProductRole';
       try {
-        await this.$store.dispatch('system/updateRole', body);
+        await this.$store.dispatch(funcName, body);
         this.visible = false;
         this.getList();
       } catch (err) {
@@ -119,13 +123,20 @@ export default {
       }
     },
     async getRole() {
+      let funcName =
+        this.type === 'system edit'
+          ? 'system/getSystemRole'
+          : 'system/getProductRole';
       try {
-        await this.$store.dispatch('system/getRole', {
+        await this.$store.dispatch(funcName, {
           params: {
             id: this.id
           }
         });
-        this.roleForm = this.$store.state.system.role;
+        this.roleForm =
+          this.type === 'system edit'
+            ? this.$store.state.system.systemRole
+            : this.$store.state.system.productRole;
       } catch (err) {
         return;
       }
