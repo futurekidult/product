@@ -85,20 +85,23 @@
       </div>
 
       <el-table
+        v-fit-columns
         border
         stripe
         empty-text="无数据"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
         :data="supplierList"
+        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       >
         <el-table-column
           label="供应商ID"
           prop="id"
-          width="100px"
+          width="100"
+          fixed="left"
         />
         <el-table-column
           label="供应商名称"
           prop="name"
+          fixed="left"
         />
         <el-table-column
           label="供应商类型"
@@ -115,14 +118,17 @@
         <el-table-column
           label="创建时间"
           prop="create_time"
-          width="200px"
+          width="200"
         />
         <el-table-column
           label="审批完成时间"
           prop="approval_time"
-          width="200px"
+          width="200"
         />
-        <el-table-column label="状态">
+        <el-table-column
+          label="状态"
+          width="100"
+        >
           <template #default="scope">
             <div :class="changeColor(scope.row.state)">
               {{ scope.row.state_desc }}
@@ -131,7 +137,8 @@
         </el-table-column>
         <el-table-column
           label="操作"
-          width="250px"
+          width="250"
+          fixed="right"
         >
           <template #default="scope">
             <div style="display: flex">
