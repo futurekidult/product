@@ -292,7 +292,7 @@ export default {
         if (!id) {
           this.categoryList = list;
         } else {
-          this.smallCategoryList = list.children;
+          this.smallCategoryList = list[0].children;
         }
       } catch (err) {
         return;
