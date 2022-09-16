@@ -58,8 +58,12 @@ export default {
         id: this.id,
         approval_result: val
       };
-      await this.$store.dispatch('product/survey/plan/approvalPlan', body);
-      this.$emit('refresh-plan');
+      try {
+        await this.$store.dispatch('product/survey/plan/approvalPlan', body);
+        this.$emit('refresh-plan');
+      } catch (err) {
+        return;
+      }
     }
   }
 };
