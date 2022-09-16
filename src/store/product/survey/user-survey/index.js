@@ -135,9 +135,8 @@ export default {
         });
     },
     async viewUserSurveyDetail(context, payload) {
-      let urlParams = payload.type === 'review' ? 'review' : 'apply';
       await axios
-        .get(`/survey/user-survey/${urlParams}/get`, payload)
+        .get(`/survey/user-survey/${payload.urlParams}/get`, payload)
         .then((res) => {
           if (res.code === 200) {
             context.commit('setUserSurveyDetail', res.data);

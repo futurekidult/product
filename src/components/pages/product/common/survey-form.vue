@@ -271,9 +271,10 @@ export default {
             this.memberList = res;
           });
         }
+        let urlParams = type === 'view' ? 'review' : 'apply';
         await this.$store.dispatch('product/survey/user/viewUserSurveyDetail', {
           params,
-          type
+          urlParams
         });
         this.userSurveyForm =
           this.$store.state.product.survey.user.userSurveyDetail;
