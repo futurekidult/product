@@ -1,96 +1,97 @@
 <template>
-  <base-breadcrumb />
+  <section>
+    <base-breadcrumb />
+    <div
+      v-loading="$store.state.supplier.blackLoading"
+      class="border"
+    >
+      <div class="select-title">
+        <span class="line">|</span> 黑名单
+      </div>
 
-  <div
-    v-loading="$store.state.supplier.blackLoading"
-    class="border"
-  >
-    <div class="select-title">
-      <span class="line">|</span> 黑名单
+      <el-table
+        border
+        stripe
+        empty-text="无数据"
+        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+        :data="blackList"
+      >
+        <el-table-column
+          label="供应商ID"
+          prop="id"
+        />
+        <el-table-column
+          label="供应商名称"
+          prop="name"
+        />
+        <el-table-column
+          label="供应商类型"
+          prop="type"
+        />
+        <el-table-column
+          label="合作等级"
+          prop="cooperation_level"
+        />
+        <el-table-column
+          label="采购员"
+          prop="purchase_specialist"
+        />
+        <el-table-column
+          label="创建时间"
+          prop="create_time"
+        />
+        <el-table-column
+          label="审批完成时间"
+          prop="approval_time"
+        />
+        <el-table-column label="状态">
+          <template #default="scope">
+            <div :class="changeColor(scope.row.state)">
+              {{ scope.row.state_desc }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          width="250px"
+        >
+          <template #default="scope">
+            <el-button
+              type="text"
+              @click="toDetail(scope.row.id)"
+            >
+              查看
+            </el-button>
+            <span class="table-btn">|</span>
+            <el-button
+              type="text"
+              @click="showWhiteDialog(scope.row.id)"
+            >
+              加入白名单
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <base-pagination
+        :length="$store.state.supplier.blackListLength"
+        :current-page="currentPage"
+        :page-num="pageSize"
+        @change-size="changePageSize"
+        @change-page="changeCurrentPage"
+      />
     </div>
 
-    <el-table
-      border
-      stripe
-      empty-text="无数据"
-      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      :data="blackList"
-    >
-      <el-table-column
-        label="供应商ID"
-        prop="id"
-      />
-      <el-table-column
-        label="供应商名称"
-        prop="name"
-      />
-      <el-table-column
-        label="供应商类型"
-        prop="type"
-      />
-      <el-table-column
-        label="合作等级"
-        prop="cooperation_level"
-      />
-      <el-table-column
-        label="采购员"
-        prop="purchase_specialist"
-      />
-      <el-table-column
-        label="创建时间"
-        prop="create_time"
-      />
-      <el-table-column
-        label="审批完成时间"
-        prop="approval_time"
-      />
-      <el-table-column label="状态">
-        <template #default="scope">
-          <div :class="changeColor(scope.row.state)">
-            {{ scope.row.state_desc }}
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="操作"
-        width="250px"
-      >
-        <template #default="scope">
-          <el-button
-            type="text"
-            @click="toDetail(scope.row.id)"
-          >
-            查看
-          </el-button>
-          <span class="table-btn">|</span>
-          <el-button
-            type="text"
-            @click="showWhiteDialog(scope.row.id)"
-          >
-            加入白名单
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <base-pagination
-      :length="$store.state.supplier.blackListLength"
-      :current-page="currentPage"
-      :page-num="pageSize"
-      @change-size="changePageSize"
-      @change-page="changeCurrentPage"
+    <confirm-dialog
+      v-if="whiteDialogVisible"
+      :id="supplierWhiteId"
+      :dialog-visible="whiteDialogVisible"
+      dialog-content="确定将该供应商移除黑名单"
+      type="black delete"
+      :get-list="getBlackList"
+      @hide-dialog="closeWhiteDialog"
     />
-  </div>
-
-  <confirm-dialog 
-    v-if="whiteDialogVisible"
-    :id="supplierWhiteId"
-    :dialog-visible="whiteDialogVisible"
-    dialog-content="确定将该供应商移除黑名单"
-    type="black delete"
-    :get-list="getBlackList"
-    @hide-dialog="closeWhiteDialog"
-  />
+  </section>
 </template>
 
 <script>

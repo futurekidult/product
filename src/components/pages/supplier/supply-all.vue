@@ -193,41 +193,41 @@
         @change-page="changeCurrentPage"
       />
     </div>
+
+    <confirm-dialog
+      v-if="blackDialogVisible"
+      :id="supplierBlackId"
+      :dialog-visible="blackDialogVisible"
+      dialog-content="确定将该供应商加入黑名单"
+      type="black enter"
+      :get-list="getSupplierList"
+      @hide-dialog="closeBlackDialog"
+    />
+
+    <el-dialog
+      v-model="deleteDialogVisible"
+      title="提示"
+      width="20%"
+    >
+      <div class="result-content">
+        是否删除该供应商
+      </div>
+      <div style="text-align: center">
+        <el-button
+          class="close-btn"
+          @click="closeDeleteDialog"
+        >
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          @click="deleteSupplier"
+        >
+          确定
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
-
-  <confirm-dialog 
-    v-if="blackDialogVisible"
-    :id="supplierBlackId"
-    :dialog-visible="blackDialogVisible"
-    dialog-content="确定将该供应商加入黑名单"
-    type="black enter"
-    :get-list="getSupplierList"
-    @hide-dialog="closeBlackDialog"
-  />
-
-  <el-dialog 
-    v-model="deleteDialogVisible"
-    title="提示"
-    width="20%"
-  >
-    <div class="result-content">
-      是否删除该供应商
-    </div>
-    <div style="text-align: center">
-      <el-button
-        class="close-btn"
-        @click="closeDeleteDialog"
-      >
-        取消
-      </el-button>
-      <el-button
-        type="primary"
-        @click="deleteSupplier"
-      >
-        确定
-      </el-button>
-    </div>
-  </el-dialog>
 </template>
 
 <script>
@@ -256,7 +256,7 @@ export default {
   mounted() {
     this.getState();
     this.getSupplierList();
-    getOrganizationList().then( (res) => {
+    getOrganizationList().then((res) => {
       this.memberList = res;
     });
   },

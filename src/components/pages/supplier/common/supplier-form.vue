@@ -58,7 +58,11 @@
         <el-form-item
           :label="'联系人姓名' + (index + 1)"
           :prop="`contacts.${index}.contact`"
-          :rules="type === 'create' || type === 'update' ? [{ required: true, message: '请输入联系人姓名' }] : []"
+          :rules="
+            type === 'create' || type === 'update'
+              ? [{ required: true, message: '请输入联系人姓名' }]
+              : []
+          "
         >
           <el-input
             v-model="item.contact"
@@ -72,7 +76,11 @@
         <el-form-item
           :label="'手机号码' + (index + 1)"
           :prop="`contacts.${index}.tel`"
-          :rules="type === 'create' || type === 'update' ? [{ required: true, message: '请输入手机号' }] : []"
+          :rules="
+            type === 'create' || type === 'update'
+              ? [{ required: true, message: '请输入手机号' }]
+              : []
+          "
         >
           <el-input
             v-model="item.tel"
@@ -125,7 +133,7 @@
             @change="checkEmail('email', item.email, index + 1)"
           />
         </el-form-item>
-        <base-delete 
+        <base-delete
           :id="index"
           mode="supplier-delete_btn"
           content="移除"
@@ -147,7 +155,11 @@
         <el-form-item
           :label="'公司地址' + (index + 1)"
           :prop="`addresses.${index}.company`"
-          :rules="type === 'create' || type === 'update' ? [{ required: true, message: '请选择公司地址' }] : []"
+          :rules="
+            type === 'create' || type === 'update'
+              ? [{ required: true, message: '请选择公司地址' }]
+              : []
+          "
         >
           <el-cascader
             v-model="item.company"
@@ -164,7 +176,11 @@
         <el-form-item
           :label="'详细地址' + (index + 1)"
           :prop="`addresses.${index}.detail`"
-          :rules="type === 'create' || type === 'update' ? [{ required: true, message: '请输入详细地址' }] : []"
+          :rules="
+            type === 'create' || type === 'update'
+              ? [{ required: true, message: '请输入详细地址' }]
+              : []
+          "
         >
           <el-input
             v-model="item.detail"
@@ -178,7 +194,11 @@
         <el-form-item
           :label="'出货地址' + (index + 1)"
           :prop="`addresses.${index}.shipment`"
-          :rules="type === 'create' || type === 'update' ? [{ required: true, message: '请输入出货地址' }] : []"
+          :rules="
+            type === 'create' || type === 'update'
+              ? [{ required: true, message: '请输入出货地址' }]
+              : []
+          "
         >
           <el-cascader
             v-model="item.shipment"
@@ -192,7 +212,7 @@
           />
         </el-form-item>
         <el-form-item />
-        <base-delete 
+        <base-delete
           :id="index"
           mode="supplier-delete_btn"
           content="移除"
@@ -495,7 +515,7 @@
         label="增值税发票"
         prop="vat_invoice_file"
       >
-        <base-upload 
+        <base-upload
           type="image"
           tag="增值税发票"
           count="8"
@@ -509,21 +529,23 @@
         label="开户许可证"
         prop="account_opening_license_file"
       >
-        <base-upload 
+        <base-upload
           type="image"
           tag="开户许可证"
           count="8"
           url="account-opening-license"
           :is-disabled="isDisabled"
           :list="accountOpeningLicenseFile"
-          @get-file="(val) => getUploadFile(val, 'account_opening_license_file')"
+          @get-file="
+            (val) => getUploadFile(val, 'account_opening_license_file')
+          "
         />
       </el-form-item>
       <el-form-item
         label="营业执照"
         prop="business_license_file"
       >
-        <base-upload 
+        <base-upload
           type="image"
           tag="营业执照"
           count="8"
@@ -537,26 +559,26 @@
         label="采购供应商评估表"
         prop="purchase_evaluation_file"
       >
-        <base-upload 
+        <base-upload
           type="file"
           tag="采购供应商评估表"
           url="purchase-evaluation"
           :file="purchaseEvaluationFile"
           :is-disabled="isDisabled"
-          @get-file="(val) => getUploadFile(val,'purchase_evaluation_file')"
+          @get-file="(val) => getUploadFile(val, 'purchase_evaluation_file')"
         />
       </el-form-item>
       <el-form-item
         label="质检供应商评估表"
         prop="quality_evaluation_file"
       >
-        <base-upload 
+        <base-upload
           type="file"
           tag="质检供应商评估表"
           url="quality-evaluation"
           :file="qualityEvaluationFile"
           :is-disabled="isDisabled"
-          @get-file="(val) => getUploadFile(val,'quality_evaluation_file')"
+          @get-file="(val) => getUploadFile(val, 'quality_evaluation_file')"
         />
       </el-form-item>
       <el-form-item>
@@ -634,134 +656,134 @@ export default {
           }
         ],
         name: [
-          { 
-            required: true, 
-            message: '请输入供应商名称' 
+          {
+            required: true,
+            message: '请输入供应商名称'
           }
         ],
         site_link: [
-          { 
-            required: true, 
-            message: '请输入公司主页链接' 
+          {
+            required: true,
+            message: '请输入公司主页链接'
           }
         ],
         cooperation_level: [
-          { 
-            required: true, 
-            message: '请选择合作等级' 
+          {
+            required: true,
+            message: '请选择合作等级'
           }
         ],
         factory_scale: [
           {
-             required: true, 
-             message: '请输入工厂规模'
+            required: true,
+            message: '请输入工厂规模'
           }
         ],
         tax_id: [
           {
-            required: true, 
+            required: true,
             message: '请输入供应商税号'
           }
         ],
         registered_capital: [
           {
-            required: true, 
+            required: true,
             message: '请输入注册资金'
           }
         ],
         tax_eligibility: [
           {
-            required: true, 
+            required: true,
             message: '请选择税务资格'
           }
         ],
         payment_method: [
           {
-            required: true, 
+            required: true,
             message: '请选择付款方式'
           }
         ],
         payment_terms: [
           {
-            required: true, 
+            required: true,
             message: '请选择付款条件'
           }
         ],
         currency: [
           {
-             required: true, 
-             message: '请选择主要货币'
+            required: true,
+            message: '请选择主要货币'
           }
         ],
         bank_username: [
           {
-            required: true, 
+            required: true,
             message: '请输入开户银行'
           }
         ],
         bank_name: [
           {
-            required: true, 
+            required: true,
             message: '请输入开户银行名称'
           }
         ],
         bank_account: [
           {
-            required: true, 
+            required: true,
             message: '请输入开户银行账号'
           }
         ],
         inter_bank: [
           {
-            required: true, 
+            required: true,
             message: '请选择跨行标识'
           }
         ],
         territory: [
           {
-            required: true, 
+            required: true,
             message: '请选择地域标识'
           }
         ],
         main_products: [
           {
-            required: true, 
+            required: true,
             message: '请输入主营产品'
           }
         ],
         purchase_specialist_id: [
           {
-            required: true, 
+            required: true,
             message: '请选择采购员'
           }
         ],
         vat_invoice_file: [
           {
-            required: true, 
+            required: true,
             message: '请上传附件'
           }
         ],
         account_opening_license_file: [
           {
-            required: true, 
+            required: true,
             message: '请上传附件'
           }
         ],
         business_license_file: [
           {
-            required: true, 
+            required: true,
             message: '请上传附件'
           }
         ],
         purchase_evaluation_file: [
           {
-            required: true, 
+            required: true,
             message: '请上传附件'
           }
         ],
         quality_evaluation_file: [
           {
-            required: true, 
+            required: true,
             message: '请上传附件'
           }
         ]
@@ -776,7 +798,7 @@ export default {
   mounted() {
     this.getCityOption();
     this.getParams();
-     getOrganizationList().then( (res) => {
+    getOrganizationList().then((res) => {
       this.memberList = res;
     });
     if (this.type !== 'create') {
@@ -786,10 +808,10 @@ export default {
   methods: {
     getTitle(val) {
       let title = {
-        'create': '创建供应商',
-        'update': '编辑供应商',
-        'review': '详细信息'
-      }
+        create: '创建供应商',
+        update: '编辑供应商',
+        review: '详细信息'
+      };
       return title[val];
     },
     async getParams() {
@@ -862,12 +884,12 @@ export default {
     addRow(val) {
       this.supplierForm[val].push({});
     },
- handleImgArr(key) {
+    handleImgArr(key) {
       let imgArr = [];
       this.supplierForm[key].forEach((item) => {
         let { id } = item;
         imgArr.push(id);
-      })
+      });
       return imgArr;
     },
     submitForm() {
@@ -875,10 +897,16 @@ export default {
         if (valid) {
           let form = JSON.parse(JSON.stringify(this.supplierForm));
           form['vat_invoice_file'] = this.handleImgArr('vat_invoice_file');
-          form['account_opening_license_file'] = this.handleImgArr('account_opening_license_file');
-          form['business_license_file'] = this.handleImgArr('business_license_file');
-          form['quality_evaluation_file'] = this.supplierForm['quality_evaluation_file'].id;
-          form['purchase_evaluation_file'] = this.supplierForm['purchase_evaluation_file'].id;
+          form['account_opening_license_file'] = this.handleImgArr(
+            'account_opening_license_file'
+          );
+          form['business_license_file'] = this.handleImgArr(
+            'business_license_file'
+          );
+          form['quality_evaluation_file'] =
+            this.supplierForm['quality_evaluation_file'].id;
+          form['purchase_evaluation_file'] =
+            this.supplierForm['purchase_evaluation_file'].id;
           if (this.type === 'create') {
             this.createSupplier(form);
           } else {
@@ -894,18 +922,18 @@ export default {
         }
       }
     },
-    clearAddress(index) {        
+    clearAddress(index) {
       this.supplierForm.addresses[index].detail = '';
     },
     getReturnData(e, str) {
-      if(str === 'contacts') {
+      if (str === 'contacts') {
         this.supplierForm.contacts = e;
       } else {
         this.supplierForm.addresses = e;
       }
     },
     getUploadFile(e, str) {
-      if(JSON.stringify(e) === '{}') {
+      if (JSON.stringify(e) === '{}') {
         this.supplierForm[str] = '';
       } else {
         this.supplierForm[str] = e;
