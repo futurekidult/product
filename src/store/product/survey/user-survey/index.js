@@ -54,7 +54,7 @@ export default {
           context.commit('setProgressData', res.data.progress);
           context.commit('setSurveyApply', res.data.survey_apply);
           context.commit('setPlanList', res.data.plan_list);
-          context.commit('setUserId', res.data.user_survey_principal_id);
+          context.commit('setUserId', res.data.default_operator_id);
           context.commit('setTaskStatus', res.data.has_task);
           context.commit('setUserLoading', false);
         }
@@ -140,11 +140,13 @@ export default {
         });
     },
     async viewUserSurveyDetail(context, payload) {
-      await axios.get('/survey/user-survey/apply/get', payload).then((res) => {
-        if (res.code === 200) {
-          context.commit('setUserSurveyDetail', res.data);
-        }
-      });
+      await axios
+        .get(`/survey/user-survey/${payload.urlParams}/get`, payload)
+        .then((res) => {
+          if (res.code === 200) {
+            context.commit('setUserSurveyDetail', res.data);
+          }
+        });
     },
     async updateUserSurveyPlan(_, payload) {
       await axios
