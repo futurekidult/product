@@ -338,12 +338,10 @@ export default {
       }
     },
     async updateProductMsg() {
-      let params = this.editForm;
-      params.id = this.productId;
+      let body = this.editForm;
+      body.id = this.productId;
       try {
-        await this.$store.dispatch('product/updateSingleProductMsg', {
-          params
-        });
+        await this.$store.dispatch('product/updateSingleProductMsg', body);
         this.editVisible = false;
         this.getProductList();
       } catch (err) {
