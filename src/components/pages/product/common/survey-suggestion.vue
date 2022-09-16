@@ -184,11 +184,15 @@ export default {
         survey_schedule_id: this.ids.survey_schedule_id,
         survey_id: this.ids.survey_id
       };
-      await this.$store.dispatch('product/survey/getSurveySuggestion', {
-        params,
-        type: this.type
-      });
-      this.suggestion = this.$store.state.product.survey.suggestion;
+      try {
+        await this.$store.dispatch('product/survey/getSurveySuggestion', {
+          params,
+          type: this.type
+        });
+        this.suggestion = this.$store.state.product.survey.suggestion;
+      } catch (err) {
+        return;
+      }
     }
   }
 };
