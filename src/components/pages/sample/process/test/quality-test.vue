@@ -67,7 +67,7 @@
         prop="test_result_file"
         :rules="[{ required: true, message: '请上传附件' }]"
       >
-        <base-upload 
+        <base-upload
           type="file"
           tag="测试报告"
           url="quality-test-report"
@@ -85,47 +85,48 @@
         </el-button>
       </el-form-item>
     </el-form>
-  </div>
-  <el-dialog
-    v-model="failFormVisible"
-    title="不通过"
-    width="20%"
-  >
-    <el-form
-      ref="reasonForm"
-      :model="reasonForm"
+
+    <el-dialog
+      v-model="failFormVisible"
+      title="不通过"
+      width="20%"
     >
-      <el-form-item
-        label="填写原因"
-        prop="reason"
-        :rules="[{ required: true, message: '请填写原因' }]"
+      <el-form
+        ref="reasonForm"
+        :model="reasonForm"
       >
-        <el-input
-          v-model="reasonForm.reason"
-          type="textarea"
-          :rows="6"
-          clearable
-          maxlength="200"
-          show-word-limit
-        />
-      </el-form-item>
-      <el-divider />
-      <div style="text-align: right">
-        <el-button 
-          class="close-btn"
-          @click="closeFailReason"
+        <el-form-item
+          label="填写原因"
+          prop="reason"
+          :rules="[{ required: true, message: '请填写原因' }]"
         >
-          取消
-        </el-button>
-        <el-button
-          type="primary"
-          @click="submitFailResult"
-        >
-          提交
-        </el-button>
-      </div>
-    </el-form>
-  </el-dialog>
+          <el-input
+            v-model="reasonForm.reason"
+            type="textarea"
+            :rows="6"
+            clearable
+            maxlength="200"
+            show-word-limit
+          />
+        </el-form-item>
+        <el-divider />
+        <div style="text-align: right">
+          <el-button
+            class="close-btn"
+            @click="closeFailReason"
+          >
+            取消
+          </el-button>
+          <el-button
+            type="primary"
+            @click="submitFailResult"
+          >
+            提交
+          </el-button>
+        </div>
+      </el-form>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
