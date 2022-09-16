@@ -35,55 +35,55 @@
         </el-button>
       </el-descriptions-item>
     </el-descriptions>
-  </section>
 
-  <el-dialog
-    v-model="designFormVisible"
-    width="30%"
-    title="上传设计图"
-  >
-    <el-form
-      ref="designForm"
-      :model="designForm"
-      label-width="100px"
+    <el-dialog
+      v-model="designFormVisible"
+      width="30%"
+      title="上传设计图"
     >
-      <el-form-item
-        label="文件路径"
-        prop="product_design_path"
-        :rules="[{ required: true, message: '请输入内容' }]"
+      <el-form
+        ref="designForm"
+        :model="designForm"
+        label-width="100px"
       >
-        <el-input
-          v-model="designForm.product_design_path"
-          type="textarea"
-          :rows="6"
-          placeholder="请输入文件路径"
-          clearable
-          maxlength="200"
-          show-word-limit
-        />
-      </el-form-item>
-      <el-form-item>
-        <div style="font-size: 10px">
-          注：请填写结果文件所在公司盘位置
+        <el-form-item
+          label="文件路径"
+          prop="product_design_path"
+          :rules="[{ required: true, message: '请输入内容' }]"
+        >
+          <el-input
+            v-model="designForm.product_design_path"
+            type="textarea"
+            :rows="6"
+            placeholder="请输入文件路径"
+            clearable
+            maxlength="200"
+            show-word-limit
+          />
+        </el-form-item>
+        <el-form-item>
+          <div style="font-size: 10px">
+            注：请填写结果文件所在公司盘位置
+          </div>
+        </el-form-item>
+        <el-divider />
+        <div style="text-align: center">
+          <el-button
+            class="close-btn"
+            @click="closedesignForm"
+          >
+            取消
+          </el-button>
+          <el-button
+            type="primary"
+            @click="submitResult"
+          >
+            确定
+          </el-button>
         </div>
-      </el-form-item>
-      <el-divider />
-      <div style="text-align: center">
-        <el-button
-          class="close-btn"
-          @click="closedesignForm"
-        >
-          取消
-        </el-button>
-        <el-button
-          type="primary"
-          @click="submitResult"
-        >
-          确定
-        </el-button>
-      </div>
-    </el-form>
-  </el-dialog>
+      </el-form>
+    </el-dialog>
+  </section>
 </template>
 
 <script>

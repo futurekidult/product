@@ -61,7 +61,7 @@
         prop="prototype_file"
         :rules="[{ required: true, message: '请上传附件' }]"
       >
-        <base-upload 
+        <base-upload
           type="image"
           count="8"
           tag="手板样图片"

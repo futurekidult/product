@@ -84,26 +84,26 @@
         </div>
       </el-descriptions-item>
     </el-descriptions>
+
+    <mould-form
+      v-if="applyFormVisible"
+      title="申请开模"
+      :dialog-visible="applyFormVisible"
+      type="create"
+      :get-list="getList"
+      @hide-dialog="closeApplyForm"
+    />
+
+    <mould-form
+      v-if="editFormVisible"
+      title="编辑"
+      :dialog-visible="editFormVisible"
+      :edit-form="editForm"
+      type="edit"
+      :get-list="getList"
+      @hide-dialog="closeEditForm"
+    />
   </section>
-
-  <mould-form
-    v-if="applyFormVisible"
-    title="申请开模"
-    :dialog-visible="applyFormVisible"
-    type="create"
-    :get-list="getList"
-    @hide-dialog="closeApplyForm"
-  />
-
-  <mould-form
-    v-if="editFormVisible"
-    title="编辑"
-    :dialog-visible="editFormVisible"
-    :edit-form="editForm"
-    type="edit"
-    :get-list="getList"
-    @hide-dialog="closeEditForm"
-  />
 </template>
 
 <script>
@@ -114,7 +114,7 @@ export default {
     MouldForm
   },
   inject: ['getMould'],
-  props: ['progress', 'changeColor', 'getList','buttonState'],
+  props: ['progress', 'changeColor', 'getList', 'buttonState'],
   data() {
     return {
       applyFormVisible: false,

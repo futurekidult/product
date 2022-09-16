@@ -61,7 +61,7 @@
 <script>
 export default {
   inject: ['getMould'],
-  props: ['changeColor', 'progress','getList'],
+  props: ['changeColor', 'progress', 'getList'],
   methods: {
     async approvalTestingMould(id, result) {
       let body = {

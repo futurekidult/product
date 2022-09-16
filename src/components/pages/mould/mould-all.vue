@@ -197,7 +197,11 @@
 </template>
 
 <script>
-import { formatterTime, getOrganizationList, timestamp } from '../../../utils/index.js';
+import {
+  formatterTime,
+  getOrganizationList,
+  timestamp
+} from '../../../utils/index.js';
 
 export default {
   data() {
@@ -227,7 +231,7 @@ export default {
         label: 'name',
         disabled: 'disabled'
       },
-      defaultTime: new Date(2000,1,1,23,59,59),
+      defaultTime: new Date(2000, 1, 1, 23, 59, 59),
       currentPage: 1,
       pageSize: 10
     };
@@ -235,7 +239,7 @@ export default {
   mounted() {
     this.getMouldList();
     this.getState();
-    getOrganizationList().then( (res) => {
+    getOrganizationList().then((res) => {
       this.memberList = res;
     });
   },
@@ -278,7 +282,7 @@ export default {
       let body = {
         name: val.name,
         estimated_finish_time: timestamp(val.estimated_finish_time)
-      }
+      };
       try {
         await this.$store.dispatch('mould/createMould', body);
         this.mouldFormVisible = false;
