@@ -56,6 +56,7 @@ export default {
       getQualityDetail: this.getQualityDetail,
       getTestResultSchedule: () => {
         return {
+          id: this.testResultId,
           test_result_schedule: this.qualityRestResultSchedule
         };
       }
@@ -74,7 +75,8 @@ export default {
       qualityId: 0,
       progress: {},
       qualityTestId: 0,
-      hasUserTest: 0
+      hasUserTest: 0,
+      testResultId: 0
     };
   },
   mounted() {
@@ -151,6 +153,7 @@ export default {
           }
         });
         let { qualityDetail } = this.$store.state.sample.quality;
+        this.testResultId = qualityDetail.id;
         this.qualityProgress = qualityDetail.test_schedule;
         this.qualityAttachment = qualityDetail.test_result_file;
         this.qualityRestResultSchedule = qualityDetail.test_result_schedule;

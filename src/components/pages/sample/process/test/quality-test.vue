@@ -197,6 +197,9 @@ export default {
   computed: {
     testResultSchedule() {
       return this.getTestResultSchedule().test_result_schedule;
+    },
+    testResultId() {
+      return this.getTestResultSchedule().id;
     }
   },
   watch: {
@@ -265,8 +268,7 @@ export default {
     },
     async approvalTestResult(val) {
       let body = {
-        sample_id: +this.$route.params.id,
-        test_apply_id: this.id,
+        id: this.testResultId,
         approval_result: val
       };
       try {
