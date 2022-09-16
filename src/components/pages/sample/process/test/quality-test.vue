@@ -48,6 +48,43 @@
     </el-descriptions>
 
     <div class="test-title">
+      测试结果审批进度表
+    </div>
+
+    <el-descriptions
+      :column="4"
+      direction="vertical"
+      border
+    >
+      <el-descriptions-item label="品质专员">
+        {{ testResultSchedule.quality_specialist }}
+      </el-descriptions-item>
+      <el-descriptions-item label="实际完成时间">
+        {{ formatterTime(testResultSchedule.actual_finish_time) }}
+      </el-descriptions-item>
+      <el-descriptions-item label="状态">
+        <div :class="changeApprovalColor(testResultSchedule.state)">
+          {{ testResultSchedule.state_desc }}
+        </div>
+      </el-descriptions-item>
+      <el-descriptions-item
+        v-if="testResultSchedule.state === 20"
+        label="操作"
+        width="300px"
+      >
+        <el-button @click="approvalTestResult(0)">
+          测试不通过
+        </el-button>
+        <el-button
+          type="success"
+          @click="approvalTestResult(1)"
+        >
+          测试通过
+        </el-button>
+      </el-descriptions-item>
+    </el-descriptions>
+
+    <div class="test-title">
       测试结果问题表
     </div>
     <test-questions
@@ -131,11 +168,13 @@
 
 <script>
 import TestQuestions from '../../common/test-template.vue';
+import { formatterTime, changeApprovalColor } from '../../../../../utils/index';
 
 export default {
   components: {
     TestQuestions
   },
+  inject: ['getTestResultSchedule', 'getQualityDetail'],
   props: [
     'progress',
     'attachment',
@@ -155,12 +194,19 @@ export default {
       file: this.attachment
     };
   },
+  computed: {
+    testResultSchedule() {
+      return this.getTestResultSchedule().test_result_schedule;
+    }
+  },
   watch: {
     attachment(val) {
       this.file = val;
     }
   },
   methods: {
+    formatterTime,
+    changeApprovalColor,
     async confirmTestResult(val) {
       let body = val;
       body.id = this.testId;
@@ -216,6 +262,19 @@ export default {
     },
     getUploadFile(e) {
       this.file = e;
+    },
+    async approvalTestResult(val) {
+      let body = {
+        sample_id: +this.$route.params.id,
+        test_apply_id: this.id,
+        approval_result: val
+      };
+      try {
+        await this.$store.dispatch('sample/quality/approvalTestResult', body);
+        this.getQualityDetail();
+      } catch (err) {
+        return;
+      }
     }
   }
 };

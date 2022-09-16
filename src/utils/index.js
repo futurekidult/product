@@ -190,3 +190,13 @@ export const changeDemandColor = (val) => {
     return 'danger';
   }
 };
+
+export const changeApprovalColor = (val) => {
+  if (val <= 20) {
+    return 'result-ing';
+  } else if (val === 30) {
+    return 'result-fail';
+  } else {
+    return 'result-pass';
+  }
+};

@@ -53,7 +53,12 @@ export default {
     return {
       getProofing: this.getProofingProgress,
       getTest: this.getTestProgress,
-      getQualityDetail: this.getQualityDetail
+      getQualityDetail: this.getQualityDetail,
+      getTestResultSchedule: () => {
+        return {
+          test_result_schedule: this.qualityRestResultSchedule
+        };
+      }
     };
   },
   data() {
@@ -65,9 +70,10 @@ export default {
       qualityProgress: {},
       qualityAttachment: {},
       qualitySubmitState: 0,
+      qualityRestResultSchedule: {},
       qualityId: 0,
       progress: {},
-      qualityTestId:0,
+      qualityTestId: 0,
       hasUserTest: 0
     };
   },
@@ -103,7 +109,10 @@ export default {
           }
         });
         this.proofingProgress = this.$store.state.sample.proofingProgress;
-        if(this.proofingProgress.submit_time !== undefined && this.proofingProgress.actual_finish_time !== undefined){
+        if (
+          this.proofingProgress.submit_time !== undefined &&
+          this.proofingProgress.actual_finish_time !== undefined
+        ) {
           changeTimestamp(this.proofingProgress, 'submit_time');
           changeTimestamp(this.proofingProgress, 'actual_finish_time');
         }
@@ -144,10 +153,11 @@ export default {
         let { qualityDetail } = this.$store.state.sample.quality;
         this.qualityProgress = qualityDetail.test_schedule;
         this.qualityAttachment = qualityDetail.test_result_file;
+        this.qualityRestResultSchedule = qualityDetail.test_result_schedule;
         this.qualitySubmitState = qualityDetail.is_submit;
         this.qualityId = qualityDetail.test_apply_id;
         this.qualityTestId = qualityDetail.id;
-        if(this.qualityProgress.actual_finish_time !== undefined){
+        if (this.qualityProgress.actual_finish_time !== undefined) {
           changeTimestamp(this.qualityProgress, 'actual_finish_time');
         }
       } catch (err) {
