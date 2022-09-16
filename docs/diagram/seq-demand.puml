@@ -65,20 +65,20 @@ partition "**产品方案需运营主管审核**" {
     //新品详情产品方案(对应的组件: product-plan)//
     // 10:待完成, 20:审批中, 30:审批驳回, 40:审批通过, 50:已完成 //
   end note
-  :请求"/api/survey/solutions/detail?id="接口, 获取到调研进度表(progress)、产品方案表单数据(report);
+  :请求"/api/survey/solutions/detail?id="接口, 获取到调研进度表(progress)、产品方案表单数据(report)以及调研进度id(survey_schedule_id)和产品方案调研id(survey_id);
   if(state === 10) then (yes)
     :表单项、提交按钮均可编辑;
     :提交,校验必填项;
-    :获取到进度id(progress.id =>survey_schedule_id)、产品id(product_id),传递请求参数,请求"/api/survey/solutions/create"接口;
+    :获取到进度id(res.data.survey_schedule_id =>survey_schedule_id)、产品id(product_id),传递请求参数,请求"/api/survey/solutions/create"接口;
   else if(state === 20) then (yes) 
     :表单项、提交按钮均不可编辑;
     :出现审批按钮;
-    :获取到产品方案id(report.id=>id)、审批结果(0: 不通过; 1: 通过;);
+    :获取到产品方案id(res.data.survey_id=>id)、审批结果(0: 不通过; 1: 通过;);
     :点击审批按钮,请求"/api/survey/solutions/approve"接口;
   else if(state === 30) then(yes)
     :表单项、提交按钮均可编辑;
     :提交,校验必填项;
-    :获取到产品方案id(report.id=>id)、产品id(product_id),传递请求参数,请求"/api/survey/solutions/update"接口;
+    :获取到产品方案id(res.data.survey_id=>id)、产品id(product_id),传递请求参数,请求"/api/survey/solutions/update"接口;
   else if(state === 50) then (yes)
     :表单项、提交按钮均不可编辑;
     end
@@ -98,15 +98,15 @@ partition "**项目调研版块新增提交意见功能**" {
     //新建一个共用的组件: survey-suggestion//
   end note
   :获取调研id(survey_id)和调研进度id(survey_schedule_id);
-  :watch监测调研状态,当它为已完成时,请求"api/survey/market、platform、user-analysis、product-solutions、risk、user-survey/suggestion/list?"接口;
+  :当调研状态为已完成时,请求"/api/survey/suggestion/list/market、platform、user-analysis、product-solutions、risk、user-survey?"接口;
   :请求成功后显示提交意见模块;
   split
     :提交意见;
     :提交意见弹窗显示(与补充说明弹窗共用);
     :提交,校验必填项;
-    :传递调研ID(survey_id)和调研进度ID(survey_schedule_id),请求"/api/survey/market、platform、user-analysis、product-solutions、risk、user-survey/suggestion/create"接口;
+    :传递调研ID(survey_id)和调研进度ID(survey_schedule_id),请求"/api/survey/suggestion/create/market、platform、user-analysis、product-solutions、risk、user-survey"接口;
     :请求成功后关闭弹窗;
-    :刷新页面(请求"api/survey/market、platform、user-analysis、product-solutions、risk、user-survey/suggestion/list?"接口);
+    :刷新页面(请求"/api/survey/suggestion/list/market、platform、user-analysis、product-solutions、risk、user-survey?"接口);
   split again
     :编辑;
     if(edit_state === 1) then (yes)
@@ -114,9 +114,9 @@ partition "**项目调研版块新增提交意见功能**" {
       :编辑意见弹窗显示;
       :提交,校验必填项;
       :获取到意见id(id)、调研进度id(survey_schedule_id)、意见内容(suggestion);
-      :请求"/api/survey/market、platform、user-analysis、product-solutions、risk、user-survey/suggestion/update"接口;
+      :请求"/api/survey/suggestion/update/market、platform、user-analysis、product-solutions、risk、user-survey"接口;
       :请求成功后关闭弹窗;
-      :刷新页面(请求"api/survey/market、platform、user-analysis、product-solutions、risk、user-survey/suggestion/list?"接口);
+      :刷新页面(请求"/api/survey/suggestion/list/market、platform、user-analysis、product-solutions、risk、user-survey?"接口);
     else (no)
       :编辑按钮置灰;
       end
@@ -126,9 +126,9 @@ partition "**项目调研版块新增提交意见功能**" {
     if(edit_state === 1) then (yes)
       :删除确认弹窗显示;
       :获取到意见id(id)、调研进度id(survey_schedule_id);
-      :请求"/api/survey/market、platform、user-analysis、product-solutions、risk、user-survey/suggestion/delete"接口;
+      :请求"//api/survey/suggestion/delete/market、platform、user-analysis、product-solutions、risk、user-survey"接口;
       :请求成功后关闭弹窗;
-      :刷新页面(请求"api/survey/market、platform、user-analysis、product-solutions、risk、user-survey/suggestion/list?"接口);
+      :刷新页面(请求"/api/survey/suggestion/list/market、platform、user-analysis、product-solutions、risk、user-survey?"接口);
     else (no)
       :删除按钮置灰;
       end
@@ -147,36 +147,18 @@ partition "**品质测试结果需运营确认**" {
     //品质测试(相对应的组件: quality-test)//
     //10:待完成, 20:审批中, 30:审批驳回, 40:已完成, 50:已终止//
   end note
-  :测试进度表新增审批状态(test_schedule.approval_state、test_schedule.approval_state_desc);
-  :点击提交成功后,刷新测试进度表;
-  if(approval_state ===10) then (yes) 
-    :提交按钮可见且可编辑,测试确认按钮和测试审批按钮不可见;
-    :点击提交,请求提交接口(已做,可忽略);
-  else if(approval_state === 20) then (yes)
-    :提交按钮,测试确认按钮和测试审批按钮均可见;
-    :获取样品id(sample_id)、测试申请id(test_apply_id) ->在"/api/sample/quality-test/get/?sample_id="接口中可获取到;
-    :点击审批按钮,将审批结果(approval_result)以及上面获取到的参数一起传递,请求"/api/sample/quality-test/result/approval"接口;
-    :刷新测试进度表(请求"/api/sample/quality-test/get/?sample_id="接口),更新进度表状态;
-    else if(approval_state === 30) then (yes)
-      :提交按钮显示且可编辑,审批按钮隐藏;
-    else if(state === 10 && approval_state === 40) then (yes)
-      :审批通过按钮显示且不可编辑,审批不通过按钮隐藏;
-      :测试确认按钮显示且可编辑;
-      :请求测试结果确认接口(已做,可忽略);
-    else if(state === 20 && approval_state === 40) then (yes)
-      :测试通过按钮显示且不可编辑,测试通过按钮隐藏;
-      :审批通过按钮显示且不可编辑,审批不通过按钮隐藏;
-    else (no)
-      end
-    note
-      伪代码
-      ----
-      <el-button v-if="approval_state ===10 ||  || approval_state === 30">提交</el-button>
-      <el-button v-if="(approval_state === 20 || approval_state === 40) && state === 10">测试不通过</el-button>
-      <el-button v-if="approval_state === 20 || approval_state === 40" :disabled="state !== 10">测试通过</el-button>
-      <el-button v-if="state === 10 && approval_state === 20">审批不通过</el-button>
-      <el-button v-if="approval_state === 20 || approval_state === 40" :disabled="approval_state === 40">审批通过</el-button>
-    end note
+  :请求"/api/sample/quality-test/get?"接口获取测试结果审批进度表(test_result_schedule)数据;
+  if(state === 10) then (yes)
+    :审批按钮隐藏;
+  else if(state === 20) then (yes)
+    :审批按钮显示;
+    :获取到样品id(sample_id)、测试申请id(test_apply_id);
+    :点击审批按钮,获取审批结果(approval_result)请求"/api/sample/quality-test/result/approval";
+    :刷新品质测试页面(请求"/api/sample/quality-test/get?"接口);
+  else if(state === 30 || state === 50) then (yes)
+    :审批按钮隐藏;
+  else 
+    end
   endif
 }
 end
@@ -188,10 +170,10 @@ partition "**新增项目角色管理,将系统角色和项目角色分开**" {
   note
     涉及范围
     ----
-    //router.js -> 引入新建的项目角色组件ProjectRoleList(url: /role-list/project),将原来的RoleList替换成系统角色SystemRoleList(/role-list/system)//
+    //router.js -> 引入新建的项目角色组件ProjectRoleList(url: /role-list/product),将原来的RoleList替换成系统角色SystemRoleList(/role-list/system)//
     //manage.vue -> 引入项目角色icon//
-    //新建的project-role组件//
-    //原来的role-list重命名为system-role//
+    //新建的product-role-list组件//
+    //原来的role-list重命名为system-role-list//
     //共用的role-form弹窗组件//
   end note
   :请求"/api/system/product-role/list"接口;
@@ -200,18 +182,7 @@ partition "**新增项目角色管理,将系统角色和项目角色分开**" {
   :获取表单项数据
     - 传递id(项目角色id)
     - 请求"/api/system/product-role/get?id="接口
-    - 请求成功后,弹出编辑弹窗,渲染表单项(需同时更改system-role.vue中的edit请求);
-  note right
-    伪代码
-    ----
-    <role-form
-      ...
-      category="project" //新增category属性来区别是系统角色编辑还是项目角色编辑
-    />
-    ----
-    role-form.vue
-    需修改getRole()和updateRole(),增加判断
-  end note
+    - 请求成功后,弹出编辑弹窗,渲染表单项(需同时更改system-role-list.vue中的edit请求);
   :获取项目角色id(id)和权限数组(privilege_ids);
   :请求"/system/product-role/update"接口;
   :请求成功后关闭弹窗;
