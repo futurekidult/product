@@ -22,9 +22,9 @@
         width="100px"
       />
       <el-table-column
-        label="运营负责人"
-        prop="operations_principal"
-         width="200px"
+        label="运营专员"
+        prop="operations_specialist"
+        width="200px"
       />
       <el-table-column
         label="计划完成时间"
@@ -41,7 +41,7 @@
         prop="result_path"
         show-overflow-tooltip
       />
-      <el-table-column 
+      <el-table-column
         label="状态"
         width="200px"
       >
@@ -56,7 +56,7 @@
         width="150px"
       >
         <template #default="scope">
-          <el-button 
+          <el-button
             :disabled="scope.row.result_path !== ''"
             @click="showResultForm(scope.row.id)"
           >
@@ -73,54 +73,55 @@
       @change-size="changePageSize"
       @change-page="changeCurrentPage"
     />
-  </div>
-  <el-dialog
-    v-model="resultFormVisible"
-    width="30%"
-    title="上传结果"
-  >
-    <el-form
-      ref="resultForm"
-      :model="resultForm"
-      label-width="100px"
+
+    <el-dialog
+      v-model="resultFormVisible"
+      width="30%"
+      title="上传结果"
     >
-      <el-form-item
-        label="文件路径"
-        prop="result_path"
-        :rules="[{ required: true, message: '请输入内容' }]"
+      <el-form
+        ref="resultForm"
+        :model="resultForm"
+        label-width="100px"
       >
-        <el-input
-          v-model="resultForm.result_path"
-          type="textarea"
-          :rows="6"
-          clearable
-          placeholder="请输入内容"
-          maxlength="200"
-          show-word-limit
-        />
-      </el-form-item>
-      <el-form-item label="">
-        <div style="font-size: 10px">
-          注：请填写结果文件所在公司盘位置
+        <el-form-item
+          label="文件路径"
+          prop="result_path"
+          :rules="[{ required: true, message: '请输入内容' }]"
+        >
+          <el-input
+            v-model="resultForm.result_path"
+            type="textarea"
+            :rows="6"
+            clearable
+            placeholder="请输入内容"
+            maxlength="200"
+            show-word-limit
+          />
+        </el-form-item>
+        <el-form-item label="">
+          <div style="font-size: 10px">
+            注：请填写结果文件所在公司盘位置
+          </div>
+        </el-form-item>
+        <el-divider />
+        <div style="text-align: center">
+          <el-button
+            class="close-btn"
+            @click="closeResultForm"
+          >
+            取消
+          </el-button>
+          <el-button
+            type="primary"
+            @click="submitResult"
+          >
+            确定
+          </el-button>
         </div>
-      </el-form-item>
-      <el-divider />
-      <div style="text-align: center">
-        <el-button
-          class="close-btn"
-          @click="closeResultForm"
-        >
-          取消
-        </el-button>
-        <el-button
-          type="primary"
-          @click="submitResult"
-        >
-          确定
-        </el-button>
-      </div>
-    </el-form>
-  </el-dialog>
+      </el-form>
+    </el-dialog>
+  </div>
 </template>
 
 <script>

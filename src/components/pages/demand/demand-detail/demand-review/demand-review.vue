@@ -339,11 +339,24 @@
               />
             </el-form-item>
             <el-form-item
-              label="运营负责人"
-              prop="operations_principal_id"
+              label="运营主管"
+              prop="operations_supervisor_id"
             >
               <el-tree-select
-                v-model="reviewForm.operations_principal_id"
+                v-model="reviewForm.operations_supervisor_id"
+                :data="memberList"
+                clearable
+                filterable
+                :props="defaultProps"
+                class="review-form_item"
+              />
+            </el-form-item>
+            <el-form-item
+              label="运营专员"
+              prop="operations_specialist_id"
+            >
+              <el-tree-select
+                v-model="reviewForm.operations_specialist_id"
                 :data="memberList"
                 clearable
                 filterable
@@ -614,7 +627,13 @@ export default {
             message: '请选择'
           }
         ],
-        operations_principal_id: [
+        operations_supervisor_id: [
+          {
+            required: true,
+            message: '请选择'
+          }
+        ],
+        operations_specialist_id: [
           {
             required: true,
             message: '请选择'
