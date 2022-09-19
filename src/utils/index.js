@@ -58,6 +58,7 @@ export const getTask = (val) => {
     30: 'product_survey',
     40: 'product_survey',
     50: 'product_survey',
+    51: 'product_survey',
     60: 'product_survey',
     70: 'product_survey',
     80: 'product_survey',
