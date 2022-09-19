@@ -69,7 +69,10 @@
             >
               参数修改确认
             </el-button>
-            <span class="table-btn">|</span>
+            <span
+              v-if="!isShow"
+              class="table-btn"
+            >|</span>
             <el-button
               v-if="isShow"
               type="text"
