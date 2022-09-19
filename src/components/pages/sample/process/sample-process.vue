@@ -58,7 +58,8 @@ export default {
         return {
           supply: this.testSupply
         };
-      }
+      },
+      refreshTestSupply: this.getTestSupply
     };
   },
   data() {

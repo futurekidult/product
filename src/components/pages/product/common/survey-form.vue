@@ -175,21 +175,7 @@ export default {
           }
         ]
       },
-      reviewOptions: [
-        {
-          label: '请选择',
-          value: -1,
-          disabled: true
-        },
-        {
-          label: '通过',
-          value: 1
-        },
-        {
-          label: '不通过',
-          value: 0
-        }
-      ],
+      reviewOptions: this.$global.reviewOptions,
       defaultTime: new Date(2000, 1, 1, 23, 59, 59),
       memberList: [],
       defaultProps: {

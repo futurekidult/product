@@ -22,7 +22,7 @@
       <el-table-column
         label="序号"
         type="index"
-        width="60px"
+        width="100"
       />
       <el-table-column
         label="创建人"
@@ -31,12 +31,12 @@
       <el-table-column
         label="提交时间"
         prop="submit_time"
-        width="200px"
+        width="200"
       />
       <el-table-column
         label="评审完成时间"
         prop="review_finish_time"
-        width="200px"
+        width="200"
       />
       <el-table-column label="状态">
         <template #default="scope">
@@ -81,7 +81,7 @@
       :dialog-visible="testApplyVisible"
       title="申请样品测试"
       type="apply"
-      @hide-dialog="closeApplyForm"
+      @hide-dialog="closeTestForm"
     />
 
     <test-form
@@ -99,7 +99,46 @@
       :dialog-visible="resultVisible"
       title="查看"
       type="view"
-      @hide-dialog="closeResultForm"
+      @hide-dialog="closeViewForm"
+    />
+
+    <test-supply
+      v-if="testSupplyVisible"
+      :id="+$route.params.id"
+      :dialog-visible="testSupplyVisible"
+      type="supplyment"
+      title="补充测试内容"
+      label="测试补充说明"
+      prop="content"
+      action="supplement create"
+      :get-list="refreshTestSupply"
+      @hide-dialog="closeTestForm"
+    />
+
+    <test-supply
+      v-if="testSupplyReviewVisible"
+      :update-id="supplyId"
+      :dialog-visible="testSupplyReviewVisible"
+      type="supplyment"
+      title="测试补充内容评审"
+      label="测试补充说明"
+      prop="content"
+      action="supplement review"
+      :value="supplyItemValue"
+      :get-list="refreshTestSupply"
+      @hide-dialog="closeReviewForm"
+    />
+
+    <test-supply
+      v-if="testSupplyViewVisible"
+      :dialog-visible="testSupplyViewVisible"
+      type="supplyment"
+      title="测试补充内容"
+      label="测试补充说明"
+      prop="content"
+      action="supplement view"
+      :value="supplyItemValue"
+      @hide-dialog="closeViewForm"
     />
 
     <el-dialog
@@ -146,11 +185,14 @@
 <script>
 import TestForm from '../common/test-form.vue';
 import { getOrganizationList } from '../../../../utils/index';
+import TestSupply from '../../../common/supply-dialog.vue';
 
 export default {
   components: {
-    TestForm
+    TestForm,
+    TestSupply
   },
+  inject: ['refreshTestSupply'],
   props: [
     'applyList',
     'buttonState',
@@ -172,7 +214,12 @@ export default {
         children: 'children',
         label: 'name',
         disabled: 'disabled'
-      }
+      },
+      testSupplyVisible: false,
+      testSupplyReviewVisible: false,
+      testSupplyViewVisible: false,
+      supplyId: 0,
+      supplyItemValue: ''
     };
   },
   mounted() {
@@ -205,31 +252,68 @@ export default {
         return;
       }
     },
+    async viewSupplement(id, type) {
+      try {
+        await this.$store.dispatch('sample/getSupplyItem', {
+          params: {
+            id
+          }
+        });
+        if (type === 'review') {
+          this.supplyId = id;
+          this.supplyItemValue = this.$store.state.sample.supplyItem.content;
+          this.testSupplyReviewVisible = true;
+        } else {
+          this.supplyItemValue = this.$store.state.sample.supplyItem;
+          this.testSupplyViewVisible = true;
+        }
+      } catch (err) {
+        return;
+      }
+    },
     showTestForm() {
       if (this.type === 'apply') {
         this.testApplyVisible = true;
+      } else {
+        this.testSupplyVisible = true;
       }
     },
-    closeApplyForm() {
-      this.testApplyVisible = false;
+    closeTestForm() {
+      if (this.type === 'apply') {
+        this.testApplyVisible = false;
+      } else {
+        this.testSupplyVisible = false;
+      }
     },
     showReviewForm(id) {
       if (this.type === 'apply') {
         this.applyReviewVisible = true;
         this.testId = id;
+      } else {
+        this.viewSupplement(id, 'review');
       }
     },
     closeReviewForm() {
-      this.applyReviewVisible = false;
+      if (this.type === 'apply') {
+        this.applyReviewVisible = false;
+      } else {
+        this.testSupplyReviewVisible = false;
+      }
     },
     showViewForm(id) {
       if (this.type === 'apply') {
         this.testId = id;
         this.resultVisible = true;
+      } else {
+        this.viewSupplement(id, 'view');
       }
     },
-    closeResultForm() {
-      this.resultVisible = false;
+    closeViewForm() {
+      if (this.type === 'apply') {
+        this.resultVisible = false;
+      } else {
+        this.testSupplyViewVisible = false;
+      }
     },
     showEditForm(id) {
       this.editSpecialistVisible = true;
