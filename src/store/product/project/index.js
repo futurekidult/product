@@ -8,7 +8,6 @@ export default {
       project: {},
       profit: {},
       schedule: {},
-      specialist: [],
       profitCalculation: {},
       adjustment: {},
       adjustmentList: [],
@@ -30,9 +29,6 @@ export default {
     },
     setSchedule(state, payload) {
       state.schedule = payload;
-    },
-    setSpecialist(state, payload) {
-      state.specialist = payload;
     },
     setProfitCalculation(state, payload) {
       state.profitCalculation = payload;
@@ -133,24 +129,6 @@ export default {
           }
         });
     },
-    async getOperationsSpecialist(context, payload) {
-      await axios
-        .get('/project/operations-specialist/get', payload)
-        .then((res) => {
-          if (res.code === 200) {
-            context.commit('setSpecialist', res.data.list);
-          }
-        });
-    },
-    async updateOperationsSpecialist(_, payload) {
-      await axios
-        .post('/project/operations-specialist/update', payload)
-        .then((res) => {
-          if (res.code === 200) {
-            ElMessage.success(res.message);
-          }
-        });
-    },
     async getProfitCalculation(context, payload) {
       await axios
         .get('/project/profit-calculation/get', payload)
@@ -238,11 +216,13 @@ export default {
       });
     },
     async getProfitParams(context, payload) {
-      await axios.get('/project/profit-calculation-rule/get', payload).then((res) => {
-        if (res.code === 200) {
-          context.commit('setProfitParams', res.data);
-        }
-      });
+      await axios
+        .get('/project/profit-calculation-rule/get', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            context.commit('setProfitParams', res.data);
+          }
+        });
     },
     async updateProfitCalculationCoefficient(_, payload) {
       await axios
@@ -262,10 +242,10 @@ export default {
     },
     async getCurrencyList(context, payload) {
       await axios.get('/option/currency/list', payload).then((res) => {
-        if(res.code === 200) {
+        if (res.code === 200) {
           context.commit('setCurrencyList', res.data.list);
         }
-      })
+      });
     }
   }
 };
