@@ -370,6 +370,12 @@
         </el-button>
       </el-form-item>
     </el-form>
+
+    <survey-suggestion
+      v-if="progress.state === 50"
+      :ids="$store.state.product.survey.plan.ids"
+      type="product-solutions"
+    />
   </div>
 </template>
 
@@ -377,11 +383,13 @@
 import SurveySchedule from '../../common/survey-schedule.vue';
 import CompetitiveTable from '../../common/competitive-table.vue';
 import { checkValid } from '../../../../../utils';
+import SurveySuggestion from '../../common/survey-suggestion.vue';
 
 export default {
   components: {
     SurveySchedule,
-    CompetitiveTable
+    CompetitiveTable,
+    SurveySuggestion
   },
   inject: ['getBase'],
   props: [

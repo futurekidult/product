@@ -5,12 +5,17 @@ export default {
   state() {
     return {
       plan: {},
-      planLoading: true
+      planLoading: true,
+      ids: {}
     };
   },
   mutations: {
     setPlan(state, payload) {
       state.plan = payload;
+      state.ids = {
+        survey_id: payload.survey_id,
+        survey_schedule_id: payload.survey_schedule_id
+      };
     },
     setPlanLoading(state, payload) {
       state.planLoading = payload;

@@ -141,7 +141,7 @@
             @focus="getCountryList"
             @change="clearStateCity(index)"
           >
-            <el-option 
+            <el-option
               v-for="country in countryOption"
               :key="country.id"
               :label="country.name"
@@ -162,7 +162,7 @@
             @focus="getRegionList(item.country_id)"
             @clear="clearCity(index)"
           >
-            <el-option 
+            <el-option
               v-for="region in regionOption"
               :key="region.id"
               :label="region.name"
@@ -182,7 +182,7 @@
             placeholder="请选择城市"
             @focus="getCityList(item.country_id, item.region_id)"
           >
-            <el-option 
+            <el-option
               v-for="city in cityOption"
               :key="city.id"
               :label="city.name"
@@ -190,7 +190,7 @@
             />
           </el-select>
         </el-form-item>
-        <base-delete 
+        <base-delete
           :id="index"
           mode="user_analysis-btn"
           content=""
@@ -213,7 +213,7 @@
         :key="index"
         :label="'使用场景' + (index + 1)"
         :prop="`usage_scenario[${index}]`"
-        :rules="[{ required: true,message: '请输入使用场景'}, checkValid(15)]"
+        :rules="[{ required: true, message: '请输入使用场景' }, checkValid(15)]"
       >
         <div class="usage-scenario_include-delete">
           <el-input
@@ -224,7 +224,7 @@
             maxlength="15"
             show-word-limit
           />
-          <base-delete 
+          <base-delete
             :id="index"
             mode="user_analysis-btn"
             content=""
@@ -259,7 +259,7 @@
         label="分析报告"
         prop="attachment"
       >
-        <base-upload 
+        <base-upload
           type="file"
           tag="分析报告"
           url="user-analysis-report"
@@ -278,19 +278,34 @@
         </el-button>
       </el-form-item>
     </el-form>
+
+    <survey-suggestion
+      v-if="progress.state === 50"
+      :ids="$store.state.product.survey.userAnalysis.ids"
+      type="user-analysis"
+    />
   </div>
 </template>
 
 <script>
 import { checkValid } from '../../../../../utils';
 import SurveySchedule from '../../common/survey-schedule.vue';
+import SurveySuggestion from '../../common/survey-suggestion.vue';
 
 export default {
   components: {
-    SurveySchedule
+    SurveySchedule,
+    SurveySuggestion
   },
   inject: ['getBase'],
-  props: ['progress', 'attachment', 'analysisForm', 'getList', 'countryVisible', 'scenarioVisible'],
+  props: [
+    'progress',
+    'attachment',
+    'analysisForm',
+    'getList',
+    'countryVisible',
+    'scenarioVisible'
+  ],
   data() {
     return {
       fileList: [],
@@ -393,7 +408,7 @@ export default {
     },
     async getCountryList() {
       let country = JSON.parse(localStorage.getItem('country'));
-      if(country) {
+      if (country) {
         this.countryOption = country;
       } else {
         try {
@@ -405,28 +420,30 @@ export default {
       }
     },
     async getRegionList(val) {
-      if(val) {
+      if (val) {
         try {
-          await this.$store.dispatch('getRegionList',{ params: { country_id: val }});
+          await this.$store.dispatch('getRegionList', {
+            params: { country_id: val }
+          });
           this.regionOption = this.$store.state.regionList;
         } catch (err) {
           return;
         }
       } else {
-       this.$message.warning('请先选择国家');
-       this.regionOption = [];
+        this.$message.warning('请先选择国家');
+        this.regionOption = [];
       }
     },
-  async getCityList(country, region) {
-    if(country && region) {
-      try {
-        await this.$store.dispatch('getCityList',{ 
-          params: { 
-            country_id: country,
-            state_id: region
-          }
-        });
-        this.cityOption = this.$store.state.cityList;
+    async getCityList(country, region) {
+      if (country && region) {
+        try {
+          await this.$store.dispatch('getCityList', {
+            params: {
+              country_id: country,
+              state_id: region
+            }
+          });
+          this.cityOption = this.$store.state.cityList;
         } catch (err) {
           return;
         }
@@ -437,9 +454,9 @@ export default {
     },
     getState() {
       this.form.country.forEach((item) => {
-        if(item.country_id) {
+        if (item.country_id) {
           this.getRegionList(item.country_id);
-          if(item.region_id) {
+          if (item.region_id) {
             this.getCityList(item.country_id, item.region_id);
           }
         }
@@ -482,14 +499,14 @@ export default {
       }
     },
     clearStateCity(index) {
-        this.form.country[index].region_id = null;
-        this.form.country[index].city_id = null;
+      this.form.country[index].region_id = null;
+      this.form.country[index].city_id = null;
     },
     clearCity(index) {
-        this.form.country[index].city_id = null;
+      this.form.country[index].city_id = null;
     },
     getReturnData(val, str) {
-      if(str === 'country') {
+      if (str === 'country') {
         this.form.country = val;
       } else {
         this.form.usage_scenario = val;

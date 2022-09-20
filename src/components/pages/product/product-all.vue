@@ -100,7 +100,7 @@
         </el-table-column>
         <el-table-column
           label="品类"
-          prop="category_desc"
+          prop="category"
         />
         <el-table-column
           label="产品定位"
@@ -130,7 +130,7 @@
               <div v-if="scope.row.state !== 90">
                 <el-button
                   type="text"
-                  @click="showEditForm(scope.row.id)"
+                  @click="showEditForm(scope.row.id, scope.row.category_id)"
                 >
                   编辑
                 </el-button>
@@ -190,6 +190,22 @@
               @get-file="getUploadFile"
             />
           </el-form-item>
+          <el-form-item
+            label="小品类"
+            prop="small_category_id"
+          >
+            <el-select
+              v-model="editForm.small_category_id"
+              placeholder="请选择小品类"
+            >
+              <el-option
+                v-for="item in smallCategoryList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
           <el-divider />
           <div style="text-align: right">
             <el-button
@@ -229,6 +245,12 @@ export default {
             required: true,
             message: '请上传附件'
           }
+        ],
+        small_category_id: [
+          {
+            required: true,
+            message: '请选择小品类'
+          }
         ]
       },
       imgList: [],
@@ -238,7 +260,8 @@ export default {
       categoryList: [],
       productState: [],
       currentPage: 1,
-      pageSize: 10
+      pageSize: 10,
+      smallCategoryList: []
     };
   },
   mounted() {
@@ -261,10 +284,16 @@ export default {
         }
       }
     },
-    async getCategoryList() {
+    async getCategoryList(id) {
+      let params = id ? { id } : {};
       try {
-        await this.$store.dispatch('demand/getCategoryList');
-        this.categoryList = this.$store.state.demand.categoryList;
+        await this.$store.dispatch('demand/getCategoryList', { params });
+        let list = this.$store.state.demand.categoryList;
+        if (!id) {
+          this.categoryList = list;
+        } else {
+          this.smallCategoryList = list[0].children;
+        }
       } catch (err) {
         return;
       }
@@ -274,9 +303,10 @@ export default {
       this.$router.push(`/product-list/${id}`);
       this.$store.commit('setEntry', 'detail');
     },
-    async showEditForm(id) {
+    async showEditForm(id, categoryId) {
       this.productId = id;
       try {
+        this.getCategoryList(categoryId);
         await this.$store.dispatch('product/getSingleDetailMsg', {
           params: {
             id
@@ -284,6 +314,7 @@ export default {
         });
         let { singleProductDetail } = this.$store.state.product;
         this.editForm.name = singleProductDetail.name;
+        this.editForm.small_category_id = singleProductDetail.small_category_id;
         this.imgList = singleProductDetail.images;
         this.editVisible = true;
       } catch (err) {
@@ -307,12 +338,10 @@ export default {
       }
     },
     async updateProductMsg() {
+      let body = this.editForm;
+      body.id = this.productId;
       try {
-        await this.$store.dispatch('product/updateSingleProductMsg', {
-          id: this.productId,
-          name: this.editForm.name,
-          images: this.editForm.images
-        });
+        await this.$store.dispatch('product/updateSingleProductMsg', body);
         this.editVisible = false;
         this.getProductList();
       } catch (err) {

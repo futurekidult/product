@@ -193,6 +193,7 @@ body {
 }
 
 .apply-item,
+.suggestion-item,
 .proofing-item,
 .test-item,
 .member-item,
