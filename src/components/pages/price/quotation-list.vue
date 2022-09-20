@@ -59,11 +59,16 @@
           :data="quotationList.list"
         >
           <el-table-column
-            label="序号"
-            type="index"
-            width="60px"
+            fixed
+            label="报价ID"
+            prop="id"
+            width="100"
           />
-          <el-table-column label="供应商名称">
+          <el-table-column
+            fixed
+            label="供应商名称"
+            min-width="200"
+          >
             <template #default="scope">
               <el-button
                 type="text"
@@ -74,20 +79,27 @@
             </template>
           </el-table-column>
           <el-table-column
+            fixed
             label="采购员"
             prop="purchase_specialist"
           />
           <el-table-column
             label="报价时间"
             prop="create_time"
-            width="200px"
+            width="200"
           />
-          <el-table-column label="报价">
+          <el-table-column
+            label="报价"
+            min-width="150"
+          >
             <template #default="scope">
               ￥{{ scope.row.quote_amount_rmb }}
             </template>
           </el-table-column>
-          <el-table-column label="采购目标价">
+          <el-table-column
+            label="采购目标价"
+            width="100"
+          >
             <template #default="scope">
               <el-button
                 type="text"
@@ -100,9 +112,12 @@
           <el-table-column
             label="报价有效期"
             prop="quote_validity"
-            width="200px"
+            width="200"
           />
-          <el-table-column label="状态">
+          <el-table-column
+            label="状态"
+            fixed="right"
+          >
             <template #default="scope">
               <div :class="changeCellColor(scope.row.state)">
                 {{ scope.row.state_desc }}
@@ -111,12 +126,13 @@
           </el-table-column>
           <el-table-column
             label="最终确定定价时间"
-            width="200px"
+            width="200"
             prop="confirm_time"
           />
           <el-table-column
             label="操作"
-            width="400px"
+            width="400"
+            fixed="right"
           >
             <template #default="scope">
               <div style="display: flex">
@@ -242,7 +258,7 @@
     <el-dialog
       v-model="terminateFormVisible"
       title="提示"
-      width="20%"
+      width="25%"
     >
       <div class="result-content">
         确定要终止该定价吗
@@ -266,7 +282,7 @@
     <el-dialog
       v-model="confirmFormVisible"
       title="提示"
-      width="20%"
+      width="25%"
     >
       <div class="result-content">
         确定提交该定价为最终定价吗
@@ -290,7 +306,7 @@
     <el-dialog
       v-model="editSpecialistFormVisible"
       title="编辑"
-      width="20%"
+      width="25%"
     >
       <el-form
         ref="editSpecialistForm"
@@ -401,7 +417,7 @@
     <el-dialog
       v-model="lowVisible"
       title="提示"
-      width="20%"
+      width="25%"
     >
       <div class="form-desc">
         存有平台的对应采购目标价 &lt; 此次报价，确认提交该报价吗
@@ -443,7 +459,7 @@
     <el-dialog
       v-model="deleteDialog"
       title="提示"
-      width="20%"
+      width="25%"
     >
       <div class="result-content">
         确认要删除该报价吗
@@ -468,7 +484,7 @@
     <el-dialog
       v-model="productViewVisible"
       title="基本信息"
-      width="30%"
+      width="50%"
     >
       <product-basic
         :attachment="productAttachment"
