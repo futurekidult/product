@@ -261,7 +261,7 @@
         </div>
       </el-form-item>
       <el-form-item label="报价单">
-        <base-upload 
+        <base-upload
           type="file"
           tag="报价单"
           url="quotation"
@@ -274,9 +274,7 @@
 </template>
 
 <script>
-import {
-  formatterTime
-} from '../../../../utils/index.js';
+import { formatterTime } from '../../../../utils/index.js';
 
 export default {
   props: ['dialogVisible', 'title', 'id'],

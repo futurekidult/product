@@ -89,7 +89,7 @@
           label="关联产品名称"
           prop="related_product_name"
         />
-        <el-table-column 
+        <el-table-column
           label="关联产品ID"
           prop="related_product_id"
         />

@@ -352,7 +352,7 @@
                 :value="item.key"
               />
             </el-select>
-          </el-form-item>  
+          </el-form-item>
           <el-form-item prop="sea_freight_cost">
             <el-input
               v-model="quotationForm.sea_freight_cost"
@@ -385,7 +385,7 @@
         label="报价单"
         prop="quotation_file"
       >
-        <base-upload 
+        <base-upload
           type="file"
           tag="报价单"
           url="quotation"
@@ -412,10 +412,7 @@
 </template>
 
 <script>
-import {
-  timestamp,
-  checkValid
-} from '../../../../utils/index.js';
+import { timestamp, checkValid } from '../../../../utils/index.js';
 
 export default {
   props: ['dialogVisible', 'title', 'id', 'getList', 'productId', 'market'],
@@ -572,7 +569,7 @@ export default {
       attachment: {},
       currency: [],
       show: false,
-      defaultTime: new Date(2000,1,1,23,59,59)
+      defaultTime: new Date(2000, 1, 1, 23, 59, 59)
     };
   },
   mounted() {
@@ -584,7 +581,7 @@ export default {
       this.$emit('hide-dialog', false);
     },
     async getAddReason() {
-     if(this.quotationForm.supplier_id !== '') {
+      if (this.quotationForm.supplier_id !== '') {
         let params = {
           supplier_id: this.quotationForm.supplier_id,
           pricing_id: this.id
@@ -601,7 +598,10 @@ export default {
       }
     },
     async getHighReason(val) {
-      if(this.quotationForm.quote_currency && this.quotationForm.quote_amount) {
+      if (
+        this.quotationForm.quote_currency &&
+        this.quotationForm.quote_amount
+      ) {
         let params = {
           quote: val,
           product_id: this.productId,
@@ -611,62 +611,37 @@ export default {
           await this.$store.dispatch('price/getHighReason', {
             params
           });
-            await this.$store.dispatch('getPriceRmb', {
-              params: {
-                price: this.quotationForm.quote_amount,
-                currency: this.quotationForm.quote_currency,
-                product_id: this.productId,
-                market: this.market
-              }
-            });
-            this.quotationForm.quote_amount_rmb = this.$store.state.priceRmb;
-            this.isHigh = this.$store.state.price.hasHigh;
+          await this.$store.dispatch('getPriceRmb', {
+            params: {
+              price: this.quotationForm.quote_amount,
+              currency: this.quotationForm.quote_currency,
+              product_id: this.productId,
+              market: this.market
+            }
+          });
+          this.quotationForm.quote_amount_rmb = this.$store.state.priceRmb;
+          this.isHigh = this.$store.state.price.hasHigh;
         } catch (err) {
           return;
         }
       }
     },
     async createQuotation(val) {
-      let body = {
-        'pricing_id':  this.id,
-        'supplier_id': val.supplier_id,
-        'quote_currency': val.quote_currency,
-        'quote_amount': val.quote_amount,
-        'quote_amount_rmb': val.quote_amount_rmb,
-        'appended_reason': val.appended_reason,
-        'beyond_reference_reason': val.beyond_reference_reason,
-        'quote_validity': timestamp(val.quote_validity),
-        'inner_l': val.inner_l,
-        'inner_w': val.inner_w,
-        'inner_h': val.inner_h,
-        'inner_box_weight': val.inner_box_weight,
-        'outer_l': val.outer_l,
-        'outer_w': val.outer_w,
-        'outer_h': val.outer_h,
-        'outer_box_weight': val.outer_box_weight,
-        'head_currency': val.head_currency,
-        'head_cost': val.head_cost,
-        'head_cost_rmb': val.head_cost_rmb,
-        'tail_currency': val.tail_currency,
-        'tail_cost': val.tail_cost,
-        'tail_cost_rmb': val.tail_cost_rmb,  
-        'sea_freight_currency': val.sea_freight_currency,
-        'sea_freight_cost': val.sea_freight_cost,
-        'sea_freight_cost_rmb': val.sea_freight_cost_rmb,  
-        'quotation_file': val.quotation_file
-      }
+      let body = JSON.parse(JSON.stringify(val));
+      body['quote_validity'] = timestamp(body['quote_validity']);
+      body['pricing_id'] = this.id;
       body['pricing_id'] = this.id;
       try {
         await this.$store.dispatch('price/createQuotation', body);
         this.visible = false;
         this.getList();
       } catch (err) {
-       if(err.message === '45034') {
-        this.visible = false;
-        this.getList();
-       } else {
-        return;
-       }
+        if (err.message === '45034') {
+          this.visible = false;
+          this.getList();
+        } else {
+          return;
+        }
       }
     },
     submitForm() {
@@ -708,7 +683,10 @@ export default {
       }
     },
     async getRmb(val) {
-      if(this.quotationForm[`${val}_currency`] && this.quotationForm[`${val}_cost`]){
+      if (
+        this.quotationForm[`${val}_currency`] &&
+        this.quotationForm[`${val}_cost`]
+      ) {
         try {
           await this.$store.dispatch('getPriceRmb', {
             params: {
