@@ -76,11 +76,22 @@ export default {
         });
     },
     async recordTestProblem(_, payload) {
-      await axios.post('/sample/agency-test/problem/record', payload).then((res) => {
-        if (res.code === 200) {
-          ElMessage.success('记录的问题可在产品详情页查看');
-        }
-      });
+      await axios
+        .post('/sample/agency-test/problem/record', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success('记录的问题可在产品详情页查看');
+          }
+        });
+    },
+    async approvalTestResult(_, payload) {
+      await axios
+        .post('/sample/quality-test/result/approval', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(res.message);
+          }
+        });
     }
   }
 };
