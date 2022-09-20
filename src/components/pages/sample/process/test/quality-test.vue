@@ -73,13 +73,13 @@
         width="300px"
       >
         <el-button @click="approvalTestResult(0)">
-          测试不通过
+          不通过
         </el-button>
         <el-button
           type="success"
           @click="approvalTestResult(1)"
         >
-          测试通过
+          通过
         </el-button>
       </el-descriptions-item>
     </el-descriptions>
