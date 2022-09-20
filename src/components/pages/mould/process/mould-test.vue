@@ -28,7 +28,7 @@
         </div>
       </el-descriptions-item>
       <el-descriptions-item
-        v-if="progress.state !== 40"
+        v-if="progress.state !== 40 && progress.state !== undefined"
         label="操作"
       >
         <div>
