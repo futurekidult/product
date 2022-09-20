@@ -378,7 +378,7 @@
       </el-form-item>
       <el-form-item>
         <div class="desc">
-          若没有海运费的金额请填0
+          此处请填写一立方的海运单价,若没有海运费金额请填0
         </div>
       </el-form-item>
       <el-form-item
