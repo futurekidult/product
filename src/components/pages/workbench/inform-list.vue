@@ -4,7 +4,6 @@
       <span class="line">|</span> 通知
     </div>
     <el-table
-      v-fit-columns
       border
       stripe
       empty-text="无数据"
@@ -12,14 +11,14 @@
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
     >
       <el-table-column
+        fixed
         label="通知ID"
         prop="id"
         width="100"
-        fixed="left"
       />
       <el-table-column
+        fixed
         label="通知标题"
-        fixed="left"
       >
         <template #default="scope">
           <div :class="scope.row.state === 0 ? 'is-read' : ''">

@@ -1,7 +1,6 @@
 <template>
   <div v-loading="$store.state.workbench.todoListLoading">
     <el-table
-      v-fit-columns
       border
       stripe
       empty-text="无数据"
@@ -9,14 +8,14 @@
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
     >
       <el-table-column
+        fixed
         label="待办ID"
         prop="id"
         width="100"
-        fixed="left"
       />
       <el-table-column
+        fixed
         label="待办名称"
-        fixed="left"
       >
         <template #default="scope">
           {{ scope.row.name }}
@@ -39,6 +38,7 @@
       <el-table-column
         label="状态"
         width="100"
+        fixed="right"
       >
         <template #default="scope">
           <div :class="changeCellColor(scope.row.state)">

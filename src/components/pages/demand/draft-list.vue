@@ -4,7 +4,6 @@
 
     <div class="border">
       <el-table
-        v-fit-columns
         border
         stripe
         empty-text="无数据"
@@ -12,15 +11,15 @@
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       >
         <el-table-column
+          fixed
           label="需求ID"
           prop="id"
           width="100"
-          fixed="left"
         />
         <el-table-column
+          fixed
           label="产品名称"
           prop="name"
-          fixed="left"
         />
         <el-table-column
           label="创建时间"
@@ -31,6 +30,7 @@
           label="状态"
           prop="state_desc"
           width="100"
+          fixed="right"
         />
         <el-table-column
           label="操作"

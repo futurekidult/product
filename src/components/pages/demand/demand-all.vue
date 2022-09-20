@@ -86,7 +86,6 @@
         </el-button>
       </div>
       <el-table
-        v-fit-columns
         border
         stripe
         empty-text="无数据"
@@ -94,15 +93,16 @@
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       >
         <el-table-column
+          fixed
           prop="id"
           label="需求ID"
           width="100"
-          fixed="left"
         />
         <el-table-column
+          fixed
           prop="name"
           label="产品名称"
-          fixed="left"
+          min-width="150"
         />
         <el-table-column
           label="关联产品ID"
@@ -124,6 +124,7 @@
         <el-table-column
           prop="ding_dept_desc"
           label="所属部门"
+          min-width="150"
         />
         <el-table-column
           prop="create_time"
@@ -145,7 +146,10 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="不通过原因">
+        <el-table-column
+          label="不通过原因"
+          width="100"
+        >
           <template #default="scope">
             <div
               v-if="scope.row.state === 40"
@@ -159,6 +163,7 @@
         <el-table-column
           label="操作"
           fixed="right"
+          min-width="170"
         >
           <template #default="scope">
             <el-button
