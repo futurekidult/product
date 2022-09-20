@@ -374,7 +374,7 @@
 </template>
 
 <script>
-import SurveySchedule from '../../common/survey- schedule.vue';
+import SurveySchedule from '../../common/survey-schedule.vue';
 import CompetitiveTable from '../../common/competitive-table.vue';
 import { checkValid } from '../../../../../utils';
 

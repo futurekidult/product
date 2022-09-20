@@ -101,8 +101,8 @@
         label="调研报告"
         style="margin-bottom: 18px"
         prop="attachment"
-      > 
-        <base-upload 
+      >
+        <base-upload
           type="file"
           tag="调研报告"
           url="risk-survey-report"
@@ -126,7 +126,7 @@
 
 <script>
 import { checkValid } from '../../../../../utils';
-import SurveySchedule from '../../common/survey- schedule.vue';
+import SurveySchedule from '../../common/survey-schedule.vue';
 
 export default {
   components: {
