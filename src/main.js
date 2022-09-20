@@ -30,6 +30,4 @@ app.component('BaseUpload', BaseUpload);
 app.use(router);
 app.use(store);
 app.config.globalProperties.$message = ElMessage;
-
-
 app.mount('#app');

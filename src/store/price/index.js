@@ -170,10 +170,10 @@ export default {
     },
     async getSupplierOption(context) {
       await axios.get('/option/supplier/list').then((res) => {
-        if(res.code === 200) {
+        if (res.code === 200) {
           context.commit('setSupplierOption', res.data.list);
         }
-      })
+      });
     },
     async getProductDetail(context, payload) {
       await axios.get('/pricing/product/detail/get', payload).then((res) => {
