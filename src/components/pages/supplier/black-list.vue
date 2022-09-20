@@ -10,7 +10,6 @@
       </div>
 
       <el-table
-        v-fit-columns
         border
         stripe
         empty-text="无数据"
@@ -18,23 +17,26 @@
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       >
         <el-table-column
+          fixed
           label="供应商ID"
           prop="id"
           width="100"
-          fixed="left"
         />
         <el-table-column
+          fixed
           label="供应商名称"
           prop="name"
-          fixed="left"
+          min-width="150"
         />
         <el-table-column
           label="供应商类型"
           prop="type"
+          min-width="100"
         />
         <el-table-column
           label="合作等级"
           prop="cooperation_level"
+          min-width="150"
         />
         <el-table-column
           label="采购员"
@@ -53,6 +55,7 @@
         <el-table-column
           label="状态"
           width="100"
+          fixed="right"
         >
           <template #default="scope">
             <div :class="changeColor(scope.row.state)">

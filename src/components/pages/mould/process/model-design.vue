@@ -25,9 +25,12 @@
           {{ progress.state_desc }}
         </div>
       </el-descriptions-item>
-      <el-descriptions-item label="操作">
+      <el-descriptions-item
+        v-if="progress.state !== 40"
+        label="操作"
+      >
         <el-button
-          :disabled="progress.state === 40"
+          type="text"
           :class="progress.state === undefined ? 'hide' : ''"
           @click="showDesignForm"
         >

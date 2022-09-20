@@ -80,27 +80,30 @@
         border
         stripe
         empty-text="无数据"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
         :data="mouldList"
+        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       >
         <el-table-column
+          fixed
           label="模具ID"
           prop="id"
-          width="80px"
+          width="100"
         />
         <el-table-column
+          fixed
           label="模具名称"
           prop="name"
+          min-width="150"
         />
         <el-table-column
           label="开模工厂名称"
           prop="mould_factory"
+          min-width="150"
         />
         <el-table-column
           label="创建时间"
           prop="create_time"
-          width="200px"
-        />
+          width="200"
         />
         <el-table-column
           label="创建人"
@@ -109,24 +112,34 @@
         <el-table-column
           label="计划完成时间"
           prop="estimated_finish_time"
-          width="200px"
+          width="200"
         />
         <el-table-column
           label="实际完成时间"
           prop="actual_finish_time"
-          width="200px"
+          width="200"
         />
-        />
-        <el-table-column label="状态">
+        <el-table-column
+          label="状态"
+          width="150"
+          fixed="right"
+        >
           <template #default="scope">
             <div :class="changeCellColor(scope.row.state)">
               {{ scope.row.state_desc }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column
+          label="操作"
+          fixed="right"
+          width="100"
+        >
           <template #default="scope">
-            <el-button @click="toDetail(scope.row.id)">
+            <el-button
+              type="text"
+              @click="toDetail(scope.row.id)"
+            >
               查看详情
             </el-button>
           </template>

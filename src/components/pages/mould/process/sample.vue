@@ -27,7 +27,10 @@
           {{ progress.state_desc }}
         </div>
       </el-descriptions-item>
-      <el-descriptions-item label="操作">
+      <el-descriptions-item
+        v-if="progress.state === 20"
+        label="操作"
+      >
         <div
           v-if="progress.state === 20 || progress.state === 40"
           :class="progress.state === undefined ? 'hide' : ''"
@@ -41,7 +44,6 @@
           </el-button>
           <el-button
             type="success"
-            :disabled="progress.state === 40"
             @click="approvalPrototype(1)"
           >
             通过
