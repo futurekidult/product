@@ -5,6 +5,7 @@
         评论及意见
       </div>
       <el-button
+        :disabled="disabled"
         type="primary"
         @click="createSuggestionItem"
       >
