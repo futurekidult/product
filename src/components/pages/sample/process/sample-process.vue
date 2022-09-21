@@ -82,7 +82,7 @@ export default {
       progress: {},
       qualityTestId: 0,
       hasUserTest: 0,
-      testSupply: {}
+      testSupply: {},
       testResultId: 0
     };
   },
