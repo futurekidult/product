@@ -161,7 +161,7 @@
 <script>
 import { timestamp, getOrganizationList, formatterTime } from '../../../../utils';
 export default {
-  inject: ['getTest', 'getQualityDetail'],
+  inject: ['getTest', 'getQualityDetail', 'refreshTestSupply'],
   props: ['dialogVisible', 'title', 'type', 'id'],
   emits: ['hide-dialog'],
   data() {
@@ -285,6 +285,7 @@ export default {
       try {
         await this.$store.dispatch('sample/createTestApply', body);
         this.visible = false;
+        this.refreshTestSupply();
         this.getTest();
       } catch (err) {
         return;

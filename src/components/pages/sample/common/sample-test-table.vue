@@ -126,6 +126,7 @@
       action="supplement review"
       :value="supplyItemValue"
       :get-list="refreshTestSupply"
+      :get-quality="getQualityDetail"
       @hide-dialog="closeReviewForm"
     />
 
@@ -192,7 +193,7 @@ export default {
     TestForm,
     TestSupply
   },
-  inject: ['refreshTestSupply'],
+  inject: ['refreshTestSupply', 'getQualityDetail'],
   props: [
     'applyList',
     'buttonState',

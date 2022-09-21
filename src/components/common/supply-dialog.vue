@@ -83,6 +83,7 @@ export default {
     'action',
     'getList',
     'updateId',
+    'getQuality',
     'dialogVisible'
   ],
   emits: ['hide-dialog'],
@@ -151,6 +152,7 @@ export default {
         this.visible = false;
         this.$emit('hide-dialog', this.visible);
         this.getList();
+        this.getQuality();
       } catch (err) {
         return;
       }

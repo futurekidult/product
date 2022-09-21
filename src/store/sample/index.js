@@ -224,7 +224,7 @@ export default {
       });
     },
     async getSupplyItem(context, payload) {
-      await axios.get('/sample/supplement/schedule', payload).then((res) => {
+      await axios.get('/sample/supplement/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSupplyItem', res.data);
         }
