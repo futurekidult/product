@@ -154,7 +154,7 @@
         <el-form-item
           label="请选择品质专员"
           prop="quality_specialist_id"
-          :rules="[{ required: true, message: '想选择品质专员' }]"
+          :rules="[{ required: true, message: '请选择品质专员' }]"
         >
           <el-tree-select
             v-model="editForm.quality_specialist_id"
