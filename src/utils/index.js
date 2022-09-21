@@ -58,6 +58,7 @@ export const getTask = (val) => {
     30: 'product_survey',
     40: 'product_survey',
     50: 'product_survey',
+    51: 'product_survey',
     60: 'product_survey',
     70: 'product_survey',
     80: 'product_survey',
@@ -100,6 +101,7 @@ export const getTask = (val) => {
     430: 'sample_test',
     440: 'sample_test',
     450: 'sample_test',
+    451: 'sample_test',
     460: 'sample_test',
     470: 'sample_test',
     480: 'sample_test',
@@ -188,5 +190,15 @@ export const changeDemandColor = (val) => {
     return 'success';
   } else {
     return 'danger';
+  }
+};
+
+export const changeApprovalColor = (val) => {
+  if (val <= 20) {
+    return 'result-ing';
+  } else if (val === 30) {
+    return 'result-fail';
+  } else {
+    return 'result-pass';
   }
 };

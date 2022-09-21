@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="visible"
-    width="40%"
+    width="50%"
     :title="title"
     @close="cancel"
   >
@@ -257,11 +257,11 @@
       </el-form-item>
       <el-form-item>
         <div class="desc">
-          若没有海运费的金额请填0
+          此处请填写一立方的海运单价,若没有海运费金额请填0
         </div>
       </el-form-item>
       <el-form-item label="报价单">
-        <base-upload 
+        <base-upload
           type="file"
           tag="报价单"
           url="quotation"
@@ -274,9 +274,7 @@
 </template>
 
 <script>
-import {
-  formatterTime
-} from '../../../../utils/index.js';
+import { formatterTime } from '../../../../utils/index.js';
 
 export default {
   props: ['dialogVisible', 'title', 'id'],

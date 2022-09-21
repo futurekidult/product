@@ -27,18 +27,19 @@
           {{ progress.state_desc }}
         </div>
       </el-descriptions-item>
-      <el-descriptions-item label="操作">
-        <div :class="progress.state === undefined ? 'hide' : ''">
+      <el-descriptions-item
+        v-if="progress.state !== 40 && progress.state !== undefined"
+        label="操作"
+      >
+        <div>
           <div v-if="progress.state === 20 || progress.state === 40">
             <el-button
-              v-if="progress.state !== 40"
               class="close-btn"
               @click="approvalTestingMould(progress.mould_id, 0)"
             >
               不通过
             </el-button>
             <el-button
-              :disabled="progress.state === 40"
               type="success"
               @click="approvalTestingMould(progress.mould_id, 1)"
             >
@@ -47,7 +48,7 @@
           </div>
           <el-button
             v-else
-            type="primary"
+            type="text"
             @click="confirmTestingMould(progress.mould_id)"
           >
             完成
@@ -61,7 +62,7 @@
 <script>
 export default {
   inject: ['getMould'],
-  props: ['changeColor', 'progress','getList'],
+  props: ['changeColor', 'progress', 'getList'],
   methods: {
     async approvalTestingMould(id, result) {
       let body = {

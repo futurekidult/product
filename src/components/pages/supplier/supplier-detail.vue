@@ -2,7 +2,7 @@
   <div v-loading="$store.state.supplier.supplierDetailLoading">
     <div class="border">
       <div class="detail-title">
-        {{ supplierDetail.name }}  
+        {{ supplierDetail.name }}
         <div class="tag-position">
           <base-tag
             :mode="mode"
@@ -25,7 +25,12 @@
             {{ supplierDetail.create_time }}
           </el-descriptions-item>
         </el-descriptions>
-        <section v-if="supplierDetail.state === 10 && $store.state.supplier.type === 'approval'">
+        <section
+          v-if="
+            supplierDetail.state === 10 &&
+              $store.state.supplier.type === 'approval'
+          "
+        >
           <el-button
             class="close - btn"
             @click="approvalSupplier(0)"

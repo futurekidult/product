@@ -32,5 +32,4 @@ app.use(router);
 app.use(store);
 app.config.globalProperties.$message = ElMessage;
 app.config.globalProperties.$global = global;
-
 app.mount('#app');

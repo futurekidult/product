@@ -88,25 +88,30 @@
         border
         stripe
         empty-text="无数据"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
         :data="supplierList"
+        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       >
         <el-table-column
           label="供应商ID"
           prop="id"
-          width="100px"
+          width="100"
+          fixed="left"
         />
         <el-table-column
           label="供应商名称"
           prop="name"
+          fixed="left"
+          min-width="150"
         />
         <el-table-column
           label="供应商类型"
           prop="type"
+          min-width="100"
         />
         <el-table-column
           label="合作等级"
           prop="cooperation_level"
+          min-width="150"
         />
         <el-table-column
           label="采购员"
@@ -115,14 +120,18 @@
         <el-table-column
           label="创建时间"
           prop="create_time"
-          width="200px"
+          width="200"
         />
         <el-table-column
           label="审批完成时间"
           prop="approval_time"
-          width="200px"
+          width="200"
         />
-        <el-table-column label="状态">
+        <el-table-column
+          label="状态"
+          width="100"
+          fixed="right"
+        >
           <template #default="scope">
             <div :class="changeColor(scope.row.state)">
               {{ scope.row.state_desc }}
@@ -131,7 +140,8 @@
         </el-table-column>
         <el-table-column
           label="操作"
-          width="250px"
+          width="250"
+          fixed="right"
         >
           <template #default="scope">
             <div style="display: flex">
@@ -193,41 +203,41 @@
         @change-page="changeCurrentPage"
       />
     </div>
+
+    <confirm-dialog
+      v-if="blackDialogVisible"
+      :id="supplierBlackId"
+      :dialog-visible="blackDialogVisible"
+      dialog-content="确定将该供应商加入黑名单"
+      type="black enter"
+      :get-list="getSupplierList"
+      @hide-dialog="closeBlackDialog"
+    />
+
+    <el-dialog
+      v-model="deleteDialogVisible"
+      title="提示"
+      width="20%"
+    >
+      <div class="result-content">
+        是否删除该供应商
+      </div>
+      <div style="text-align: center">
+        <el-button
+          class="close-btn"
+          @click="closeDeleteDialog"
+        >
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          @click="deleteSupplier"
+        >
+          确定
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
-
-  <confirm-dialog 
-    v-if="blackDialogVisible"
-    :id="supplierBlackId"
-    :dialog-visible="blackDialogVisible"
-    dialog-content="确定将该供应商加入黑名单"
-    type="black enter"
-    :get-list="getSupplierList"
-    @hide-dialog="closeBlackDialog"
-  />
-
-  <el-dialog 
-    v-model="deleteDialogVisible"
-    title="提示"
-    width="20%"
-  >
-    <div class="result-content">
-      是否删除该供应商
-    </div>
-    <div style="text-align: center">
-      <el-button
-        class="close-btn"
-        @click="closeDeleteDialog"
-      >
-        取消
-      </el-button>
-      <el-button
-        type="primary"
-        @click="deleteSupplier"
-      >
-        确定
-      </el-button>
-    </div>
-  </el-dialog>
 </template>
 
 <script>
@@ -256,7 +266,7 @@ export default {
   mounted() {
     this.getState();
     this.getSupplierList();
-    getOrganizationList().then( (res) => {
+    getOrganizationList().then((res) => {
       this.memberList = res;
     });
   },

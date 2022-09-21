@@ -4,7 +4,12 @@
       调研进度表
     </div>
 
-    <survey-schedule :get-progress="progress" />
+    <survey-schedule
+      :id="productForm.id"
+      :get-progress="progress"
+      type="plan"
+      @refresh-plan="getList"
+    />
 
     <div class="survey-title">
       调研报告内容
@@ -22,7 +27,7 @@
         :key="index"
         :label="'使用场景' + (index + 1)"
         :prop="`usage_scenario[${index}]`"
-        :rules="[{ required: true, message: '请输入使用场景'}, checkValid(15)]"
+        :rules="[{ required: true, message: '请输入使用场景' }, checkValid(15)]"
         class="form-item_width"
       >
         <div class="usage-scenario_include-delete">
@@ -34,17 +39,17 @@
             clearable
             :disabled="isDisabled"
           />
-          <base-delete 
+          <base-delete
             :id="index"
             mode="user_analysis-btn"
             content=""
-            :show="form.usage_scenario.length > 1 && progress.state !== 50"
+            :show="showDelete"
             :list="form.usage_scenario"
-            @get-list=" getReturnData"
+            @get-list="getReturnData"
           />
         </div>
       </el-form-item>
-      <el-form-item v-if="progress.state !== 50">
+      <el-form-item v-if="!isDisabled">
         <el-button
           class="project-plan_btn"
           :disabled="isDisabled"
@@ -98,15 +103,18 @@
           clearable
         />
       </el-form-item>
-      <competitive-table 
-        v-if="form.competitive_product !== undefined && form.competitive_product.length !== 0"
+      <competitive-table
+        v-if="
+          form.competitive_product !== undefined &&
+            form.competitive_product.length !== 0
+        "
         :product-form="form"
       />
-      <el-collapse 
+      <el-collapse
         v-model="activeCollapse"
         class="collapse-item"
       >
-        <el-collapse-item 
+        <el-collapse-item
           title="新品信息"
           name="open"
         >
@@ -333,7 +341,7 @@
           </el-form-item>
           <el-form-item class="form-item_width">
             <div class="desc">
-              若没有海运费的金额请填0
+              此处请填写一立方的海运单价,若没有海运费金额请填0
             </div>
           </el-form-item>
         </el-collapse-item>
@@ -343,7 +351,7 @@
         prop="attachment"
         class="form-item_width"
       >
-        <base-upload 
+        <base-upload
           type="file-list"
           tag="产品方案"
           count="4"
@@ -372,7 +380,7 @@
 </template>
 
 <script>
-import SurveySchedule from '../../common/survey- schedule.vue';
+import SurveySchedule from '../../common/survey-schedule.vue';
 import CompetitiveTable from '../../common/competitive-table.vue';
 import { checkValid } from '../../../../../utils';
 import SurveySuggestion from '../../common/survey-suggestion.vue';
@@ -384,7 +392,13 @@ export default {
     SurveySuggestion
   },
   inject: ['getBase'],
-  props: ['progress', 'attachment', 'getList', 'productForm', 'scenarioVisible'],
+  props: [
+    'progress',
+    'attachment',
+    'getList',
+    'productForm',
+    'scenarioVisible'
+  ],
   data() {
     return {
       productRules: {
@@ -520,7 +534,15 @@ export default {
   },
   computed: {
     isDisabled() {
-      return this.progress.state === 10 ? false : true;
+      return this.progress.state === 10 || this.progress.state === 30
+        ? false
+        : true;
+    },
+    showDelete() {
+      return (
+        this.form.usage_scenario.length > 1 &&
+        (this.progress.state === 10 || this.progress.state === 30)
+      );
     }
   },
   mounted() {
@@ -544,10 +566,17 @@ export default {
     },
     async updatePlan(val) {
       let body = val;
-      body['survey_schedule_id'] = this.progress.id;
+      let funcName = '';
       body['product_id'] = +this.$route.params.productId;
+      if (this.progress.state === 10) {
+        body['survey_schedule_id'] = this.progress.id;
+        funcName = 'product/survey/plan/submitPlan';
+      } else if (this.progress.state === 30) {
+        body['id'] = this.productForm.id;
+        funcName = 'product/survey/plan/updatePlan';
+      }
       try {
-        await this.$store.dispatch('product/survey/plan/submitPlan', body);
+        await this.$store.dispatch(funcName, body);
         this.getList();
         this.getBase();
       } catch (err) {

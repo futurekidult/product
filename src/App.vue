@@ -5,19 +5,19 @@
 </template>
 
 <script>
-  import { defineComponent } from 'vue';
-  import { ElConfigProvider } from 'element-plus'
-  import zhCn from 'element-plus/lib/locale/lang/zh-cn'
+import { defineComponent } from 'vue';
+import { ElConfigProvider } from 'element-plus';
+import zhCn from 'element-plus/lib/locale/lang/zh-cn';
 
 export default defineComponent({
   components: {
-      ElConfigProvider
-    },
-    data() {
-      return {
-         locale: zhCn
-      }
-    },
+    ElConfigProvider
+  },
+  data() {
+    return {
+      locale: zhCn
+    };
+  },
   mounted() {
     this.clearCache();
     this.getUserInfo();
@@ -51,7 +51,7 @@ export default defineComponent({
         return;
       }
     },
-     async getOrganizationList() {
+    async getOrganizationList() {
       try {
         await this.$store.dispatch('getOrganizationList');
       } catch (err) {
@@ -77,12 +77,12 @@ body {
 .border {
   border: 1px solid rgba(230, 230, 230, 1);
   background: #fff;
-  padding: 20px;
-  margin-bottom: 15px;
+  padding: 10px;
+  margin-bottom: 5px;
 }
 
 .el-pagination {
-  margin: 20px 0;
+  margin: 10px 0;
   float: right;
 }
 
@@ -103,7 +103,7 @@ body {
 .nav-title {
   font-weight: 900;
   font-size: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .line {

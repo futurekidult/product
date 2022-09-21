@@ -59,7 +59,13 @@ export default {
           supply: this.testSupply
         };
       },
-      refreshTestSupply: this.getTestSupply
+      refreshTestSupply: this.getTestSupply,
+      getTestResultSchedule: () => {
+        return {
+          id: this.testResultId,
+          test_result_schedule: this.qualityRestResultSchedule
+        };
+      }
     };
   },
   data() {
@@ -71,11 +77,13 @@ export default {
       qualityProgress: {},
       qualityAttachment: {},
       qualitySubmitState: 0,
+      qualityRestResultSchedule: {},
       qualityId: 0,
       progress: {},
       qualityTestId: 0,
       hasUserTest: 0,
       testSupply: {}
+      testResultId: 0
     };
   },
   mounted() {
@@ -159,8 +167,10 @@ export default {
           }
         });
         let { qualityDetail } = this.$store.state.sample.quality;
+        this.testResultId = qualityDetail.id;
         this.qualityProgress = qualityDetail.test_schedule;
         this.qualityAttachment = qualityDetail.test_result_file;
+        this.qualityRestResultSchedule = qualityDetail.test_result_schedule;
         this.qualitySubmitState = qualityDetail.is_submit;
         this.qualityId = qualityDetail.test_apply_id;
         this.qualityTestId = qualityDetail.id;

@@ -289,7 +289,7 @@
 
 <script>
 import { checkValid } from '../../../../../utils';
-import SurveySchedule from '../../common/survey- schedule.vue';
+import SurveySchedule from '../../common/survey-schedule.vue';
 import SurveySuggestion from '../../common/survey-suggestion.vue';
 
 export default {
