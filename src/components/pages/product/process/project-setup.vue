@@ -75,7 +75,7 @@
           @change="refresh(form.review_result)"
         >
           <el-option
-            v-for="item in options"
+            v-for="item in reviewOptions"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -172,21 +172,7 @@ export default {
           }
         ]
       },
-      options: [
-        {
-          value: -1,
-          label: '请选择',
-          disabled: true
-        },
-        {
-          value: 1,
-          label: '通过'
-        },
-        {
-          value: 0,
-          label: '不通过'
-        }
-      ],
+      reviewOptions: this.$global.reviewOptions,
       file: this.attachment,
       form: this.projectForm
     };

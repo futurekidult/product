@@ -161,7 +161,7 @@
 <script>
 import { timestamp, getOrganizationList, formatterTime } from '../../../../utils';
 export default {
-  inject: ['getTest', 'getQualityDetail'],
+  inject: ['getTest', 'getQualityDetail', 'refreshTestSupply'],
   props: ['dialogVisible', 'title', 'type', 'id'],
   emits: ['hide-dialog'],
   data() {
@@ -219,21 +219,7 @@ export default {
           value: 0
         }
       ],
-      reviewOptions: [
-        {
-          label: '请选择',
-          value: -1,
-          disabled: true
-        },
-        {
-          label: '通过',
-          value: 1
-        },
-        {
-          label: '不通过',
-          value: 0
-        }
-      ],
+      reviewOptions: this.$global.reviewOptions,
       loading: true,
       reviewValue: 0,
       memberList: [],
@@ -299,6 +285,7 @@ export default {
       try {
         await this.$store.dispatch('sample/createTestApply', body);
         this.visible = false;
+        this.refreshTestSupply();
         this.getTest();
       } catch (err) {
         return;

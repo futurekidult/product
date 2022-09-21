@@ -7,6 +7,7 @@
   >
     <el-form
       ref="supplyForm"
+      label-width="150px"
       :model="supplyForm"
     >
       <el-form-item
@@ -18,13 +19,40 @@
           v-model="supplyForm[prop]"
           type="textarea"
           :rows="6"
+          :disabled="action.indexOf('view') > -1"
           clearable
           placeholder="请输入内容"
-          maxlength="120"
+          :maxlength="prop === 'content' ? 200 : 120"
           show-word-limit
         />
       </el-form-item>
-      <div style="text-align: right">
+      <div v-if="action.indexOf('view') > -1">
+        <el-divider />
+        <el-form-item
+          label="评审结果"
+          prop="review_result"
+          :rules="[{ required: true, message: '请输入内容' }]"
+        >
+          <el-select
+            v-model="supplyForm.review_result"
+            placeholder="请选择评审结果"
+            clearable
+            :disabled="action.indexOf(' view') > -1"
+          >
+            <el-option
+              v-for="item in reviewOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+              :disabled="item.disabled"
+            />
+          </el-select>
+        </el-form-item>
+      </div>
+      <div
+        v-if="action.indexOf(' view') === -1"
+        style="text-align: right"
+      >
         <el-button
           class="close-btn"
           @click="cancel"
@@ -45,6 +73,7 @@
 <script>
 export default {
   props: [
+    'id',
     'ids',
     'type',
     'title',
@@ -54,17 +83,21 @@ export default {
     'action',
     'getList',
     'updateId',
+    'getQuality',
     'dialogVisible'
   ],
   emits: ['hide-dialog'],
   data() {
     return {
       visible: this.dialogVisible,
-      supplyForm: {}
+      supplyForm: {},
+      reviewOptions: this.$global.reviewOptions
     };
   },
   mounted() {
-    if (this.action === 'suggestion update') {
+    if (this.action.indexOf(' view') > -1) {
+      this.supplyForm = this.value;
+    } else if (this.action.indexOf('create') === -1) {
       this.supplyForm[this.prop] = this.value;
     }
   },
@@ -101,6 +134,29 @@ export default {
         return;
       }
     },
+    async createSupplementContent(body) {
+      body['sample_id'] = this.id;
+      try {
+        await this.$store.dispatch('sample/createSupply', body);
+        this.visible = false;
+        this.$emit('hide-dialog', this.visible);
+        this.getList();
+      } catch (err) {
+        return;
+      }
+    },
+    async reviewSupplementContent(body) {
+      try {
+        body['id'] = this.updateId;
+        await this.$store.dispatch('sample/reviewSupply', body);
+        this.visible = false;
+        this.$emit('hide-dialog', this.visible);
+        this.getList();
+        this.getQuality();
+      } catch (err) {
+        return;
+      }
+    },
     submitSupplyContent() {
       this.$refs.supplyForm.validate((valid) => {
         if (valid) {
@@ -114,6 +170,12 @@ export default {
             case 'suggestion update':
               body['survey_schedule_id'] = this.ids.survey_schedule_id;
               this.updateSuggestionContent(body);
+              break;
+            case 'supplement create':
+              this.createSupplementContent(body);
+              break;
+            case 'supplement review':
+              this.reviewSupplementContent(body);
               break;
             default:
           }

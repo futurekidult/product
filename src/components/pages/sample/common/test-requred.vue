@@ -80,6 +80,7 @@
             :key="item.value"
             :label="item.label"
             :value="item.value"
+            :disabled="item.disabled"
           />
         </el-select>
       </el-form-item>
@@ -157,16 +158,7 @@ export default {
   data() {
     return {
       visible: this.dialogVisible,
-      reviewOptions: [
-        {
-          label: '评审通过',
-          value: 1
-        },
-        {
-          label: '评审不通过',
-          value: 0
-        }
-      ],
+      reviewOptions: this.$global.reviewOptions,
       applyRules: {
         user_experience_duration: [
           {
