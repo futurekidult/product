@@ -103,7 +103,7 @@
             prop="test_result_file"
             :rules="[{ required: true, message: '请上传附件' }]"
           >
-            <base-upload 
+            <base-upload
               type="file"
               tag="测试报告"
               url="agency-test-report"
@@ -147,7 +147,7 @@
             </el-form-item>
             <el-divider />
             <div style="text-align: right">
-              <el-button 
+              <el-button
                 class="close-btn"
                 @click="closeFailReason"
               >

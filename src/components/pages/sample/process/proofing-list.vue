@@ -65,39 +65,39 @@
         </div>
       </el-descriptions-item>
     </el-descriptions>
+
+    <sample-form
+      v-if="proofingVisible"
+      :dialog-visible="proofingVisible"
+      title="提交打样单"
+      type="create"
+      @hide-dialog="closeProofingCreate"
+    />
+
+    <sample-form
+      v-if="proofingApprovalVisible"
+      :dialog-visible="proofingApprovalVisible"
+      title="打样单审批"
+      type="approval"
+      @hide-dialog="closeProofingApproval"
+    />
+
+    <sample-form
+      v-if="proofingEditVisible"
+      :dialog-visible="proofingEditVisible"
+      title="重新编辑"
+      type="edit"
+      @hide-dialog="closeProofingEdit"
+    />
+
+    <sample-form
+      v-if="proofingViewVisible"
+      :dialog-visible="proofingViewVisible"
+      title="查看"
+      type="view"
+      @hide-dialog="closeProofingView"
+    />
   </div>
-
-  <sample-form
-    v-if="proofingVisible"
-    :dialog-visible="proofingVisible"
-    title="提交打样单"
-    type="create"
-    @hide-dialog="closeProofingCreate"
-  />
-
-  <sample-form
-    v-if="proofingApprovalVisible"
-    :dialog-visible="proofingApprovalVisible"
-    title="打样单审批"
-    type="approval"
-    @hide-dialog="closeProofingApproval"
-  />
-
-  <sample-form
-    v-if="proofingEditVisible"
-    :dialog-visible="proofingEditVisible"
-    title="重新编辑"
-    type="edit"
-    @hide-dialog="closeProofingEdit"
-  />
-
-  <sample-form
-    v-if="proofingViewVisible"
-    :dialog-visible="proofingViewVisible"
-    title="查看"
-    type="view"
-    @hide-dialog="closeProofingView"
-  />
 </template>
 
 <script>

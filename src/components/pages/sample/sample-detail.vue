@@ -75,14 +75,14 @@ export default {
       }
     },
     toSupplier(id) {
-      if(this.$store.state.menuData.links.indexOf('/supplier-list') > -1) {
+      if (this.$store.state.menuData.links.indexOf('/supplier-list') > -1) {
         this.$router.push(`/supplier-list/${id}`);
       } else {
         this.$message.error('无权限访问');
       }
     },
     toProduct(id) {
-      if(this.$store.state.menuData.links.indexOf('/product-list') > -1) {
+      if (this.$store.state.menuData.links.indexOf('/product-list') > -1) {
         this.$router.push(`/product-list/${id}`);
         this.$store.commit('setEntry', 'detail');
       } else {

@@ -5,7 +5,7 @@
         <div class="test-title">
           用户测试申请进度表
         </div>
-        <el-button 
+        <el-button
           :disabled="buttonState === 0"
           @click="showApplyForm"
         >
@@ -52,9 +52,7 @@
           prop="review_finish_time"
           width="200px"
         />
-        <el-table-column
-          label="评审状态"
-        >
+        <el-table-column label="评审状态">
           <template #default="scope">
             <div :class="changeReiviewColor(scope.row.review_state)">
               {{ scope.row.review_state_desc }}
@@ -190,7 +188,7 @@
           prop="test_result_file"
           :rules="[{ required: true, message: '请上传附件' }]"
         >
-          <base-upload 
+          <base-upload
             type="file"
             tag="测试报告"
             url="user-test-report"
@@ -234,7 +232,7 @@
         </el-form-item>
         <el-divider />
         <div style="text-align: right">
-          <el-button 
+          <el-button
             class="close-btn"
             @click="closeFailReason"
           >
@@ -396,7 +394,7 @@ export default {
     }
   },
   mounted() {
-     getOrganizationList().then( (res) => {
+    getOrganizationList().then((res) => {
       this.memberList = res;
     });
   },
@@ -527,17 +525,17 @@ export default {
       });
     },
     changeReiviewColor(val) {
-      if(val === 10) {
+      if (val === 10) {
         return 'result-ing';
-      } else if(val === 20){
+      } else if (val === 20) {
         return 'result-fail';
       } else {
         return 'result-pass';
       }
-   },
-   getUploadFile(e) {
-    this.file = e;
-   }
+    },
+    getUploadFile(e) {
+      this.file = e;
+    }
   }
 };
 </script>

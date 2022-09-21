@@ -43,7 +43,7 @@
               show-word-limit
             />
           </el-form-item>
-          <base-delete 
+          <base-delete
             :id="index"
             mode="test-question_btn"
             content="移除"

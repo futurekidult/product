@@ -15,7 +15,7 @@
         label="测试模板"
         prop="user_template_file"
       >
-        <base-upload 
+        <base-upload
           type="file"
           tag="测试模板"
           url="user-template"

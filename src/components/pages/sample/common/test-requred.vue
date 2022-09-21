@@ -54,7 +54,7 @@
         label="需求清单及假设"
         prop="demand_list_file"
       >
-        <base-upload 
+        <base-upload
           type="file"
           tag="需求清单及假设"
           url="user-demand-list"
@@ -100,7 +100,7 @@
           label="用户要求"
           prop="user_requirement_file"
         >
-          <base-upload 
+          <base-upload
             type="file"
             tag="用户要求"
             url="user-requirement"
@@ -214,7 +214,7 @@ export default {
         label: 'name',
         disabled: 'disabled'
       },
-      defaultTime: new Date(2000,1,1,23,59,59)
+      defaultTime: new Date(2000, 1, 1, 23, 59, 59)
     };
   },
   computed: {
@@ -243,7 +243,7 @@ export default {
     }
   },
   mounted() {
-    getOrganizationList().then( (res) => {
+    getOrganizationList().then((res) => {
       this.memberList = res;
     });
     if (this.type === 'review') {
@@ -255,12 +255,12 @@ export default {
   methods: {
     async createTestApply(val) {
       let body = {
-        'sample_id': +this.$route.params.id,
-        'user_experience_duration': +val.user_experience_duration,
-        'estimated_finish_time': timestamp(val.estimated_finish_time),
-        'illustrate_text': val.illustrate_text,
-        'demand_list_file': val.demand_list_file
-      }
+        sample_id: +this.$route.params.id,
+        user_experience_duration: +val.user_experience_duration,
+        estimated_finish_time: timestamp(val.estimated_finish_time),
+        illustrate_text: val.illustrate_text,
+        demand_list_file: val.demand_list_file
+      };
       try {
         await this.$store.dispatch('sample/user/createTestApply', body);
         this.visible = false;
@@ -295,7 +295,9 @@ export default {
         this.demandForm = this.$store.state.sample.user.viewApplyDetail;
         this.attachment = this.demandForm.demand_list_file;
         this.requiredAttachment = this.demandForm.user_requirement_file;
-        this.demandForm.estimated_finish_time = formatterTime(this.demandForm.estimated_finish_time);
+        this.demandForm.estimated_finish_time = formatterTime(
+          this.demandForm.estimated_finish_time
+        );
       } catch (err) {
         return;
       }
@@ -317,7 +319,7 @@ export default {
     },
     submitForm() {
       this.demandForm.demand_list_file = this.attachment.id;
-      if(this.type === 'review') {
+      if (this.type === 'review') {
         this.demandForm.user_requirement_file = this.requiredAttachment.id;
       }
       this.$refs.demandForm.validate((valid) => {
@@ -337,7 +339,7 @@ export default {
       });
     },
     getUploadFile(e, str) {
-      if(str === 'demand_list_file') {
+      if (str === 'demand_list_file') {
         this.attachment = e;
       } else {
         this.requiredAttachment = e;

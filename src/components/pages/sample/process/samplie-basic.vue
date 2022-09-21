@@ -37,7 +37,9 @@
         <el-button
           v-if="sampleDetail.test_result !== -1"
           type="text"
-          :disabled="sampleDetail.state !== 20 && sampleDetail.test_result !== -1"
+          :disabled="
+            sampleDetail.state !== 20 && sampleDetail.test_result !== -1
+          "
           :class="sampleDetail.state === undefined ? 'hide' : ''"
           @click="confirmResult"
         >
@@ -45,57 +47,57 @@
         </el-button>
       </el-descriptions-item>
     </el-descriptions>
-  </div>
 
-  <el-dialog
-    v-model="confirmVisible"
-    title=" 样品测试结果确认"
-    width="20%"
-  >
-    <div
-      v-if="sampleDetail.test_result === 1"
-      class="result-content"
+    <el-dialog
+      v-model="confirmVisible"
+      title=" 样品测试结果确认"
+      width="20%"
     >
-      是否确定提交样品测试结果
-    </div>
-    <el-form
-      v-if="sampleDetail.test_result === 0"
-      ref="resultForm"
-      :model="resultForm"
-    >
-      <el-form-item
-        label="选择样品结果"
-        :rules="[{ required: true, message: '请选择样品结果' }]"
-        prop="result"
+      <div
+        v-if="sampleDetail.test_result === 1"
+        class="result-content"
       >
-        <el-select
-          v-model="resultForm.result"
-          placeholder="请选择样品结果"
-          clearable
+        是否确定提交样品测试结果
+      </div>
+      <el-form
+        v-if="sampleDetail.test_result === 0"
+        ref="resultForm"
+        :model="resultForm"
+      >
+        <el-form-item
+          label="选择样品结果"
+          :rules="[{ required: true, message: '请选择样品结果' }]"
+          prop="result"
         >
-          <el-option
-            v-for="item in resultOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-divider />
-    </el-form>
+          <el-select
+            v-model="resultForm.result"
+            placeholder="请选择样品结果"
+            clearable
+          >
+            <el-option
+              v-for="item in resultOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-divider />
+      </el-form>
 
-    <div :class="sampleDetail.test_result === 1 ? 'pass-btn' : 'fail-btn'">
-      <el-button @click="closeConfirmResult">
-        取消
-      </el-button>
-      <el-button
-        type="primary"
-        @click="submitTestResult"
-      >
-        确定
-      </el-button>
-    </div>
-  </el-dialog>
+      <div :class="sampleDetail.test_result === 1 ? 'pass-btn' : 'fail-btn'">
+        <el-button @click="closeConfirmResult">
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          @click="submitTestResult"
+        >
+          确定
+        </el-button>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>

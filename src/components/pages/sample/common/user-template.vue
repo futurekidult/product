@@ -53,17 +53,28 @@
       >
         <template #default="scope">
           <div style="display: flex">
-            <div v-if="JSON.stringify(scope.row.test_result_file) !== '{}' && scope.row.test_result_file.type === 12860">
+            <div
+              v-if="
+                JSON.stringify(scope.row.test_result_file) !== '{}' &&
+                  scope.row.test_result_file.type === 12860
+              "
+            >
               <el-button
                 type="text"
-                @click="previewOrDownload(scope.row.test_result_file.id, scope.row.test_result_file.name, 'preview')"
+                @click="
+                  previewOrDownload(
+                    scope.row.test_result_file.id,
+                    scope.row.test_result_file.name,
+                    'preview'
+                  )
+                "
               >
                 预览
               </el-button>
             </div>
             <div v-if="scope.row.button_state.is_upload === 1">
-              <span 
-                v-if=" scope.row.test_result_file.type === 12860"
+              <span
+                v-if="scope.row.test_result_file.type === 12860"
                 class="table-btn"
               >|</span>
               <el-button
@@ -95,7 +106,7 @@
           </el-button>
           <el-button
             :disabled="JSON.stringify(scope.row.test_result_file) !== '{}'"
-            @click="showResultForm(scope.row.user_test_apply_id,scope.row.id)"
+            @click="showResultForm(scope.row.user_test_apply_id, scope.row.id)"
           >
             {{
               JSON.stringify(scope.row.test_result_file) === '{}'
@@ -154,10 +165,7 @@
 import UserForm from './user-form.vue';
 import SampleResult from './sample-result.vue';
 import ViewUser from './view-user.vue';
-import {
-  previewOrDownloadFile,
-  formatterTime
-} from '../../../../utils';
+import { previewOrDownloadFile, formatterTime } from '../../../../utils';
 
 export default {
   components: {
@@ -224,7 +232,7 @@ export default {
       try {
         await this.$store.dispatch('getViewLink', { params: { id } });
         if (this.$store.state.attachmentState) {
-          if(type === 'download') {
+          if (type === 'download') {
             previewOrDownloadFile(this.$store.state.viewLink, name, 'download');
           } else {
             previewOrDownloadFile(this.$store.state.viewLink, name, 'preview');

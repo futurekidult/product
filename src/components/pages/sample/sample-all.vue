@@ -148,7 +148,7 @@
         </el-table-column>
       </el-table>
 
-      <base-pagination 
+      <base-pagination
         :length="$store.state.sample.sampleListLength"
         :current-page="currentPage"
         :page-num="pageSize"
@@ -238,7 +238,7 @@ export default {
       }
     },
     toRelatedProduct(id) {
-      if(this.$store.state.menuData.links.indexOf('/product-list') > -1) {
+      if (this.$store.state.menuData.links.indexOf('/product-list') > -1) {
         this.$router.push(`/product-list/${id}`);
         this.$store.commit('setEntry', 'detail');
       } else {

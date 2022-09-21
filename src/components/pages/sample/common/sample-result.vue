@@ -15,7 +15,7 @@
         label="体验报告"
         prop="user_template_file"
       >
-        <base-upload 
+        <base-upload
           type="file"
           tag="体验报告"
           url="user-experience-report"
@@ -45,7 +45,7 @@
 
 <script>
 export default {
-  props: ['id', 'dialogVisible', 'getList','userId'],
+  props: ['id', 'dialogVisible', 'getList', 'userId'],
   emits: ['hide-dialog'],
   data() {
     return {
