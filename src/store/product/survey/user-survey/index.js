@@ -22,10 +22,6 @@ export default {
     },
     setProgressData(state, payload) {
       state.progress = payload;
-      state.ids = {
-        survey_id: payload.survey_id,
-        survey_schedule_id: payload.survey_schedule_id
-      };
     },
     setSurveyApply(state, payload) {
       state.surveyApply = payload;
@@ -44,12 +40,19 @@ export default {
     },
     setTaskStatus(state, payload) {
       state.hasTask = payload;
+    },
+    setIds(state, payload) {
+      state.ids = {
+        survey_id: payload.survey_id,
+        survey_schedule_id: payload.survey_schedule_id
+      };
     }
   },
   actions: {
     async getUserSurveyData(context, payload) {
       await axios.get('/survey/user-survey/detail', payload).then((res) => {
         if (res.code === 200) {
+          context.commit('setIds', res.data);
           context.commit('setButtonState', res.data.button_state);
           context.commit('setProgressData', res.data.progress);
           context.commit('setSurveyApply', res.data.survey_apply);
