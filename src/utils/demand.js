@@ -9,7 +9,7 @@ export const getCategoryList = async () => {
   }
 };
 
-export const getDemandDetail = async (id, type) => {
+export const getDemandDetail = async (id, type, flag = true) => {
   let url = '';
   if (type === 'review') {
     url = `/demand-list/review/${id}`;
@@ -26,7 +26,9 @@ export const getDemandDetail = async (id, type) => {
       },
       type
     });
-    router.push(url);
+    if (flag) {
+      router.push(url);
+    }
   } catch (err) {
     return;
   }
