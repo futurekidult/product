@@ -511,6 +511,7 @@
 
 <script>
 import { checkValid } from '../../../../utils';
+import { getDemandDetail } from '../../../../utils/demand';
 
 export default {
   props: ['type', 'id'],
@@ -728,6 +729,12 @@ export default {
   },
   methods: {
     async getDetail() {
+      let demandForm = this.$store.state.demand.demandDetail;
+      if (JSON.stringify(demandForm) === '{}') {
+        let type =
+          this.$route.path.indexOf('review') > -1 ? 'review' : 'detail';
+        await getDemandDetail(this.$route.params.id, type, false);
+      }
       this.demandForm = this.$store.state.demand.demandDetail;
       this.$store.commit('demand/setDemandDetailLoading', false);
       if (this.type === 'detail') {
