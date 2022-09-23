@@ -7,6 +7,7 @@
 
       <test-apply-table
         type="apply"
+        label="测试申请ID"
         review-btn-content="样式测试申请评审"
         title="样品测试申请进度表"
         btn-content="申请样品测试"
@@ -16,6 +17,7 @@
 
       <test-apply-table
         type="supply"
+        label="测试补充ID"
         review-btn-content="测试补充内容评审"
         title="测试需求补充进度表"
         btn-content="补充测试内容"

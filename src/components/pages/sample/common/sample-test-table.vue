@@ -20,9 +20,9 @@
       :data="applyList"
     >
       <el-table-column
-        label="序号"
-        type="index"
+        :label="label"
         width="100"
+        prop="id"
       />
       <el-table-column
         label="创建人"
@@ -145,7 +145,7 @@
     <el-dialog
       v-model="editSpecialistVisible"
       title="编辑"
-      width="20%"
+      width="25%"
     >
       <el-form
         ref="editForm"
@@ -195,11 +195,12 @@ export default {
   },
   inject: ['refreshTestSupply', 'getQualityDetail'],
   props: [
+    'type',
+    'title',
+    'label',
     'applyList',
     'buttonState',
-    'title',
     'btnContent',
-    'type',
     'reviewBtnContent'
   ],
   data() {

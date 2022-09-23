@@ -2,7 +2,7 @@
   <el-dialog
     v-model="visible"
     title="上传结果"
-    width="30%"
+    width="35%"
     @close="cancel"
   >
     <el-form

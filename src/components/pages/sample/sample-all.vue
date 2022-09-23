@@ -82,15 +82,22 @@
         :data="sampleList"
       >
         <el-table-column
+          fixed
           label="样品ID"
           prop="id"
-          width="80px"
+          width="100"
         />
         <el-table-column
+          fixed
           label="关联产品名称"
           prop="product_name"
+          min-width="150"
         />
-        <el-table-column label="关联产品ID">
+        <el-table-column
+          fixed
+          label="关联产品ID"
+          width="100"
+        >
           <template #default="scope">
             <el-button
               type="text"
@@ -103,40 +110,53 @@
         <el-table-column
           label="关联定价ID"
           prop="pricing_id"
+          width="100"
         />
         <el-table-column
           label="供应商名称"
           prop="supplier"
+          min-width="150"
         />
         <el-table-column
           label="计划完成时间"
           prop="estimated_finish_time"
-          width="200px"
+          width="200"
         />
         <el-table-column
           label="实际完成时间"
           prop="actual_finish_time"
-          width="200px"
+          width="200"
         />
         <el-table-column
           label="采购员"
           prop="purchase_specialist"
+          min-width="100"
         />
-        <el-table-column label="状态">
+        <el-table-column
+          label="状态"
+          min-width="150"
+        >
           <template #default="scope">
             <div :class="changeCellColor(scope.row.state)">
               {{ scope.row.state_desc }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="测试结果">
+        <el-table-column
+          label="测试结果"
+          min-width="100"
+        >
           <template #default="scope">
             <div :class="changeCellColor(scope.row.test_result)">
               {{ scope.row.test_result_desc }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column
+          label="操作"
+          width="100"
+          fixed="right"
+        >
           <template #default="scope">
             <el-button
               type="text"

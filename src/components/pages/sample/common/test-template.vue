@@ -8,17 +8,21 @@
       :data="questionList"
     >
       <el-table-column
-        label="序号"
-        width="60px"
-        type="index"
+        fixed
+        label="测试问题ID"
+        prop="id"
+        width="100"
       />
       <el-table-column
+        fixed
         label="问题名称"
         prop="name"
+        min-width="150"
       />
       <el-table-column
         label="问题描述"
         prop="consequence_text"
+        min-width="150"
       />
       <el-table-column
         label="创建人"
@@ -27,8 +31,13 @@
       <el-table-column
         label="创建时间"
         prop="create_time"
+        width="200"
       />
-      <el-table-column label="操作">
+      <el-table-column
+        label="操作"
+        fixed="right"
+        width="100"
+      >
         <template #default="scope">
           <el-button
             v-if="state !== 1"

@@ -8,38 +8,46 @@
       :data="userList"
     >
       <el-table-column
-        label="序号"
-        type="index"
-        width="60px"
+        fixed
+        label="测试用户ID"
+        prop="id"
+        min-width="150"
       />
       <el-table-column
+        fixed
         label="创建人"
         prop="creator"
+        min-width="100"
       />
       <el-table-column
         label="创建时间"
         prop="create_time"
-        width="200px"
+        width="200"
       />
       <el-table-column
         label="寄样完成时间"
         prop="delivery_time"
-        width="200px"
+        width="200"
       />
       <el-table-column
         label="结果上传时间"
         prop="upload_time"
-        width="200px"
+        width="200"
       />
       <el-table-column
         label="用户姓名"
         prop="username"
+        min-width="120"
       />
       <el-table-column
         label="是否已寄样"
         prop="is_delivered_desc"
+        min-width="120"
       />
-      <el-table-column label="测试状态">
+      <el-table-column
+        label="测试状态"
+        min-width="120"
+      >
         <template #default="scope">
           <div :class="changeCellColor(scope.row.state)">
             {{ scope.row.state_desc }}
@@ -49,7 +57,7 @@
       <el-table-column
         label="测试结果文件"
         prop="test_result_file"
-        width="150px"
+        width="150"
       >
         <template #default="scope">
           <div style="display: flex">
@@ -95,16 +103,20 @@
       </el-table-column>
       <el-table-column
         label="操作"
-        width="350px"
+        width="250"
+        fixed="right"
       >
         <template #default="scope">
           <el-button
+            type="text"
             :disabled="scope.row.is_delivered_desc === '是'"
             @click="deliverSample(scope.row.user_test_apply_id, scope.row.id)"
           >
             样品已寄送
           </el-button>
+          <span class="table-btn">|</span>
           <el-button
+            type="text"
             :disabled="JSON.stringify(scope.row.test_result_file) !== '{}'"
             @click="showResultForm(scope.row.user_test_apply_id, scope.row.id)"
           >
@@ -114,7 +126,11 @@
                 : '已上传'
             }}
           </el-button>
-          <el-button @click="showViewUserForm(scope.row.id)">
+          <span class="table-btn">|</span>
+          <el-button
+            type="text"
+            @click="showViewUserForm(scope.row.id)"
+          >
             查看信息
           </el-button>
         </template>

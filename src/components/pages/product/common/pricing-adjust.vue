@@ -127,14 +127,14 @@
     >
       <el-button
         class="close-btn"
-        @click="failApproval"
+        @click="pricingApproval(0)"
       >
         不通过
       </el-button>
       <el-button
         type="primary"
         style="background: #379f0d; border: 1px solid #379f0d"
-        @click="passApproval"
+        @click="pricingApproval(1)"
       >
         通过
       </el-button>
@@ -193,10 +193,11 @@ export default {
         product_id: +this.$route.params.productId,
         market: this.market
       };
-      if(this.adjustForm.adjusted_selling_price) {
+      if (this.adjustForm.adjusted_selling_price) {
         try {
           await this.$store.dispatch('getPriceRmb', { params });
-          this.adjustForm.adjusted_selling_price_rmb = this.$store.state.priceRmb;
+          this.adjustForm.adjusted_selling_price_rmb =
+            this.$store.state.priceRmb;
         } catch (err) {
           return;
         }
@@ -229,28 +230,16 @@ export default {
         return;
       }
     },
-    passApproval() {
+    pricingApproval(type) {
       let body = {
         price_adjustment_apply_id: this.id,
-        approval_result: 1
+        approval_result: type
       };
       if (this.adjustMsg.state === 10) {
         this.applyPricing(body);
       } else if (this.adjustMsg.state === 30) {
         this.approvalPricing(body);
       }
-    },
-    failApproval() {
-      let body = {
-        price_adjustment_apply_id: this.id,
-        approval_result: 0
-      };
-      if (this.adjustMsg.state === 10) {
-        this.applyPricing(body);
-      } else if (this.adjustMsg.state === 30) {
-        this.approvalPricing(body);
-      }
-      this.visible = false;
     },
     cancel() {
       this.visible = false;
