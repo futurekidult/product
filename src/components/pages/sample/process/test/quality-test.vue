@@ -20,25 +20,23 @@
           {{ progress.state_desc }}
         </div>
       </el-descriptions-item>
-      <el-descriptions-item label="不通过原因">
+      <el-descriptions-item
+        v-if="progress.unapproved_reason_text"
+        label="不通过原因"
+      >
         {{ progress.unapproved_reason_text }}
       </el-descriptions-item>
       <el-descriptions-item
+        v-if="progress.state !== 40"
         label="操作"
         width="300px"
       >
         <div :class="progress.state === undefined ? 'hide' : ''">
-          <el-button
-            v-if="progress.unapproved_reason_text || progress.state === 10"
-            :disabled="progress.state !== 10"
-            @click="showFailReason"
-          >
+          <el-button @click="showFailReason">
             测试不通过
           </el-button>
           <el-button
-            v-if="!progress.unapproved_reason_text"
             type="primary"
-            :disabled="progress.state !== 10"
             @click="confirmResult"
           >
             测试通过
@@ -126,7 +124,7 @@
     <el-dialog
       v-model="failFormVisible"
       title="不通过"
-      width="20%"
+      width="30%"
     >
       <el-form
         ref="reasonForm"

@@ -5,7 +5,7 @@
         <div class="test-title">
           用户测试申请进度表
         </div>
-        <el-button 
+        <el-button
           :disabled="buttonState === 0"
           @click="showApplyForm"
         >
@@ -21,39 +21,46 @@
         :data="applyList"
       >
         <el-table-column
-          label="序号"
-          type="index"
-          width="80px"
+          fixed
+          label="用户测试申请ID"
+          prop="id"
+          min-width="150"
         />
         <el-table-column
+          fixed
           label="申请人"
           prop="creator"
+          min-width="100"
         />
         <el-table-column
           label="提交时间"
           prop="submit_time"
-          width="200px"
+          width="200"
         />
         <el-table-column
           label="用户体验时长"
           prop="user_experience_duration"
+          min-width="200"
         />
         <el-table-column
           label="期望完成日期"
           prop="estimated_finish_time"
-          width="200px"
+          width="200"
         />
         <el-table-column
           label="样品需求数"
           prop="sample_demand_quantity"
+          min-width="150"
         />
         <el-table-column
           label="评审完成时间"
           prop="review_finish_time"
-          width="200px"
+          width="200"
         />
         <el-table-column
           label="评审状态"
+          min-width="150"
+          fixed="right"
         >
           <template #default="scope">
             <div :class="changeReiviewColor(scope.row.review_state)">
@@ -63,7 +70,8 @@
         </el-table-column>
         <el-table-column
           label="操作"
-          width="300px"
+          width="200"
+          fixed="right"
         >
           <template #default="scope">
             <el-button
@@ -143,25 +151,23 @@
             {{ progress.state_desc }}
           </div>
         </el-descriptions-item>
-        <el-descriptions-item label="不通过原因">
+        <el-descriptions-item
+          v-if="progress.unapproved_reason_text"
+          label="不通过原因"
+        >
           {{ progress.unapproved_reason_text }}
         </el-descriptions-item>
         <el-descriptions-item
+          v-if="progress.state !== 40"
           label="操作"
           width="300px"
         >
           <div :class="progress.state === undefined ? 'hide' : ''">
-            <el-button
-              v-if="progress.unapproved_reason_text || progress.state === 10"
-              :disabled="progress.state !== 10"
-              @click="showFailReason"
-            >
+            <el-button @click="showFailReason">
               测试不通过
             </el-button>
             <el-button
-              v-if="!progress.unapproved_reason_text"
               type="primary"
-              :disabled="progress.state !== 10"
               @click="confirmResult"
             >
               测试通过
@@ -190,7 +196,7 @@
           prop="test_result_file"
           :rules="[{ required: true, message: '请上传附件' }]"
         >
-          <base-upload 
+          <base-upload
             type="file"
             tag="测试报告"
             url="user-test-report"
@@ -212,7 +218,7 @@
     <el-dialog
       v-model="failFormVisible"
       title="不通过"
-      width="20%"
+      width="30%"
     >
       <el-form
         ref="reasonForm"
@@ -234,7 +240,7 @@
         </el-form-item>
         <el-divider />
         <div style="text-align: right">
-          <el-button 
+          <el-button
             class="close-btn"
             @click="closeFailReason"
           >
@@ -279,7 +285,7 @@
     <el-dialog
       v-model="specialistFormVisible"
       title="编辑"
-      width="20%"
+      width="25%"
     >
       <el-form
         ref="editForm"
@@ -396,7 +402,7 @@ export default {
     }
   },
   mounted() {
-     getOrganizationList().then( (res) => {
+    getOrganizationList().then((res) => {
       this.memberList = res;
     });
   },
@@ -513,9 +519,13 @@ export default {
       });
     },
     submitFailResult() {
-      this.confirmTestResult({
-        test_result: 0,
-        unapproved_reason_text: this.reasonForm.reason
+      this.$refs.reasonForm.validate((valid) => {
+        if (valid) {
+          this.confirmTestResult({
+            test_result: 0,
+            unapproved_reason_text: this.reasonForm.reason
+          });
+        }
       });
     },
     submitReport() {
@@ -527,17 +537,17 @@ export default {
       });
     },
     changeReiviewColor(val) {
-      if(val === 10) {
+      if (val === 10) {
         return 'result-ing';
-      } else if(val === 20){
+      } else if (val === 20) {
         return 'result-fail';
       } else {
         return 'result-pass';
       }
-   },
-   getUploadFile(e) {
-    this.file = e;
-   }
+    },
+    getUploadFile(e) {
+      this.file = e;
+    }
   }
 };
 </script>

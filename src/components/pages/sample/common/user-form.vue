@@ -71,7 +71,7 @@
               clearable
             />
           </el-form-item>
-          <base-delete 
+          <base-delete
             :id="index"
             mode="test-user_btn"
             content="移除"

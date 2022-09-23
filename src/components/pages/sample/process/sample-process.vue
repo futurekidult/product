@@ -179,7 +179,7 @@ export default {
         this.qualitySubmitState = qualityDetail.is_submit;
         this.qualityId = qualityDetail.test_apply_id;
         this.qualityTestId = qualityDetail.id;
-      if (this.qualityProgress.actual_finish_time !== undefined) {
+        if (this.qualityProgress.actual_finish_time !== undefined) {
           changeTimestamp(this.qualityProgress, 'actual_finish_time');
         }
       } catch (err) {
@@ -212,7 +212,7 @@ export default {
       } else if (val === 20 || val === 10) {
         return 'result-ing';
       } else {
-        return 'result-ignore';
+        return 'result-fail';
       }
     }
   }
