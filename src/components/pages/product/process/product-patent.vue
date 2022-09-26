@@ -135,38 +135,38 @@
         </el-tab-pane>
       </el-tabs>
     </div>
+
+    <patent-apply
+      v-if="patentVisible"
+      :dialog-visible="patentVisible"
+      title="专利排查申请"
+      type="apply"
+      :form="applyForm"
+      :product-form="patent"
+      @hide-dialog="closePatentApply"
+    />
+
+    <patent-apply
+      v-if="patentReviewVisible"
+      :id="applyId"
+      :dialog-visible="patentReviewVisible"
+      title="专利排查需求评审"
+      type="review"
+      :form="reviewForm"
+      :product-form="patent"
+      @hide-dialog="closePatentReview"
+    />
+
+    <patent-apply
+      v-if="viewReviewVisible"
+      :dialog-visible="viewReviewVisible"
+      title="查看"
+      type="view"
+      :form="viewForm"
+      :product-form="patent"
+      @hide-dialog="closeViewReview"
+    />
   </div>
-
-  <patent-apply
-    v-if="patentVisible"
-    :dialog-visible="patentVisible"
-    title="专利排查申请"
-    type="apply"
-    :form="applyForm"
-    :product-form="patent"
-    @hide-dialog="closePatentApply"
-  />
-
-  <patent-apply
-    v-if="patentReviewVisible"
-    :id="applyId"
-    :dialog-visible="patentReviewVisible"
-    title="专利排查需求评审"
-    type="review"
-    :form="reviewForm"
-    :product-form="patent"
-    @hide-dialog="closePatentReview"
-  />
-
-  <patent-apply
-    v-if="viewReviewVisible"
-    :dialog-visible="viewReviewVisible"
-    title="查看"
-    type="view"
-    :form="viewForm"
-    :product-form="patent"
-    @hide-dialog="closeViewReview"
-  />
 </template>
 
 <script>

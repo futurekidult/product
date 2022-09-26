@@ -85,7 +85,7 @@
         width="300px"
       >
         <template #default="scope">
-          <el-button 
+          <el-button
             :disabled="scope.row.state !== 10"
             @click="showIgnoreForm(scope.row.id)"
           >
@@ -109,56 +109,57 @@
       @change-size="changePageSize"
       @change-page="changeCurrentPage"
     />
-  </div>
-  <reason-form
-    v-if="ignoreFormVisible"
-    :id="questionId"
-    :dialog-visible="ignoreFormVisible"
-    title="忽略原因"
-    type="ignore"
-    :submit-form="submitQuestionResult"
-    @hide-dialog="closeIgnoreForm"
-  />
-  <reason-form
-    v-if="reasonFormVisible"
-    :id="reasonId"
-    :dialog-visible="reasonFormVisible"
-    title="原因"
-    type="reason"
-    @hide-dialog="closeReasonForm"
-  />
-  <reason-form
-    v-if="consequenceFormVisible"
-    :content="consequence"
-    :dialog-visible="consequenceFormVisible"
-    title="后果描述"
-    type="consequence"
-    @hide-dialog="closeConsequenceForm"
-  />
 
-  <el-dialog
-    v-model="resolveDialog"
-    title="提示"
-    width="20%"
-  >
-    <div class="result-content">
-      是否确认已解决问题
-    </div>
-    <div style="text-align: center">
-      <el-button
-        class="close-btn"
-        @click="closeResolveDialog"
-      >
-        取消
-      </el-button>
-      <el-button
-        type="primary"
-        @click="submitResult"
-      >
-        确定
-      </el-button>
-    </div>
-  </el-dialog>
+    <reason-form
+      v-if="ignoreFormVisible"
+      :id="questionId"
+      :dialog-visible="ignoreFormVisible"
+      title="忽略原因"
+      type="ignore"
+      :submit-form="submitQuestionResult"
+      @hide-dialog="closeIgnoreForm"
+    />
+    <reason-form
+      v-if="reasonFormVisible"
+      :id="reasonId"
+      :dialog-visible="reasonFormVisible"
+      title="原因"
+      type="reason"
+      @hide-dialog="closeReasonForm"
+    />
+    <reason-form
+      v-if="consequenceFormVisible"
+      :content="consequence"
+      :dialog-visible="consequenceFormVisible"
+      title="后果描述"
+      type="consequence"
+      @hide-dialog="closeConsequenceForm"
+    />
+
+    <el-dialog
+      v-model="resolveDialog"
+      title="提示"
+      width="20%"
+    >
+      <div class="result-content">
+        是否确认已解决问题
+      </div>
+      <div style="text-align: center">
+        <el-button
+          class="close-btn"
+          @click="closeResolveDialog"
+        >
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          @click="submitResult"
+        >
+          确定
+        </el-button>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -251,7 +252,7 @@ export default {
       }
     },
     toSampleDetail(id) {
-      if(this.$store.state.menuData.links.indexOf('/sample-list') > -1) {
+      if (this.$store.state.menuData.links.indexOf('/sample-list') > -1) {
         this.$router.push(`/sample-list/${id}`);
         this.$store.commit('setActiveTab', 'base');
       } else {

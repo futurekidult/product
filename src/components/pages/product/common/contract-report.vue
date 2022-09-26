@@ -21,9 +21,7 @@
         <el-descriptions-item label="结果附件">
           <div v-if="JSON.stringify(data) !== '{}'">
             <el-button
-              v-if="
-                data.state === 10 && JSON.stringify(file) === '{}'
-              "
+              v-if="data.state === 10 && JSON.stringify(file) === '{}'"
               type="text"
               @click="showFileDialog"
             >
@@ -50,9 +48,7 @@
               </div>
             </div>
             <div
-              v-if="
-                data.state === 10 && JSON.stringify(file) !== '{}'
-              "
+              v-if="data.state === 10 && JSON.stringify(file) !== '{}'"
               style="display: flex"
             >
               <div v-if="data.result_file.type === 12860">
@@ -91,7 +87,6 @@
       </el-descriptions>
     </div>
 
-    
     <el-dialog
       v-model="uploadVisible"
       title="上传"
@@ -105,16 +100,14 @@
         <el-form-item
           :label="type === 'contract' ? '合同附件' : '专利报告  '"
           prop="file"
-          :rules="[{ required: true, message: '请上传附件'}]"
+          :rules="[{ required: true, message: '请上传附件' }]"
         >
           <el-upload
             action
             :show-file-list="false"
             :http-request="handleFileSuccess"
           >
-            <el-button
-              type="primary"
-            >
+            <el-button type="primary">
               点击上传
             </el-button>
           </el-upload>
@@ -135,7 +128,7 @@
               >
                 删除
               </el-button>
-              <span 
+              <span
                 v-if="file.type === 12860"
                 class="table-btn"
               >|</span>
@@ -150,9 +143,7 @@
           </div>
         </el-form-item>
         <el-divider />
-        <div
-          style="text-align: right"
-        >
+        <div style="text-align: right">
           <el-button
             class="close-btn"
             @click="closeFileDialog"
@@ -199,7 +190,7 @@ export default {
       try {
         await this.$store.dispatch(`product/patent/upload${url}`, params);
         this.uploadVisible = false;
-        if(type === 'contract') {
+        if (type === 'contract') {
           this.getContract();
         } else {
           this.getReport();
@@ -209,9 +200,12 @@ export default {
       }
     },
     async handleFileSuccess(e) {
-      if(e.file.size > 5 * 1024 * 1024 ) {
+      if (e.file.size > 5 * 1024 * 1024) {
         this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
+      } else if (
+        e.file.type.indexOf('application') > -1 ||
+        e.file.type === 'text/csv'
+      ) {
         this.$store.commit('setUploadState', false);
         let form = getFile(e);
         try {
@@ -233,12 +227,12 @@ export default {
     async previewOrDownload(id, name, type) {
       this.$store.commit('setAttachmentState', false);
       try {
-        await this.$store.dispatch('getViewLink', { 
+        await this.$store.dispatch('getViewLink', {
           params: { id },
           url: this.type === 'contract' ? 'patent-contract' : 'patent-report'
         });
         if (this.$store.state.attachmentState) {
-          if(type === 'download') {
+          if (type === 'download') {
             previewOrDownloadFile(this.$store.state.viewLink, name, 'download');
           } else {
             previewOrDownloadFile(this.$store.state.viewLink, name, 'preview');
@@ -279,10 +273,10 @@ export default {
     submitFileDialog() {
       this.uploadForm.file = this.file.id;
       this.$refs.uploadForm.validate((valid) => {
-       if(valid) {
-        this.uploadVisible = false;
-       }
-      })
+        if (valid) {
+          this.uploadVisible = false;
+        }
+      });
     }
   }
 };

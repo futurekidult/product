@@ -93,7 +93,7 @@ export default {
     return {
       page: this.currentPage,
       pageNum: this.pageSize
-    }
+    };
   },
   watch: {
     currentPage(val) {
@@ -105,7 +105,7 @@ export default {
   },
   methods: {
     toDetail(id) {
-      if(this.$store.state.menuData.links.indexOf('/sample-list') > -1) {
+      if (this.$store.state.menuData.links.indexOf('/sample-list') > -1) {
         this.$router.push(`/sample-list/${id}`);
         this.$store.commit('setActiveTab', 'base');
       } else {

@@ -65,50 +65,50 @@
       @change-size="changePageSize"
       @change-page="changeCurrentPage"
     />
+
+    <member-form
+      v-if="addDialog"
+      :dialog-visible="addDialog"
+      title="新增成员"
+      type="create"
+      @hide-dialog="closeAddForm"
+    />
+
+    <member-form
+      v-if="editDialog"
+      :id="editId"
+      :dialog-visible="editDialog"
+      title="修改"
+      type="edit"
+      :user="userMsg"
+      @hide-dialog="closeEditForm"
+    />
+
+    <el-dialog
+      v-model="deleteDialog"
+      title="提示"
+      width="20%"
+    >
+      <div class="result-content">
+        确认要删除该成员吗
+      </div>
+      <div style="text-align: center">
+        <el-button
+          class="member-btn"
+          @click="closeDeleteDialog"
+        >
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          class="member-btn"
+          @click="submitDeteleResult"
+        >
+          提交
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
-
-  <member-form
-    v-if="addDialog"
-    :dialog-visible="addDialog"
-    title="新增成员"
-    type="create"
-    @hide-dialog="closeAddForm"
-  />
-
-  <member-form
-    v-if="editDialog"
-    :id="editId"
-    :dialog-visible="editDialog"
-    title="修改"
-    type="edit"
-    :user="userMsg"
-    @hide-dialog="closeEditForm"
-  />
-
-  <el-dialog
-    v-model="deleteDialog"
-    title="提示"
-    width="20%"
-  >
-    <div class="result-content">
-      确认要删除该成员吗
-    </div>
-    <div style="text-align: center">
-      <el-button
-        class="member-btn"
-        @click="closeDeleteDialog"
-      >
-        取消
-      </el-button>
-      <el-button
-        type="primary"
-        class="member-btn"
-        @click="submitDeteleResult"
-      >
-        提交
-      </el-button>
-    </div>
-  </el-dialog>
 </template>
 
 <script>

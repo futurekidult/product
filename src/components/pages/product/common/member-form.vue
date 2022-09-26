@@ -82,7 +82,7 @@ export default {
   },
   mounted() {
     this.getRole();
-    getOrganizationList().then( (res) => {
+    getOrganizationList().then((res) => {
       this.memberList = res;
     });
     if (this.type === 'edit') {

@@ -15,11 +15,10 @@
               :label="'竞品图片' + (index + 1)"
               :prop="`competitive_product.${index}.images`"
             >
-              <base-upload 
+              <base-upload
                 type="image"
                 :is-disabled="true"
-                :list="productForm.competitive_product[index]
-                  .images"
+                :list="productForm.competitive_product[index].images"
                 tag="竞品图片"
                 count="8"
                 url="solution-competitive-img"

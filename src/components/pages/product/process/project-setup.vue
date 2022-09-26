@@ -34,7 +34,7 @@
         width="300px"
       >
         <div
-          v-if="progress.state !== 10 && progress.review_state !==10"
+          v-if="progress.state !== 10 && progress.review_state !== 10"
           :class="progress.state === undefined ? 'hide' : ''"
         >
           <el-button
@@ -116,7 +116,7 @@
           prop="sales_plan"
           class="sales-plan"
         >
-          <base-upload 
+          <base-upload
             type="file"
             tag="项目计划书"
             url="sales-plan"
@@ -206,7 +206,7 @@ export default {
     submitProjectForm() {
       this.form.sales_plan = this.file.id;
       let form = JSON.parse(JSON.stringify(this.form));
-      if(form.review_result === 1) {
+      if (form.review_result === 1) {
         delete form.unapproved_reason;
       }
       this.$refs.projectForm.validate((valid) => {
@@ -252,7 +252,7 @@ export default {
       }
     },
     refresh(val) {
-      if(val === 1) {
+      if (val === 1) {
         this.getProfitCalcaulation();
         this.getProcessTable();
       }
@@ -275,7 +275,7 @@ export default {
 
 .sales-plan {
   margin-bottom: 18px;
-  margin-bottom: 18px; 
+  margin-bottom: 18px;
   width: 50%;
 }
 </style>

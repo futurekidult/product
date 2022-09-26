@@ -60,9 +60,7 @@
             :http-request="(e) => handleFileSuccess(e, 'manual')"
           >
             <el-button
-              v-if="
-                JSON.stringify(manualFile) === '{}'
-              "
+              v-if="JSON.stringify(manualFile) === '{}'"
               type="text"
             >
               上传
@@ -71,7 +69,14 @@
           <div v-if="manualFile !== undefined && manualFile.type === 12860">
             <el-button
               type="text"
-              @click="previewOrDownload(manualFile.id, manualFile.name,'manual-file', 'preview')"
+              @click="
+                previewOrDownload(
+                  manualFile.id,
+                  manualFile.name,
+                  'manual-file',
+                  'preview'
+                )
+              "
             >
               预览
             </el-button>
@@ -86,7 +91,14 @@
             >|</span>
             <el-button
               type="text"
-              @click="previewOrDownload(manualFile.id, manualFile.name, 'manual-file', 'download')"
+              @click="
+                previewOrDownload(
+                  manualFile.id,
+                  manualFile.name,
+                  'manual-file',
+                  'download'
+                )
+              "
             >
               下载
             </el-button>
@@ -130,7 +142,14 @@
           <div v-if="diecutsFile !== undefined && diecutsFile.type === 12860">
             <el-button
               type="text"
-              @click="previewOrDownload(diecutsFile.id, diecutsFile.name, 'diecuts-file', 'preview')"
+              @click="
+                previewOrDownload(
+                  diecutsFile.id,
+                  diecutsFile.name,
+                  'diecuts-file',
+                  'preview'
+                )
+              "
             >
               预览
             </el-button>
@@ -145,7 +164,14 @@
             >|</span>
             <el-button
               type="text"
-              @click="previewOrDownload(diecutsFile.id, diecutsFile.name, 'diecuts-file', 'download')"
+              @click="
+                previewOrDownload(
+                  diecutsFile.id,
+                  diecutsFile.name,
+                  'diecuts-file',
+                  'download'
+                )
+              "
             >
               下载
             </el-button>
@@ -233,9 +259,12 @@ export default {
       }
     },
     async handleFileSuccess(e, val) {
-      if(e.file.size > 5 * 1024 * 1024 ) {
+      if (e.file.size > 5 * 1024 * 1024) {
         this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if(e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') {
+      } else if (
+        e.file.type.indexOf('application') > -1 ||
+        e.file.type === 'text/csv'
+      ) {
         this.$store.commit('setUploadState', false);
         let form = getFile(e);
         try {
@@ -258,7 +287,7 @@ export default {
         }
       } else {
         this.$message.warning('上传的附件格式有误！');
-       }
+      }
     },
     deleteFile(val) {
       if (val === 'manual') {
@@ -270,12 +299,12 @@ export default {
     async previewOrDownload(id, name, str, type) {
       this.$store.commit('setAttachmentState', false);
       try {
-        await this.$store.dispatch('getViewLink', { 
+        await this.$store.dispatch('getViewLink', {
           params: { id },
-          url:  str === 'manual-file' ? 'product-manual' : 'diecuts'
-         });
+          url: str === 'manual-file' ? 'product-manual' : 'diecuts'
+        });
         if (this.$store.state.attachmentState) {
-          if(type === 'download') {
+          if (type === 'download') {
             previewOrDownloadFile(this.$store.state.viewLink, name, 'download');
           } else {
             previewOrDownloadFile(this.$store.state.viewLink, name, 'preview');

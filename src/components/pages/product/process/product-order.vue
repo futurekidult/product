@@ -77,7 +77,7 @@ export default {
     return {
       page: this.currentPage,
       pageNum: this.pageSize
-    }
+    };
   },
   watch: {
     currentPage(val) {
@@ -89,8 +89,10 @@ export default {
   },
   methods: {
     toDetail(id) {
-      if(this.$store.state.menuData.links.indexOf('/product-list') > -1) {
-        this.$router.push(`/product-list/${this.$route.params.productId}/${id}`);
+      if (this.$store.state.menuData.links.indexOf('/product-list') > -1) {
+        this.$router.push(
+          `/product-list/${this.$route.params.productId}/${id}`
+        );
         this.$store.commit('setEntry', 'detail');
       } else {
         this.$message.error('无权限访问');
@@ -110,7 +112,7 @@ export default {
     changePageSize(val) {
       this.pageNum = val;
       this.$emit('change-size', this.pageNum);
-    } 
+    }
   }
 };
 </script>

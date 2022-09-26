@@ -71,7 +71,7 @@ export default {
   props: ['changeColor', 'pricingList'],
   methods: {
     toDetail(id) {
-      if(this.$store.state.menuData.links.indexOf('/price-list') > -1) {
+      if (this.$store.state.menuData.links.indexOf('/price-list') > -1) {
         this.$router.push(`/price-list/${id}`);
       } else {
         this.$message.error('无权限访问');
