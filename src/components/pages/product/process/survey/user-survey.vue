@@ -123,11 +123,12 @@
             </div>
           </el-descriptions-item>
           <el-descriptions-item
+            v-if="progress.state === 40"
             label="操作"
             width="200px"
           >
             <el-button
-              v-if="progress.state === 40"
+              type="text"
               :disabled="progress.state === 50"
               @click="confirmUserSurvey(progress.id)"
             >

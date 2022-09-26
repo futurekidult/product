@@ -156,7 +156,7 @@
     <el-dialog
       v-model="noAdjustmentVisible"
       title="提示"
-      width="20%"
+      width="25%"
     >
       <div class="result-content">
         当前无调价申请数据
@@ -174,7 +174,7 @@
     <el-dialog
       v-model="deleteDialog"
       title="提示"
-      width="20%"
+      width="25%"
     >
       <div class="result-content">
         确认要删除该核算利润吗

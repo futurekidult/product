@@ -30,28 +30,22 @@
         </div>
       </el-descriptions-item>
       <el-descriptions-item
+        v-if="progress.state === 20"
         label="操作"
         width="300px"
       >
-        <div
-          v-if="progress.state !== 10 && progress.review_state !== 10"
-          :class="progress.state === undefined ? 'hide' : ''"
+        <el-button
+          class="close-btn"
+          @click="approvalProject(0)"
         >
-          <el-button
-            :class="progress.state === 40 ? 'hide' : ''"
-            class="close-btn"
-            @click="approvalProject(0)"
-          >
-            不通过
-          </el-button>
-          <el-button
-            type="primary"
-            :disabled="progress.state === 40"
-            @click="approvalProject(1)"
-          >
-            通过
-          </el-button>
-        </div>
+          不通过
+        </el-button>
+        <el-button
+          type="primary"
+          @click="approvalProject(1)"
+        >
+          通过
+        </el-button>
       </el-descriptions-item>
     </el-descriptions>
 
@@ -95,6 +89,7 @@
           type="textarea"
           placeholder="请输入不通过原因"
           clearable
+          :rows="6"
           :disabled="isDisabled"
           maxlength="200"
           show-word-limit

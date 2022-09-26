@@ -2,7 +2,7 @@
   <el-dialog
     v-model="visible"
     :title="formTitle"
-    width="30%"
+    width="40%"
     @close="cancel"
   >
     <el-form
@@ -77,6 +77,7 @@
           clearable
           maxlength="200"
           show-word-limit
+          :rows="6"
         />
       </el-form-item>
       <competitive-table

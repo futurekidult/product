@@ -75,7 +75,7 @@
 
     <el-dialog
       v-model="setStageVisible"
-      width="20%"
+      width="30%"
       title="设置阶段完成时间"
     >
       <el-form
@@ -94,6 +94,7 @@
             placeholder="请选择计划完成时间"
             clearable
             :default-time="defaultTime"
+            style="width: 100%"
           />
         </el-form-item>
         <el-form-item
@@ -106,6 +107,7 @@
             placeholder="请选择计划完成时间"
             clearable
             :default-time="defaultTime"
+            style="width: 100%"
           />
         </el-form-item>
         <el-form-item
@@ -118,6 +120,7 @@
             placeholder="请选择计划完成时间"
             clearable
             :default-time="defaultTime"
+            style="width: 100%"
           />
         </el-form-item>
         <el-form-item
@@ -130,6 +133,7 @@
             placeholder="请选择计划完成时间"
             clearable
             :default-time="defaultTime"
+            style="width: 100%"
           />
         </el-form-item>
         <el-form-item
@@ -142,6 +146,7 @@
             placeholder="请选择计划完成时间"
             clearable
             :default-time="defaultTime"
+            style="width: 100%"
           />
         </el-form-item>
         <el-form-item
@@ -154,6 +159,7 @@
             placeholder="请选择计划完成时间"
             clearable
             :default-time="defaultTime"
+            style="width: 100%"
           />
         </el-form-item>
         <el-form-item
@@ -166,6 +172,7 @@
             placeholder="请选择计划完成时间"
             clearable
             :default-time="defaultTime"
+            style="width: 100%"
           />
         </el-form-item>
         <el-divider />
@@ -188,7 +195,7 @@
 
     <el-dialog
       v-model="editStageVisible"
-      width="20%"
+      width="30%"
       title="编辑"
     >
       <el-form
@@ -206,6 +213,7 @@
             placeholder="请选择计划完成时间"
             clearable
             :default-time="defaultTime"
+            style="width: 100%"
           />
         </el-form-item>
         <el-divider />
@@ -246,6 +254,7 @@
             placeholder="请选择实际完成时间"
             clearable
             :default-time="defaultTime"
+            style="width: 100%"
           />
         </el-form-item>
         <el-divider />

@@ -32,13 +32,16 @@
           {{ preProductSample.state_desc }}
         </div>
       </el-descriptions-item>
-      <el-descriptions-item label="操作">
-        <div
-          style="display: flex"
-          :class="preProductSample.state === undefined ? 'hide' : ''"
-        >
+      <el-descriptions-item
+        v-if="
+          preProductSample.state !== 40 && preProductSample.state !== undefined
+        "
+        label="操作"
+      >
+        <div style="display: flex">
           <el-button
             v-if="preProductSample.state === 10"
+            type="text"
             class="pre-product_btn"
             @click="showFollowupSheet(preProductSample.id)"
           >
@@ -46,7 +49,7 @@
           </el-button>
           <el-button
             v-if="preProductSample.state === 20"
-            type="primary"
+            type="text"
             class="pre-product_btn"
             @click="showCourierNumber(preProductSample.id)"
           >
@@ -55,7 +58,7 @@
         </div>
         <el-button
           v-if="preProductSample.state === 30"
-          type="primary"
+          type="text"
           class="pre-product_btn"
           @click="confirmPreProductSample(preProductSample.id)"
         >
@@ -67,7 +70,7 @@
     <el-dialog
       v-model="followupSheetDialog"
       title="大货样跟进单"
-      width="20%"
+      width="30%"
     >
       <el-form
         ref="followupForm"
@@ -123,7 +126,7 @@
     <el-dialog
       v-model="courierNumberDialog"
       title="快递单号"
-      width="20%"
+      width="30%"
     >
       <el-form
         ref="courierNumberForm"
@@ -173,7 +176,7 @@
 
     <el-dialog
       v-model="confirmVisible"
-      width="20%"
+      width="25%"
       title="提示"
     >
       <div class="result-content">

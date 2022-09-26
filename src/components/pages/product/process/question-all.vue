@@ -159,7 +159,7 @@
     <el-dialog
       v-model="resolveDialog"
       title="提示"
-      width="20%"
+      width="25%"
     >
       <div class="result-content">
         是否确认已解决问题

@@ -95,10 +95,12 @@
             {{ progress.state_desc }}
           </div>
         </el-descriptions-item>
-        <el-descriptions-item label="操作">
+        <el-descriptions-item
+          v-if="progress.state !== 40 && progress.state !== undefined"
+          label="操作"
+        >
           <el-button
-            :disabled="progress.state !== 10"
-            :class="progress.state === undefined ? 'hide' : ''"
+            type="text"
             @click="confirmPatent"
           >
             专利排查完成

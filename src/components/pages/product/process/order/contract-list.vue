@@ -20,11 +20,12 @@
       <el-descriptions-item label="实际完成时间">
         {{ exportContract.actual_finish_time }}
       </el-descriptions-item>
-      <el-descriptions-item label="操作">
+      <el-descriptions-item
+        v-if="exportContract.state !== 40 && exportContract.state !== undefined"
+        label="操作"
+      >
         <el-button
-          type="primary"
-          :disabled="exportContract.state !== 10"
-          :class="exportContract.state === undefined ? 'hide' : ''"
+          type="text"
           @click="confirmExportContract(exportContract.id)"
         >
           已完成
@@ -195,11 +196,14 @@
           </div>
         </div>
       </el-descriptions-item>
-      <el-descriptions-item label="操作">
+      <el-descriptions-item
+        v-if="
+          purchaseContract.state !== 40 && purchaseContract.state !== undefined
+        "
+        label="操作"
+      >
         <el-button
-          type="primary"
-          :disabled="purchaseContract.state !== 10"
-          :class="purchaseContract.state === undefined ? 'hide' : ''"
+          type="text"
           @click="confirmPurchaseContract(purchaseContract.id)"
         >
           提交

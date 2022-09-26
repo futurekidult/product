@@ -34,6 +34,7 @@
           :disabled="isDisabled"
           clearable
           maxlength="200"
+          :rows="6"
           show-word-limit
         />
       </el-form-item>
@@ -48,6 +49,7 @@
           :disabled="isDisabled"
           clearable
           maxlength="200"
+          :rows="6"
           show-word-limit
         />
       </el-form-item>

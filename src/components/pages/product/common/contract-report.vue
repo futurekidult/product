@@ -74,11 +74,12 @@
             {{ data.state_desc }}
           </div>
         </el-descriptions-item>
-        <el-descriptions-item label="操作">
+        <el-descriptions-item
+          v-if="data.state !== 40 && data.state !== undefined"
+          label="操作"
+        >
           <el-button
-            v-if="JSON.stringify(data) !== '{}'"
-            :disabled="data.state !== 10"
-            :class="data.state === undefined ? 'hide' : ''"
+            type="text"
             @click="uploadAttachment"
           >
             完成
@@ -90,7 +91,7 @@
     <el-dialog
       v-model="uploadVisible"
       title="上传"
-      width="30%"
+      width="35%"
     >
       <el-form
         ref="uploadForm"
