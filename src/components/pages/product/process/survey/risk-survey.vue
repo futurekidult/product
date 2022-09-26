@@ -13,7 +13,7 @@
     <el-form
       ref="riskForm"
       label-width="110px"
-      style="width: 50%"
+      style="width: 60%"
       :model="form"
       :rules="riskRules"
     >

@@ -2,7 +2,7 @@
   <el-dialog
     v-model="visible"
     :title="formTitle"
-    width="30%"
+    width="40%"
     @close="cancel"
   >
     <el-form

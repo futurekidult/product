@@ -38,7 +38,7 @@
     <el-form
       ref="form"
       label-width="121px"
-      style="width: 50%"
+      style="width: 60%"
       :rules="surveyRules"
       :model="form"
     >

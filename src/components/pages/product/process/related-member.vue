@@ -19,9 +19,10 @@
       :data="projectMember"
     >
       <el-table-column
-        label="序号"
-        type="index"
-        width="60px"
+        fixed
+        label="成员ID"
+        width="100"
+        prop="id"
       />
       <el-table-column
         label="成员名称"
@@ -34,10 +35,12 @@
       <el-table-column
         label="创建时间"
         prop="create_time"
+        width="200"
       />
       <el-table-column
+        fixed="right"
         label="操作"
-        width="150px"
+        width="150"
       >
         <template #default="scope">
           <el-button
@@ -87,7 +90,7 @@
     <el-dialog
       v-model="deleteDialog"
       title="提示"
-      width="20%"
+      width="25%"
     >
       <div class="result-content">
         确认要删除该成员吗

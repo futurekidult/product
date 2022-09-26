@@ -38,7 +38,7 @@
     <el-form
       ref="marketForm"
       label-width="80px"
-      style="width: 50%"
+      style="width: 60%"
       :model="marketForm"
       :rules="marketRules"
     >

@@ -81,14 +81,20 @@
         :data="productList"
       >
         <el-table-column
+          fixed
           label="产品ID"
           prop="id"
         />
         <el-table-column
+          fixed
           label="产品名称"
           prop="name"
+          min-width="150"
         />
-        <el-table-column label="关联需求ID">
+        <el-table-column
+          fixed
+          label="关联需求ID"
+        >
           <template #default="scope">
             <el-button
               type="text"
@@ -105,6 +111,7 @@
         <el-table-column
           label="产品定位"
           prop="positioning_desc"
+          min-width="100"
         />
         <el-table-column
           label="项目管理员"
@@ -113,10 +120,12 @@
         <el-table-column
           label="创建时间"
           prop="create_time"
+          width="200"
         />
         <el-table-column
           label="状态"
           prop="state_desc"
+          fixed="right"
         >
           <template #default="scope">
             <div :class="changeCellColor(scope.row.state)">
@@ -124,7 +133,11 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column
+          label="操作"
+          fixed="right"
+          width="150"
+        >
           <template #default="scope">
             <div style="display: flex">
               <div v-if="scope.row.state !== 90">
@@ -158,7 +171,7 @@
       <el-dialog
         v-model="editVisible"
         title="编辑"
-        width="30%"
+        width="42%"
       >
         <el-form
           ref="editForm"
