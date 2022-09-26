@@ -12,11 +12,16 @@
       :data="questionList"
     >
       <el-table-column
-        label="序号"
-        type="index"
-        width="60px"
+        fixed
+        label="问题id"
+        prop="id"
+        width="100"
       />
-      <el-table-column label="关联样品ID">
+      <el-table-column
+        fixed
+        label="关联样品ID"
+        width="100"
+      >
         <template #default="scope">
           <el-button
             type="text"
@@ -27,14 +32,20 @@
         </template>
       </el-table-column>
       <el-table-column
+        fixed
         label="关联定价ID"
         prop="pricing_id"
+        width="100"
       />
       <el-table-column
         label="问题名称"
         prop="name"
+        min-width="150"
       />
-      <el-table-column label="后果描述">
+      <el-table-column
+        label="后果描述"
+        min-width="150"
+      >
         <template #default="scope">
           <el-button
             type="text"
@@ -47,29 +58,37 @@
       <el-table-column
         label="记录时间"
         prop="record_time"
-        width="200px"
+        width="200"
       />
       <el-table-column
         label="问题来源"
         prop="source"
+        min-width="150"
       />
       <el-table-column
         label="采购员"
         prop="purchase_specialist"
+        min-width="100"
       />
       <el-table-column
         label="解決时间"
         prop="resolve_time"
-        width="200px"
+        width="200"
       />
-      <el-table-column label="状态">
+      <el-table-column
+        label="状态"
+        min-width="100"
+      >
         <template #default="scope">
           <div :class="changeCellColor(scope.row.state)">
             {{ scope.row.state_desc }}
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="原因">
+      <el-table-column
+        label="原因"
+        min-width="100"
+      >
         <template #default="scope">
           <el-button
             v-if="scope.row.state === 30"
@@ -82,7 +101,8 @@
       </el-table-column>
       <el-table-column
         label="操作"
-        width="300px"
+        width="300"
+        fixed="right"
       >
         <template #default="scope">
           <el-button

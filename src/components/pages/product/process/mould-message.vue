@@ -20,26 +20,35 @@
       :data="mouldList"
     >
       <el-table-column
+        fixed
         label="模具ID"
         prop="mould_id"
+        width="100"
       />
       <el-table-column
+        fixed
         label="模具名称"
         prop="name"
+        min-width="150"
       />
       <el-table-column
         label="开模工厂"
         prop="mould_factory"
+        min-width="150"
       />
       <el-table-column
         label="创建时间"
         prop="create_time"
+        width="200"
       />
       <el-table-column
         label="创建人"
         prop="creator"
       />
-      <el-table-column label="操作">
+      <el-table-column
+        label="操作"
+        fixed="right"
+      >
         <template #default="scope">
           <el-button
             type="text"
@@ -69,7 +78,7 @@
     <el-dialog
       v-model="deleteDialog"
       title="提示"
-      width="20%"
+      width="25%"
     >
       <div class="result-content">
         确认要删除该模具吗
@@ -94,7 +103,7 @@
     <el-dialog
       v-model="mouldSelectedVisible"
       title="选择模具"
-      width="40%"
+      width="50%"
     >
       <el-table
         border
@@ -109,25 +118,31 @@
           width="55"
         />
         <el-table-column
+          fixed
           label="模具ID"
           prop="id"
+          width="100"
         />
         <el-table-column
+          fixed
           label="模具名称"
           prop="name"
+          min-width="150"
         />
         <el-table-column
           label="开模工厂"
           prop="mould_factory"
+          min-width="150"
         />
         <el-table-column
           label="创建时间"
           prop="create_time"
-          width="200px"
+          width="200"
         />
         <el-table-column
           label="创建人"
           prop="creator"
+          fixed="right"
         />
       </el-table>
 

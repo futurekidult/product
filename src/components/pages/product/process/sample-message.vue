@@ -12,57 +12,73 @@
       :data="sampleList"
     >
       <el-table-column
+        fixed
         label="样品ID"
         prop="id"
-        width="80px"
+        width="100"
       />
       <el-table-column
+        fixed
         label="关联定价ID"
         prop="pricing_id"
+        width="100"
       />
       <el-table-column
         label="平台"
         prop="platform"
+        min-width="100"
       />
       <el-table-column
         label="需求数量"
         prop="demand_quantity"
+        min-width="100"
       />
       <el-table-column
         label="需求日期"
         prop="demand_time"
-        width="200px"
+        width="200"
       />
       <el-table-column
         label="有无认证"
         prop="has_verify"
+        min-width="100"
       />
       <el-table-column
         label="供应商ID"
         prop="supplier_id"
+        width="100"
       />
       <el-table-column
         label="采购员"
         prop="purchase_specialist"
+        min-width="100"
       />
       <el-table-column
         label="计划完成时间"
         prop="estimated_finish_time"
-        width="200px"
+        width="200"
       />
       <el-table-column
         label="实际完成时间"
         prop="actual_finish_time"
-        width="200px"
+        width="200"
       />
-      <el-table-column label="状态">
+      <el-table-column
+        label="状态"
+        min-width="150"
+        fixed="right"
+      >
         <template #default="scope">
           <div :class="changeCellColor(scope.row.state)">
             {{ scope.row.state_desc }}
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column
+        label="操作"
+        fixed="right"
+        width="100"
+      >
         <template #default="scope">
           <el-button
             type="text"

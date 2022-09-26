@@ -229,7 +229,7 @@
     <el-dialog
       v-model="actualTimeVisible"
       title="填写"
-      width="20%"
+      width="30%"
     >
       <el-form
         ref="timeForm"

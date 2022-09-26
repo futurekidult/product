@@ -12,13 +12,16 @@
     >
       >
       <el-table-column
-        label="序号"
-        type="index"
-        width="60px"
+        fixed
+        label="订单ID"
+        width="100"
+        prop="id"
       />
       <el-table-column
+        fixed
         label="关联定价ID"
         prop="pricing_id"
+        width="100"
       />
       <el-table-column
         label="最终定价"
@@ -27,31 +30,42 @@
       <el-table-column
         label="供应商ID"
         prop="supplier_id"
+        width="100"
       />
       <el-table-column
         label="计划完成时间"
         prop="estimated_finish_time"
-        width="200px"
+        width="200"
       />
       <el-table-column
         label="实际完成时间"
         prop="actual_finish_time"
-        width="200px"
+        width="200"
       />
       <el-table-column
         label="大货样套数"
         prop="pre_production_sample_quantity"
       />
-      <el-table-column label="状态">
+      <el-table-column
+        label="状态"
+        fixed="right"
+      >
         <template #default="scope">
           <div :class="changeCellColor(scope.row.state)">
             {{ scope.row.state_desc }}
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column
+        label="操作"
+        fixed="right"
+        width="100"
+      >
         <template #default="scope">
-          <el-button @click="toDetail(scope.row.id)">
+          <el-button
+            type="text"
+            @click="toDetail(scope.row.id)"
+          >
             下单详情
           </el-button>
         </template>

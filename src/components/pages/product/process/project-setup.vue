@@ -64,7 +64,7 @@
     >
       <el-form-item
         label="评审结果"
-        style="width: 20%"
+        style="width: 30%"
         prop="review_result"
       >
         <el-select
