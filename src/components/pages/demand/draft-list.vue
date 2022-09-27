@@ -1,78 +1,86 @@
 <template>
-  <base-breadcrumb />
+  <div>
+    <base-breadcrumb />
 
-  <div class="border">
-    <el-table
-      border
-      stripe
-      empty-text="无数据"
-      :header-cell-style="{ background: '#eef1f6', color: '#606266', textAlign: 'center' }"
-      :data="draftList"
-      :cell-style="{ textAlign: 'center' }"
-    >
-      <el-table-column 
-        label="需求ID"
-        prop="id"
-        width="80px"
-      />
-      <el-table-column
-        label="产品名称"
-        prop="name"
-      />
-      <el-table-column
-        label="创建时间"
-        prop="create_time"
-      />
-      <el-table-column
-        label="状态"
-        prop="state_desc"
-        width="200px"
-      />
-      <el-table-column 
-        label="操作"
-        width="200px"
+    <div class="border">
+      <el-table
+        border
+        stripe
+        empty-text="无数据"
+        :data="draftList"
+        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       >
-        <template #default="scope">
-          <el-button 
-            type="text"
-            @click="toForm(scope.row.id)"
-          >
-            编辑
-          </el-button>
-          <span class="table-btn">|</span>
-          <el-button 
-            type="text"
-            @click="showDeleteDraftItem(scope.row.id)"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+        <el-table-column
+          fixed
+          label="需求ID"
+          prop="id"
+          width="100"
+        />
+        <el-table-column
+          fixed
+          label="产品名称"
+          prop="name"
+        />
+        <el-table-column
+          label="创建时间"
+          prop="create_time"
+          width="200"
+        />
+        <el-table-column
+          label="状态"
+          prop="state_desc"
+          width="100"
+          fixed="right"
+        />
+        <el-table-column
+          label="操作"
+          width="150"
+          fixed="right"
+        >
+          <template #default="scope">
+            <el-button
+              type="text"
+              @click="toForm(scope.row.id)"
+            >
+              编辑
+            </el-button>
+            <span class="table-btn">|</span>
+            <el-button
+              type="text"
+              @click="showDeleteDraftItem(scope.row.id)"
+            >
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
 
-    <base-pagination
-      v-if="$store.state.demand.draftListLength > pageSize"
-      :length="$store.state.demand.draftListLength"
-      :current-page="currentPage"
-      :page-num="pageSize"
-      @change-size="changePageSize"
-      @change-page="changeCurrentPage"
+      <base-pagination
+        v-if="$store.state.demand.draftListLength > pageSize"
+        :length="$store.state.demand.draftListLength"
+        :current-page="currentPage"
+        :page-num="pageSize"
+        @change-size="changePageSize"
+        @change-page="changeCurrentPage"
+      />
+    </div>
+
+    <confirm-dialog
+      v-if="deleteDialogVisible"
+      :id="deleteId"
+      :dialog-visible="deleteDialogVisible"
+      dialog-content="是否确认删除该草稿"
+      type="draft delete"
+      :get-list="getDraftList"
+      @hide-dialog="closeDeleteDraftItem"
     />
   </div>
-
-  <confirm-dialog 
-    v-if="deleteDialogVisible"
-    :id="deleteId"
-    :dialog-visible="deleteDialogVisible"
-    dialog-content="是否确认删除该草稿"
-    type="draft delete"
-    :get-list="getDraftList"
-    @hide-dialog="closeDeleteDraftItem"
-  />
 </template>
 
 <script>
 import { formatterTime } from '../../../utils';
+import { getDemandDetail } from '../../../utils/demand';
+
 export default {
   data() {
     return {
@@ -80,7 +88,7 @@ export default {
       pageSize: 10,
       draftList: [],
       deleteDialogVisible: false
-    }
+    };
   },
   mounted() {
     this.getDraftList();
@@ -90,40 +98,19 @@ export default {
       let params = {
         current_page: this.currentPage,
         page_size: this.pageSize
-      }
+      };
       try {
         await this.$store.dispatch('demand/getDraftList', { params });
         this.draftList = this.$store.state.demand.draftList;
         this.draftList.forEach((item) => {
           item.create_time = formatterTime(item.create_time);
-        })
-      } catch (err) {
-        return;
-      }
-    },
-    async getDemandDetail(id) {
-      this.getCategoryList();
-      try {
-        await this.$store.dispatch('demand/getDemandDetail', {
-          params: {
-            demand_id:  id
-          }
         });
-        this.$router.push(`/demand-list/edit/${id}`);
-      } catch (err) {
-        return ;
-      }
-    },
-    async getCategoryList() {
-      try {
-        await this.$store.dispatch('demand/getCategoryList');
-        this.bigCategoryList = this.$store.state.demand.categoryList;
       } catch (err) {
         return;
       }
     },
     toForm(id) {
-      this.getDemandDetail(id);
+      getDemandDetail(id, 'edit');
     },
     changePageSize(val) {
       this.pageSize = val;
@@ -141,5 +128,5 @@ export default {
       this.deleteDialogVisible = false;
     }
   }
-}
+};
 </script>

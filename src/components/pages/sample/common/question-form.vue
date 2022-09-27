@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="visible"
-    width="25%"
+    width="30%"
     :title="title"
     @close="cancel"
   >
@@ -43,7 +43,7 @@
               show-word-limit
             />
           </el-form-item>
-          <base-delete 
+          <base-delete
             :id="index"
             mode="test-question_btn"
             content="移除"

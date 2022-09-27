@@ -1,43 +1,45 @@
 <template>
-  <el-container>
-    <el-header>
-      <div class="header-left">
-        <div class="nav-img">
-          <img src="../../assets/images/logo.png">
+  <div>
+    <el-container>
+      <el-header>
+        <div class="header-left">
+          <div class="nav-img">
+            <img src="../../assets/images/logo.png">
+          </div>
+          <el-divider
+            direction="vertical"
+            class="header-divider"
+          />
+          <div class="system">
+            新品开发系统1.0.0
+          </div>
         </div>
-        <el-divider
-          direction="vertical"
-          class="header-divider"
-        />
-        <div class="system">
-          新品开发系统1.0.0
+        <div class="header-right">
+          <div>欢迎您，{{ $store.state.userInfo.name }}</div>
+          <el-divider
+            direction="vertical"
+            class="header-right_divider"
+          />
+          <el-button
+            type="text"
+            class="exit-btn"
+            @click="logout"
+          >
+            退出
+          </el-button>
         </div>
-      </div>
-      <div class="header-right">
-        <div>欢迎您，{{ $store.state.userInfo.name }}</div>
-        <el-divider
-          direction="vertical"
-          class="header-right_divider"
-        />
-        <el-button
-          type="text"
-          class="exit-btn"
-          @click="logout"
-        >
-          退出
-        </el-button>
-      </div>
-    </el-header>
-  </el-container>
-  <div class="not-found">
-    <img src="../../assets/images/404.png">
-    <div>您访问的页面不存在或页面出错 ~</div>
-    <el-button
-      type="primary"
-      @click="toIndex"
-    >
-      返回首页
-    </el-button>
+      </el-header>
+    </el-container>
+    <div class="not-found">
+      <img src="../../assets/images/404.png">
+      <div>您访问的页面不存在或页面出错 ~</div>
+      <el-button
+        type="primary"
+        @click="toIndex"
+      >
+        返回首页
+      </el-button>
+    </div>
   </div>
 </template>
 

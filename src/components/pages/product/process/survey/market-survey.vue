@@ -38,7 +38,7 @@
     <el-form
       ref="marketForm"
       label-width="80px"
-      style="width: 50%"
+      style="width: 60%"
       :model="marketForm"
       :rules="marketRules"
     >
@@ -46,7 +46,7 @@
         label="调研报告"
         prop="attachment"
       >
-        <base-upload 
+        <base-upload
           type="file"
           tag="调研报告"
           url="market-survey-report"
@@ -65,11 +65,22 @@
         </el-button>
       </el-form-item>
     </el-form>
+
+    <survey-suggestion
+      v-if="progress.state === 50"
+      :ids="$store.state.product.survey.market.ids"
+      type="market"
+    />
   </div>
 </template>
 
 <script>
+import SurveySuggestion from '../../common/survey-suggestion.vue';
+
 export default {
+  components: {
+    SurveySuggestion
+  },
   inject: ['getBase'],
   props: ['changeColor', 'progress', 'attachment', 'getList'],
   data() {

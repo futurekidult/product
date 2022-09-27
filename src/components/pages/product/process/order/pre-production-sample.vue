@@ -32,13 +32,16 @@
           {{ preProductSample.state_desc }}
         </div>
       </el-descriptions-item>
-      <el-descriptions-item label="操作">
-        <div
-          style="display: flex"
-          :class="preProductSample.state === undefined ? 'hide' : ''"
-        >
+      <el-descriptions-item
+        v-if="
+          preProductSample.state !== 40 && preProductSample.state !== undefined
+        "
+        label="操作"
+      >
+        <div style="display: flex">
           <el-button
             v-if="preProductSample.state === 10"
+            type="text"
             class="pre-product_btn"
             @click="showFollowupSheet(preProductSample.id)"
           >
@@ -46,7 +49,7 @@
           </el-button>
           <el-button
             v-if="preProductSample.state === 20"
-            type="primary"
+            type="text"
             class="pre-product_btn"
             @click="showCourierNumber(preProductSample.id)"
           >
@@ -55,7 +58,7 @@
         </div>
         <el-button
           v-if="preProductSample.state === 30"
-          type="primary"
+          type="text"
           class="pre-product_btn"
           @click="confirmPreProductSample(preProductSample.id)"
         >
@@ -63,138 +66,139 @@
         </el-button>
       </el-descriptions-item>
     </el-descriptions>
-  </div>
-  <el-dialog
-    v-model="followupSheetDialog"
-    title="大货样跟进单"
-    width="20%"
-  >
-    <el-form
-      ref="followupForm"
-      label-width="110px"
-      :model="followupForm"
-      :rules="followupRules"
+
+    <el-dialog
+      v-model="followupSheetDialog"
+      title="大货样跟进单"
+      width="30%"
     >
-      <el-form-item
-        label="计划到货时间"
-        prop="estimated_arrival_time"
+      <el-form
+        ref="followupForm"
+        label-width="110px"
+        :model="followupForm"
+        :rules="followupRules"
       >
-        <el-date-picker
-          v-model="followupForm.estimated_arrival_time"
-          type="datetime"
-          placeholder="请选择日期"
-          clearable
-          :default-time="defaultTime"
-        />
-      </el-form-item>
-      <el-form-item
-        label="大货样套数"
-        prop="pre_production_sample_quantity"
-      >
-        <el-input
-          v-model="followupForm.pre_production_sample_quantity"
-          placeholder="请输入大货样套数"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item>
-        <div class="desc">
-          大货样套数最好3套以上
+        <el-form-item
+          label="计划到货时间"
+          prop="estimated_arrival_time"
+        >
+          <el-date-picker
+            v-model="followupForm.estimated_arrival_time"
+            type="datetime"
+            placeholder="请选择日期"
+            clearable
+            :default-time="defaultTime"
+          />
+        </el-form-item>
+        <el-form-item
+          label="大货样套数"
+          prop="pre_production_sample_quantity"
+        >
+          <el-input
+            v-model="followupForm.pre_production_sample_quantity"
+            placeholder="请输入大货样套数"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item>
+          <div class="desc">
+            大货样套数最好3套以上
+          </div>
+        </el-form-item>
+        <el-divider />
+        <div style="text-align: right">
+          <el-button
+            class="close-btn"
+            @click="closeFollowupSheet"
+          >
+            取消
+          </el-button>
+          <el-button
+            type="primary"
+            @click="submitFollowupForm"
+          >
+            提交
+          </el-button>
         </div>
-      </el-form-item>
-      <el-divider />
-      <div style="text-align: right">
-        <el-button
-          class="close-btn"
-          @click="closeFollowupSheet"
-        >
-          取消
-        </el-button>
-        <el-button
-          type="primary"
-          @click="submitFollowupForm"
-        >
-          提交
-        </el-button>
-      </div>
-    </el-form>
-  </el-dialog>
+      </el-form>
+    </el-dialog>
 
-  <el-dialog
-    v-model="courierNumberDialog"
-    title="快递单号"
-    width="20%"
-  >
-    <el-form
-      ref="courierNumberForm"
-      label-width="110px"
-      :model="courierNumberForm"
-      :rules="courierNumberRules"
+    <el-dialog
+      v-model="courierNumberDialog"
+      title="快递单号"
+      width="30%"
     >
-      <el-form-item
-        label="快递单号"
-        prop="courier_number"
+      <el-form
+        ref="courierNumberForm"
+        label-width="110px"
+        :model="courierNumberForm"
+        :rules="courierNumberRules"
       >
-        <el-input
-          v-model="courierNumberForm.courier_number"
-          placeholder="请输入快递单号"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item
-        label="实际到货时间"
-        prop="actual_arrival_time"
-      >
-        <el-date-picker
-          v-model="courierNumberForm.actual_arrival_time"
-          type="datetime"
-          placeholder="选择日期时间"
-          clearable
-          :default-time="defaultTime"
-        />
-      </el-form-item>
-      <el-divider />
-      <div style="text-align: right">
+        <el-form-item
+          label="快递单号"
+          prop="courier_number"
+        >
+          <el-input
+            v-model="courierNumberForm.courier_number"
+            placeholder="请输入快递单号"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item
+          label="实际到货时间"
+          prop="actual_arrival_time"
+        >
+          <el-date-picker
+            v-model="courierNumberForm.actual_arrival_time"
+            type="datetime"
+            placeholder="选择日期时间"
+            clearable
+            :default-time="defaultTime"
+          />
+        </el-form-item>
+        <el-divider />
+        <div style="text-align: right">
+          <el-button
+            class="close-btn"
+            @click="closeCourierNumber"
+          >
+            取消
+          </el-button>
+          <el-button
+            type="primary"
+            @click="submitCourierNumbeForm"
+          >
+            提交
+          </el-button>
+        </div>
+      </el-form>
+    </el-dialog>
+
+    <el-dialog
+      v-model="confirmVisible"
+      width="25%"
+      title="提示"
+    >
+      <div class="result-content">
+        是否确认大货样
+      </div>
+      <div class="pre-product">
         <el-button
-          class="close-btn"
-          @click="closeCourierNumber"
+          class="pre-product_btn"
+          @click="closeConfirm"
         >
           取消
         </el-button>
         <el-button
           type="primary"
-          @click="submitCourierNumbeForm"
+          class="pre-product_btn"
+          @click="submitConfirm"
         >
           提交
         </el-button>
       </div>
-    </el-form>
-  </el-dialog>
-
-  <el-dialog
-    v-model="confirmVisible"
-    width="20%"
-    title="提示"
-  >
-    <div class="result-content">
-      是否确认大货样
-    </div>
-    <div class="pre-product">
-      <el-button
-        class="pre-product_btn"
-        @click="closeConfirm"
-      >
-        取消
-      </el-button>
-      <el-button
-        type="primary"
-        class="pre-product_btn"
-        @click="submitConfirm"
-      >
-        提交
-      </el-button>
-    </div>
-  </el-dialog>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -238,7 +242,7 @@ export default {
         ]
       },
       id: 0,
-      defaultTime: new Date(2000,1,1,23,59,59)
+      defaultTime: new Date(2000, 1, 1, 23, 59, 59)
     };
   },
   methods: {
@@ -250,16 +254,16 @@ export default {
     },
     async submitSheet() {
       this.followupForm['id'] = this.preProductSample.id;
-        let val = {
-        pre_production_sample_quantity: +this.followupForm.pre_production_sample_quantity,
-        estimated_arrival_time: timestamp(this.followupForm.estimated_arrival_time),
+      let val = {
+        pre_production_sample_quantity:
+          +this.followupForm.pre_production_sample_quantity,
+        estimated_arrival_time: timestamp(
+          this.followupForm.estimated_arrival_time
+        ),
         id: this.preProductSample.id
-      }
+      };
       try {
-        await this.$store.dispatch(
-          'product/order/followupSheet',
-          val
-        );
+        await this.$store.dispatch('product/order/followupSheet', val);
         this.followupSheetDialog = false;
         this.getPreProductSample();
       } catch (err) {
@@ -269,14 +273,13 @@ export default {
     async submitReceipt() {
       let val = {
         courier_number: this.courierNumberForm.courier_number,
-        actual_arrival_time: timestamp(this.courierNumberForm.actual_arrival_time),
+        actual_arrival_time: timestamp(
+          this.courierNumberForm.actual_arrival_time
+        ),
         id: this.preProductSample.id
-      }
+      };
       try {
-        await this.$store.dispatch(
-          'product/order/receiptSheet',
-          val
-        );
+        await this.$store.dispatch('product/order/receiptSheet', val);
         this.courierNumberDialog = false;
         this.getPreProductSample();
       } catch (err) {

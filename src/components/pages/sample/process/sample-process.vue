@@ -53,7 +53,19 @@ export default {
     return {
       getProofing: this.getProofingProgress,
       getTest: this.getTestProgress,
-      getQualityDetail: this.getQualityDetail
+      getQualityDetail: this.getQualityDetail,
+      getTestSupply: () => {
+        return {
+          supply: this.testSupply
+        };
+      },
+      refreshTestSupply: this.getTestSupply,
+      getTestResultSchedule: () => {
+        return {
+          id: this.testResultId,
+          test_result_schedule: this.qualityRestResultSchedule
+        };
+      }
     };
   },
   data() {
@@ -65,10 +77,13 @@ export default {
       qualityProgress: {},
       qualityAttachment: {},
       qualitySubmitState: 0,
+      qualityRestResultSchedule: {},
       qualityId: 0,
       progress: {},
-      qualityTestId:0,
-      hasUserTest: 0
+      qualityTestId: 0,
+      hasUserTest: 0,
+      testSupply: {},
+      testResultId: 0
     };
   },
   mounted() {
@@ -103,7 +118,10 @@ export default {
           }
         });
         this.proofingProgress = this.$store.state.sample.proofingProgress;
-        if(this.proofingProgress.submit_time !== undefined && this.proofingProgress.actual_finish_time !== undefined){
+        if (
+          this.proofingProgress.submit_time !== undefined &&
+          this.proofingProgress.actual_finish_time !== undefined
+        ) {
           changeTimestamp(this.proofingProgress, 'submit_time');
           changeTimestamp(this.proofingProgress, 'actual_finish_time');
         }
@@ -133,6 +151,18 @@ export default {
         return;
       }
     },
+    async getTestSupply() {
+      try {
+        await this.$store.dispatch('sample/getTestSupply', {
+          params: {
+            sample_id: +this.$route.params.id
+          }
+        });
+        this.testSupply = this.$store.state.sample.supply;
+      } catch (err) {
+        return;
+      }
+    },
     async getQualityDetail() {
       this.$store.commit('sample/quality/setQualityLoading', true);
       try {
@@ -142,12 +172,14 @@ export default {
           }
         });
         let { qualityDetail } = this.$store.state.sample.quality;
+        this.testResultId = qualityDetail.id;
         this.qualityProgress = qualityDetail.test_schedule;
         this.qualityAttachment = qualityDetail.test_result_file;
+        this.qualityRestResultSchedule = qualityDetail.test_result_schedule;
         this.qualitySubmitState = qualityDetail.is_submit;
         this.qualityId = qualityDetail.test_apply_id;
         this.qualityTestId = qualityDetail.id;
-        if(this.qualityProgress.actual_finish_time !== undefined){
+        if (this.qualityProgress.actual_finish_time !== undefined) {
           changeTimestamp(this.qualityProgress, 'actual_finish_time');
         }
       } catch (err) {
@@ -165,6 +197,7 @@ export default {
           break;
         case 'test':
           this.getTestProgress();
+          this.getTestSupply();
           this.getQualityDetail();
           break;
         default:
@@ -179,7 +212,7 @@ export default {
       } else if (val === 20 || val === 10) {
         return 'result-ing';
       } else {
-        return 'result-ignore';
+        return 'result-fail';
       }
     }
   }

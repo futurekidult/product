@@ -66,7 +66,7 @@
       v-loading="$store.state.demand.demandLoading"
       class="border"
     >
-      <div class="select-title  demand-title">
+      <div class="select-title demand-title">
         <div>
           <span class="line">|</span> 需求列表
           <el-button
@@ -86,22 +86,29 @@
         </el-button>
       </div>
       <el-table
-        :data="demandList"
         border
         stripe
         empty-text="无数据"
+        :data="demandList"
         :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
       >
         <el-table-column
+          fixed
           prop="id"
           label="需求ID"
-          width="80px"
+          width="100"
         />
         <el-table-column
+          fixed
           prop="name"
           label="产品名称"
+          min-width="150"
         />
-        <el-table-column label="关联产品ID">
+        <el-table-column
+          fixed
+          label="关联产品ID"
+          width="110"
+        >
           <template #default="scope">
             <el-button
               type="text"
@@ -118,25 +125,32 @@
         <el-table-column
           prop="ding_dept_desc"
           label="所属部门"
+          min-width="150"
         />
         <el-table-column
           prop="create_time"
           label="提交时间"
-          width="200px"
+          width="200"
         />
         <el-table-column
           prop="review_finish_time"
           label="评审完成时间"
-          width="200px"
+          width="200"
         />
-        <el-table-column label="状态">
+        <el-table-column
+          label="状态"
+          width="100"
+        >
           <template #default="scope">
             <div :class="changeCellColor(scope.row.state)">
               {{ scope.row.state_desc }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="不通过原因">
+        <el-table-column
+          label="不通过原因"
+          width="100"
+        >
           <template #default="scope">
             <div
               v-if="scope.row.state === 40"
@@ -147,7 +161,11 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column
+          label="操作"
+          fixed="right"
+          width="170"
+        >
           <template #default="scope">
             <el-button
               type="text"
@@ -155,7 +173,7 @@
             >
               查看详情
             </el-button>
-            <span 
+            <span
               v-if="scope.row.state === 20"
               class="table-btn"
             >|</span>
@@ -202,6 +220,7 @@
 
 <script>
 import { formatterTime, getOrganizationList } from '../../../utils';
+import { getDemandDetail } from '../../../utils/demand';
 
 export default {
   data() {
@@ -233,7 +252,7 @@ export default {
   mounted() {
     this.getDemandList();
     this.getParams();
-    getOrganizationList().then( (res) => {
+    getOrganizationList().then((res) => {
       this.memberList = res;
     });
   },
@@ -287,10 +306,10 @@ export default {
       this.$router.push('/create-demand');
     },
     toDetail(id) {
-      this.getDemandDetail(id, 'detail');
+      getDemandDetail(id, 'detail');
     },
     toProductDetail(id) {
-      if(this.$store.state.menuData.links.indexOf('/product-list') > -1) {
+      if (this.$store.state.menuData.links.indexOf('/product-list') > -1) {
         this.$router.push(`/product-list/${id}`);
         this.$store.commit('setEntry', 'detail');
       } else {
@@ -328,37 +347,8 @@ export default {
     toDraft() {
       this.$router.push('/draft-list');
     },
-    async getCategoryList() {
-      try {
-        await this.$store.dispatch('demand/getCategoryList');
-      } catch (err) {
-        return;
-      }
-    },
-    async getDemandDetail(id, str) {
-      this.getCategoryList();
-      let funcName = '';
-      let url = '';
-      if(str === 'review') {
-        funcName = 'demand/getDemandReviewDetail';
-        url = `/demand-list/review/${id}`;
-      } else {
-        funcName = 'demand/getDemandDetail';
-        url = `/demand-list/${id}`;
-      }
-      try {
-        await this.$store.dispatch(funcName, {
-          params: {
-            demand_id:  id
-          }
-        });
-        this.$router.push(url);
-      } catch (err) {
-        return;
-      }
-    },
     async toReview(id) {
-       this.getDemandDetail(id, 'review');
+      getDemandDetail(id, 'review');
     }
   }
 };
@@ -370,4 +360,3 @@ export default {
   color: #409eff;
 }
 </style>
-

@@ -1,7 +1,9 @@
 <template>
-  <base-breadcrumb />
-  <router-view />
-  <demand-all v-if="isParent" />
+  <div>
+    <base-breadcrumb />
+    <router-view />
+    <demand-all v-if="isParent" />
+  </div>
 </template>
 
 <script>
@@ -18,8 +20,11 @@ export default {
   },
   computed: {
     isParent() {
-      return this.$route.name !== 'demand detail' &&
-      this.$route.name !== 'demand edit' && this.$route.name !== 'demand review';
+      return (
+        this.$route.name !== 'demand detail' &&
+        this.$route.name !== 'demand edit' &&
+        this.$route.name !== 'demand review'
+      );
     }
   }
 };

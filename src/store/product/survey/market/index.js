@@ -6,12 +6,17 @@ export default {
   state() {
     return {
       market: {},
-      marketLoading: true
+      marketLoading: true,
+      ids: {}
     };
   },
   mutations: {
     setMarket(state, payload) {
       state.market = payload;
+      state.ids = {
+        survey_id: payload.survey_id,
+        survey_schedule_id: payload.survey_schedule_id
+      };
     },
     setMarketLoading(state, payload) {
       state.marketLoading = payload;

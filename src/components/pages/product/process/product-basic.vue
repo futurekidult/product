@@ -1,5 +1,5 @@
 <template>
-  <product-basic 
+  <product-basic
     :attachment="attachment"
     :product-form="productForm"
     type="detail"
@@ -16,4 +16,3 @@ export default {
   props: ['attachment', 'productForm']
 };
 </script>
-

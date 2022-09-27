@@ -27,7 +27,10 @@
           {{ progress.state_desc }}
         </div>
       </el-descriptions-item>
-      <el-descriptions-item label="操作">
+      <el-descriptions-item
+        v-if="progress.state === 20"
+        label="操作"
+      >
         <div
           v-if="progress.state === 20 || progress.state === 40"
           :class="progress.state === undefined ? 'hide' : ''"
@@ -41,7 +44,6 @@
           </el-button>
           <el-button
             type="success"
-            :disabled="progress.state === 40"
             @click="approvalPrototype(1)"
           >
             通过
@@ -52,7 +54,7 @@
 
     <el-form
       ref="prototypeForm"
-      label-width="80px"
+      label-width="100px"
       style="width: 50%; margin: 20px 0"
       :model="prototypeForm"
     >
@@ -61,7 +63,7 @@
         prop="prototype_file"
         :rules="[{ required: true, message: '请上传附件' }]"
       >
-        <base-upload 
+        <base-upload
           type="image"
           count="8"
           tag="手板样图片"

@@ -47,7 +47,10 @@
           {{ progress.state_desc }}
         </div>
       </el-descriptions-item>
-      <el-descriptions-item label="操作">
+      <el-descriptions-item
+        v-if="progress.state === 20 || progress.state === 30"
+        label="操作"
+      >
         <div :class="progress.state === undefined ? 'hide' : ''">
           <div v-if="progress.state === 20 || progress.state === 40">
             <el-button
@@ -84,26 +87,26 @@
         </div>
       </el-descriptions-item>
     </el-descriptions>
+
+    <mould-form
+      v-if="applyFormVisible"
+      title="申请开模"
+      :dialog-visible="applyFormVisible"
+      type="create"
+      :get-list="getList"
+      @hide-dialog="closeApplyForm"
+    />
+
+    <mould-form
+      v-if="editFormVisible"
+      title="编辑"
+      :dialog-visible="editFormVisible"
+      :edit-form="editForm"
+      type="edit"
+      :get-list="getList"
+      @hide-dialog="closeEditForm"
+    />
   </section>
-
-  <mould-form
-    v-if="applyFormVisible"
-    title="申请开模"
-    :dialog-visible="applyFormVisible"
-    type="create"
-    :get-list="getList"
-    @hide-dialog="closeApplyForm"
-  />
-
-  <mould-form
-    v-if="editFormVisible"
-    title="编辑"
-    :dialog-visible="editFormVisible"
-    :edit-form="editForm"
-    type="edit"
-    :get-list="getList"
-    @hide-dialog="closeEditForm"
-  />
 </template>
 
 <script>
@@ -114,7 +117,7 @@ export default {
     MouldForm
   },
   inject: ['getMould'],
-  props: ['progress', 'changeColor', 'getList','buttonState'],
+  props: ['progress', 'changeColor', 'getList', 'buttonState'],
   data() {
     return {
       applyFormVisible: false,

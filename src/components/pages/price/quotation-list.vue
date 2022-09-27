@@ -8,9 +8,9 @@
           style="width: 80%"
         >
           <el-descriptions-item label="产品信息:">
-            <el-button 
+            <el-button
               type="text"
-              @click="getProductDetailDialog(quotationList.related_product_id)" 
+              @click="getProductDetailDialog(quotationList.related_product_id)"
             >
               查看
             </el-button>
@@ -59,11 +59,16 @@
           :data="quotationList.list"
         >
           <el-table-column
-            label="序号"
-            type="index"
-            width="60px"
+            fixed
+            label="报价ID"
+            prop="id"
+            width="100"
           />
-          <el-table-column label="供应商名称">
+          <el-table-column
+            fixed
+            label="供应商名称"
+            min-width="200"
+          >
             <template #default="scope">
               <el-button
                 type="text"
@@ -74,20 +79,27 @@
             </template>
           </el-table-column>
           <el-table-column
+            fixed
             label="采购员"
             prop="purchase_specialist"
           />
           <el-table-column
             label="报价时间"
             prop="create_time"
-            width="200px"
+            width="200"
           />
-          <el-table-column label="报价">
+          <el-table-column
+            label="报价"
+            min-width="150"
+          >
             <template #default="scope">
               ￥{{ scope.row.quote_amount_rmb }}
             </template>
           </el-table-column>
-          <el-table-column label="采购目标价">
+          <el-table-column
+            label="采购目标价"
+            width="100"
+          >
             <template #default="scope">
               <el-button
                 type="text"
@@ -100,9 +112,12 @@
           <el-table-column
             label="报价有效期"
             prop="quote_validity"
-            width="200px"
+            width="200"
           />
-          <el-table-column label="状态">
+          <el-table-column
+            label="状态"
+            fixed="right"
+          >
             <template #default="scope">
               <div :class="changeCellColor(scope.row.state)">
                 {{ scope.row.state_desc }}
@@ -111,12 +126,13 @@
           </el-table-column>
           <el-table-column
             label="最终确定定价时间"
-            width="200px"
+            width="200"
             prop="confirm_time"
           />
           <el-table-column
             label="操作"
-            width="400px"
+            width="400"
+            fixed="right"
           >
             <template #default="scope">
               <div style="display: flex">
@@ -238,244 +254,245 @@
       :dialog-visible="viewQuotationFormVisible"
       @hide-dialog="closeViewQuotationForm"
     />
-  </div>
-  <el-dialog
-    v-model="terminateFormVisible"
-    title="提示"
-    width="20%"
-  >
-    <div class="result-content">
-      确定要终止该定价吗
-    </div>
-    <div style="text-align: center">
-      <el-button
-        class="close-btn"
-        @click="closeTerminateForm"
-      >
-        取消
-      </el-button>
-      <el-button
-        type="primary"
-        @click="terminateQuotation"
-      >
-        确定
-      </el-button>
-    </div>
-  </el-dialog>
 
-  <el-dialog
-    v-model="confirmFormVisible"
-    title="提示"
-    width="20%"
-  >
-    <div class="result-content">
-      确定提交该定价为最终定价吗
-    </div>
-    <div style="text-align: center">
-      <el-button
-        class="close-btn"
-        @click="closeConfirmForm"
-      >
-        取消
-      </el-button>
-      <el-button
-        type="primary"
-        @click="confirmQuotation"
-      >
-        确定
-      </el-button>
-    </div>
-  </el-dialog>
-
-  <el-dialog
-    v-model="editSpecialistFormVisible"
-    title="编辑"
-    width="20%"
-  >
-    <el-form
-      ref="editSpecialistForm"
-      :model="editSpecialistForm"
+    <el-dialog
+      v-model="terminateFormVisible"
+      title="提示"
+      width="25%"
     >
-      <el-form-item
-        label="采购员"
-        :rules="[{ required: true, message: '请选择采购员' }]"
-        prop="purchase_specialist_id"
-      >
-        <el-tree-select
-          v-model="editSpecialistForm.purchase_specialist_id"
-          :data="memberList"
-          clearable
-          filterable
-          :props="defaultProps"
-        />
-      </el-form-item>
-      <el-divider />
-      <div style="text-align: right">
+      <div class="result-content">
+        确定要终止该定价吗
+      </div>
+      <div style="text-align: center">
         <el-button
           class="close-btn"
-          @click="closeEditForm"
+          @click="closeTerminateForm"
         >
           取消
         </el-button>
         <el-button
           type="primary"
-          @click="submitPurchaseSpecialist"
+          @click="terminateQuotation"
         >
-          提交
+          确定
         </el-button>
       </div>
-    </el-form>
-  </el-dialog>
+    </el-dialog>
 
-  <el-dialog
-    v-model="applyAdjustmentFormVisible"
-    title="申请调价"
-    width="30%"
-  >
-    <el-form
-      ref="applyAdjustmentForm"
-      :model="applyAdjustmentForm"
-      label-width="120px"
+    <el-dialog
+      v-model="confirmFormVisible"
+      title="提示"
+      width="25%"
     >
-      <el-form-item label="报价">
-        <el-input
-          v-model="applyAdjustmentForm.quote_amount_rmb"
-          disabled
+      <div class="result-content">
+        确定提交该定价为最终定价吗
+      </div>
+      <div style="text-align: center">
+        <el-button
+          class="close-btn"
+          @click="closeConfirmForm"
         >
-          <template #prepend>
-            ￥
-          </template>
-        </el-input>
-      </el-form-item>
-      <el-form-item
-        label="调价平台"
-        prop="platform"
-        :rules="[{ required: true, message: '请选择平台' }]"
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          @click="confirmQuotation"
+        >
+          确定
+        </el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      v-model="editSpecialistFormVisible"
+      title="编辑"
+      width="25%"
+    >
+      <el-form
+        ref="editSpecialistForm"
+        :model="editSpecialistForm"
       >
-        <el-select
-          v-model="applyAdjustmentForm.platform"
-          placeholder="请选择平台"
-          clearable
+        <el-form-item
+          label="采购员"
+          :rules="[{ required: true, message: '请选择采购员' }]"
+          prop="purchase_specialist_id"
         >
-          <el-option
-            v-for="item in platform"
-            :key="item.platform"
-            :label="item.platform_desc"
-            :value="item.platform"
+          <el-tree-select
+            v-model="editSpecialistForm.purchase_specialist_id"
+            :data="memberList"
+            clearable
+            filterable
+            :props="defaultProps"
           />
-        </el-select>
-      </el-form-item>
-      <el-form-item
-        label="申请调价原因"
-        prop="reason"
-        :rules="[{ required: true, message: '请输入内容' }]"
+        </el-form-item>
+        <el-divider />
+        <div style="text-align: right">
+          <el-button
+            class="close-btn"
+            @click="closeEditForm"
+          >
+            取消
+          </el-button>
+          <el-button
+            type="primary"
+            @click="submitPurchaseSpecialist"
+          >
+            提交
+          </el-button>
+        </div>
+      </el-form>
+    </el-dialog>
+
+    <el-dialog
+      v-model="applyAdjustmentFormVisible"
+      title="申请调价"
+      width="30%"
+    >
+      <el-form
+        ref="applyAdjustmentForm"
+        :model="applyAdjustmentForm"
+        label-width="120px"
       >
-        <el-input
-          v-model="applyAdjustmentForm.reason"
-          placeholder="请输入内容"
-          type="textarea"
-          :rows="6"
-          clearable
-          maxlength="200"
-          show-word-limit
-        />
-      </el-form-item>
-      <el-divider />
-      <div style="text-align: right">
+        <el-form-item label="报价">
+          <el-input
+            v-model="applyAdjustmentForm.quote_amount_rmb"
+            disabled
+          >
+            <template #prepend>
+              ￥
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item
+          label="调价平台"
+          prop="platform"
+          :rules="[{ required: true, message: '请选择平台' }]"
+        >
+          <el-select
+            v-model="applyAdjustmentForm.platform"
+            placeholder="请选择平台"
+            clearable
+          >
+            <el-option
+              v-for="item in platform"
+              :key="item.platform"
+              :label="item.platform_desc"
+              :value="item.platform"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="申请调价原因"
+          prop="reason"
+          :rules="[{ required: true, message: '请输入内容' }]"
+        >
+          <el-input
+            v-model="applyAdjustmentForm.reason"
+            placeholder="请输入内容"
+            type="textarea"
+            :rows="6"
+            clearable
+            maxlength="200"
+            show-word-limit
+          />
+        </el-form-item>
+        <el-divider />
+        <div style="text-align: right">
+          <el-button
+            class="close-btn"
+            @click="closeApplyForm"
+          >
+            取消
+          </el-button>
+          <el-button
+            type="primary"
+            @click="submitApplyAdjustment"
+          >
+            提交
+          </el-button>
+        </div>
+      </el-form>
+    </el-dialog>
+
+    <el-dialog
+      v-model="lowVisible"
+      title="提示"
+      width="25%"
+    >
+      <div class="form-desc">
+        存有平台的对应采购目标价 &lt; 此次报价，确认提交该报价吗
+      </div>
+      <div style="text-align: center; margin: 40px 0 0 0">
         <el-button
           class="close-btn"
-          @click="closeApplyForm"
+          @click="closeLowForm"
         >
           取消
         </el-button>
         <el-button
           type="primary"
-          @click="submitApplyAdjustment"
+          @click="submitQuotation"
+        >
+          确定
+        </el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      v-model="highVisible"
+      title="提示"
+      width="25%"
+    >
+      <div class="form-desc">
+        该报价高于所有平台对应采购目标价，请申请调价后再提交
+      </div>
+      <div style="text-align: center; margin: 40px 0 0 0">
+        <el-button
+          type="primary"
+          @click="closeHighForm"
+        >
+          好的
+        </el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog
+      v-model="deleteDialog"
+      title="提示"
+      width="25%"
+    >
+      <div class="result-content">
+        确认要删除该报价吗
+      </div>
+      <div style="text-align: center">
+        <el-button
+          class="member-btn"
+          @click="closeDeleteDialog"
+        >
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          class="quote-btn"
+          @click="submitDeteleResult"
         >
           提交
         </el-button>
       </div>
-    </el-form>
-  </el-dialog>
+    </el-dialog>
 
-  <el-dialog
-    v-model="lowVisible"
-    title="提示"
-    width="20%"
-  >
-    <div class="form-desc">
-      存有平台的对应采购目标价 &lt; 此次报价，确认提交该报价吗
-    </div>
-    <div style="text-align: center; margin: 40px 0 0 0">
-      <el-button
-        class="close-btn"
-        @click="closeLowForm"
-      >
-        取消
-      </el-button>
-      <el-button
-        type="primary"
-        @click="submitQuotation"
-      >
-        确定
-      </el-button>
-    </div>
-  </el-dialog>
-
-  <el-dialog
-    v-model="highVisible"
-    title="提示"
-    width="20%"
-  >
-    <div class="form-desc">
-      该报价高于所有平台对应采购目标价，请申请调价后再提交
-    </div>
-    <div style="text-align: center; margin: 40px 0 0 0">
-      <el-button
-        type="primary"
-        @click="closeHighForm"
-      >
-        好的
-      </el-button>
-    </div>
-  </el-dialog>
-
-  <el-dialog
-    v-model="deleteDialog"
-    title="提示"
-    width="20%"
-  >
-    <div class="result-content">
-      确认要删除该报价吗
-    </div>
-    <div style="text-align: center">
-      <el-button
-        class="member-btn"
-        @click="closeDeleteDialog"
-      >
-        取消
-      </el-button>
-      <el-button
-        type="primary"
-        class="quote-btn"
-        @click="submitDeteleResult"
-      >
-        提交
-      </el-button>
-    </div>
-  </el-dialog>
-
-  <el-dialog
-    v-model="productViewVisible"
-    title="基本信息"
-    width="30%"
-  >
-    <product-basic 
-      :attachment="productAttachment"
-      :product-form="productForm"
-      type="quotation"
-    />
-  </el-dialog>
+    <el-dialog
+      v-model="productViewVisible"
+      title="基本信息"
+      width="50%"
+    >
+      <product-basic
+        :attachment="productAttachment"
+        :product-form="productForm"
+        type="quotation"
+      />
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -538,7 +555,7 @@ export default {
   },
   mounted() {
     this.getQuotationList();
-     getOrganizationList().then( (res) => {
+    getOrganizationList().then((res) => {
       this.memberList = res;
     });
   },
@@ -598,7 +615,7 @@ export default {
         });
         if (high) {
           this.highVisible = true;
-        } else if (low){
+        } else if (low) {
           this.lowVisible = true;
         } else {
           this.submitQuotation();
@@ -788,14 +805,14 @@ export default {
       this.highVisible = false;
     },
     toDetail(id) {
-      if(this.$store.state.menuData.links.indexOf('/supplier-list') > -1) {
+      if (this.$store.state.menuData.links.indexOf('/supplier-list') > -1) {
         this.$router.push(`/supplier-list/${id}`);
       } else {
         this.$message.error('无权限访问');
       }
     },
-   async getProductDetailDialog(id) {
-    this.$store.commit('price/setDetailLoading', true);
+    async getProductDetailDialog(id) {
+      this.$store.commit('price/setDetailLoading', true);
       try {
         await this.$store.dispatch('price/getProductDetail', {
           params: {
@@ -810,7 +827,7 @@ export default {
         return;
       }
     },
-   changeCurrentPage(val) {
+    changeCurrentPage(val) {
       this.currentPage = val;
       this.getQuotationList();
     },

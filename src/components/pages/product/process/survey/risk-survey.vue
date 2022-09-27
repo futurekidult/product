@@ -13,7 +13,7 @@
     <el-form
       ref="riskForm"
       label-width="110px"
-      style="width: 50%"
+      style="width: 60%"
       :model="form"
       :rules="riskRules"
     >
@@ -67,6 +67,7 @@
           clearable
           maxlength="200"
           show-word-limit
+          :rows="6"
         />
       </el-form-item>
       <el-form-item
@@ -81,6 +82,7 @@
           clearable
           maxlength="200"
           show-word-limit
+          :rows="6"
         />
       </el-form-item>
       <el-form-item
@@ -95,14 +97,15 @@
           clearable
           maxlength="200"
           show-word-limit
+          :rows="6"
         />
       </el-form-item>
       <el-form-item
         label="调研报告"
         style="margin-bottom: 18px"
         prop="attachment"
-      > 
-        <base-upload 
+      >
+        <base-upload
           type="file"
           tag="调研报告"
           url="risk-survey-report"
@@ -121,16 +124,24 @@
         </el-button>
       </el-form-item>
     </el-form>
+
+    <survey-suggestion
+      v-if="progress.state === 50"
+      :ids="$store.state.product.survey.risk.ids"
+      type="risk"
+    />
   </div>
 </template>
 
 <script>
 import { checkValid } from '../../../../../utils';
-import SurveySchedule from '../../common/survey- schedule.vue';
+import SurveySchedule from '../../common/survey-schedule.vue';
+import SurveySuggestion from '../../common/survey-suggestion.vue';
 
 export default {
   components: {
-    SurveySchedule
+    SurveySchedule,
+    SurveySuggestion
   },
   inject: ['getBase'],
   props: ['progress', 'attachment', 'riskForm', 'getList'],

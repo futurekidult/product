@@ -2,7 +2,7 @@
   <el-dialog
     v-model="visible"
     title="记录"
-    width="30%"
+    width="40%"
     @close="cancel"
   >
     <el-scrollbar height="400px">

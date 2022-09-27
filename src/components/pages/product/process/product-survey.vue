@@ -109,7 +109,7 @@ import UserAnalysis from './survey/user-analysis.vue';
 import ProductPlan from './survey/product-plan.vue';
 import RiskSurvey from './survey/risk-survey.vue';
 import UserSurvey from './survey/user-survey.vue';
-import NotTask from '../../../common/not-task.vue'
+import NotTask from '../../../common/not-task.vue';
 
 export default {
   components: {
@@ -121,21 +121,21 @@ export default {
     UserSurvey,
     NotTask
   },
-   inject: ['getPlatform'],
+  inject: ['getPlatform'],
   provide() {
     return {
       getUserSurvey: this.getUserSurvey
     };
   },
   props: [
-      'id',
-      'platformProgress',
-      'platformForm',
-      'productImages',
-      'platformAttachment',
-      'isNewCategory',
-      'isNewProduct',
-      'isNewCategoryProduct'
+    'id',
+    'platformProgress',
+    'platformForm',
+    'productImages',
+    'platformAttachment',
+    'isNewCategory',
+    'isNewProduct',
+    'isNewCategoryProduct'
   ],
   data() {
     return {
@@ -212,7 +212,8 @@ export default {
         changeTimestamp(this.analysisProgress, 'actual_finish_time');
         this.analysisForm = userAnalysis.report || {};
         this.analysisAttachment = this.analysisForm.attachment || {};
-        this.analysisForm.usage_scenario = this.analysisForm.usage_scenario || [];
+        this.analysisForm.usage_scenario =
+          this.analysisForm.usage_scenario || [];
         if (this.analysisForm.usage_scenario.length === 0) {
           this.analysisForm.usage_scenario.push('');
           this.scenarioVisible = false;
@@ -229,7 +230,9 @@ export default {
         this.isGetAnalysisData = true;
       } catch (err) {
         this.$store.commit(
-        'product/survey/userAnalysis/setAnalysisLoading', false);
+          'product/survey/userAnalysis/setAnalysisLoading',
+          false
+        );
         return;
       }
     },
@@ -304,8 +307,8 @@ export default {
         changeTimestamp(this.userProgress, 'actual_start_time');
         changeTimestamp(this.userProgress, 'actual_finish_time');
         this.planList.forEach((item) => {
-           changeTimestamp(item, 'estimated_finish_time');
-           changeTimestamp(item, 'actual_finish_time');
+          changeTimestamp(item, 'estimated_finish_time');
+          changeTimestamp(item, 'actual_finish_time');
         });
         this.length = userSurvey.planList.length;
       } catch (err) {

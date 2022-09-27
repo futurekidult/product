@@ -4,7 +4,7 @@ import WorkBench from './components/pages/workbench/workbench-list.vue';
 import DemandList from './components/pages/demand/demand-list.vue';
 import DemandCreate from './components/pages/demand/demand-create.vue';
 import DemandEdit from './components/pages/demand/demand-edit.vue';
-import DraftList from './components/pages/demand/draft-list.vue'
+import DraftList from './components/pages/demand/draft-list.vue';
 import DemandDetail from './components/pages/demand/demand-detail/demand-detail.vue';
 import DemandReview from './components/pages/demand/demand-detail/demand-review/demand-review.vue';
 import SupplyList from './components/pages/supplier/supply-list.vue';
@@ -24,7 +24,8 @@ import OrderDetail from './components/pages/product/process/order-detail.vue';
 import NotFound from './components/pages/not-found.vue';
 import OrganziationList from './components/pages/system/organization-list.vue';
 import AdminList from './components/pages/system/admin-list.vue';
-import RoleList from './components/pages/system/role-list.vue';
+import SystemRoleList from './components/pages/system/system-role-list.vue';
+import ProductRoleList from './components/pages/system/product-role-list.vue';
 import PrivilegeList from './components/pages/system/privilege-list.vue';
 import CalculationRule from './components/pages/system/calculation-rule.vue';
 import RateList from './components/pages/system/rate-list.vue';
@@ -248,11 +249,19 @@ const router = createRouter({
           }
         },
         {
-          path: '/system-list/role-list',
-          name: 'role',
-          component: RoleList,
+          path: '/system-list/role-list/system',
+          name: 'system role',
+          component: SystemRoleList,
           meta: {
-            title: '角色管理'
+            title: '系统角色'
+          }
+        },
+        {
+          path: '/system-list/role-list/product',
+          name: 'product role',
+          component: ProductRoleList,
+          meta: {
+            title: '项目角色'
           }
         },
         {

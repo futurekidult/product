@@ -2,7 +2,7 @@
   <el-dialog
     v-model="visible"
     :title="formTitle"
-    width="30%"
+    width="40%"
     @close="cancel"
   >
     <el-form
@@ -10,7 +10,7 @@
       :model="userSurveyForm"
       label-width="110px"
       style="width: 80%; margin: auto"
-      :rules="isApply"
+      :rules="getRules"
     >
       <el-form-item
         label="产品链接"
@@ -34,6 +34,7 @@
           :disabled="isDisabled"
           clearable
           maxlength="200"
+          :rows="6"
           show-word-limit
         />
       </el-form-item>
@@ -48,6 +49,7 @@
           :disabled="isDisabled"
           clearable
           maxlength="200"
+          :rows="6"
           show-word-limit
         />
       </el-form-item>
@@ -65,26 +67,41 @@
         />
       </el-form-item>
       <el-divider />
-      <el-form-item
-        v-if="type !== 'apply'"
-        label="评审结果"
-        prop="result"
-      >
-        <el-select
-          v-model="userSurveyForm.result"
-          placeholder="请选择评审结果"
-          clearable
-          :disabled="type === 'view'"
+      <div v-if="type !== 'apply'">
+        <el-form-item
+          label="评审结果"
+          prop="result"
         >
-          <el-option
-            v-for="item in reviewOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-            :disabled="item.disabled"
+          <el-select
+            v-model="userSurveyForm.result"
+            placeholder="请选择评审结果"
+            clearable
+            :disabled="type === 'view'"
+          >
+            <el-option
+              v-for="item in reviewOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+              :disabled="item.disabled"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          v-if="userSurveyForm.result === 1"
+          label="用研专员"
+          prop="user_survey_specialist_id"
+        >
+          <el-tree-select
+            v-model="userSurveyForm.user_survey_specialist_id"
+            :data="memberList"
+            clearable
+            filterable
+            :props="defaultProps"
+            :disabled="type === 'view'"
           />
-        </el-select>
-      </el-form-item>
+        </el-form-item>
+      </div>
       <div
         v-if="type !== 'view'"
         style="text-align: right"
@@ -107,7 +124,11 @@
 </template>
 
 <script>
-import { formatterTime, timestamp } from '../../../../utils';
+import {
+  formatterTime,
+  timestamp,
+  getOrganizationList
+} from '../../../../utils';
 export default {
   inject: ['getUserSurvey'],
   props: ['dialogVisible', 'formTitle', 'type', 'id'],
@@ -148,29 +169,33 @@ export default {
             required: true,
             message: '请选择评审结果'
           }
+        ],
+        user_survey_specialist_id: [
+          {
+            required: true,
+            message: '请选择用研专员'
+          }
         ]
       },
-      reviewOptions: [
-        {
-          label: '请选择',
-          value: -1,
-          disabled: true
-        },
-        {
-          label: '通过',
-          value: 1
-        },
-        {
-          label: '不通过',
-          value: 0
-        }
-      ],
-      defaultTime: new Date(2000,1,1,23,59,59)
+      reviewOptions: this.$global.reviewOptions,
+      defaultTime: new Date(2000, 1, 1, 23, 59, 59),
+      memberList: [],
+      defaultProps: {
+        children: 'children',
+        label: 'name',
+        disabled: 'disabled'
+      }
     };
   },
   computed: {
-    isApply() {
-      return this.type === 'apply' ? this.applyRules : this.reviewRules;
+    getRules() {
+      if (this.type === 'apply') {
+        return this.applyRules;
+      } else if (this.type === 'review') {
+        return this.reviewRules;
+      } else {
+        return {};
+      }
     },
     isDisabled() {
       if (this.type === 'apply') {
@@ -180,9 +205,18 @@ export default {
       }
     }
   },
+  watch: {
+    'userSurveyForm.result'(val) {
+      if (val && this.type === 'review') {
+        getOrganizationList().then((res) => {
+          this.memberList = res;
+        });
+      }
+    }
+  },
   mounted() {
     if (this.type !== 'apply') {
-      this.getUserSurveyDetail();
+      this.getUserSurveyDetail(this.type);
     }
   },
   methods: {
@@ -198,9 +232,10 @@ export default {
         return;
       }
     },
-    async applyReview(val) {
+    async applyReview(val, id) {
       let body = {
-        result: val
+        result: val,
+        user_survey_specialist_id: id
       };
       body['apply_id'] = this.id;
       try {
@@ -214,15 +249,21 @@ export default {
         return;
       }
     },
-    async getUserSurveyDetail() {
+    async getUserSurveyDetail(type) {
       let params = {
         id: this.id
       };
       try {
-        await this.$store.dispatch(
-          'product/survey/user/viewUserSurveyDetail',
-          { params }
-        );
+        if (type === 'view') {
+          getOrganizationList().then((res) => {
+            this.memberList = res;
+          });
+        }
+        let urlParams = type === 'view' ? 'review' : 'apply';
+        await this.$store.dispatch('product/survey/user/viewUserSurveyDetail', {
+          params,
+          urlParams
+        });
         this.userSurveyForm =
           this.$store.state.product.survey.user.userSurveyDetail;
         this.userSurveyForm.expected_finish_time = formatterTime(
@@ -240,17 +281,22 @@ export default {
       this.$refs.userSurveyForm.validate((valid) => {
         if (valid) {
           let val = {
-            'product_id': +this.$route.params.productId,
-            'survey_schedule_id': this.id,
-            'product_link': this.userSurveyForm.product_link,
-            'concrete_demand': this.userSurveyForm.concrete_demand,
-            'expected_result': this.userSurveyForm.expected_result,
-            'expected_finish_time': timestamp(this.userSurveyForm.expected_finish_time)
+            product_id: +this.$route.params.productId,
+            survey_schedule_id: this.id,
+            product_link: this.userSurveyForm.product_link,
+            concrete_demand: this.userSurveyForm.concrete_demand,
+            expected_result: this.userSurveyForm.expected_result,
+            expected_finish_time: timestamp(
+              this.userSurveyForm.expected_finish_time
+            )
           };
           if (this.type === 'apply') {
             this.createApply(val);
           } else {
-            this.applyReview(this.userSurveyForm.result);
+            this.applyReview(
+              this.userSurveyForm.result,
+              this.userSurveyForm.user_survey_specialist_id
+            );
           }
         }
       });

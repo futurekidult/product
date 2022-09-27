@@ -5,86 +5,29 @@
         <span class="line">|</span> 测试申请
       </div>
 
-      <div class="proofing-item">
-        <div class="proofing-title">
-          样品测试申请进度表
-        </div>
-        <el-button
-          type="primary"
-          :disabled="buttonState === 0"
-          @click="showApplyForm"
-        >
-          申请样品测试
-        </el-button>
-      </div>
-      <el-table
-        border
-        stripe
-        empty-text="无数据"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        :data="applyList"
-      >
-        <el-table-column
-          label="序号"
-          type="index"
-          width="60px"
-        />
-        <el-table-column
-          label="创建人"
-          prop="creator"
-        />
-        <el-table-column
-          label="提交时间"
-          prop="submit_time"
-          width="200px"
-        />
-        <el-table-column
-          label="评审完成时间"
-          prop="review_finish_time"
-          width="200px"
-        />
-        <el-table-column label="状态">
-          <template #default="scope">
-            <div :class="changeCellColor(scope.row.review_state)">
-              {{ scope.row.review_state_desc }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <template #default="scope">
-            <el-button
-              v-if="scope.row.review_state === 10"
-              type="primary"
-              style="width: 150px"
-              @click="showReviewForm(scope.row.id)"
-            >
-              样品测试申请单评审
-            </el-button>
-            <el-button
-              v-if="scope.row.review_state === 30"
-              type="text"
-              @click="showEditForm(scope.row.id)"
-            >
-              编辑
-            </el-button>
-            <span
-              v-if="scope.row.review_state === 30"
-              class="table-btn"
-            >|</span>
-            <el-button
-              v-if="scope.row.review_state !== 10"
-              type="text"
-              @click="showResultForm(scope.row.id)"
-            >
-              查看
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <test-apply-table
+        type="apply"
+        label="测试申请ID"
+        review-btn-content="样式测试申请评审"
+        title="样品测试申请进度表"
+        btn-content="申请样品测试"
+        :apply-list="applyList"
+        :button-state="buttonState"
+      />
+
+      <test-apply-table
+        type="supply"
+        label="测试补充ID"
+        review-btn-content="测试补充内容评审"
+        title="测试需求补充进度表"
+        btn-content="补充测试内容"
+        :apply-list="supply.list"
+        :button-state="supply.button_state"
+      />
     </div>
 
-    <div 
-      v-if="JSON.stringify(qualityProgress) !== '{}'" 
+    <div
+      v-if="JSON.stringify(qualityProgress) !== '{}'"
       style="margin-top: 20px"
     >
       <div class="select-title">
@@ -147,103 +90,41 @@
       </el-tabs>
     </div>
   </div>
-
-  <test-form
-    v-if="testApplyVisible"
-    :dialog-visible="testApplyVisible"
-    title="申请样品测试"
-    type="apply"
-    @hide-dialog="closeApplyForm"
-  />
-
-  <test-form
-    v-if="applyReviewVisible"
-    :id="testId"
-    :dialog-visible="applyReviewVisible"
-    title="申请样品测试评审"
-    type="review"
-    @hide-dialog="closeReviewForm"
-  />
-
-  <test-form
-    v-if="resultVisible"
-    :id="testId"
-    :dialog-visible="resultVisible"
-    title="查看"
-    type="view"
-    @hide-dialog="closeResultForm"
-  />
-
-  <el-dialog
-    v-model="editSpecialistVisible"
-    title="编辑"
-    width="20%"
-  >
-    <el-form
-      ref="editForm"
-      :model="editForm"
-    >
-      <el-form-item
-        label="请选择品质专员"
-        prop="quality_specialist_id"
-        :rules="[{ required: true, message: '想选择品质专员' }]"
-      >
-        <el-tree-select
-          v-model="editForm.quality_specialist_id"
-          :data="memberList"
-          clearable
-          :props="defaultProps"
-        />
-      </el-form-item>
-      <el-divider />
-      <div style="text-align: right">
-        <el-button 
-          class="close-btn"
-          @click="closeEditForm"  
-        >
-          取消
-        </el-button>
-        <el-button
-          type="primary"
-          @click="submitQualitySpecialist"
-        >
-          提交
-        </el-button>
-      </div>
-    </el-form>
-  </el-dialog>
 </template>
 
 <script>
 import QualityTest from './test/quality-test.vue';
 import AgencyTest from './test/agency-test.vue';
 import UserTest from './test/user-test.vue';
-import TestForm from '../common/test-form.vue';
-import { changeTimestamp,getOrganizationList } from '../../../../utils';
+import { changeTimestamp } from '../../../../utils';
+import TestApplyTable from '../common/sample-test-table.vue';
 
 export default {
   components: {
     QualityTest,
     AgencyTest,
     UserTest,
-    TestForm
+    TestApplyTable
   },
-  inject: ['getTest','getQualityDetail'],
+  inject: ['getTest', 'getQualityDetail', 'getTestSupply'],
   provide() {
     return {
       getUser: this.getUserTest
     };
   },
-  props: ['applyList', 'buttonState','qualityProgress','qualityAttachment','qualitySubmitState','qualityId','qualityTestId', 'hasUserTest'],
+  props: [
+    'applyList',
+    'buttonState',
+    'qualityProgress',
+    'qualityAttachment',
+    'qualitySubmitState',
+    'qualityId',
+    'qualityTestId',
+    'hasUserTest'
+  ],
   data() {
     return {
       activeName: 'quality',
-      testApplyVisible: false,
-      applyReviewVisible: false,
-      resultVisible: false,
-      editSpecialistVisible: false,
-      editForm: {},
-      testId: 0,
       agencyProgress: {},
       agencyAttachment: {},
       agencySubmitState: 0,
@@ -258,19 +139,13 @@ export default {
       userButtonState: 0,
       agencyTestId: 0,
       userTestId: 0,
-      memberList: [],
-      defaultProps: {
-        children: 'children',
-        label: 'name',
-        disabled: 'disabled'
-      },
       isGetData: false
     };
   },
-  mounted() {
-     getOrganizationList().then( (res) => {
-      this.memberList = res;
-    });
+  computed: {
+    supply() {
+      return this.getTestSupply().supply;
+    }
   },
   methods: {
     async getAgencyTest() {
@@ -321,70 +196,6 @@ export default {
       } catch (err) {
         this.$store.commit('sample/user/setUserLoading', false);
         return;
-      }
-    },
-    async getQualitySpecialist(id) {
-      try {
-        await this.$store.dispatch('sample/getQualitySpecialist', {
-          params: {
-            id
-          }
-        });
-        this.editForm.quality_specialist_id =
-          this.$store.state.sample.qualitySpecialist.quality_specialist_id;
-      } catch (err) {
-        return;
-      }
-    },
-    async updateQualitySpecialist(val) {
-      let body = val;
-      body['id'] = this.testId;
-      try {
-        await this.$store.dispatch('sample/updateQualitySpecialist', body);
-        this.editSpecialistVisible = false;
-        this.getTest();
-      } catch (err) {
-        return;
-      }
-    },
-    showApplyForm() {
-      this.testApplyVisible = true;
-    },
-    closeApplyForm() {
-      this.testApplyVisible = false;
-    },
-    showReviewForm(id) {
-      this.applyReviewVisible = true;
-      this.testId = id;
-    },
-    closeReviewForm() {
-      this.applyReviewVisible = false;
-    },
-    showResultForm(id) {
-      this.testId = id;
-      this.resultVisible = true;
-    },
-    closeResultForm() {
-      this.resultVisible = false;
-    },
-    showEditForm(id) {
-      this.editSpecialistVisible = true;
-      this.testId = id;
-      this.getQualitySpecialist(id);
-    },
-    closeEditForm() {
-      this.editSpecialistVisible = false;
-    },
-    submitQualitySpecialist() {
-      this.updateQualitySpecialist(this.editForm);
-    },
-    changeCellColor(val) {
-      if (val === 30) {
-        return 'result-pass';
-      } else if (val === 10) {
-        return 'result-ing';
-      } else {
-        return 'result-fail';
       }
     },
     changeColor(val) {

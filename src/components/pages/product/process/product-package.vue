@@ -12,38 +12,42 @@
       :data="packageList"
     >
       <el-table-column
-        label="序号"
-        type="index"
-        width="60px"
+        fixed
+        label="包材ID"
+        prop="id"
+        width="100"
       />
       <el-table-column
+        fixed
         label="关联定价ID"
         prop="pricing_id"
-        width="100px"
+        width="110"
       />
       <el-table-column
-        label="运营负责人"
-        prop="operations_principal"
-         width="200px"
+        label="运营专员"
+        prop="operations_specialist"
+        width="200"
       />
       <el-table-column
         label="计划完成时间"
         prop="estimated_finish_time"
-        width="200px"
+        width="200"
       />
       <el-table-column
         label="实际完成时间"
         prop="actual_finish_time"
-        width="200px"
+        width="200"
       />
       <el-table-column
         label="结果文件地址"
         prop="result_path"
         show-overflow-tooltip
+        min-width="150"
       />
-      <el-table-column 
+      <el-table-column
         label="状态"
-        width="200px"
+        width="200"
+        fixed="right"
       >
         <template #default="scope">
           <div :class="changeColor(scope.row.state)">
@@ -53,10 +57,12 @@
       </el-table-column>
       <el-table-column
         label="操作"
-        width="150px"
+        width="150"
+        fixed="right"
       >
         <template #default="scope">
-          <el-button 
+          <el-button
+            type="text"
             :disabled="scope.row.result_path !== ''"
             @click="showResultForm(scope.row.id)"
           >
@@ -73,54 +79,55 @@
       @change-size="changePageSize"
       @change-page="changeCurrentPage"
     />
-  </div>
-  <el-dialog
-    v-model="resultFormVisible"
-    width="30%"
-    title="上传结果"
-  >
-    <el-form
-      ref="resultForm"
-      :model="resultForm"
-      label-width="100px"
+
+    <el-dialog
+      v-model="resultFormVisible"
+      width="30%"
+      title="上传结果"
     >
-      <el-form-item
-        label="文件路径"
-        prop="result_path"
-        :rules="[{ required: true, message: '请输入内容' }]"
+      <el-form
+        ref="resultForm"
+        :model="resultForm"
+        label-width="100px"
       >
-        <el-input
-          v-model="resultForm.result_path"
-          type="textarea"
-          :rows="6"
-          clearable
-          placeholder="请输入内容"
-          maxlength="200"
-          show-word-limit
-        />
-      </el-form-item>
-      <el-form-item label="">
-        <div style="font-size: 10px">
-          注：请填写结果文件所在公司盘位置
+        <el-form-item
+          label="文件路径"
+          prop="result_path"
+          :rules="[{ required: true, message: '请输入内容' }]"
+        >
+          <el-input
+            v-model="resultForm.result_path"
+            type="textarea"
+            :rows="6"
+            clearable
+            placeholder="请输入内容"
+            maxlength="200"
+            show-word-limit
+          />
+        </el-form-item>
+        <el-form-item label="">
+          <div style="font-size: 10px">
+            注：请填写结果文件所在公司盘位置
+          </div>
+        </el-form-item>
+        <el-divider />
+        <div style="text-align: center">
+          <el-button
+            class="close-btn"
+            @click="closeResultForm"
+          >
+            取消
+          </el-button>
+          <el-button
+            type="primary"
+            @click="submitResult"
+          >
+            确定
+          </el-button>
         </div>
-      </el-form-item>
-      <el-divider />
-      <div style="text-align: center">
-        <el-button
-          class="close-btn"
-          @click="closeResultForm"
-        >
-          取消
-        </el-button>
-        <el-button
-          type="primary"
-          @click="submitResult"
-        >
-          确定
-        </el-button>
-      </div>
-    </el-form>
-  </el-dialog>
+      </el-form>
+    </el-dialog>
+  </div>
 </template>
 
 <script>

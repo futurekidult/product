@@ -1,7 +1,7 @@
 <template>
-  <div 
+  <div
     v-if="show"
-    style="display: flex;"
+    style="display: flex"
     :class="mode"
     class="delete-item"
     @click="deleteItem"
@@ -24,12 +24,12 @@ export default {
   components: {
     Delete
   },
-  props: ['mode', 'show' , 'id' , 'list', 'content'],
+  props: ['mode', 'show', 'id', 'list', 'content'],
   emits: ['get-list'],
   data() {
     return {
       totalList: this.list
-    }
+    };
   },
   watch: {
     list(val) {
@@ -42,7 +42,7 @@ export default {
       this.$emit('get-list', this.totalList);
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -58,7 +58,7 @@ export default {
 
 .delete-btn,
 .delete-icon {
-   height: 20px; 
+  height: 20px;
 }
 
 .demand-btn {
@@ -87,8 +87,8 @@ export default {
   margin-top: 8px;
 }
 
-.project-delete_btn { 
-  margin-left: 110px; 
-  margin-bottom: 10px; 
+.project-delete_btn {
+  margin-left: 110px;
+  margin-bottom: 10px;
 }
 </style>
