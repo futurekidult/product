@@ -84,6 +84,7 @@
           fixed
           label="产品ID"
           prop="id"
+          width="100"
         />
         <el-table-column
           fixed
@@ -94,6 +95,7 @@
         <el-table-column
           fixed
           label="关联需求ID"
+          width="110"
         >
           <template #default="scope">
             <el-button
@@ -140,21 +142,21 @@
         >
           <template #default="scope">
             <div style="display: flex">
-              <div v-if="scope.row.state !== 90">
-                <el-button
-                  type="text"
-                  @click="showEditForm(scope.row.id, scope.row.category_id)"
-                >
-                  编辑
-                </el-button>
-                <span class="table-btn">|</span>
-              </div>
               <el-button
                 type="text"
                 @click="toDetail(scope.row.id)"
               >
                 查看详情
               </el-button>
+              <div v-if="scope.row.state !== 90">
+                <span class="table-btn">|</span>
+                <el-button
+                  type="text"
+                  @click="showEditForm(scope.row.id, scope.row.category_id)"
+                >
+                  编辑
+                </el-button>
+              </div>
             </div>
           </template>
         </el-table-column>
