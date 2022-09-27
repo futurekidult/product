@@ -217,7 +217,7 @@
     <el-dialog
       v-model="deleteDialogVisible"
       title="提示"
-      width="20%"
+      width="25%"
     >
       <div class="result-content">
         是否删除该供应商

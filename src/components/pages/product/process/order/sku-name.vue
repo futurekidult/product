@@ -137,7 +137,7 @@
           type="text"
           @click="completeEntry"
         >
-          已完成SKU录入甲骨文
+          完成SKU录入甲骨文
         </el-button>
       </el-descriptions-item>
     </el-descriptions>

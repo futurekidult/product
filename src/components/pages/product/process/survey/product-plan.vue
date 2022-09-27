@@ -71,6 +71,7 @@
           placeholder="请输入用户痛点"
           :disabled="isDisabled"
           clearable
+          :rows="6"
         />
       </el-form-item>
       <el-form-item
@@ -86,6 +87,7 @@
           placeholder="请输入用户需求分析"
           :disabled="isDisabled"
           clearable
+          :rows="6"
         />
       </el-form-item>
       <el-form-item
@@ -101,6 +103,7 @@
           placeholder="请输入产品切入点"
           :disabled="isDisabled"
           clearable
+          :rows="6"
         />
       </el-form-item>
       <competitive-table

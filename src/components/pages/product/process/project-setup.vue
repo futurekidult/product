@@ -41,7 +41,7 @@
           不通过
         </el-button>
         <el-button
-          type="primary"
+          type="success"
           @click="approvalProject(1)"
         >
           通过

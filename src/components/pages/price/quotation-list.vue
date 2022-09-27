@@ -441,7 +441,7 @@
     <el-dialog
       v-model="highVisible"
       title="提示"
-      width="20%"
+      width="25%"
     >
       <div class="form-desc">
         该报价高于所有平台对应采购目标价，请申请调价后再提交

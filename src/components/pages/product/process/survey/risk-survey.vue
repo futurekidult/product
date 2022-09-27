@@ -67,6 +67,7 @@
           clearable
           maxlength="200"
           show-word-limit
+          :rows="6"
         />
       </el-form-item>
       <el-form-item
@@ -81,6 +82,7 @@
           clearable
           maxlength="200"
           show-word-limit
+          :rows="6"
         />
       </el-form-item>
       <el-form-item
@@ -95,6 +97,7 @@
           clearable
           maxlength="200"
           show-word-limit
+          :rows="6"
         />
       </el-form-item>
       <el-form-item

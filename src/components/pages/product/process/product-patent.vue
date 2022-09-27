@@ -24,9 +24,10 @@
       :data="patent.patent_list"
     >
       <el-table-column
-        label="序号"
-        type="index"
-        width="60px"
+        fixed
+        label="专利申请ID"
+        prop="id"
+        width="100"
       />
       <el-table-column
         label="申请人"
@@ -35,23 +36,31 @@
       <el-table-column
         label="提交时间"
         prop="submit_time"
+        width="200"
       />
       <el-table-column
         label="评审完成时间"
         prop="review_time"
+        width="200"
       />
       <el-table-column
         label="专利类型"
         prop="patent_types"
       />
-      <el-table-column label="评审状态">
+      <el-table-column
+        label="评审状态"
+        fixed="right"
+      >
         <template #default="scope">
           <div :class="changeColor(scope.row.review_state)">
             {{ scope.row.review_state_desc }}
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column
+        label="操作"
+        fixed="right"
+      >
         <template #default="scope">
           <el-button
             v-if="scope.row.review_state === 10"
@@ -100,7 +109,7 @@
           label="操作"
         >
           <el-button
-            type="text"
+            type="primary"
             @click="confirmPatent"
           >
             专利排查完成

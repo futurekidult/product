@@ -1,141 +1,153 @@
 <template>
-  <base-breadcrumb />
+  <section>
+    <base-breadcrumb />
 
-  <div class="border">
-    <div class="nav-title todo-title">
-      <div><span class="line">|</span> 待办列表</div>
+    <div class="border">
+      <div class="nav-title todo-title">
+        <div><span class="line">|</span> 待办列表</div>
 
-      <div style="display: flex">
-        <el-input
-          v-model="keyword"
-          clearable
-          @clear="searchTodo"
+        <div style="display: flex">
+          <el-input
+            v-model="keyword"
+            placeholder="待办名称搜索"
+            clearable
+            @clear="searchTodo"
+          >
+            <template #append>
+              <el-icon @click="searchTodo">
+                <Search />
+              </el-icon>
+            </template>
+          </el-input>
+          <span class="operator">执行人</span>
+          <el-tree-select
+            v-model="operator"
+            :data="memberList"
+            clearable
+            filterable
+            :props="defaultProps"
+            @clear="searchTodo"
+          />
+          <el-button
+            type="primary"
+            style="margin-left: 12px"
+            @click="searchTodo"
+          >
+            查询
+          </el-button>
+          <el-button @click="resetForm">
+            重置
+          </el-button>
+        </div>
+      </div>
+
+      <div v-loading="$store.state.system.todoLoading">
+        <el-table
+          stripe
+          :data="todoList"
+          empty-text="无数据"
+          :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+          border
         >
-          <template #append>
-            <el-button
-              type="primary"
-              @click="searchTodo"
-            >
-              搜索
-            </el-button>
-          </template>
-        </el-input>
-        <span class="operator">执行人</span>
-        <el-tree-select
-          v-model="operator"
-          :data="memberList"
-          clearable
-          filterable
-          :props="defaultProps"
-          @clear="searchTodo"
+          <el-table-column
+            fixed
+            label="待办ID"
+            prop="id"
+            width="100"
+          />
+          <el-table-column
+            fixed
+            label="待办名称"
+            prop="name"
+          />
+          <el-table-column
+            label="执行人"
+            prop="user_name"
+            width="150"
+          />
+          <el-table-column
+            label="操作"
+            fixed="right"
+            width="100"
+          >
+            <template #default="scope">
+              <el-button
+                type="text"
+                @click="showOperatorDialog(scope.row.id, scope.row.user_name)"
+              >
+                待办转移
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <base-pagination
+          :length="$store.state.system.todoListLength"
+          :current-page="currentPage"
+          :page-num="pageSize"
+          @change-size="changePageSize"
+          @change-page="changeCurrentPage"
         />
-        <el-button
-          type="primary"
-          style="margin-left: 12px"
-          @click="searchTodo"
-        >
-          查询
-        </el-button>
-        <el-button @click="resetForm">
-          重置
-        </el-button>
       </div>
     </div>
 
-    <div v-loading="$store.state.system.todoLoading">
-      <el-table
-        stripe
-        :data="todoList"
-        empty-text="无数据"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        border
-      >
-        <el-table-column
-          label="序号"
-          type="index"
-          width="60px"
-        />
-        <el-table-column
-          label="待办名称"
-          prop="name"
-        />
-        <el-table-column
-          label="执行人"
-          prop="user_name"
-        />
-        <el-table-column label="操作">
-          <template #default="scope">
-            <el-button
-              type="text"
-              @click="showOperatorDialog(scope.row.id, scope.row.user_name)"
-            >
-              待办转移
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <base-pagination
-        :length="$store.state.system.todoListLength"
-        :current-page="currentPage"
-        :page-num="pageSize"
-        @change-size="changePageSize"
-        @change-page="changeCurrentPage"
-      />
-    </div>
-  </div>
-
-  <el-dialog
-    v-model="operatorVisible"
-    width="30%"
-    title="待办转移"
-  >
-    <el-form
-      ref="operatorForm"
-      :model="operatorForm"
-      label-width="130px"
+    <el-dialog
+      v-model="operatorVisible"
+      width="30%"
+      title="待办转移"
     >
-      <el-form-item label="原待办执行人">
-        <el-input
-          v-model="oldOperator"
-          disabled
-        />
-      </el-form-item>
-      <el-form-item
-        label="转移后执行人"
-        prop="new_user_id"
-        :rules="[{ required: true, message: '请选择' }]"
+      <el-form
+        ref="operatorForm"
+        :model="operatorForm"
+        label-width="130px"
       >
-        <el-tree-select
-          v-model="operatorForm.new_user_id"
-          :data="memberList"
-          clearable
-          filterable
-          :props="defaultProps"
-        />
-      </el-form-item>
-      <el-divider />
-      <div style="text-align: right">
-        <el-button
-          class="close-btn"
-          @click="closeForm"
+        <el-form-item label="原待办执行人">
+          <el-input
+            v-model="oldOperator"
+            disabled
+          />
+        </el-form-item>
+        <el-form-item
+          label="转移后执行人"
+          prop="new_user_id"
+          :rules="[{ required: true, message: '请选择' }]"
         >
-          取消
-        </el-button>
-        <el-button
-          type="primary"
-          @click="submitTransferTodo"
-        >
-          提交
-        </el-button>
-      </div>
-    </el-form>
-  </el-dialog>
+          <el-tree-select
+            v-model="operatorForm.new_user_id"
+            :data="memberList"
+            clearable
+            filterable
+            :props="defaultProps"
+          />
+        </el-form-item>
+        <el-divider />
+        <div style="text-align: right">
+          <el-button
+            class="close-btn"
+            @click="closeForm"
+          >
+            取消
+          </el-button>
+          <el-button
+            type="primary"
+            @click="submitTransferTodo"
+          >
+            提交
+          </el-button>
+        </div>
+      </el-form>
+    </el-dialog>
+  </section>
 </template>
 
 <script>
 import { getOrganizationList } from '../../../utils';
+import { Search } from '@element-plus/icons-vue';
+
 export default {
+  components: {
+    Search
+  },
   data() {
     return {
       todoList: [],
@@ -160,7 +172,6 @@ export default {
     getOrganizationList().then((res) => {
       this.memberList = res;
     });
-    
   },
   methods: {
     async getTodoList() {

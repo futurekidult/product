@@ -28,7 +28,7 @@
           type="text"
           @click="confirmExportContract(exportContract.id)"
         >
-          已完成
+          确认合同
         </el-button>
       </el-descriptions-item>
     </el-descriptions>

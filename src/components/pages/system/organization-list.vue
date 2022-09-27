@@ -1,17 +1,19 @@
 <template>
-  <base-breadcrumb />
+  <section>
+    <base-breadcrumb />
 
-  <div class="border">
-    <div class="nav-title">
-      <span class="line">|</span> 部门列表
+    <div class="border">
+      <div class="nav-title">
+        <span class="line">|</span> 部门列表
+      </div>
+
+      <el-tree
+        v-loading="$store.state.system.organizationLoading"
+        :data="organizationList"
+        :props="defaultProps"
+      />
     </div>
-
-    <el-tree
-      v-loading="$store.state.system.organizationLoading"
-      :data="organizationList"
-      :props="defaultProps"
-    />
-  </div>
+  </section>
 </template>
 
 <script>
