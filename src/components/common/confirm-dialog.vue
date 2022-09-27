@@ -2,7 +2,7 @@
   <el-dialog
     v-model="visible"
     title="提示"
-    width="20%"
+    width="25%"
     @close="closeConfirmDialog"
   >
     <div class="result-content">

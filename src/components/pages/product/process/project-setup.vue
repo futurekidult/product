@@ -30,28 +30,22 @@
         </div>
       </el-descriptions-item>
       <el-descriptions-item
+        v-if="progress.state === 20"
         label="操作"
         width="300px"
       >
-        <div
-          v-if="progress.state !== 10 && progress.review_state !==10"
-          :class="progress.state === undefined ? 'hide' : ''"
+        <el-button
+          class="close-btn"
+          @click="approvalProject(0)"
         >
-          <el-button
-            :class="progress.state === 40 ? 'hide' : ''"
-            class="close-btn"
-            @click="approvalProject(0)"
-          >
-            不通过
-          </el-button>
-          <el-button
-            type="primary"
-            :disabled="progress.state === 40"
-            @click="approvalProject(1)"
-          >
-            通过
-          </el-button>
-        </div>
+          不通过
+        </el-button>
+        <el-button
+          type="success"
+          @click="approvalProject(1)"
+        >
+          通过
+        </el-button>
       </el-descriptions-item>
     </el-descriptions>
 
@@ -64,7 +58,7 @@
     >
       <el-form-item
         label="评审结果"
-        style="width: 20%"
+        style="width: 30%"
         prop="review_result"
       >
         <el-select
@@ -95,6 +89,7 @@
           type="textarea"
           placeholder="请输入不通过原因"
           clearable
+          :rows="6"
           :disabled="isDisabled"
           maxlength="200"
           show-word-limit
@@ -116,7 +111,7 @@
           prop="sales_plan"
           class="sales-plan"
         >
-          <base-upload 
+          <base-upload
             type="file"
             tag="项目计划书"
             url="sales-plan"
@@ -206,7 +201,7 @@ export default {
     submitProjectForm() {
       this.form.sales_plan = this.file.id;
       let form = JSON.parse(JSON.stringify(this.form));
-      if(form.review_result === 1) {
+      if (form.review_result === 1) {
         delete form.unapproved_reason;
       }
       this.$refs.projectForm.validate((valid) => {
@@ -252,7 +247,7 @@ export default {
       }
     },
     refresh(val) {
-      if(val === 1) {
+      if (val === 1) {
         this.getProfitCalcaulation();
         this.getProcessTable();
       }
@@ -275,7 +270,7 @@ export default {
 
 .sales-plan {
   margin-bottom: 18px;
-  margin-bottom: 18px; 
+  margin-bottom: 18px;
   width: 50%;
 }
 </style>

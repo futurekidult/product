@@ -25,7 +25,7 @@
     <el-form
       ref="skuForm"
       label-width="150px"
-      style="width: 50%; margin: 20px 0"
+      style="width: 60%; margin: 20px 0"
       :model="form"
       :rules="skuRules"
     >
@@ -127,13 +127,17 @@
           {{ skuEntrySchedule.state_desc }}
         </div>
       </el-descriptions-item>
-      <el-descriptions-item label="操作">
+      <el-descriptions-item
+        v-if="
+          skuEntrySchedule.state !== 40 && skuEntrySchedule.state !== undefined
+        "
+        label="操作"
+      >
         <el-button
-          :disabled="skuEntrySchedule.state !== 10"
-          :class="skuEntrySchedule.state === undefined ? 'hide' : ''"
+          type="text"
           @click="completeEntry"
         >
-          已完成SKU录入甲骨文
+          完成SKU录入甲骨文
         </el-button>
       </el-descriptions-item>
     </el-descriptions>

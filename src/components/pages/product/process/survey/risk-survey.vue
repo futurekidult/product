@@ -13,7 +13,7 @@
     <el-form
       ref="riskForm"
       label-width="110px"
-      style="width: 50%"
+      style="width: 60%"
       :model="form"
       :rules="riskRules"
     >
@@ -67,6 +67,7 @@
           clearable
           maxlength="200"
           show-word-limit
+          :rows="6"
         />
       </el-form-item>
       <el-form-item
@@ -81,6 +82,7 @@
           clearable
           maxlength="200"
           show-word-limit
+          :rows="6"
         />
       </el-form-item>
       <el-form-item
@@ -95,6 +97,7 @@
           clearable
           maxlength="200"
           show-word-limit
+          :rows="6"
         />
       </el-form-item>
       <el-form-item

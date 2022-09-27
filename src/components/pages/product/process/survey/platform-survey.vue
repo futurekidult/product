@@ -37,8 +37,8 @@
 
     <el-form
       ref="form"
-      label-width="121px"
-      style="width: 50%"
+      label-width="130px"
+      style="width: 60%"
       :rules="surveyRules"
       :model="form"
     >
@@ -68,6 +68,7 @@
           placeholder="请输入内容"
           :disabled="isDisabled"
           clearable
+          :rows="6"
         />
       </el-form-item>
       <el-form-item
@@ -82,6 +83,7 @@
           placeholder="请输入内容"
           :disabled="isDisabled"
           clearable
+          :rows="6"
         />
       </el-form-item>
       <el-form-item
@@ -96,6 +98,7 @@
           placeholder="请输入内容"
           :disabled="isDisabled"
           clearable
+          :rows="6"
         />
       </el-form-item>
       <el-form-item
@@ -110,6 +113,7 @@
           placeholder="请输入内容"
           :disabled="isDisabled"
           clearable
+          :rows="6"
         />
       </el-form-item>
       <div class="form-item">

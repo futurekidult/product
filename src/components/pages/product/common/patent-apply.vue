@@ -2,7 +2,7 @@
   <el-dialog
     v-model="visible"
     :title="formTitle"
-    width="30%"
+    width="40%"
     @close="cancel"
   >
     <el-form
@@ -77,11 +77,15 @@
           clearable
           maxlength="200"
           show-word-limit
+          :rows="6"
         />
       </el-form-item>
-      <competitive-table 
-        v-if="productForm.competitive_product !== undefined && productForm.competitive_product.length !== 0"
-        :product-form="productForm" 
+      <competitive-table
+        v-if="
+          productForm.competitive_product !== undefined &&
+            productForm.competitive_product.length !== 0
+        "
+        :product-form="productForm"
       />
       <el-divider />
 
@@ -133,7 +137,7 @@ export default {
   components: {
     CompetitiveTable
   },
-  inject: ['getPatent','getPatentContract','getPatentProgress'],
+  inject: ['getPatent', 'getPatentContract', 'getPatentProgress'],
   props: ['dialogVisible', 'formTitle', 'type', 'form', 'id', 'productForm'],
   emits: ['hide-dialog'],
   data() {

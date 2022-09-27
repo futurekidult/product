@@ -54,7 +54,7 @@
 
     <el-form
       ref="prototypeForm"
-      label-width="80px"
+      label-width="100px"
       style="width: 50%; margin: 20px 0"
       :model="prototypeForm"
     >

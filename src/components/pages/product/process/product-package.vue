@@ -12,38 +12,42 @@
       :data="packageList"
     >
       <el-table-column
-        label="序号"
-        type="index"
-        width="60px"
+        fixed
+        label="包材ID"
+        prop="id"
+        width="100"
       />
       <el-table-column
+        fixed
         label="关联定价ID"
         prop="pricing_id"
-        width="100px"
+        width="100"
       />
       <el-table-column
         label="运营专员"
         prop="operations_specialist"
-        width="200px"
+        width="200"
       />
       <el-table-column
         label="计划完成时间"
         prop="estimated_finish_time"
-        width="200px"
+        width="200"
       />
       <el-table-column
         label="实际完成时间"
         prop="actual_finish_time"
-        width="200px"
+        width="200"
       />
       <el-table-column
         label="结果文件地址"
         prop="result_path"
         show-overflow-tooltip
+        min-width="150"
       />
       <el-table-column
         label="状态"
-        width="200px"
+        width="200"
+        fixed="right"
       >
         <template #default="scope">
           <div :class="changeColor(scope.row.state)">
@@ -53,10 +57,12 @@
       </el-table-column>
       <el-table-column
         label="操作"
-        width="150px"
+        width="150"
+        fixed="right"
       >
         <template #default="scope">
           <el-button
+            type="text"
             :disabled="scope.row.result_path !== ''"
             @click="showResultForm(scope.row.id)"
           >

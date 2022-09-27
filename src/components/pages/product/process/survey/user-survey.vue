@@ -21,9 +21,10 @@
         :data="surveyApply"
       >
         <el-table-column
-          label="序号"
-          type="index"
-          width="60px"
+          fixed
+          label="调研申请ID"
+          prop="id"
+          width="100"
         />
         <el-table-column
           label="申请人"
@@ -32,14 +33,17 @@
         <el-table-column
           label="提交时间"
           prop="create_time"
+          width="200"
         />
         <el-table-column
           label="评审完成时间"
           prop="review_finish_time"
+          width="200"
         />
         <el-table-column
           label="评审状态"
           prop="state_desc"
+          fixed="right"
         >
           <template #default="scope">
             <div :class="changeCellColor(scope.row.state)">
@@ -47,7 +51,10 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column
+          label="操作"
+          fixed="right"
+        >
           <template #default="scope">
             <el-button
               v-if="scope.row.state === 10"
@@ -123,11 +130,12 @@
             </div>
           </el-descriptions-item>
           <el-descriptions-item
+            v-if="progress.state === 40"
             label="操作"
             width="200px"
           >
             <el-button
-              v-if="progress.state === 40"
+              type="text"
               :disabled="progress.state === 50"
               @click="confirmUserSurvey(progress.id)"
             >
@@ -186,13 +194,15 @@
             :data="form.planList"
           >
             <el-table-column
+              fixed
               label="序号"
-              width="60px"
+              width="100"
               type="index"
             />
             <el-table-column
+              fixed
               label="事项"
-              width="200px"
+              min-width="250"
             >
               <template #default="scope">
                 <el-form-item
@@ -223,8 +233,9 @@
               </template>
             </el-table-column>
             <el-table-column
+              fixed
               label="细节内容"
-              width="300px"
+              min-width="300"
             >
               <template #default="scope">
                 <el-form-item
@@ -256,7 +267,7 @@
             </el-table-column>
             <el-table-column
               label="执行人"
-              width="100px"
+              width="150"
             >
               <template #default="scope">
                 <el-form-item
@@ -281,7 +292,7 @@
             </el-table-column>
             <el-table-column
               label="计划完成时间"
-              width="250px"
+              width="250"
             >
               <template #default="scope">
                 <el-form-item
@@ -305,10 +316,13 @@
             </el-table-column>
             <el-table-column
               label="实际完成时间"
-              width="200px"
+              width="250"
               prop="actual_finish_time"
             />
-            <el-table-column label="状态">
+            <el-table-column
+              label="状态"
+              width="100"
+            >
               <template #default="scope">
                 <div :class="changeTableCellColor(scope.row.state)">
                   {{ scope.row.state_desc }}
@@ -317,7 +331,7 @@
             </el-table-column>
             <el-table-column
               label="结果附件"
-              width="150px"
+              min-width="150"
             >
               <template
                 v-if="progress.state >= 40"
@@ -419,10 +433,12 @@
             <el-table-column
               label="是否审批环节"
               prop="has_approval_process_desc"
+              min-width="120"
             />
             <el-table-column
+              fixed="right"
               label="操作"
-              width="200px"
+              width="200"
             >
               <template #default="scope">
                 <div
@@ -454,6 +470,7 @@
                         progress.state === 30 ||
                         (progress.state === 40 && !scope.row.id)
                     "
+                    type="text"
                     @click="deletePlanItem(scope.$index + 1)"
                   >
                     删除
@@ -542,7 +559,7 @@
     <el-dialog
       v-model="operatorVisible"
       title="编辑"
-      width="20%"
+      width="25%"
     >
       <el-form
         ref="operatorForm"
@@ -582,7 +599,7 @@
     <el-dialog
       v-model="setTimeVisible"
       title="操作"
-      width="20%"
+      width="30%"
     >
       <el-form
         ref="timeForm"

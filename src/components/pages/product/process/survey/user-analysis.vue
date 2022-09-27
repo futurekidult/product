@@ -12,8 +12,8 @@
 
     <el-form
       ref="analysisForm"
-      label-width="110px"
-      style="width: 50%"
+      label-width="93px"
+      style="width: 60%"
       :model="form"
       :rules="analysisRules"
     >

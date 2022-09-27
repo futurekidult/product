@@ -20,26 +20,35 @@
       :data="mouldList"
     >
       <el-table-column
+        fixed
         label="模具ID"
         prop="mould_id"
+        width="100"
       />
       <el-table-column
+        fixed
         label="模具名称"
         prop="name"
+        min-width="150"
       />
       <el-table-column
         label="开模工厂"
         prop="mould_factory"
+        min-width="150"
       />
       <el-table-column
         label="创建时间"
         prop="create_time"
+        width="200"
       />
       <el-table-column
         label="创建人"
         prop="creator"
       />
-      <el-table-column label="操作">
+      <el-table-column
+        label="操作"
+        fixed="right"
+      >
         <template #default="scope">
           <el-button
             type="text"
@@ -48,8 +57,8 @@
             删除
           </el-button>
           <span class="table-btn">|</span>
-          <el-button 
-            type="text" 
+          <el-button
+            type="text"
             @click="toDetail(scope.row.mould_id)"
           >
             查看
@@ -65,103 +74,109 @@
       @change-size="changePageSize"
       @change-page="changeCurrentPage"
     />
-  </div>
 
-  <el-dialog
-    v-model="deleteDialog"
-    title="提示"
-    width="20%"
-  >
-    <div class="result-content">
-      确认要删除该模具吗
-    </div>
-    <div style="text-align: center">
-      <el-button
-        class="mould-btn"
-        @click="closeDeleteDialog"
-      >
-        取消
-      </el-button>
-      <el-button
-        type="primary"
-        class="mould-btn"
-        @click="deleteMould"
-      >
-        提交
-      </el-button>
-    </div>
-  </el-dialog>
-
-  <el-dialog
-    v-model="mouldSelectedVisible"
-    title="选择模具"
-    width="40%"
-  >
-    <el-table
-      border
-      stripe
-      empty-text="无数据"
-      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      :data="allMouldList"
-      @selection-change="handleSelectionChange"
+    <el-dialog
+      v-model="deleteDialog"
+      title="提示"
+      width="25%"
     >
-      <el-table-column
-        type="selection"
-        width="55"
-      />
-      <el-table-column
-        label="模具ID"
-        prop="id"
-      />
-      <el-table-column
-        label="模具名称"
-        prop="name"
-      />
-      <el-table-column
-        label="开模工厂"
-        prop="mould_factory"
-      />
-      <el-table-column
-        label="创建时间"
-        prop="create_time"
-        width="200px"
-      />
-      <el-table-column
-        label="创建人"
-        prop="creator"
-      />
-    </el-table>
+      <div class="result-content">
+        确认要删除该模具吗
+      </div>
+      <div style="text-align: center">
+        <el-button
+          class="mould-btn"
+          @click="closeDeleteDialog"
+        >
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          class="mould-btn"
+          @click="deleteMould"
+        >
+          提交
+        </el-button>
+      </div>
+    </el-dialog>
 
-    <base-pagination
-      :length="$store.state.product.selectedMouldListLength"
-      :current-page="allCurrentPage"
-      :page-num="allPageSize"
-      @change-size="changeAllPageSize"
-      @change-page="changeAllCurrentPage"
-    />
+    <el-dialog
+      v-model="mouldSelectedVisible"
+      title="选择模具"
+      width="50%"
+    >
+      <el-table
+        border
+        stripe
+        empty-text="无数据"
+        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+        :data="allMouldList"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column
+          type="selection"
+          width="55"
+        />
+        <el-table-column
+          fixed
+          label="模具ID"
+          prop="id"
+          width="100"
+        />
+        <el-table-column
+          fixed
+          label="模具名称"
+          prop="name"
+          min-width="150"
+        />
+        <el-table-column
+          label="开模工厂"
+          prop="mould_factory"
+          min-width="150"
+        />
+        <el-table-column
+          label="创建时间"
+          prop="create_time"
+          width="200"
+        />
+        <el-table-column
+          label="创建人"
+          prop="creator"
+          fixed="right"
+        />
+      </el-table>
 
-    <el-divider style="margin: 68px 0px 20px" />
-    <div style="text-align: right">
-      <el-button
-        class="close-btn"
-        @click="closeMouldSelectedForm"
-      >
-        取消
-      </el-button>
-      <el-button
-        type="primary"
-        @click="submitResult"
-      >
-        提交
-      </el-button>
-    </div>
-  </el-dialog>
+      <base-pagination
+        :length="$store.state.product.selectedMouldListLength"
+        :current-page="allCurrentPage"
+        :page-num="allPageSize"
+        @change-size="changeAllPageSize"
+        @change-page="changeAllCurrentPage"
+      />
+
+      <el-divider style="margin: 68px 0px 20px" />
+      <div style="text-align: right">
+        <el-button
+          class="close-btn"
+          @click="closeMouldSelectedForm"
+        >
+          取消
+        </el-button>
+        <el-button
+          type="primary"
+          @click="submitResult"
+        >
+          提交
+        </el-button>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
 import { changeTimestamp } from '../../../../utils';
 export default {
-  inject: [ 'getMould'],
+  inject: ['getMould'],
   props: ['mouldList', 'currentPage', 'pageSize'],
   emits: ['change-page', 'change-size'],
   data() {
@@ -198,7 +213,7 @@ export default {
         this.allMouldList.forEach((item) => {
           changeTimestamp(item, 'create_time');
         });
-       this.mouldSelectedVisible = true;
+        this.mouldSelectedVisible = true;
       } catch (err) {
         return;
       }
@@ -246,7 +261,7 @@ export default {
       this.mouldId = id;
     },
     toDetail(id) {
-      if(this.$store.state.menuData.links.indexOf('/mould-list') > -1) {
+      if (this.$store.state.menuData.links.indexOf('/mould-list') > -1) {
         this.$router.push(`/mould-list/${id}`);
         this.$store.commit('setActiveTab', 'design');
       } else {
@@ -261,14 +276,14 @@ export default {
       this.pageNum = val;
       this.$emit('change-size', this.pageNum);
     },
-     changeAllCurrentPage(val) {
+    changeAllCurrentPage(val) {
       this.currentPage = val;
       this.getAllMouldList();
     },
     changeAllPageSize(val) {
       this.pageSize = val;
       this.getAllMouldList();
-    } 
+    }
   }
 };
 </script>

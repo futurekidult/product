@@ -2,7 +2,7 @@
   <el-dialog
     v-model="visible"
     :title="formTitle"
-    width="30%"
+    width="40%"
     @close="cancel"
   >
     <el-form
@@ -34,6 +34,7 @@
           :disabled="isDisabled"
           clearable
           maxlength="200"
+          :rows="6"
           show-word-limit
         />
       </el-form-item>
@@ -48,6 +49,7 @@
           :disabled="isDisabled"
           clearable
           maxlength="200"
+          :rows="6"
           show-word-limit
         />
       </el-form-item>

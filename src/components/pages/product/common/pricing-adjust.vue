@@ -2,7 +2,7 @@
   <el-dialog
     v-model="visible"
     title="调价"
-    width="30%"
+    width="40%"
     @close="cancel"
   >
     <div class="adjust-time">
