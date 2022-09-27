@@ -615,6 +615,7 @@
             type="datetime"
             placeholder="请选择时间"
             clearable
+            style="width: 100%"
           />
         </el-form-item>
         <el-divider />
