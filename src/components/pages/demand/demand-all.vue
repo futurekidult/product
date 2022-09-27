@@ -105,8 +105,9 @@
           min-width="150"
         />
         <el-table-column
+          fixed
           label="关联产品ID"
-          width="100"
+          width="110"
         >
           <template #default="scope">
             <el-button

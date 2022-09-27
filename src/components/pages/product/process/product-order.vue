@@ -21,7 +21,7 @@
         fixed
         label="关联定价ID"
         prop="pricing_id"
-        width="100"
+        width="110"
       />
       <el-table-column
         label="最终定价"

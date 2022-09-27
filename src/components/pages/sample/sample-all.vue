@@ -96,7 +96,7 @@
         <el-table-column
           fixed
           label="关联产品ID"
-          width="100"
+          width="110"
         >
           <template #default="scope">
             <el-button
@@ -110,12 +110,12 @@
         <el-table-column
           label="关联定价ID"
           prop="pricing_id"
-          width="100"
+          width="110"
         />
         <el-table-column
           label="供应商名称"
           prop="supplier"
-          min-width="150"
+          min-width="170"
         />
         <el-table-column
           label="计划完成时间"

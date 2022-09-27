@@ -96,7 +96,7 @@
           fixed
           label="关联产品ID"
           prop="related_product_id"
-          width="100"
+          width="110"
         />
         <el-table-column
           label="市场"

@@ -20,7 +20,7 @@
       <el-table-column
         fixed
         label="关联样品ID"
-        width="100"
+        width="110"
       >
         <template #default="scope">
           <el-button
@@ -35,7 +35,7 @@
         fixed
         label="关联定价ID"
         prop="pricing_id"
-        width="100"
+       width="110"
       />
       <el-table-column
         label="问题名称"
