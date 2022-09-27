@@ -109,7 +109,7 @@
           label="操作"
         >
           <el-button
-            type="primary"
+            type="text"
             @click="confirmPatent"
           >
             专利排查完成
