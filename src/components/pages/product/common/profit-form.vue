@@ -382,7 +382,9 @@ export default {
             params
           });
           this.profitParams = this.$store.state.product.project.profitParams;
-          this.getPrice(market, platform, currency, price, index);
+          if (this.type !== 'view') {
+            this.getPrice(market, platform, currency, price, index);
+          }
         } catch (err) {
           return;
         }
@@ -421,13 +423,16 @@ export default {
           }
         });
         this.profitForm.list.forEach((item, index) => {
-          this.getPrice(
-            this.id,
-            item.platform,
-            item.currency,
-            item.selling_price,
-            index
-          );
+
+          if (this.type !== 'view') {
+            this.getPrice(
+              this.id,
+              item.platform,
+              item.currency,
+              item.selling_price,
+              index
+            );
+          }
           this.getProfitParams(item.market, item.platform);
         });
       } catch (err) {

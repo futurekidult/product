@@ -1,7 +1,6 @@
 <template>
-  <section>
+  <div>
     <base-breadcrumb />
-
     <div class="border">
       <div class="system-item">
         <div class="nav-title">
@@ -23,10 +22,9 @@
           :data="rateList"
         >
           <el-table-column
-            fixed
             label="ID"
             prop="id"
-            width="100"
+            width="60px"
           />
           <el-table-column
             label="美元"
@@ -34,11 +32,11 @@
           />
           <el-table-column
             label="欧元"
-            prop="gbp_to_cny"
+            prop="eur_to_cny"
           />
           <el-table-column
             label="英镑"
-            prop="eur_to_cny"
+            prop="gbp_to_cny"
           />
           <el-table-column
             label="日元"
@@ -47,13 +45,8 @@
           <el-table-column
             label="创建时间"
             prop="create_time"
-            width="200"
           />
-          <el-table-column
-            label="操作"
-            fixed="right"
-            width="100"
-          >
+          <el-table-column label="操作">
             <template #default="scope">
               <el-button
                 type="text"
@@ -102,20 +95,20 @@
         </el-form-item>
         <el-form-item
           label="欧元"
-          prop="gbp_to_cny"
+          prop="eur_to_cny"
         >
           <el-input
-            v-model="rateForm.gbp_to_cny"
+            v-model="rateForm.eur_to_cny"
             placeholder="请输入"
             clearable
           />
         </el-form-item>
         <el-form-item
           label="英镑"
-          prop="eur_to_cny"
+          prop="gbp_to_cny"
         >
           <el-input
-            v-model="rateForm.eur_to_cny"
+            v-model="rateForm.gbp_to_cny"
             placeholder="请输入"
             clearable
           />
@@ -171,7 +164,7 @@
         </el-button>
       </div>
     </el-dialog>
-  </section>
+  </div>
 </template>
 
 <script>
