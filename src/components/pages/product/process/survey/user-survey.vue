@@ -21,9 +21,10 @@
         :data="surveyApply"
       >
         <el-table-column
-          label="序号"
-          type="index"
-          width="60px"
+          fixed
+          label="调研申请ID"
+          prop="id"
+          width="100"
         />
         <el-table-column
           label="申请人"
@@ -32,14 +33,17 @@
         <el-table-column
           label="提交时间"
           prop="create_time"
+          width="200"
         />
         <el-table-column
           label="评审完成时间"
           prop="review_finish_time"
+          width="200"
         />
         <el-table-column
           label="评审状态"
           prop="state_desc"
+          fixed="right"
         >
           <template #default="scope">
             <div :class="changeCellColor(scope.row.state)">
@@ -47,7 +51,10 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column
+          label="操作"
+          fixed="right"
+        >
           <template #default="scope">
             <el-button
               v-if="scope.row.state === 10"
