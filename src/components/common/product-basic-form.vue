@@ -2,7 +2,7 @@
   <el-form
     :model="productForm"
     label-width="100px"
-    :style="type === 'detail' ? 'width: 50%' : 'width: 100%'"
+    :style="type === 'detail' ? 'width: 60%' : 'width: 100%'"
   >
     <el-form-item label="产品名称">
       <el-input
@@ -11,7 +11,7 @@
       />
     </el-form-item>
     <el-form-item label="产品图片">
-      <base-upload 
+      <base-upload
         type="image"
         :is-disabled="true"
         :list="attachment"

@@ -9,6 +9,7 @@ import ConfirmDialog from './components/common/confirm-dialog.vue';
 import BaseDelete from './components/common/base-delete.vue';
 import BaseUpload from './components/common/base-upload.vue';
 import 'element-plus/dist/index.css';
+import global from './components/common/global.vue';
 import { ElMessage } from 'element-plus';
 
 let version = process.env.VERSION;
@@ -30,6 +31,5 @@ app.component('BaseUpload', BaseUpload);
 app.use(router);
 app.use(store);
 app.config.globalProperties.$message = ElMessage;
-
-
+app.config.globalProperties.$global = global;
 app.mount('#app');

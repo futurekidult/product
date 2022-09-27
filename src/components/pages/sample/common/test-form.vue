@@ -2,7 +2,7 @@
   <el-dialog
     v-model="visible"
     :title="title"
-    width="30%"
+    width="35%"
     @close="cancel"
   >
     <el-form
@@ -159,9 +159,13 @@
 </template>
 
 <script>
-import { timestamp, getOrganizationList, formatterTime } from '../../../../utils';
+import {
+  timestamp,
+  getOrganizationList,
+  formatterTime
+} from '../../../../utils';
 export default {
-  inject: ['getTest', 'getQualityDetail'],
+  inject: ['getTest', 'getQualityDetail', 'refreshTestSupply'],
   props: ['dialogVisible', 'title', 'type', 'id'],
   emits: ['hide-dialog'],
   data() {
@@ -219,21 +223,7 @@ export default {
           value: 0
         }
       ],
-      reviewOptions: [
-        {
-          label: '请选择',
-          value: -1,
-          disabled: true
-        },
-        {
-          label: '通过',
-          value: 1
-        },
-        {
-          label: '不通过',
-          value: 0
-        }
-      ],
+      reviewOptions: this.$global.reviewOptions,
       loading: true,
       reviewValue: 0,
       memberList: [],
@@ -242,7 +232,7 @@ export default {
         label: 'name',
         disabled: 'disabled'
       },
-      defaultTime: new Date(2000,1,1,23,59,59)
+      defaultTime: new Date(2000, 1, 1, 23, 59, 59)
     };
   },
   computed: {
@@ -260,7 +250,7 @@ export default {
     this.isDisabled();
     this.getMsg();
     this.isLoading();
-     getOrganizationList().then( (res) => {
+    getOrganizationList().then((res) => {
       this.memberList = res;
     });
   },
@@ -299,6 +289,7 @@ export default {
       try {
         await this.$store.dispatch('sample/createTestApply', body);
         this.visible = false;
+        this.refreshTestSupply();
         this.getTest();
       } catch (err) {
         return;
@@ -312,7 +303,9 @@ export default {
           }
         });
         this.applyForm = this.$store.state.sample.sampleTestApply;
-        this.applyForm.expected_finish_time = formatterTime(this.applyForm.expected_finish_time);
+        this.applyForm.expected_finish_time = formatterTime(
+          this.applyForm.expected_finish_time
+        );
         if (!this.applyForm.quality_specialist_id) {
           this.applyForm.quality_specialist_id = '';
         }

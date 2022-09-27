@@ -1,17 +1,19 @@
 <template>
-  <base-breadcrumb />
+  <section>
+    <base-breadcrumb />
 
-  <div class="border">
-    <div class="nav-title">
-      <span class="line">|</span> 菜单权限列表
+    <div class="border">
+      <div class="nav-title">
+        <span class="line">|</span> 菜单权限列表
+      </div>
+
+      <el-tree
+        v-loading="$store.state.system.privilegeLoading"
+        :data="privilegeList"
+        :props="defaultProps"
+      />
     </div>
-
-    <el-tree
-      v-loading="$store.state.system.privilegeLoading"
-      :data="privilegeList"
-      :props="defaultProps"
-    />
-  </div>
+  </section>
 </template>
 
 <script>

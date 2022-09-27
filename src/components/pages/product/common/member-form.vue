@@ -2,7 +2,7 @@
   <el-dialog
     v-model="visible"
     :title="title"
-    width="20%"
+    width="30%"
     @close="cancel"
   >
     <el-form
@@ -82,7 +82,7 @@ export default {
   },
   mounted() {
     this.getRole();
-    getOrganizationList().then( (res) => {
+    getOrganizationList().then((res) => {
       this.memberList = res;
     });
     if (this.type === 'edit') {

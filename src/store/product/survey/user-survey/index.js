@@ -12,7 +12,8 @@ export default {
       userSurveyDetail: {},
       userLoading: true,
       userId: 0,
-      hasTask: 0
+      hasTask: 0,
+      ids: {}
     };
   },
   mutations: {
@@ -39,17 +40,24 @@ export default {
     },
     setTaskStatus(state, payload) {
       state.hasTask = payload;
+    },
+    setIds(state, payload) {
+      state.ids = {
+        survey_id: payload.survey_id,
+        survey_schedule_id: payload.survey_schedule_id
+      };
     }
   },
   actions: {
     async getUserSurveyData(context, payload) {
       await axios.get('/survey/user-survey/detail', payload).then((res) => {
         if (res.code === 200) {
+          context.commit('setIds', res.data);
           context.commit('setButtonState', res.data.button_state);
           context.commit('setProgressData', res.data.progress);
           context.commit('setSurveyApply', res.data.survey_apply);
           context.commit('setPlanList', res.data.plan_list);
-          context.commit('setUserId', res.data.user_survey_principal_id);
+          context.commit('setUserId', res.data.default_operator_id);
           context.commit('setTaskStatus', res.data.has_task);
           context.commit('setUserLoading', false);
         }
@@ -135,11 +143,13 @@ export default {
         });
     },
     async viewUserSurveyDetail(context, payload) {
-      await axios.get('/survey/user-survey/apply/get', payload).then((res) => {
-        if (res.code === 200) {
-          context.commit('setUserSurveyDetail', res.data);
-        }
-      });
+      await axios
+        .get(`/survey/user-survey/${payload.urlParams}/get`, payload)
+        .then((res) => {
+          if (res.code === 200) {
+            context.commit('setUserSurveyDetail', res.data);
+          }
+        });
     },
     async updateUserSurveyPlan(_, payload) {
       await axios
@@ -158,11 +168,13 @@ export default {
       });
     },
     async updatePlanResultAttachment(_, payload) {
-      await axios.post('/survey/user-survey/plan/attachment', payload).then((res) => {
-        if (res.code === 200) {
-          ElMessage.success(res.message);
-        }
-      });
+      await axios
+        .post('/survey/user-survey/plan/attachment', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(res.message);
+          }
+        });
     }
   }
 };

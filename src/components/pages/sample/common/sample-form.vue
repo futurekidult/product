@@ -75,11 +75,11 @@
           show-word-limit
         />
       </el-form-item>
-      <el-form-item 
-        label="打样单" 
+      <el-form-item
+        label="打样单"
         prop="proofing_sheet_file"
       >
-        <base-upload 
+        <base-upload
           type="file"
           tag="打样单"
           url="proofing-sheet"
@@ -131,10 +131,7 @@
 </template>
 
 <script>
-import {
-  formatterTime,
-  timestamp
-} from '../../../../utils';
+import { formatterTime, timestamp } from '../../../../utils';
 export default {
   inject: ['getProofing'],
   props: ['dialogVisible', 'title', 'type'],
@@ -170,7 +167,7 @@ export default {
           }
         ],
         proofing_sheet_file: [
-           {
+          {
             required: true,
             message: '请上传附件'
           }
@@ -207,7 +204,9 @@ export default {
         this.proofingForm = sample.proofingSheet;
         this.attachment = this.proofingForm.proofing_sheet_file;
         this.proofingId = this.proofingForm.id;
-        this.proofingForm.demand_time = formatterTime(this.proofingForm.demand_time);
+        this.proofingForm.demand_time = formatterTime(
+          this.proofingForm.demand_time
+        );
       } catch (err) {
         return;
       }
@@ -256,14 +255,14 @@ export default {
     submitProofingSheet() {
       this.proofingForm.proofing_sheet_file = this.attachment.id;
       let val = {
-        'sample_id': +this.$route.params.id,
-        'sample_model': this.proofingForm.sample_model,
-        'demand_quantity': +this.proofingForm.demand_quantity,
-        'has_verify': +this.proofingForm.has_verify,
-        'demand_time': timestamp(this.proofingForm.demand_time),
-        'remark_text': this.proofingForm.remark_text,
-        'proofing_sheet_file': this.proofingForm.proofing_sheet_file
-      }
+        sample_id: +this.$route.params.id,
+        sample_model: this.proofingForm.sample_model,
+        demand_quantity: +this.proofingForm.demand_quantity,
+        has_verify: +this.proofingForm.has_verify,
+        demand_time: timestamp(this.proofingForm.demand_time),
+        remark_text: this.proofingForm.remark_text,
+        proofing_sheet_file: this.proofingForm.proofing_sheet_file
+      };
       this.$refs.proofingForm.validate((valid) => {
         if (valid) {
           if (this.type === 'create') {

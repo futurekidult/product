@@ -4,7 +4,7 @@
     <div v-if="isParent">
       <div class="border">
         <div class="detail-title">
-          {{ productBase.name }}  
+          {{ productBase.name }}
           <div class="tag-position">
             <base-tag
               :mode="mode"
@@ -57,7 +57,7 @@
 
           <div>
             <el-button
-              v-if="productBase.state <= 50 "
+              v-if="productBase.state <= 50"
               type="danger"
               @click="showTerminateForm"
             >
@@ -92,7 +92,7 @@
             label="项目成员"
             name="member"
           >
-            <related-member 
+            <related-member
               :project-member="projectMember"
               :current-page="memberCurrentPage"
               :page-size="memberPageSize"
@@ -104,7 +104,7 @@
             label="项目调研"
             name="survey"
           >
-            <product-survey  
+            <product-survey
               v-if="isGetData"
               :platform-progress="platformProgress"
               :platform-form="platformForm"
@@ -169,8 +169,8 @@
             label="样品信息"
             name="sample"
           >
-            <sample-message 
-              :sample-list="sampleList" 
+            <sample-message
+              :sample-list="sampleList"
               :current-page="sampleCurrentPage"
               :page-size="samplePageSize"
               @change-page="(val) => changeCurrentPage(val, 'sample')"
@@ -182,7 +182,7 @@
             label="测试问题"
             name="question"
           >
-            <question-all 
+            <question-all
               :question-list="questionList"
               :current-page="questionCurrentPage"
               :page-size="questionPageSize"
@@ -195,8 +195,8 @@
             label="下单信息"
             name="order"
           >
-            <product-order 
-              :order-list="orderList" 
+            <product-order
+              :order-list="orderList"
               :current-page="orderCurrentPage"
               :page-size="orderPageSize"
               @change-page="(val) => changeCurrentPage(val, 'order')"
@@ -220,30 +220,31 @@
         </el-tabs>
       </div>
     </div>
+
+    <terminate-form
+      v-if="terminateProjectVisible"
+      :dialog-visible="terminateProjectVisible"
+      type="create"
+      @hide-dialog="closeTerminateForm"
+    />
+
+    <terminate-form
+      v-if="viewReasonVisible"
+      :dialog-visible="viewReasonVisible"
+      type="view"
+      :reason="reason"
+      @hide-dialog="closeViewReasonForm"
+    />
+
+    <confirm-dialog
+      v-if="confirmDialogVisible"
+      :dialog-visible="confirmDialogVisible"
+      :get-list="getProductBase"
+      dialog-content="是否确认项目所有事项已完成"
+      type="product finish"
+      @hide-dialog="closeConfirmDialog"
+    />
   </div>
-
-  <terminate-form
-    v-if="terminateProjectVisible"
-    :dialog-visible="terminateProjectVisible"
-    type="create"
-    @hide-dialog="closeTerminateForm"
-  />
-  <terminate-form
-    v-if="viewReasonVisible"
-    :dialog-visible="viewReasonVisible"
-    type="view"
-    :reason="reason"
-    @hide-dialog="closeViewReasonForm"
-  />
-
-  <confirm-dialog 
-    v-if="confirmDialogVisible"
-    :dialog-visible="confirmDialogVisible"
-    :get-list="getProductBase"
-    dialog-content="是否确认项目所有事项已完成"
-    type="product finish"
-    @hide-dialog="closeConfirmDialog"
-  />
 </template>
 
 <script>
@@ -259,6 +260,7 @@ import QuestionAll from './process/question-all.vue';
 import ProductOrder from './process/product-order.vue';
 import ProductPackage from './process/product-package.vue';
 import { changeTimestamp } from '../../../utils';
+import { getDemandDetail } from '../../../utils/demand';
 import TerminateForm from './common/terminate-form.vue';
 
 export default {
@@ -391,7 +393,9 @@ export default {
         });
         this.productForm = this.$store.state.product.productDetail;
         this.productAttachment = this.productForm.images;
-        let val = String(this.productForm.is_new_category) + String(this.productForm.is_new_product);
+        let val =
+          String(this.productForm.is_new_category) +
+          String(this.productForm.is_new_product);
         if (val === '11') {
           this.isNewCategoryProduct = true;
           this.isNewCategory = true;
@@ -707,8 +711,8 @@ export default {
           this.getContract();
           this.getProductBase();
           break;
-        case'survey':
-          this.getPlatform(); 
+        case 'survey':
+          this.getPlatform();
           break;
         default:
       }
@@ -716,29 +720,9 @@ export default {
     handleClick(tab) {
       this.getRequest(tab.props.name);
     },
-    async getCategoryList() {
-      try {
-        await this.$store.dispatch('demand/getCategoryList');
-      } catch (err) {
-        return;
-      }
-    },
-    async getDemandDetail(id) {
-      this.getCategoryList();
-      try {
-        await this.$store.dispatch('demand/getDemandDetail', {
-          params: {
-            demand_id:  id
-          }
-        });
-        this.$router.push(`/demand-list/${id}`);
-      } catch (err) {
-        return ;
-      }
-    },
     toRelatedDemand(id) {
-      if(this.$store.state.menuData.links.indexOf('/demand-list') > -1) {
-        this.getDemandDetail(id);
+      if (this.$store.state.menuData.links.indexOf('/demand-list') > -1) {
+        getDemandDetail(id, 'detail');
       } else {
         this.$message.error('无权限访问');
       }
@@ -756,29 +740,29 @@ export default {
     closeViewReasonForm() {
       this.viewReasonVisible = false;
     },
-    changeCurrentPage(val,type) {
-      switch(type) {
-        case 'member':   
+    changeCurrentPage(val, type) {
+      switch (type) {
+        case 'member':
           this.memberCurrentPage = val;
           this.getProjectMember();
           break;
-        case 'mould':   
+        case 'mould':
           this.mouldCurrentPage = val;
           this.getMouldList();
           break;
-        case 'sample':   
+        case 'sample':
           this.sampleCurrentPage = val;
           this.getSampleList();
           break;
-        case 'question':   
+        case 'question':
           this.questionCurrentPage = val;
           this.getQuestionList();
           break;
-        case 'order':   
+        case 'order':
           this.orderCurrentPage = val;
           this.getOrderList();
           break;
-        case 'package':   
+        case 'package':
           this.packageCurrentPage = val;
           this.getPackageList();
           break;
@@ -786,28 +770,28 @@ export default {
       }
     },
     changePageSize(val, type) {
-      switch(type) {
-        case 'member':   
+      switch (type) {
+        case 'member':
           this.memberPageSize = val;
           this.getProjectMember();
           break;
-        case 'mould':   
+        case 'mould':
           this.mouldPageSize = val;
           this.getMouldList();
           break;
-        case 'sample':   
+        case 'sample':
           this.samplePageSize = val;
           this.getSampleList();
           break;
-        case 'question':   
+        case 'question':
           this.questionPageSize = val;
           this.getQuestionList();
           break;
-        case 'order':   
+        case 'order':
           this.orderPageSize = val;
           this.getOrderList();
           break;
-        case 'package':   
+        case 'package':
           this.packagePageSize = val;
           this.getPackageList();
           break;

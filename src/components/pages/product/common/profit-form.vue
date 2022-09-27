@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="visible"
-    width="40%"
+    width="45%"
     :title="title"
     @close="cancel"
   >
@@ -216,20 +216,6 @@
           >
             采购参考价为负， 请先检查产品方案等数据是否有误
           </div>
-          <el-form-item
-            :label="'运营专员' + (index + 1)"
-            :prop="`list.${index}.operations_specialist_id`"
-            :rules="profitRules.operations_specialist_id"
-          >
-            <el-tree-select
-              v-model="item.operations_specialist_id"
-              :data="memberList"
-              clearable
-              filterable
-              :props="defaultProps"
-              :disabled="isDisabled"
-            />
-          </el-form-item>
           <base-delete
             :id="index"
             mode="project-delete_btn"
@@ -331,12 +317,6 @@ export default {
             required: true,
             message: '请输入金额',
             trigger: 'blur'
-          }
-        ],
-        operations_specialist_id: [
-          {
-            required: true,
-            message: '请选择运营专员'
           }
         ]
       },
@@ -443,6 +423,7 @@ export default {
           }
         });
         this.profitForm.list.forEach((item, index) => {
+
           if (this.type !== 'view') {
             this.getPrice(
               this.id,

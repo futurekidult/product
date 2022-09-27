@@ -108,13 +108,11 @@ export default {
         });
     },
     async followupSheet(_, payload) {
-      await axios
-        .post('/order/follow-up-sheet/create', payload)
-        .then((res) => {
-          if (res.code === 200) {
-            ElMessage.success(res.message);
-          }
-        });
+      await axios.post('/order/follow-up-sheet/create', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
     },
     async receiptSheet(_, payload) {
       await axios.post('/order/goods-receipt/create', payload).then((res) => {

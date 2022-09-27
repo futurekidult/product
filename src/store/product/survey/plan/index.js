@@ -5,12 +5,17 @@ export default {
   state() {
     return {
       plan: {},
-      planLoading: true
+      planLoading: true,
+      ids: {}
     };
   },
   mutations: {
     setPlan(state, payload) {
       state.plan = payload;
+      state.ids = {
+        survey_id: payload.survey_id,
+        survey_schedule_id: payload.survey_schedule_id
+      };
     },
     setPlanLoading(state, payload) {
       state.planLoading = payload;
@@ -27,6 +32,20 @@ export default {
     },
     async submitPlan(_, payload) {
       await axios.post('/survey/solutions/create', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
+    },
+    async updatePlan(_, payload) {
+      await axios.post('/survey/solutions/update', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
+    },
+    async approvalPlan(_, payload) {
+      await axios.post('/survey/solutions/approve', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
         }

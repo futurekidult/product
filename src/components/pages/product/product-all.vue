@@ -81,14 +81,22 @@
         :data="productList"
       >
         <el-table-column
+          fixed
           label="产品ID"
           prop="id"
+          width="100"
         />
         <el-table-column
+          fixed
           label="产品名称"
           prop="name"
+          min-width="150"
         />
-        <el-table-column label="关联需求ID">
+        <el-table-column
+          fixed
+          label="关联需求ID"
+          width="110"
+        >
           <template #default="scope">
             <el-button
               type="text"
@@ -100,11 +108,12 @@
         </el-table-column>
         <el-table-column
           label="品类"
-          prop="category_desc"
+          prop="category"
         />
         <el-table-column
           label="产品定位"
           prop="positioning_desc"
+          min-width="100"
         />
         <el-table-column
           label="项目管理员"
@@ -113,10 +122,12 @@
         <el-table-column
           label="创建时间"
           prop="create_time"
+          width="200"
         />
         <el-table-column
           label="状态"
           prop="state_desc"
+          fixed="right"
         >
           <template #default="scope">
             <div :class="changeCellColor(scope.row.state)">
@@ -124,24 +135,28 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column
+          label="操作"
+          fixed="right"
+          width="150"
+        >
           <template #default="scope">
             <div style="display: flex">
-              <div v-if="scope.row.state !== 90">
-                <el-button
-                  type="text"
-                  @click="showEditForm(scope.row.id)"
-                >
-                  编辑
-                </el-button>
-                <span class="table-btn">|</span>
-              </div>
               <el-button
                 type="text"
                 @click="toDetail(scope.row.id)"
               >
                 查看详情
               </el-button>
+              <div v-if="scope.row.state !== 90">
+                <span class="table-btn">|</span>
+                <el-button
+                  type="text"
+                  @click="showEditForm(scope.row.id, scope.row.category_id)"
+                >
+                  编辑
+                </el-button>
+              </div>
             </div>
           </template>
         </el-table-column>
@@ -158,7 +173,7 @@
       <el-dialog
         v-model="editVisible"
         title="编辑"
-        width="30%"
+        width="42%"
       >
         <el-form
           ref="editForm"
@@ -180,15 +195,31 @@
             label="产品图片"
             prop="images"
           >
-            <base-upload 
+            <base-upload
               type="image"
               :is-disabled="false"
               :list="imgList"
               tag="产品图片"
               count="8"
-              @get-file="getUploadFile"
               url="prod-img"
+              @get-file="getUploadFile"
             />
+          </el-form-item>
+          <el-form-item
+            label="小品类"
+            prop="small_category_id"
+          >
+            <el-select
+              v-model="editForm.small_category_id"
+              placeholder="请选择小品类"
+            >
+              <el-option
+                v-for="item in smallCategoryList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
           </el-form-item>
           <el-divider />
           <div style="text-align: right">
@@ -207,6 +238,7 @@
 
 <script>
 import { formatterTime } from '../../../utils';
+import { getDemandDetail } from '../../../utils/demand';
 
 export default {
   data() {
@@ -228,6 +260,12 @@ export default {
             required: true,
             message: '请上传附件'
           }
+        ],
+        small_category_id: [
+          {
+            required: true,
+            message: '请选择小品类'
+          }
         ]
       },
       imgList: [],
@@ -237,7 +275,8 @@ export default {
       categoryList: [],
       productState: [],
       currentPage: 1,
-      pageSize: 10
+      pageSize: 10,
+      smallCategoryList: []
     };
   },
   mounted() {
@@ -260,10 +299,16 @@ export default {
         }
       }
     },
-    async getCategoryList() {
+    async getCategoryList(id) {
+      let params = id ? { id } : {};
       try {
-        await this.$store.dispatch('demand/getCategoryList');
-        this.categoryList = this.$store.state.demand.categoryList;
+        await this.$store.dispatch('demand/getCategoryList', { params });
+        let list = this.$store.state.demand.categoryList;
+        if (!id) {
+          this.categoryList = list;
+        } else {
+          this.smallCategoryList = list[0].children;
+        }
       } catch (err) {
         return;
       }
@@ -273,9 +318,10 @@ export default {
       this.$router.push(`/product-list/${id}`);
       this.$store.commit('setEntry', 'detail');
     },
-    async showEditForm(id) {
+    async showEditForm(id, categoryId) {
       this.productId = id;
       try {
+        this.getCategoryList(categoryId);
         await this.$store.dispatch('product/getSingleDetailMsg', {
           params: {
             id
@@ -283,6 +329,7 @@ export default {
         });
         let { singleProductDetail } = this.$store.state.product;
         this.editForm.name = singleProductDetail.name;
+        this.editForm.small_category_id = singleProductDetail.small_category_id;
         this.imgList = singleProductDetail.images;
         this.editVisible = true;
       } catch (err) {
@@ -306,12 +353,10 @@ export default {
       }
     },
     async updateProductMsg() {
+      let body = this.editForm;
+      body.id = this.productId;
       try {
-        await this.$store.dispatch('product/updateSingleProductMsg', {
-          id: this.productId,
-          name: this.editForm.name,
-          images: this.editForm.images
-        });
+        await this.$store.dispatch('product/updateSingleProductMsg', body);
         this.editVisible = false;
         this.getProductList();
       } catch (err) {
@@ -330,25 +375,12 @@ export default {
         }
       });
     },
-    async getDemandDetail(id) {
-      this.getCategoryList();
-      try {
-        await this.$store.dispatch('demand/getDemandDetail', {
-          params: {
-            demand_id:  id
-          }
-        });
-        this.$router.push(`/demand-list/${id}`);
-      } catch (err) {
-        return ;
-      }
-    },
     toDemand(id) {
-       if(this.$store.state.menuData.links.indexOf('/demand-list') > -1) {
-          this.getDemandDetail(id);
-       } else {
-          this.$message.error('无权限访问');
-       }
+      if (this.$store.state.menuData.links.indexOf('/demand-list') > -1) {
+        getDemandDetail(id, 'detail');
+      } else {
+        this.$message.error('无权限访问');
+      }
     },
     changeCellColor(val) {
       if (val === 30 || val === 90) {

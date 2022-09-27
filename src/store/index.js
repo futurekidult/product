@@ -117,12 +117,14 @@ const store = createStore({
       });
     },
     async getViewLink(context, payload) {
-      await axios.get(`/attachment/view/${payload.url}`, payload).then((res) => {
-        if (res.code === 200) {
-          context.commit('setViewLink', res.data.url);
-          context.commit('setAttachmentState', true);
-        }
-      });
+      await axios
+        .get(`/attachment/view/${payload.url}`, payload)
+        .then((res) => {
+          if (res.code === 200) {
+            context.commit('setViewLink', res.data.url);
+            context.commit('setAttachmentState', true);
+          }
+        });
     },
     async getOrganizationList() {
       await axios.get('/organization/list').then((res) => {
@@ -164,7 +166,10 @@ const store = createStore({
         if (res.code === 200) {
           context.commit('setUserInfo', res.data);
           context.commit('setMenuData', res.data.menu);
-          localStorage.setItem('center_group', JSON.stringify(res.data.center_group));
+          localStorage.setItem(
+            'center_group',
+            JSON.stringify(res.data.center_group)
+          );
         }
       });
     },

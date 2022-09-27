@@ -1,6 +1,8 @@
 <template>
-  <base-breadcrumb />
-  <supplier-form type="create" />
+  <section>
+    <base-breadcrumb />
+    <supplier-form type="create" />
+  </section>
 </template>
 
 <script>

@@ -2,7 +2,7 @@
   <el-dialog
     v-model="visible"
     title="提示"
-    width="20%"
+    width="25%"
     @close="closeConfirmDialog"
   >
     <div class="result-content">
@@ -27,12 +27,20 @@
 
 <script>
 export default {
-  props: ['dialogContent', 'dialogVisible', 'type', 'id', 'getList'],
+  props: [
+    'dialogContent',
+    'dialogVisible',
+    'type',
+    'id',
+    'getList',
+    'surveyType',
+    'ids'
+  ],
   emits: ['hide-dialog'],
   data() {
     return {
-       visible: this.dialogVisible
-    }
+      visible: this.dialogVisible
+    };
   },
   methods: {
     closeConfirmDialog() {
@@ -41,27 +49,37 @@ export default {
     },
     async submitConfirm() {
       try {
-        switch(this.type) {
+        switch (this.type) {
           case 'product finish':
-            await this.$store.dispatch('product/confirmProductResult', { 
+            await this.$store.dispatch('product/confirmProductResult', {
               product_id: +this.$route.params.productId
             });
-          break;
-          case 'draft delete': 
+            break;
+          case 'draft delete':
             await this.$store.dispatch('demand/deleteDraftItem', {
               demand_id: this.id
             });
-          break;
+            break;
           case 'black enter':
             await this.$store.dispatch('supplier/setBlackSupplier', {
               id: this.id
             });
-          break;
-          case 'black delete': 
+            break;
+          case 'black delete':
             await this.$store.dispatch('supplier/setWhiteSupplier', {
               id: this.id
             });
-          break;
+            break;
+          case 'suggestion delete':
+            await this.$store.dispatch(
+              'product/survey/deleteSurveySuggestion',
+              {
+                id: this.id,
+                survey_schedule_id: this.ids.survey_schedule_id,
+                type: this.surveyType
+              }
+            );
+            break;
           default:
         }
         this.visible = false;
@@ -72,5 +90,5 @@ export default {
       }
     }
   }
-}
+};
 </script>

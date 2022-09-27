@@ -1,7 +1,9 @@
 <template>
-  <base-breadcrumb />
-  <router-view />
-  <product-all v-if="isParent" />
+  <section>
+    <base-breadcrumb />
+    <router-view />
+    <product-all v-if="isParent" />
+  </section>
 </template>
 
 <script>

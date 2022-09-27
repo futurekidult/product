@@ -107,7 +107,7 @@ export default {
         ]
       },
       visible: this.dialogVisible,
-      defaultTime: new Date(2000,1,1,23,59,59)
+      defaultTime: new Date(2000, 1, 1, 23, 59, 59)
     };
   },
   mounted() {
@@ -142,11 +142,11 @@ export default {
       this.$refs.form.validate((valid) => {
         if (valid) {
           let val = {
-            'cost': +this.form.cost,
-            'mould_factory': this.form.mould_factory,
-            'estimated_finish_time': timestamp(this.form.estimated_finish_time),
-            'illustration_text': this.form.illustration_text
-           }
+            cost: +this.form.cost,
+            mould_factory: this.form.mould_factory,
+            estimated_finish_time: timestamp(this.form.estimated_finish_time),
+            illustration_text: this.form.illustration_text
+          };
           if (this.type === 'create') {
             val['mould_id'] = +this.$route.params.id;
             this.createMakingMould(val);
