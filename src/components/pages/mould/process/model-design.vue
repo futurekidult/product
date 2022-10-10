@@ -43,6 +43,7 @@
       v-model="designFormVisible"
       width="30%"
       title="上传设计图"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="designForm"

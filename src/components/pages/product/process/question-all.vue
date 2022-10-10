@@ -137,6 +137,7 @@
       title="忽略原因"
       type="ignore"
       :submit-form="submitQuestionResult"
+      :close-on-click-modal="false"
       @hide-dialog="closeIgnoreForm"
     />
     <reason-form
@@ -145,6 +146,7 @@
       :dialog-visible="reasonFormVisible"
       title="原因"
       type="reason"
+      :close-on-click-modal="false"
       @hide-dialog="closeReasonForm"
     />
     <reason-form
@@ -153,6 +155,7 @@
       :dialog-visible="consequenceFormVisible"
       title="后果描述"
       type="consequence"
+      :close-on-click-modal="false"
       @hide-dialog="closeConsequenceForm"
     />
 

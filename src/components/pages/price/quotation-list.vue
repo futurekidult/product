@@ -225,6 +225,7 @@
       :market="market"
       :product-id="prodId"
       :dialog-visible="referenceFormVisible"
+      :close-on-click-modal="false"
       @hide-dialog="closeReferencePriceForm"
     />
     <purchase-form
@@ -233,6 +234,7 @@
       name="目标"
       :quotation-id="quotationId"
       :dialog-visible="targetFormVisible"
+      :close-on-click-modal="false"
       @hide-dialog="closeTargetPriceForm"
     />
 
@@ -244,6 +246,7 @@
       :market="market"
       :get-list="getQuotationList"
       :dialog-visible="quotationFormVisible"
+      :close-on-click-modal="false"
       @hide-dialog="closeQuotationForm"
     />
 
@@ -252,6 +255,7 @@
       :id="viewId"
       title="查看"
       :dialog-visible="viewQuotationFormVisible"
+      :close-on-click-modal="false"
       @hide-dialog="closeViewQuotationForm"
     />
 
@@ -259,6 +263,7 @@
       v-model="terminateFormVisible"
       title="提示"
       width="25%"
+      :close-on-click-modal="false"
     >
       <div class="result-content">
         确定要终止该定价吗
@@ -283,6 +288,7 @@
       v-model="confirmFormVisible"
       title="提示"
       width="25%"
+      :close-on-click-modal="false"
     >
       <div class="result-content">
         确定提交该定价为最终定价吗
@@ -307,6 +313,7 @@
       v-model="editSpecialistFormVisible"
       title="编辑"
       width="25%"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="editSpecialistForm"
@@ -347,6 +354,7 @@
       v-model="applyAdjustmentFormVisible"
       title="申请调价"
       width="30%"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="applyAdjustmentForm"
@@ -418,6 +426,7 @@
       v-model="lowVisible"
       title="提示"
       width="25%"
+      :close-on-click-modal="false"
     >
       <div class="form-desc">
         存有平台的对应采购目标价 &lt; 此次报价，确认提交该报价吗
@@ -442,6 +451,7 @@
       v-model="highVisible"
       title="提示"
       width="25%"
+      :close-on-click-modal="false"
     >
       <div class="form-desc">
         该报价高于所有平台对应采购目标价，请申请调价后再提交
@@ -460,6 +470,7 @@
       v-model="deleteDialog"
       title="提示"
       width="25%"
+      :close-on-click-modal="false"
     >
       <div class="result-content">
         确认要删除该报价吗
@@ -485,6 +496,7 @@
       v-model="productViewVisible"
       title="基本信息"
       width="50%"
+      :close-on-click-modal="false"
     >
       <product-basic
         :attachment="productAttachment"

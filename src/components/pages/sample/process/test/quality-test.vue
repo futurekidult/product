@@ -125,6 +125,7 @@
       v-model="failFormVisible"
       title="不通过"
       width="30%"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="reasonForm"

@@ -3,6 +3,7 @@
     v-model="visible"
     :title="formTitle"
     width="40%"
+    :close-on-click-modal="false"
     @close="cancel"
   >
     <el-form

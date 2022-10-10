@@ -102,6 +102,7 @@
       dialog-content="确定将该供应商移除黑名单"
       type="black delete"
       :get-list="getBlackList"
+      :close-on-click-modal="false"
       @hide-dialog="closeWhiteDialog"
     />
   </section>

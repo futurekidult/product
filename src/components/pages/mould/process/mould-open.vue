@@ -94,6 +94,7 @@
       :dialog-visible="applyFormVisible"
       type="create"
       :get-list="getList"
+      :close-on-click-modal="false"
       @hide-dialog="closeApplyForm"
     />
 
@@ -104,6 +105,7 @@
       :edit-form="editForm"
       type="edit"
       :get-list="getList"
+      :close-on-click-modal="false"
       @hide-dialog="closeEditForm"
     />
   </section>

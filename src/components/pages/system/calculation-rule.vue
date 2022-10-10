@@ -88,6 +88,7 @@
       v-model="editVisible"
       width="40%"
       title="编辑基础数据"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="calculationRuleForm"

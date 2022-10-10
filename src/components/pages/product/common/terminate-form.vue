@@ -3,6 +3,7 @@
     v-model="visible"
     title="终止项目"
     width="30%"
+    :close-on-click-modal="false"
     @close="cancel"
   >
     <el-form

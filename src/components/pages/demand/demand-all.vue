@@ -201,6 +201,7 @@
       v-model="reasonFormVisible"
       width="400px"
       title="查看内容"
+      :close-on-click-modal="false"
     >
       <el-form :model="reasonForm">
         <el-form-item label="不通过原因">

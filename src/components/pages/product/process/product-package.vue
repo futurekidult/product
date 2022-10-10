@@ -84,6 +84,7 @@
       v-model="resultFormVisible"
       width="30%"
       title="上传结果"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="resultForm"

@@ -71,6 +71,7 @@
       :dialog-visible="proofingVisible"
       title="提交打样单"
       type="create"
+      :close-on-click-modal="false"
       @hide-dialog="closeProofingCreate"
     />
 
@@ -79,6 +80,7 @@
       :dialog-visible="proofingApprovalVisible"
       title="打样单审批"
       type="approval"
+      :close-on-click-modal="false"
       @hide-dialog="closeProofingApproval"
     />
 
@@ -87,6 +89,7 @@
       :dialog-visible="proofingEditVisible"
       title="重新编辑"
       type="edit"
+      :close-on-click-modal="false"
       @hide-dialog="closeProofingEdit"
     />
 
@@ -95,6 +98,7 @@
       :dialog-visible="proofingViewVisible"
       title="查看"
       type="view"
+      :close-on-click-modal="false"
       @hide-dialog="closeProofingView"
     />
   </div>

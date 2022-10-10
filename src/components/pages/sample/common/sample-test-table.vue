@@ -81,6 +81,7 @@
       :dialog-visible="testApplyVisible"
       title="申请样品测试"
       type="apply"
+      :close-on-click-modal="false"
       @hide-dialog="closeTestForm"
     />
 
@@ -90,6 +91,7 @@
       :dialog-visible="applyReviewVisible"
       title="申请样品测试评审"
       type="review"
+      :close-on-click-modal="false"
       @hide-dialog="closeReviewForm"
     />
 
@@ -99,6 +101,7 @@
       :dialog-visible="resultVisible"
       title="查看"
       type="view"
+      :close-on-click-modal="false"
       @hide-dialog="closeViewForm"
     />
 
@@ -112,6 +115,7 @@
       prop="content"
       action="supplement create"
       :get-list="refreshTestSupply"
+      :close-on-click-modal="false"
       @hide-dialog="closeTestForm"
     />
 
@@ -127,6 +131,7 @@
       :value="supplyItemValue"
       :get-list="refreshTestSupply"
       :get-quality="getQualityDetail"
+      :close-on-click-modal="false"
       @hide-dialog="closeReviewForm"
     />
 
@@ -139,6 +144,7 @@
       prop="content"
       action="supplement view"
       :value="supplyItemValue"
+      :close-on-click-modal="false"
       @hide-dialog="closeViewForm"
     />
 
@@ -146,6 +152,7 @@
       v-model="editSpecialistVisible"
       title="编辑"
       width="25%"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="editForm"

@@ -119,6 +119,7 @@
       v-model="roleVisible"
       title="配置用户角色"
       width="30%"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="roleForm"
