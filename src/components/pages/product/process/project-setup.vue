@@ -56,27 +56,39 @@
       :model="form"
       :rules="rules"
     >
-      <el-form-item
-        label="评审结果"
-        style="width: 30%"
-        prop="review_result"
-      >
-        <el-select
-          v-model="form.review_result"
-          placeholder="请选择评审结果"
-          clearable
-          :disabled="isDisabled"
-          @change="refresh(form.review_result)"
+      <div style="display: flex">
+        <el-form-item
+          label="评审结果"
+          style="width: 30%"
+          prop="review_result"
         >
-          <el-option
-            v-for="item in reviewOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-            :disabled="item.disabled"
-          />
-        </el-select>
-      </el-form-item>
+          <el-select
+            v-model="form.review_result"
+            placeholder="请选择评审结果"
+            clearable
+            :disabled="isDisabled"
+            @change="refresh(form.review_result)"
+          >
+            <el-option
+              v-for="item in reviewOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+              :disabled="item.disabled"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label-width="0px">
+          <el-button
+            v-if="!isDisabled"
+            type="primary"
+            style="margin-left: 20px"
+            @click="submitProjectForm"
+          >
+            提交
+          </el-button>
+        </el-form-item>
+      </div>
       <el-divider />
       <el-form-item
         v-if="form.review_result === 0"
@@ -121,15 +133,6 @@
           />
         </el-form-item>
       </div>
-      <el-form-item>
-        <el-button
-          v-if="!isDisabled"
-          type="primary"
-          @click="submitProjectForm"
-        >
-          提交
-        </el-button>
-      </el-form-item>
     </el-form>
   </div>
 </template>
