@@ -97,9 +97,9 @@ partition **公司logo支持多公司可配** {
      <img src="basepoint_logo.png">
     /*FITRUE_basepoint*/
 
-    /*IFTRUE_haitu*/
-     <img src="haitu_logo.png">
-    /*FITRUE_haitu*/
+    /*IFTRUE_heytool*/
+     <img src="heytool_logo.png">
+    /*FITRUE_heytool*/
   end note
   :使用带参build;
 }
