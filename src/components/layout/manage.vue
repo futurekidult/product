@@ -17,14 +17,28 @@
           </el-icon>
         </el-tooltip>
         <div class="nav-img">
-          <img src="../../assets/images/logo.png">
+          <div>
+            /* IFTRUE_heyme */
+            <img src="../../assets/images/logo.png">
+            /* FITRUE_heyme */
+          </div>
+          <div>
+            /* IFTRUE_basepoint */
+            <img src="../../assets/images/basepoint_logo.png">
+            /* FITRUE_basepoint */
+          </div>
+          <div>
+            /* IFTRUE_heytool */
+            <img src="../../assets/images/heytool_logo.png">
+            /* FITRUE_heytool */
+          </div>
         </div>
         <el-divider
           direction="vertical"
           class="header-divider"
         />
         <div class="system">
-          新品开发系统 0.0.4
+          新品开发系统 0.0.5
         </div>
       </div>
       <div class="header-right">
@@ -268,7 +282,15 @@ export default {
 }
 
 .exit-btn:hover {
+  /* IFTRUE_heyme */
   color: #f8ba2b;
+  /*FITRUE_heyme */
+  /* IFTRUE_basepoint */
+  color: #ff7564;
+  /*FITRUE_basepoint */
+  /* IFTRUE_heytool */
+  color: #288cff;
+  /*FITRUE_heytool */
 }
 
 .toggle-btn {
@@ -281,17 +303,41 @@ export default {
 
 .toggle-btn:hover,
 .toggle-btn:focus {
+  /* IFTRUE_heyme */
   color: #f8ba2b;
+  /*FITRUE_heyme */
+  /* IFTRUE_basepoint */
+  color: #ff7564;
+  /*FITRUE_basepoint */
+  /* IFTRUE_heytool */
+  color: #288cff;
+  /*FITRUE_heytool */
 }
 
 .el-menu-item.is-active {
   font-weight: 700;
+  /* IFTRUE_heyme */
   color: #f8ba2b;
+  /*FITRUE_heyme */
+  /* IFTRUE_basepoint */
+  color: #ff7564;
+  /*FITRUE_basepoint */
+  /* IFTRUE_heytool */
+  color: #288cff;
+  /*FITRUE_heytool */
 }
 
 .el-sub-menu__title.is-active {
   font-weight: 700;
+  /* IFTRUE_heyme */
   color: #f8ba2b;
+  /*FITRUE_heyme */
+  /* IFTRUE_basepoint */
+  color: #ff7564;
+  /*FITRUE_basepoint */
+  /* IFTRUE_heytool */
+  color: #288cff;
+  /*FITRUE_heytool */
 }
 
 .menu-icon {

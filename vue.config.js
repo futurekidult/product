@@ -20,7 +20,32 @@ module.exports = {
     }
   },
   productionSourceMap: false,
+  outputDir: `dist${process.env.ENV_CONFIG}`,
   chainWebpack: (config) => {
+    let vueRule = config.module.rule('vue');
+    vueRule
+      .use('js-conditional-compile-loader')
+      .loader('js-conditional-compile-loader')
+      .tap(() => {
+        return {
+          heyme: process.env.ENV_CONFIG === 'heyme',
+          basepoint: process.env.ENV_CONFIG === 'basepoint',
+          heytool: process.env.ENV_CONFIG === 'heytool'
+        };
+      })
+      .end();
+    let cssRule = config.module.rule('css');
+    cssRule
+      .use('js-conditional-compile-loader')
+      .loader('js-conditional-compile-loader')
+      .tap(() => {
+        return {
+          heyme: process.env.ENV_CONFIG === 'heyme',
+          basepoint: process.env.ENV_CONFIG === 'basepoint',
+          heytool: process.env.ENV_CONFIG === 'heytool'
+        };
+      })
+      .end();
     config.plugin('define').tap((args) => {
       args[0]['process.env'].VERSION = (function () {
         const now = new Date();
