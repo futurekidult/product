@@ -35,7 +35,7 @@
         fixed
         label="关联定价ID"
         prop="pricing_id"
-       width="110"
+        width="110"
       />
       <el-table-column
         label="问题名称"
@@ -163,6 +163,7 @@
       v-model="resolveDialog"
       title="提示"
       width="25%"
+      :close-on-click-modal="false"
     >
       <div class="result-content">
         是否确认已解决问题
