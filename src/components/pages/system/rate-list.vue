@@ -72,6 +72,7 @@
       v-model="addVisible"
       title="新增"
       width="30%"
+      :close-on-click-modal="false"
     >
       <div class="content">
         注: 填写的数值为对应币种的100倍兑人民币的汇率值, 例如:
@@ -145,6 +146,7 @@
       v-model="deleteDialogVisible"
       title="提示"
       width="25%"
+      :close-on-click-modal="false"
     >
       <div class="result-content">
         是否删除该汇率

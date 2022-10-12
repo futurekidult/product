@@ -52,6 +52,7 @@
       v-model="confirmVisible"
       title=" 样品测试结果确认"
       width="25%"
+      :close-on-click-modal="false"
     >
       <div
         v-if="sampleDetail.test_result === 1"

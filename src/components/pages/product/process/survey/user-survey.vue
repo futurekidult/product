@@ -535,6 +535,7 @@
       :dialog-visible="isVisible"
       form-title="用户调研申请"
       type="apply"
+      :close-on-click-modal="false"
       @hide-dialog="closeApplyForm"
     />
 
@@ -544,6 +545,7 @@
       :dialog-visible="isReviewVisible"
       form-title="用户调研需求评审"
       type="review"
+      :close-on-click-modal="false"
       @hide-dialog="closeReviewForm"
     />
 
@@ -553,6 +555,7 @@
       :dialog-visible="isViewReviewVisible"
       form-title="查看用户调研需求"
       type="view"
+      :close-on-click-modal="false"
       @hide-dialog="closeViewReviewForm"
     />
 
@@ -560,6 +563,7 @@
       v-model="operatorVisible"
       title="编辑"
       width="25%"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="operatorForm"
@@ -600,6 +604,7 @@
       v-model="setTimeVisible"
       title="操作"
       width="30%"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="timeForm"

@@ -74,6 +74,7 @@
       :dialog-visible="addDialog"
       title="新增成员"
       type="create"
+      :close-on-click-modal="false"
       @hide-dialog="closeAddForm"
     />
 
@@ -84,6 +85,7 @@
       title="修改"
       type="edit"
       :user="userMsg"
+      :close-on-click-modal="false"
       @hide-dialog="closeEditForm"
     />
 
@@ -91,6 +93,7 @@
       v-model="deleteDialog"
       title="提示"
       width="25%"
+      :close-on-click-modal="false"
     >
       <div class="result-content">
         确认要删除该成员吗

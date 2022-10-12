@@ -225,6 +225,7 @@
       v-if="terminateProjectVisible"
       :dialog-visible="terminateProjectVisible"
       type="create"
+      :close-on-click-modal="false"
       @hide-dialog="closeTerminateForm"
     />
 
@@ -233,6 +234,7 @@
       :dialog-visible="viewReasonVisible"
       type="view"
       :reason="reason"
+      :close-on-click-modal="false"
       @hide-dialog="closeViewReasonForm"
     />
 
@@ -242,6 +244,7 @@
       :get-list="getProductBase"
       dialog-content="是否确认项目所有事项已完成"
       type="product finish"
+      :close-on-click-modal="false"
       @hide-dialog="closeConfirmDialog"
     />
   </div>

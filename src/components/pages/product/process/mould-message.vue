@@ -79,6 +79,7 @@
       v-model="deleteDialog"
       title="提示"
       width="25%"
+      :close-on-click-modal="false"
     >
       <div class="result-content">
         确认要删除该模具吗
@@ -104,6 +105,7 @@
       v-model="mouldSelectedVisible"
       title="选择模具"
       width="50%"
+      :close-on-click-modal="false"
     >
       <el-table
         border

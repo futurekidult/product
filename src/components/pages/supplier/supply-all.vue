@@ -211,6 +211,7 @@
       dialog-content="确定将该供应商加入黑名单"
       type="black enter"
       :get-list="getSupplierList"
+      :close-on-click-modal="false"
       @hide-dialog="closeBlackDialog"
     />
 
@@ -218,6 +219,7 @@
       v-model="deleteDialogVisible"
       title="提示"
       width="25%"
+      :close-on-click-modal="false"
     >
       <div class="result-content">
         是否删除该供应商

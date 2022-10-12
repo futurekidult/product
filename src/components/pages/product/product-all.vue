@@ -174,6 +174,7 @@
         v-model="editVisible"
         title="编辑"
         width="42%"
+        :close-on-click-modal="false"
       >
         <el-form
           ref="editForm"

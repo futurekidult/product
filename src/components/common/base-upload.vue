@@ -143,6 +143,7 @@
     v-if="viewImgDialog"
     :link="imgLink"
     :visible="viewImgDialog"
+    :close-on-click-modal="false"
     @hide-dialog="closeViewImg"
   />
 </template>

@@ -3,6 +3,7 @@
     v-model="visible"
     title="上传结果"
     width="35%"
+    :close-on-click-modal="false"
     @close="cancel"
   >
     <el-form

@@ -108,6 +108,7 @@
       :dialog-visible="addProfitVisible"
       type="add"
       title="新增核算利润"
+      :close-on-click-modal="false"
       @hide-dialog="closeProfitForm"
     />
 
@@ -117,6 +118,7 @@
       :dialog-visible="viewProfitVisible"
       type="view"
       title="查看核算利润"
+      :close-on-click-modal="false"
       @hide-dialog="closeViewProfitForm"
     />
 
@@ -126,6 +128,7 @@
       :dialog-visible="editFormVisible"
       type="edit"
       title="编辑核算利润"
+      :close-on-click-modal="false"
       @hide-dialog="closeEditForm"
     />
 
@@ -135,6 +138,7 @@
       :dialog-visible="confirmDialog"
       type="confirm"
       title="确认核算利润"
+      :close-on-click-modal="false"
       @hide-dialog="closeConfirmDialog"
     />
     <pricing-adjust
@@ -143,6 +147,7 @@
       :dialog-visible="adjustPriceVisible"
       :adjust-msg="adjustment"
       :market="marketId"
+      :close-on-click-modal="false"
       @hide-dialog="closeAdjustPrice"
     />
 
@@ -150,6 +155,7 @@
       v-if="viewPricingVisible"
       :dialog-visible="viewPricingVisible"
       :get-list="adjustmentList"
+      :close-on-click-modal="false"
       @hide-dialog="closePricingList"
     />
 
@@ -157,6 +163,7 @@
       v-model="noAdjustmentVisible"
       title="提示"
       width="25%"
+      :close-on-click-modal="false"
     >
       <div class="result-content">
         当前无调价申请数据
@@ -175,6 +182,7 @@
       v-model="deleteDialog"
       title="提示"
       width="25%"
+      :close-on-click-modal="false"
     >
       <div class="result-content">
         确认要删除该核算利润吗

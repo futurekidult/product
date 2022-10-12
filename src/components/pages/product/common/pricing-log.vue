@@ -3,6 +3,7 @@
     v-model="visible"
     title="记录"
     width="40%"
+    :close-on-click-modal="false"
     @close="cancel"
   >
     <el-scrollbar height="400px">
