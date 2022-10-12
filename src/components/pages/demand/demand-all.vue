@@ -129,7 +129,7 @@
         />
         <el-table-column
           prop="create_time"
-          label="提交时间"
+          label="创建时间"
           width="200"
         />
         <el-table-column
