@@ -1,6 +1,6 @@
 @startuml
 start
-partition **需求评审中醒目成员默认显示** {
+partition **需求评审中项目成员默认显示** {
   note
     涉及范围
     ----
