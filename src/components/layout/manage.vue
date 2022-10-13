@@ -284,13 +284,13 @@ export default {
 .exit-btn:hover {
   /* IFTRUE_heyme */
   color: #f8ba2b;
-  /*FITRUE_heyme */
+  /* FITRUE_heyme */
   /* IFTRUE_basepoint */
   color: #ff7564;
-  /*FITRUE_basepoint */
+  /* FITRUE_basepoint */
   /* IFTRUE_heytool */
   color: #288cff;
-  /*FITRUE_heytool */
+  /* FITRUE_heytool */
 }
 
 .toggle-btn {
@@ -305,26 +305,26 @@ export default {
 .toggle-btn:focus {
   /* IFTRUE_heyme */
   color: #f8ba2b;
-  /*FITRUE_heyme */
+  /* FITRUE_heyme */
   /* IFTRUE_basepoint */
   color: #ff7564;
-  /*FITRUE_basepoint */
+  /* FITRUE_basepoint */
   /* IFTRUE_heytool */
   color: #288cff;
-  /*FITRUE_heytool */
+  /* FITRUE_heytool */
 }
 
 .el-menu-item.is-active {
   font-weight: 700;
   /* IFTRUE_heyme */
   color: #f8ba2b;
-  /*FITRUE_heyme */
+  /* FITRUE_heyme */
   /* IFTRUE_basepoint */
   color: #ff7564;
-  /*FITRUE_basepoint */
+  /* FITRUE_basepoint */
   /* IFTRUE_heytool */
   color: #288cff;
-  /*FITRUE_heytool */
+  /* FITRUE_heytool */
 }
 
 .el-sub-menu__title.is-active {
