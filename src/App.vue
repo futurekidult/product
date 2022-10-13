@@ -357,4 +357,14 @@ body {
   grid-template-columns: 100% 4%;
   width: 100%;
 }
+
+.condition-link {
+  color: #409eff;
+  text-decoration: none;
+}
+
+.form-hint {
+  margin: 0 0 18px 50px;
+  color: red;
+}
 </style>
