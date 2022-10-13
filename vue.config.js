@@ -19,32 +19,9 @@ module.exports = {
     }
   },
   productionSourceMap: false,
-  outputDir: `dist${process.env.ENV_CONFIG}`,
   chainWebpack: (config) => {
-    let vueRule = config.module.rule('vue');
-    vueRule
-      .use('js-conditional-compile-loader')
-      .loader('js-conditional-compile-loader')
-      .tap(() => {
-        return {
-          heyme: process.env.ENV_CONFIG === 'heyme',
-          basepoint: process.env.ENV_CONFIG === 'basepoint',
-          heytool: process.env.ENV_CONFIG === 'heytool'
-        };
-      })
-      .end();
-    let cssRule = config.module.rule('css');
-    cssRule
-      .use('js-conditional-compile-loader')
-      .loader('js-conditional-compile-loader')
-      .tap(() => {
-        return {
-          heyme: process.env.ENV_CONFIG === 'heyme',
-          basepoint: process.env.ENV_CONFIG === 'basepoint',
-          heytool: process.env.ENV_CONFIG === 'heytool'
-        };
-      })
-      .end();
+    conditionalCompile(config, 'vue');
+    conditionalCompile(config, 'css');
     config.plugin('define').tap((args) => {
       args[0]['process.env'].VERSION = (function () {
         const now = new Date();
@@ -85,4 +62,19 @@ module.exports = {
 
 const format = (num) => {
   return num < 10 ? `0${num}` : `${num}`;
+};
+
+const conditionalCompile = (config, str) => {
+  let rule = config.module.rule(str);
+  rule
+    .use('js-conditional-compile-loader')
+    .loader('js-conditional-compile-loader')
+    .tap(() => {
+      return {
+        heyme: process.env.npm_config_heyme,
+        basepoint: process.env.npm_config_basepoint,
+        heytool: process.env.npm_config_heytool
+      };
+    })
+    .end();
 };

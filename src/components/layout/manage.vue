@@ -331,13 +331,13 @@ export default {
   font-weight: 700;
   /* IFTRUE_heyme */
   color: #f8ba2b;
-  /*FITRUE_heyme */
+  /* FITRUE_heyme */
   /* IFTRUE_basepoint */
   color: #ff7564;
-  /*FITRUE_basepoint */
+  /* FITRUE_basepoint */
   /* IFTRUE_heytool */
   color: #288cff;
-  /*FITRUE_heytool */
+  /* FITRUE_heytool */
 }
 
 .menu-icon {
