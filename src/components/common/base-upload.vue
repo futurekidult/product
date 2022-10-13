@@ -1,6 +1,7 @@
 <template>
   <section>
     <el-upload
+      v-if="type !== 'survey'"
       action
       :show-file-list="false"
       :http-request="handleFileSuccess"
@@ -26,8 +27,11 @@
       </div>
     </el-upload>
     <div
-      v-if="JSON.stringify(attachment) !== '{}' && type === 'file'"
-      class="attachment-list"
+      v-if="
+        (JSON.stringify(attachment) !== '{}' && type === 'file') ||
+          type === 'survey'
+      "
+      :class="type === 'survey' ? 'file-block' : 'attachment-list'"
     >
       <div>{{ attachment.name }}</div>
       <div>
@@ -301,15 +305,20 @@ export default {
 .image-list,
 .file-list {
   background: #f6f6f6;
-  width: 100%;
   padding: 0 10px;
   margin-top: 10px;
 }
 
 .image-item,
 .file-item {
-  width: 100%;
   display: flex;
   justify-content: space-between;
+}
+
+.file-block {
+  background: #f6f6f6;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
 }
 </style>
