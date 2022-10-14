@@ -84,9 +84,17 @@
             label="所属部门"
             prop="department"
           />
+          <el-table-column label="状态">
+            <template #default="scope">
+              <div :style="{ color: stateColor(scope.row.state) }">
+                {{ scope.row.state_desc }}
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column label="操作">
             <template #default="scope">
               <el-button
+                :disabled="scope.row.state === 3"
                 :type="scope.row.state === 1 ? 'danger' : 'primary'"
                 @click="
                   scope.row.state === 1
@@ -98,6 +106,7 @@
               </el-button>
               <el-button
                 type="warning"
+                :disabled="scope.row.state !== 1"
                 @click="showRoleForm(scope.row.id)"
               >
                 配置角色
@@ -194,6 +203,10 @@ export default {
         {
           label: '禁用状态',
           value: 2
+        },
+        {
+          label: '离职状态',
+          value: 3
         }
       ]
     };
@@ -302,6 +315,15 @@ export default {
     searchAdmin() {
       this.currentPage = 1;
       this.getAdminList();
+    },
+    stateColor(key) {
+      if (key === 1) {
+        return '#379f0d';
+      } else if (key === 2) {
+        return '#ea1d1d';
+      } else {
+        return '#999999';
+      }
     }
   }
 };
