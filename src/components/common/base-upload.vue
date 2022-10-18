@@ -5,19 +5,19 @@
     :http-request="handleFileSuccess"
     :disabled="isDisabled"
   >
-    <el-button 
+    <el-button
       type="primary"
       :disabled="isDisabled"
     >
       上传文件
     </el-button>
     <div
-      v-if="type ==='image'" 
+      v-if="type === 'image' || type === 'imageSku'"
       class="attachment"
     >
       请上传 jpg/png/jepg等图片格式, 单个文件不超过 5MB
     </div>
-    <div 
+    <div
       v-else
       class="attachment"
     >
@@ -25,7 +25,7 @@
     </div>
   </el-upload>
   <div
-    v-if="JSON.stringify(attachment) !== '{}' && type === 'file'"
+    v-if="type === 'file' || type === 'imageSku'"
     class="attachment-list"
   >
     <div>{{ attachment.name }}</div>
@@ -37,18 +37,20 @@
       >
         删除
       </el-button>
-      <span 
-        v-if="!isDisabled &&attachment.type === 12860 "
+      <span
+        v-if="
+          !isDisabled && (attachment.type === 12860 || attachment.type === 4380)
+        "
         class="table-btn"
       >|</span>
       <el-button
-        v-if="attachment.type === 12860"
+        v-if="attachment.type === 12860 || attachment.type === 4380"
         type="text"
         @click="previewOrDownload(attachment.id, attachment.name, 'preview')"
       >
         预览
       </el-button>
-      <span 
+      <span
         v-if="attachment.type === 12860 && isDisabled"
         class="table-btn"
       >|</span>
@@ -61,11 +63,11 @@
       </el-button>
     </div>
   </div>
-  <div 
+  <div
     v-if="type === 'image'"
-    class="image-list"  
+    class="image-list"
   >
-    <div  
+    <div
       v-for="(item, index) in imgList"
       :key="index"
       class="image-item"
@@ -81,7 +83,7 @@
         >
           删除
         </el-button>
-        <span 
+        <span
           v-if="!isDisabled"
           class="table-btn"
         >|</span>
@@ -94,9 +96,9 @@
       </div>
     </div>
   </div>
-  <div 
+  <div
     v-if="type === 'file-list'"
-    class="file-list"  
+    class="file-list"
   >
     <div
       v-for="item in fileArr"
@@ -114,7 +116,7 @@
         >
           删除
         </el-button>
-        <span 
+        <span
           v-if="!isDisabled && item.type === 12860"
           class="table-btn"
         >|</span>
@@ -150,13 +152,22 @@
 
 <script>
 import { previewOrDownloadFile, getFile } from '../../utils';
-import ViewDialog from './view-dialog.vue'
+import ViewDialog from './view-dialog.vue';
 
 export default {
   components: {
     ViewDialog
   },
-  props: ['file', 'isDisabled', 'type' , 'list', 'count' , 'tag', 'fileList', 'url'],
+  props: [
+    'file',
+    'isDisabled',
+    'type',
+    'list',
+    'count',
+    'tag',
+    'fileList',
+    'url'
+  ],
   emits: ['get-file'],
   data() {
     return {
@@ -165,9 +176,9 @@ export default {
       viewImgDialog: false,
       imgLink: '',
       fileArr: this.fileList
-    }
+    };
   },
-  watch:{
+  watch: {
     file(val) {
       this.attachment = val;
     },
@@ -181,9 +192,9 @@ export default {
   methods: {
     getEmitData() {
       let emitFile = null;
-      if(this.type === 'file') {
+      if (this.type === 'file' || this.type === 'imageSku') {
         emitFile = this.attachment;
-      } else if(this.type === 'image') {
+      } else if (this.type === 'image') {
         emitFile = this.imgList;
       } else {
         emitFile = this.fileArr;
@@ -191,11 +202,18 @@ export default {
       return emitFile;
     },
     async handleFileSuccess(e) {
-      let condition = this.type === 'file' || this.type === 'file-list' ? (e.file.type.indexOf('application') > -1 || e.file.type === 'text/csv') : (e.file.type.indexOf('image') > -1 && e.file.type !== 'image/gif');
-      if(e.file.size > 5 * 1024 * 1024 ) {
+      let condition =
+        this.type === 'file' || this.type === 'file-list'
+          ? e.file.type.indexOf('application') > -1 ||
+            e.file.type === 'text/csv'
+          : e.file.type.indexOf('image') > -1 && e.file.type !== 'image/gif';
+      if (e.file.size > 5 * 1024 * 1024) {
         this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if(condition) {
-        if((this.type === 'image' && this.imgList.length > this.count) || (this.type === 'file-list' && this.fileArr.length > this.count)) {
+      } else if (condition) {
+        if (
+          (this.type === 'image' && this.imgList.length > this.count) ||
+          (this.type === 'file-list' && this.fileArr.length > this.count)
+        ) {
           this.$message.warning(`最多传${+this.count + 1}个`);
         } else {
           this.$store.commit('setUploadState', false);
@@ -206,16 +224,16 @@ export default {
               id: this.$store.state.fileRes.id,
               name: this.$store.state.fileRes.file_name,
               type: this.$store.state.fileRes.type
-            }
+            };
             if (this.$store.state.uploadState) {
-              if(this.type === 'file') {
+              if (this.type === 'file' || this.type === 'imageSku') {
                 this.attachment = result;
-              } else if(this.type === 'image'){
+              } else if (this.type === 'image') {
                 this.imgList.push(result);
               } else {
                 this.fileArr.push(result);
               }
-               this.$emit('get-file', this.getEmitData());
+              this.$emit('get-file', this.getEmitData());
             }
           } catch (err) {
             return;
@@ -223,45 +241,49 @@ export default {
         }
       } else {
         this.$message.warning(`上传的${this.tag}格式有误！`);
-     }
+      }
     },
     deleteFile(id) {
-      if(this.type === 'file') {
+      if (this.type === 'file' || this.type === 'imageSku') {
         this.attachment = {};
-      } else if(this.type === 'image') {
+      } else if (this.type === 'image') {
         this.imgList.splice(
           this.imgList.findIndex((e) => {
             return e.id === id;
           }),
-        1
+          1
         );
       } else {
         this.fileArr.splice(
-        this.fileArr.findIndex((e) => {
-          return e.id === id;
-        }),
-        1
+          this.fileArr.findIndex((e) => {
+            return e.id === id;
+          }),
+          1
         );
       }
       this.$emit('get-file', this.getEmitData());
     },
-    async previewOrDownload(id, name , type) {
+    async previewOrDownload(id, name, type) {
       this.$store.commit('setAttachmentState', false);
       try {
-        await this.$store.dispatch('getViewLink', { 
+        await this.$store.dispatch('getViewLink', {
           params: { id },
           url: this.url
-         });
+        });
         if (this.$store.state.attachmentState) {
-          if(type === 'download' ){
+          if (type === 'download') {
             previewOrDownloadFile(this.$store.state.viewLink, name, 'download');
           } else {
-             if(this.type !== 'image') {
-                previewOrDownloadFile(this.$store.state.viewLink, name, 'preview');
-              } else {
-                this.viewImgDialog = true;
-                this.imgLink = this.$store.state.viewLink;
-              }
+            if (this.type !== 'image') {
+              previewOrDownloadFile(
+                this.$store.state.viewLink,
+                name,
+                'preview'
+              );
+            } else {
+              this.viewImgDialog = true;
+              this.imgLink = this.$store.state.viewLink;
+            }
           }
         }
       } catch (err) {
@@ -272,7 +294,7 @@ export default {
       this.viewImgDialog = false;
     }
   }
-}
+};
 </script>
 
 <style scoped>

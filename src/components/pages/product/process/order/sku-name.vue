@@ -32,38 +32,57 @@
       <div
         v-for="(item, index) in form.sku"
         :key="index"
-        style="display: flex"
       >
-        <el-form-item
-          :label="'平台' + (index + 1)"
-          :prop="`sku.${index}.platform`"
-          :rules="skuRules.platform"
-        >
-          <el-select
-            v-model="item.platform"
-            placeholder="请选择平台"
-            :disabled="isDisabled"
-            clearable
-            @change="clearSku(index)"
+        <div style="display: flex">
+          <el-form-item
+            :label="'平台' + (index + 1)"
+            :prop="`sku.${index}.platform`"
+            :rules="skuRules.platform"
           >
-            <el-option
-              v-for="content in $store.state.platform"
-              :key="content.platform"
-              :label="content.platform_desc"
-              :value="content.platform"
+            <el-select
+              v-model="item.platform"
+              placeholder="请选择平台"
+              :disabled="isDisabled"
+              clearable
+              @change="clearSku(index)"
+            >
+              <el-option
+                v-for="content in $store.state.platform"
+                :key="content.platform"
+                :label="content.platform_desc"
+                :value="content.platform"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            :label="'SKU命名' + (index + 1)"
+            :prop="`sku.${index}.name`"
+            :rules="skuRules.name"
+          >
+            <el-input
+              v-model="item.name"
+              placeholder="请输入SKU名"
+              :disabled="isDisabled"
+              clearable
             />
-          </el-select>
-        </el-form-item>
+          </el-form-item>
+        </div>
         <el-form-item
-          :label="'SKU命名' + (index + 1)"
-          :prop="`sku.${index}.name`"
-          :rules="skuRules.name"
+          v-if="
+            schedule.state !== 40 ||
+              JSON.stringify(form.sku[index].image) !== '{}'
+          "
+          :label="'产品图片' + (index + 1)"
+          :prop="`sku.${index}.image `"
+          :rules="skuRules.image"
         >
-          <el-input
-            v-model="item.name"
-            placeholder="请输入SKU名"
-            :disabled="isDisabled"
-            clearable
+          <base-upload
+            type="imageSku"
+            tag="产品图片"
+            url="sku-image"
+            :is-disabled="isDisabled"
+            :file="form.sku[index].image"
+            @get-file="(val) => getUploadFile(val, 'skuImg', index)"
           />
         </el-form-item>
         <base-delete
@@ -93,7 +112,7 @@
           url="project-plan"
           :file="file"
           :is-disabled="isDisabled"
-          @get-file="getUploadFile"
+          @get-file="(val) => getUploadFile(val, 'skuFile')"
         />
       </el-form-item>
       <el-form-item>
@@ -163,6 +182,12 @@ export default {
             message: '请输入SKU命名'
           }
         ],
+        image: [
+          {
+            required: true,
+            message: '请上传产品图片'
+          }
+        ],
         project_plan_file: [
           {
             required: true,
@@ -186,16 +211,18 @@ export default {
     },
     skuForm(val) {
       this.form = val;
-      this.form.sku = this.form.sku || [{}];
+      this.form.sku = this.form.sku || [{ image: {} }];
     }
   },
   methods: {
     async updateSkuname(val) {
       let body = {};
-      body['sku_info'] = {};
-      body['sku_info']['sku'] = val.sku;
+      body['sku'] = JSON.parse(JSON.stringify(val.sku));
       body['order_id'] = +this.$route.params.orderId;
-      body['sku_info']['project_plan_file'] = this.file.id;
+      body['project_plan_file'] = this.file.id;
+      body.sku.forEach((item) => {
+        item.image = item.image.id;
+      });
       try {
         await this.$store.dispatch('product/order/submitSkuname', body);
         this.getSku();
@@ -223,7 +250,9 @@ export default {
       }
     },
     addSku() {
-      this.form.sku.push({});
+      this.form.sku.push({
+        image: {}
+      });
       if (this.form.sku.length > 1) {
         this.deleteVisible = true;
       }
@@ -234,8 +263,12 @@ export default {
     getFormSku(val) {
       this.form.sku = val;
     },
-    getUploadFile(e) {
-      this.file = e;
+    getUploadFile(e, str, index) {
+      if (str === 'skuImg') {
+        this.form.sku[index].image = e;
+      } else {
+        this.file = e;
+      }
     }
   }
 };
