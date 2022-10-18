@@ -15,7 +15,8 @@ export default {
       optionLoading: true,
       demandListLength: 0,
       draftList: [],
-      draftListLength: 0
+      draftListLength: 0,
+      defaultMember: {}
     };
   },
   mutations: {
@@ -42,6 +43,9 @@ export default {
     },
     setDraftListLength(state, payload) {
       state.draftListLength = payload;
+    },
+    setDefaultMember(state, payload) {
+      state.defaultMember = payload;
     }
   },
   actions: {
@@ -115,6 +119,13 @@ export default {
       await axios.post('/demand/draft/delete', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
+        }
+      });
+    },
+    async getDefaultMember(context) {
+      await axios.get('/demand/review/default/member').then((res) => {
+        if (res.code === 200) {
+          context.commit('setDefaultMember', res.data);
         }
       });
     }
