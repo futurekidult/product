@@ -742,6 +742,11 @@ export default {
       } else {
         this.isNewCategoryIsNewProduct = false;
       }
+    },
+    'reviewForm.state' (val) {
+      if (val === 1) {
+        this.getDefaultMember(val);
+      }
     }
   },
   mounted() {
@@ -809,6 +814,22 @@ export default {
         this.$store.commit('setEntry', 'detail');
       } else {
         this.$message.error('无权限访问');
+      }
+    },
+    async getDefaultMember(val) {
+      try {
+        await this.$store.dispatch('demand/getDefaultMember');
+        let { defaultMember } = this.$store.state.demand;
+        for (let i in defaultMember) {
+          if (defaultMember[i] === 0) {
+            defaultMember[i] = '';
+          }
+        }
+        this.reviewForm = defaultMember;
+        this.reviewForm.state = val;
+        this.reviewForm.market = [{}];
+      } catch (err) {
+        return;
       }
     }
   }

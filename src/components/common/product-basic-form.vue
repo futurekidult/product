@@ -101,6 +101,70 @@
         </el-checkbox-group>
       </el-form-item>
     </div>
+    <div v-if="type === 'quotation'">
+      <el-divider />
+      <div style="margin: 18px 0">
+        调研文档
+      </div>
+      <el-form-item label="平台调研">
+        <base-upload
+          type="survey"
+          url="platform-survey-report"
+          :file="productForm.platform_survey_file"
+          :is-disabled="true"
+        />
+      </el-form-item>
+      <el-form-item label="市场调研">
+        <base-upload
+          type="survey"
+          url="market-survey-report"
+          :is-disabled="true"
+          :file="productForm.market_survey_file"
+        />
+      </el-form-item>
+      <el-form-item label="用户分析">
+        <base-upload
+          type="survey"
+          url="user-analysis-report"
+          :is-disabled="true"
+          :file="productForm.user_analysis_file"
+        />
+      </el-form-item>
+      <el-form-item label="产品方案">
+        <div
+          v-for="item in productForm.product_solustions_file"
+          :key="item.id"
+        >
+          <base-upload
+            type="survey"
+            url="product-solution"
+            :is-disabled="true"
+            :file="item"
+          />
+        </div>
+      </el-form-item>
+      <el-form-item label="风险调研">
+        <base-upload
+          type="survey"
+          url="risk-survey-report"
+          :is-disabled="true"
+          :file="productForm.risk_survey_file"
+        />
+      </el-form-item>
+      <el-form-item label="用户调研">
+        <div
+          v-for="item in productForm.user_survey_file"
+          :key="item.id"
+        >
+          <base-upload
+            type="survey"
+            url="user-survey-report"
+            :is-disabled="true"
+            :file="item"
+          />
+        </div>
+      </el-form-item>
+    </div>
   </el-form>
 </template>
 
