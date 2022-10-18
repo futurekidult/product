@@ -149,7 +149,6 @@ body {
 
 .attachment-list {
   background: #f6f6f6;
-  width: 100%;
   display: flex;
   justify-content: space-between;
   padding: 0 10px;
@@ -356,5 +355,9 @@ body {
   display: grid;
   grid-template-columns: 100% 4%;
   width: 100%;
+}
+
+.el-form-item__content {
+  display: block !important;
 }
 </style>
