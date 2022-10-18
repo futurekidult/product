@@ -12,7 +12,7 @@
       上传文件
     </el-button>
     <div
-      v-if="type === 'image' || type === 'imageSku'"
+      v-if="type === 'image' || type === 'imageSingle'"
       class="attachment"
     >
       请上传 jpg/png/jepg等图片格式, 单个文件不超过 5MB
@@ -25,7 +25,10 @@
     </div>
   </el-upload>
   <div
-    v-if="type === 'file' || type === 'imageSku'"
+    v-if="
+      JSON.stringify(attachment) !== '{}' &&
+        (type === 'file' || type === 'imageSingle')
+    "
     class="attachment-list"
   >
     <div>{{ attachment.name }}</div>
@@ -39,12 +42,12 @@
       </el-button>
       <span
         v-if="
-          !isDisabled && (attachment.type === 12860 || attachment.type === 4380)
+          !isDisabled && (attachment.type === 12860 || type === 'imageSingle')
         "
         class="table-btn"
       >|</span>
       <el-button
-        v-if="attachment.type === 12860 || attachment.type === 4380"
+        v-if="attachment.type === 12860 || type === 'imageSingle'"
         type="text"
         @click="previewOrDownload(attachment.id, attachment.name, 'preview')"
       >
@@ -192,7 +195,7 @@ export default {
   methods: {
     getEmitData() {
       let emitFile = null;
-      if (this.type === 'file' || this.type === 'imageSku') {
+      if (this.type === 'file' || this.type === 'imageSingle') {
         emitFile = this.attachment;
       } else if (this.type === 'image') {
         emitFile = this.imgList;
@@ -226,7 +229,7 @@ export default {
               type: this.$store.state.fileRes.type
             };
             if (this.$store.state.uploadState) {
-              if (this.type === 'file' || this.type === 'imageSku') {
+              if (this.type === 'file' || this.type === 'imageSingle') {
                 this.attachment = result;
               } else if (this.type === 'image') {
                 this.imgList.push(result);
@@ -244,7 +247,7 @@ export default {
       }
     },
     deleteFile(id) {
-      if (this.type === 'file' || this.type === 'imageSku') {
+      if (this.type === 'file' || this.type === 'imageSingle') {
         this.attachment = {};
       } else if (this.type === 'image') {
         this.imgList.splice(

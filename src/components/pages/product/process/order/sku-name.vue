@@ -73,11 +73,11 @@
               JSON.stringify(form.sku[index].image) !== '{}'
           "
           :label="'产品图片' + (index + 1)"
-          :prop="`sku.${index}.image `"
+          :prop="`sku.${index}.image`"
           :rules="skuRules.image"
         >
           <base-upload
-            type="imageSku"
+            type="imageSingle"
             tag="产品图片"
             url="sku-image"
             :is-disabled="isDisabled"
@@ -91,6 +91,7 @@
           content=""
           :show="deleteVisible && schedule.state !== 40"
           :list="form.sku"
+          style="margin: 0px 0px 10px 150px"
           @get-list="getFormSku"
         />
       </div>
@@ -217,12 +218,10 @@ export default {
   methods: {
     async updateSkuname(val) {
       let body = {};
-      body['sku'] = JSON.parse(JSON.stringify(val.sku));
+      body['sku_info'] = {};
+      body['sku_info']['sku'] = val;
       body['order_id'] = +this.$route.params.orderId;
-      body['project_plan_file'] = this.file.id;
-      body.sku.forEach((item) => {
-        item.image = item.image.id;
-      });
+      body['sku_info']['project_plan_file'] = this.file.id;
       try {
         await this.$store.dispatch('product/order/submitSkuname', body);
         this.getSku();
@@ -232,9 +231,13 @@ export default {
     },
     submitSkuForm() {
       this.form.project_plan_file = this.file.id;
+      let body = JSON.parse(JSON.stringify(this.form.sku));
+      body.forEach((item) => {
+        item.image = item.image.id;
+      });
       this.$refs.skuForm.validate((valid) => {
         if (valid) {
-          this.updateSkuname(this.form);
+          this.updateSkuname(body);
         }
       });
     },
@@ -262,6 +265,9 @@ export default {
     },
     getFormSku(val) {
       this.form.sku = val;
+      if (this.form.sku.length === 1) {
+        this.deleteVisible = false;
+      }
     },
     getUploadFile(e, str, index) {
       if (str === 'skuImg') {
