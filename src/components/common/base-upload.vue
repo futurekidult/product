@@ -277,7 +277,7 @@ export default {
           if (type === 'download') {
             previewOrDownloadFile(this.$store.state.viewLink, name, 'download');
           } else {
-            if (this.type !== 'image') {
+            if (this.type !== 'image' || this.type !== 'imageSku') {
               previewOrDownloadFile(
                 this.$store.state.viewLink,
                 name,

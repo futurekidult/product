@@ -237,7 +237,13 @@ export default {
       });
       this.$refs.skuForm.validate((valid) => {
         if (valid) {
-          this.updateSkuname(body);
+          this.form.sku.forEach((item, index) => {
+            if (JSON.stringify(item.image) === '{}') {
+              this.$message.warning(`第${index + 1}个图片未上传`);
+            } else {
+              this.updateSkuname(body);
+            }
+          });
         }
       });
     },
