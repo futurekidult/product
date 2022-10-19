@@ -198,7 +198,8 @@ export default {
       },
       file: this.attachment,
       form: this.skuForm,
-      deleteVisible: false
+      deleteVisible: false,
+      flag: false
     };
   },
   computed: {
@@ -237,13 +238,18 @@ export default {
       });
       this.$refs.skuForm.validate((valid) => {
         if (valid) {
+          this.flag = true;
           this.form.sku.forEach((item, index) => {
             if (JSON.stringify(item.image) === '{}') {
-              this.$message.warning(`第${index + 1}个图片未上传`);
-            } else {
-              this.updateSkuname(body);
+              this.flag = false;
+              setTimeout(() => {
+                this.$message.warning(`第${index + 1}个图片未上传`);
+              }, 50);
             }
           });
+        }
+        if (this.flag) {
+          this.updateSkuname(body);
         }
       });
     },
