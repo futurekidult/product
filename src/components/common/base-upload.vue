@@ -54,7 +54,7 @@
         预览
       </el-button>
       <span
-        v-if="attachment.type === 12860 && isDisabled"
+        v-if="isDisabled"
         class="table-btn"
       >|</span>
       <el-button
@@ -277,7 +277,7 @@ export default {
           if (type === 'download') {
             previewOrDownloadFile(this.$store.state.viewLink, name, 'download');
           } else {
-            if (this.type !== 'image' || this.type !== 'imageSku') {
+            if (this.type !== 'image' && this.type !== 'imageSingle') {
               previewOrDownloadFile(
                 this.$store.state.viewLink,
                 name,

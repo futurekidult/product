@@ -243,7 +243,7 @@ export default {
             if (JSON.stringify(item.image) === '{}') {
               this.flag = false;
               setTimeout(() => {
-                this.$message.warning(`第${index + 1}个图片未上传`);
+                this.$message.warning(`第${index + 1}个产品图片未上传`);
               }, 50);
             }
           });
