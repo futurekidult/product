@@ -7,39 +7,29 @@
       :http-request="handleFileSuccess"
       :disabled="isDisabled"
     >
-    <el-button
-      type="primary"
-      :disabled="isDisabled"
-    >
-      上传文件
-    </el-button>
-    <div
-      v-if="type === 'image' || type === 'imageSingle'"
-      class="attachment"
-    >
-      请上传 jpg/png/jepg等图片格式, 单个文件不超过 5MB
-    </div>
-    <div
-      v-else
-      class="attachment"
-    >
-      支持office文档格式,文件不能超过5MB
-    </div>
-  </el-upload>
-
-    <div>{{ attachment.name }}</div>
-    <div>
-
       <el-button
         type="primary"
         :disabled="isDisabled"
       >
         上传文件
-    </el-button>
+      </el-button>
+      <div
+        v-if="type === 'image' || type === 'imageSingle'"
+        class="attachment"
+      >
+        请上传 jpg/png/jepg等图片格式, 单个文件不超过 5MB
+      </div>
+      <div
+        v-else
+        class="attachment"
+      >
+        支持office文档格式,文件不能超过5MB
+      </div>
+    </el-upload>
     <div
       v-if="
-      (JSON.stringify(attachment) !== '{}' &&
-        (type === 'file' || type === 'imageSingle')) ||
+        (JSON.stringify(attachment) !== '{}' &&
+          (type === 'file' || type === 'imageSingle')) ||
           type === 'survey'
       "
       :class="type === 'survey' ? 'file-block' : 'attachment-list'"
@@ -53,30 +43,30 @@
         >
           删除
         </el-button>
-       <span
-        v-if="
-          !isDisabled && (attachment.type === 12860 || type === 'imageSingle')
-        "
-        class="table-btn"
-      >|</span>
-      <el-button
-        v-if="attachment.type === 12860 || type === 'imageSingle'"
-        type="text"
-        @click="previewOrDownload(attachment.id, attachment.name, 'preview')"
-      >
-        预览
-      </el-button>
-      <span
-        v-if="isDisabled && attachment.type === 12860"
-        class="table-btn"
-      >|</span>
-      <el-button
-        v-if="isDisabled && (attachment.type === 12860 || type === 'file')"
-        type="text"
-        @click="previewOrDownload(attachment.id, attachment.name, 'download')"
-      >
-        下载
-      </el-button>
+        <span
+          v-if="
+            !isDisabled && (attachment.type === 12860 || type === 'imageSingle')
+          "
+          class="table-btn"
+        >|</span>
+        <el-button
+          v-if="attachment.type === 12860 || type === 'imageSingle'"
+          type="text"
+          @click="previewOrDownload(attachment.id, attachment.name, 'preview')"
+        >
+          预览
+        </el-button>
+        <span
+          v-if="isDisabled && attachment.type === 12860"
+          class="table-btn"
+        >|</span>
+        <el-button
+          v-if="isDisabled && type !== 'imageSingle'"
+          type="text"
+          @click="previewOrDownload(attachment.id, attachment.name, 'download')"
+        >
+          下载
+        </el-button>
       </div>
     </div>
     <div
