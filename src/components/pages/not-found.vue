@@ -4,14 +4,28 @@
       <el-header>
         <div class="header-left">
           <div class="nav-img">
-            <img src="../../assets/images/logo.png">
+            <div>
+              /* IFTRUE_heyme */
+              <img src="../../assets/images/logo.png">
+              /* FITRUE_heyme */
+            </div>
+            <div>
+              /* IFTRUE_basepoint */
+              <img src="../../assets/images/basepoint_logo.png">
+              /* FITRUE_basepoint */
+            </div>
+            <div>
+              /* IFTRUE_heytool */
+              <img src="../../assets/images/heytool_logo.png">
+              /* FITRUE_heytool */
+            </div>
           </div>
           <el-divider
             direction="vertical"
             class="header-divider"
           />
           <div class="system">
-            新品开发系统1.0.0
+            新品开发系统 {{ this.$version }}
           </div>
         </div>
         <div class="header-right">
