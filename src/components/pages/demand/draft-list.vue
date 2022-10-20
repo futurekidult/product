@@ -72,6 +72,7 @@
       dialog-content="是否确认删除该草稿"
       type="draft delete"
       :get-list="getDraftList"
+      :close-on-click-modal="false"
       @hide-dialog="closeDeleteDraftItem"
     />
   </div>

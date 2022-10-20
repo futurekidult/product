@@ -2,6 +2,7 @@
   <el-dialog
     v-model="visible"
     width="30%"
+    :close-on-click-modal="false"
     @close="cancel"
   >
     <el-form

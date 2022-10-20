@@ -76,6 +76,7 @@
     <el-dialog
       v-model="setStageVisible"
       width="30%"
+      :close-on-click-modal="false"
       title="设置阶段完成时间"
     >
       <el-form
@@ -197,6 +198,7 @@
       v-model="editStageVisible"
       width="30%"
       title="编辑"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="stageForm"
@@ -238,6 +240,7 @@
       v-model="actualTimeVisible"
       title="填写"
       width="30%"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="timeForm"

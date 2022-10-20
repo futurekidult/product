@@ -159,6 +159,7 @@
         v-model="mouldFormVisible"
         title="创建模具"
         width="30%"
+        :close-on-click-modal="false"
       >
         <el-form
           ref="mouldForm"

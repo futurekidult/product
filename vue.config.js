@@ -1,13 +1,12 @@
-const AutoImport = require('unplugin-auto-import/webpack')
-const Components = require('unplugin-vue-components/webpack')
-const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
+const AutoImport = require('unplugin-auto-import/webpack');
+const Components = require('unplugin-vue-components/webpack');
+const { ElementPlusResolver } = require('unplugin-vue-components/resolvers');
 
 module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target:
-          'http://npd.test.heymenology.cn/api',
+        target: 'http://npd.test.heymenology.cn/api',
         ws: true,
         changeOrigin: true,
         pathRewrite: {
@@ -21,6 +20,8 @@ module.exports = {
   },
   productionSourceMap: false,
   chainWebpack: (config) => {
+    conditionalCompile(config, 'vue');
+    conditionalCompile(config, 'css');
     config.plugin('define').tap((args) => {
       args[0]['process.env'].VERSION = (function () {
         const now = new Date();
@@ -42,14 +43,18 @@ module.exports = {
   configureWebpack: {
     plugins: [
       AutoImport({
-        resolvers: [ElementPlusResolver({
-          importStyle: false
-          })]
+        resolvers: [
+          ElementPlusResolver({
+            importStyle: false
+          })
+        ]
       }),
       Components({
-        resolvers: [ElementPlusResolver({
-          importStyle: false
-        })]
+        resolvers: [
+          ElementPlusResolver({
+            importStyle: false
+          })
+        ]
       })
     ]
   }
@@ -57,4 +62,19 @@ module.exports = {
 
 const format = (num) => {
   return num < 10 ? `0${num}` : `${num}`;
+};
+
+const conditionalCompile = (config, str) => {
+  let rule = config.module.rule(str);
+  rule
+    .use('js-conditional-compile-loader')
+    .loader('js-conditional-compile-loader')
+    .tap(() => {
+      return {
+        heyme: process.env.npm_config_heyme,
+        basepoint: process.env.npm_config_basepoint,
+        heytool: process.env.npm_config_heytool
+      };
+    })
+    .end();
 };

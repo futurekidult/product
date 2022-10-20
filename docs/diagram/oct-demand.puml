@@ -1,0 +1,185 @@
+@startuml
+start
+partition **需求评审中项目成员默认显示** {
+  note
+    涉及范围
+    ----
+    //需求评审(对应的组件: demand-review)//
+  end note
+
+  :watch监测评审结果值,若为通过,去请求项目成员默认接口;
+  :获取到data对象,将该对象赋给reviewForm;
+  note right
+    伪代码
+    ----
+     'reviewForm.state'(val) {
+      if (val === 1) {
+        for(let i in res.data) {
+          if(res.data[i] === 0) {
+            res.data[i] = '';
+          }  
+        }
+        this.reviewForm = res.data;
+        this.reviewForm.state = val;
+        this.reviewForm.market = [{}];
+      }
+    }
+  end note
+  :填写其他内容,执行提交操作;
+}
+end 
+@enduml
+
+@startuml
+start
+partition **报价列表中产品信息中新增各调研附件内容的查看** {
+  note 
+    涉及范围
+    ----
+    //报价列表中查看产品信息(对应的组件: quotation-list、product-basic-form、base-upload)//
+  end note
+  :新增调研内容表单项(包含了base-upload组件);
+  :请求"/api/pricing/product/detail/get?id"接口,
+  获取到各调研附件;
+  :将各调研附件内容填入对应的表单项内;
+  note right
+    伪代码
+    ----
+    //针对单附件
+      <el-form-item label="xx调研">
+        <base-upload
+          type="survey"
+          url="risk-survey-report"
+          :is-disabled="true"
+          :file="{ id: 1000, type: 1, name: 'ces.xlsx' }"
+        />
+      </el-form-item>
+      //针对附件数组
+      <el-form-item label="xx调研">
+        <div
+          v-for="item in [
+            { id: 1000, type: 1, name: 'ces.xlsx' },
+            { id: 1001, type: 12860, name: 'test.xlsx' }
+          ]"
+          :key="item.id"
+        >
+          <base-upload
+            type="survey"
+            url="user-survey-report"
+            :is-disabled="true"
+            :file="item"
+          />
+        </div>
+      </el-form-item>
+  end note
+}
+end
+@enduml
+
+@startuml
+start
+partition **公司logo支持多公司可配** {
+   note
+    涉及范围
+    ----
+    //vue.config.js、package.json//
+  end note
+  :安装并使用插件(js-conditional-compile-loader,cross-env );
+  :使用/*IFTRUE_xxx开头,以FITRUE_xxx*/结尾的形式配置基点和海图logo;
+  note right
+    伪代码
+    ----
+    /*IFTRUE_heyme*/
+     <img src="heyme_logo.png">
+    /*FITRUE_heyme*/
+
+    /*IFTRUE_basepoint*/
+     <img src="basepoint_logo.png">
+    /*FITRUE_basepoint*/
+
+    /*IFTRUE_heytool*/
+     <img src="heytool_logo.png">
+    /*FITRUE_heytool*/
+  end note
+  :使用带参build;
+}
+end
+@enduml
+
+@startuml
+start
+partition **报价表单中新增计算规则的一个钉钉在线文档链接** {
+  note 
+    涉及范围
+    ----
+    // 新增报价(对应的组件: price-form, product-plan) //
+  end note
+  :在表单内新增提示(提示：以下费用填写可通过辅助工具进行计算。点击前往 >>);
+  :根据vue条件编译,赋予不同的钉钉在线文档链接;
+}
+end
+@enduml
+
+@startuml
+start
+partition **SKU命名新增图片上传** {
+  note
+    涉及范围
+    ----
+    //下单详情下的sku命名版块(对应的组件: sku-name, base-upload)//
+  end note
+  :根据原型调整页面布局,新增sku图片表单项(包含了base-upload组件);
+  :请求"api/order/sku/get?order_id"接口,获取到sku数组列表以及sku命名进度表的状态;
+  if(sku进度表状态为已完成) then (yes)
+    if(sku数组为空数组)  then (yes)
+      :sku图片上传表单项隐藏;
+      :该表单内的表单项和按钮均置灰,不可操作;
+    else (no)
+      :将获取到的sku数组信息填入对应表单项;
+    endif
+    stop
+  else (no) 
+    :手动将sku设置为[{ image: {} }]的形式;
+    :选择平台、填写sku名称、上传SKU图片(仅一张)以及上传实际项目计划书;
+    note right 
+      SKU图片上传相关伪代码
+      ----
+       <el-form-item
+          :label="'SKU图片' + (index + 1)"
+          :prop="`sku.${index}.image`"
+          :rules="skuRules.image"
+        >
+          <base-upload
+            tag="SKU图片"
+            type="imageSingle"
+            :file="form.sku[index].image"
+            url="sku-image"
+            :is-disabled="isDisabled"
+            @get-file="(val) => getUploadFile(val, 'image', index)"
+          />
+        </el-form-item>
+
+        //js
+        getUploadFile(e, type, index) {
+          if (type === 'file') {
+            this.file = e;
+          } else {
+            this.form.sku[index].image = e;
+          }
+        }
+    end note
+    if(点击了新增SKU按钮) then (yes)
+      :将{ image: {} }对象push进sku数组;
+   endif
+    if(点击了删除) then (yes)
+      :将sku数组对应index下的该对象删除
+      (base-delete组件已封装好相关功能,调用该组件即可);
+   endif   
+   :完成填写后,点击提交按钮,校验必填项;
+   :校验通过后,调用"/api/order/sku/name"接口;
+   :请求成功后刷新sku命名版块(调用"api/order/sku/get?order_id"接口);
+  endif
+}
+end
+@enduml
+

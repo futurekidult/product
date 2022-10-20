@@ -156,6 +156,7 @@
     <user-form
       v-if="userVisible"
       :dialog-visible="userVisible"
+      :close-on-click-modal="false"
       @hide-dialog="closeUserForm"
     />
 
@@ -165,6 +166,7 @@
       :user-id="userId"
       :dialog-visible="resultFormVisible"
       :get-list="getUserList"
+      :close-on-click-modal="false"
       @hide-dialog="closeResultForm"
     />
 
@@ -172,6 +174,7 @@
       v-if="viewUserVisible"
       :id="viewUserid"
       :dialog-visible="viewUserVisible"
+      :close-on-click-modal="false"
       @hide-dialog="closeViewUserForm"
     />
   </div>

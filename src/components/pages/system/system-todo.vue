@@ -95,6 +95,7 @@
       v-model="operatorVisible"
       width="30%"
       title="待办转移"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="operatorForm"

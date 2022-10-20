@@ -3,6 +3,7 @@
     v-model="visible"
     width="50%"
     :title="title"
+    :close-on-click-modal="false"
     @close="cancel"
   >
     <el-form
@@ -142,7 +143,7 @@
         </el-form-item>
       </div>
       <el-form-item
-        label="头程费用"
+        label="头程附加费"
         style="margin-bottom: 18px"
       >
         <div style="display: flex">

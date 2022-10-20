@@ -89,6 +89,7 @@
       title="新增测试问题"
       :type="type"
       :get-list="getTestQuestion"
+      :close-on-click-modal="false"
       @hide-dialog="closeAddQuestions"
     />
 
@@ -100,6 +101,7 @@
       title="编辑"
       :type="type"
       :get-list="getTestQuestion"
+      :close-on-click-modal="false"
       @hide-dialog="closeEditQuestions"
     />
   </section>

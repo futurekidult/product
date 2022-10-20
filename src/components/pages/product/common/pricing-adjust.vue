@@ -3,6 +3,7 @@
     v-model="visible"
     title="调价"
     width="40%"
+    :close-on-click-modal="false"
     @close="cancel"
   >
     <div class="adjust-time">

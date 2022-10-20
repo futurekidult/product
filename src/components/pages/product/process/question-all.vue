@@ -35,7 +35,7 @@
         fixed
         label="关联定价ID"
         prop="pricing_id"
-       width="110"
+        width="110"
       />
       <el-table-column
         label="问题名称"
@@ -137,6 +137,7 @@
       title="忽略原因"
       type="ignore"
       :submit-form="submitQuestionResult"
+      :close-on-click-modal="false"
       @hide-dialog="closeIgnoreForm"
     />
     <reason-form
@@ -145,6 +146,7 @@
       :dialog-visible="reasonFormVisible"
       title="原因"
       type="reason"
+      :close-on-click-modal="false"
       @hide-dialog="closeReasonForm"
     />
     <reason-form
@@ -153,6 +155,7 @@
       :dialog-visible="consequenceFormVisible"
       title="后果描述"
       type="consequence"
+      :close-on-click-modal="false"
       @hide-dialog="closeConsequenceForm"
     />
 
@@ -160,6 +163,7 @@
       v-model="resolveDialog"
       title="提示"
       width="25%"
+      :close-on-click-modal="false"
     >
       <div class="result-content">
         是否确认已解决问题

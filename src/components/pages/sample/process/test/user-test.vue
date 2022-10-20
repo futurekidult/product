@@ -219,6 +219,7 @@
       v-model="failFormVisible"
       title="不通过"
       width="30%"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="reasonForm"
@@ -261,6 +262,7 @@
       :dialog-visible="applyFormVisible"
       title="申请用户测试"
       type="apply"
+      :close-on-click-modal="false"
       @hide-dialog="closeApplyForm"
     />
 
@@ -270,6 +272,7 @@
       :dialog-visible="reviewFormVisible"
       title="用户测试需求评审"
       type="review"
+      :close-on-click-modal="false"
       @hide-dialog="closeReviewForm"
     />
 
@@ -279,6 +282,7 @@
       :dialog-visible="viewFormVisible"
       title="用户测试需求"
       type="view"
+      :close-on-click-modal="false"
       @hide-dialog="closeViewForm"
     />
 
@@ -286,6 +290,7 @@
       v-model="specialistFormVisible"
       title="编辑"
       width="25%"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="editForm"
@@ -329,6 +334,7 @@
       :dialog-visible="templateFormVisible"
       title="上传"
       type="create"
+      :close-on-click-modal="false"
       @hide-dialog="closeUploadForm"
     />
 
@@ -338,6 +344,7 @@
       :dialog-visible="viewTemplateFromVisible"
       title="查看"
       type="view"
+      :close-on-click-modal="false"
       @hide-dialog="closeViewTemplateForm"
     />
   </div>

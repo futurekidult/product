@@ -3,6 +3,7 @@
     v-model="visible"
     title="查看内容"
     width="30%"
+    :close-on-click-modal="false"
     @close="cancel"
   >
     <el-table

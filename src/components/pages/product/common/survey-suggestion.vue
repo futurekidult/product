@@ -82,6 +82,7 @@
       :survey-type="type"
       :ids="ids"
       :get-list="getSurveySuggestion"
+      :close-on-click-modal="false"
       @hide-dialog="closeDeleteDialog"
     />
 
@@ -95,6 +96,7 @@
       label="意见内容"
       prop="suggestion"
       :get-list="getSurveySuggestion"
+      :close-on-click-modal="false"
       @hide-dialog="closeCreateDialog"
     />
 
@@ -110,6 +112,7 @@
       prop="suggestion"
       :get-list="getSurveySuggestion"
       :value="currentSuggestionValue"
+      :close-on-click-modal="false"
       @hide-dialog="closeUpdateDialog"
     />
   </section>

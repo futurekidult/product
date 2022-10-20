@@ -52,6 +52,7 @@
         type="create"
         :dialog-visible="createVisible"
         :get-list="getRoleList"
+        :close-on-click-modal="false"
         @hide-dialog="closeCreateDialog"
       />
 
@@ -62,6 +63,7 @@
         type="system edit"
         :dialog-visible="editVisible"
         :get-list="getRoleList"
+        :close-on-click-modal="false"
         @hide-dialog="closeEditDialog"
       />
 
@@ -69,6 +71,7 @@
         v-model="confirmDialog"
         title="提示"
         width="20%"
+        :close-on-click-modal="false"
       >
         <div class="prompt-literal">
           确定要删除该角色吗

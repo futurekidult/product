@@ -40,6 +40,7 @@
         type="product edit"
         :dialog-visible="editVisible"
         :get-list="getRoleList"
+        :close-on-click-modal="false"
         @hide-dialog="closeEditDialog"
       />
     </div>
