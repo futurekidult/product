@@ -1,10 +1,12 @@
 <template>
-  <el-upload
-    action
-    :show-file-list="false"
-    :http-request="handleFileSuccess"
-    :disabled="isDisabled"
-  >
+  <section>
+    <el-upload
+      v-if="type !== 'survey'"
+      action
+      :show-file-list="false"
+      :http-request="handleFileSuccess"
+      :disabled="isDisabled"
+    >
     <el-button
       type="primary"
       :disabled="isDisabled"
@@ -24,23 +26,34 @@
       支持office文档格式,文件不能超过5MB
     </div>
   </el-upload>
-  <div
-    v-if="
-      JSON.stringify(attachment) !== '{}' &&
-        (type === 'file' || type === 'imageSingle')
-    "
-    class="attachment-list"
-  >
+
     <div>{{ attachment.name }}</div>
     <div>
+
       <el-button
-        v-if="!isDisabled"
-        type="text"
-        @click="deleteFile(attachment.id)"
+        type="primary"
+        :disabled="isDisabled"
       >
-        删除
-      </el-button>
-      <span
+        上传文件
+    </el-button>
+    <div
+      v-if="
+      (JSON.stringify(attachment) !== '{}' &&
+        (type === 'file' || type === 'imageSingle')) ||
+          type === 'survey'
+      "
+      :class="type === 'survey' ? 'file-block' : 'attachment-list'"
+    >
+      <div>{{ attachment.name }}</div>
+      <div>
+        <el-button
+          v-if="!isDisabled"
+          type="text"
+          @click="deleteFile(attachment.id)"
+        >
+          删除
+        </el-button>
+       <span
         v-if="
           !isDisabled && (attachment.type === 12860 || type === 'imageSingle')
         "
@@ -64,93 +77,94 @@
       >
         下载
       </el-button>
+      </div>
     </div>
-  </div>
-  <div
-    v-if="type === 'image'"
-    class="image-list"
-  >
     <div
-      v-for="(item, index) in imgList"
-      :key="index"
-      class="image-item"
+      v-if="type === 'image'"
+      class="image-list"
     >
-      <div>
-        {{ item.name }}
-      </div>
-      <div>
-        <el-button
-          v-if="!isDisabled"
-          type="text"
-          @click="deleteFile(item.id)"
-        >
-          删除
-        </el-button>
-        <span
-          v-if="!isDisabled"
-          class="table-btn"
-        >|</span>
-        <el-button
-          type="text"
-          @click="previewOrDownload(item.id, item.name, 'preview')"
-        >
-          预览
-        </el-button>
+      <div
+        v-for="(item, index) in imgList"
+        :key="index"
+        class="image-item"
+      >
+        <div>
+          {{ item.name }}
+        </div>
+        <div>
+          <el-button
+            v-if="!isDisabled"
+            type="text"
+            @click="deleteFile(item.id)"
+          >
+            删除
+          </el-button>
+          <span
+            v-if="!isDisabled"
+            class="table-btn"
+          >|</span>
+          <el-button
+            type="text"
+            @click="previewOrDownload(item.id, item.name, 'preview')"
+          >
+            预览
+          </el-button>
+        </div>
       </div>
     </div>
-  </div>
-  <div
-    v-if="type === 'file-list'"
-    class="file-list"
-  >
     <div
-      v-for="item in fileArr"
-      :key="item.id"
-      class="file-item"
+      v-if="type === 'file-list'"
+      class="file-list"
     >
-      <div>
-        {{ item.name }}
-      </div>
-      <div>
-        <el-button
-          v-if="!isDisabled"
-          type="text"
-          @click="deleteFile(item.id)"
-        >
-          删除
-        </el-button>
-        <span
-          v-if="!isDisabled && item.type === 12860"
-          class="table-btn"
-        >|</span>
-        <el-button
-          v-if="item.type === 12860"
-          type="text"
-          @click="previewOrDownload(item.id, item.name, 'preview')"
-        >
-          预览
-        </el-button>
-        <span
-          v-if="item.type === 12860 && isDisabled"
-          class="table-btn"
-        >|</span>
-        <el-button
-          v-if="isDisabled"
-          type="text"
-          @click="previewOrDownload(item.id, item.name, 'download')"
-        >
-          下载
-        </el-button>
+      <div
+        v-for="item in fileArr"
+        :key="item.id"
+        class="file-item"
+      >
+        <div>
+          {{ item.name }}
+        </div>
+        <div>
+          <el-button
+            v-if="!isDisabled"
+            type="text"
+            @click="deleteFile(item.id)"
+          >
+            删除
+          </el-button>
+          <span
+            v-if="!isDisabled && item.type === 12860"
+            class="table-btn"
+          >|</span>
+          <el-button
+            v-if="item.type === 12860"
+            type="text"
+            @click="previewOrDownload(item.id, item.name, 'preview')"
+          >
+            预览
+          </el-button>
+          <span
+            v-if="item.type === 12860 && isDisabled"
+            class="table-btn"
+          >|</span>
+          <el-button
+            v-if="isDisabled"
+            type="text"
+            @click="previewOrDownload(item.id, item.name, 'download')"
+          >
+            下载
+          </el-button>
+        </div>
       </div>
     </div>
-  </div>
-  <view-dialog
-    v-if="viewImgDialog"
-    :link="imgLink"
-    :visible="viewImgDialog"
-    :close-on-click-modal="false"
-    @hide-dialog="closeViewImg"
-  />
+    <view-dialog
+      v-if="viewImgDialog"
+      :link="imgLink"
+      :visible="viewImgDialog"
+      :close-on-click-modal="false"
+      @hide-dialog="closeViewImg"
+    />
+  </section>
 </template>
 
 <script>
@@ -304,15 +318,20 @@ export default {
 .image-list,
 .file-list {
   background: #f6f6f6;
-  width: 100%;
   padding: 0 10px;
   margin-top: 10px;
 }
 
 .image-item,
 .file-item {
-  width: 100%;
   display: flex;
   justify-content: space-between;
+}
+
+.file-block {
+  background: #f6f6f6;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
 }
 </style>
