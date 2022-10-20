@@ -88,7 +88,7 @@
         <base-delete
           :id="index"
           mode="order-delete_btn"
-          content=""
+          content="移除"
           :show="deleteVisible && schedule.state !== 40"
           :list="form.sku"
           style="margin: 0px 0px 10px 150px"
