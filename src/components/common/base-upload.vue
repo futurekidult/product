@@ -7,28 +7,39 @@
       :http-request="handleFileSuccess"
       :disabled="isDisabled"
     >
+    <el-button
+      type="primary"
+      :disabled="isDisabled"
+    >
+      上传文件
+    </el-button>
+    <div
+      v-if="type === 'image' || type === 'imageSingle'"
+      class="attachment"
+    >
+      请上传 jpg/png/jepg等图片格式, 单个文件不超过 5MB
+    </div>
+    <div
+      v-else
+      class="attachment"
+    >
+      支持office文档格式,文件不能超过5MB
+    </div>
+  </el-upload>
+
+    <div>{{ attachment.name }}</div>
+    <div>
+
       <el-button
         type="primary"
         :disabled="isDisabled"
       >
         上传文件
-      </el-button>
-      <div
-        v-if="type === 'image'"
-        class="attachment"
-      >
-        请上传 jpg/png/jepg等图片格式, 单个文件不超过 5MB
-      </div>
-      <div
-        v-else
-        class="attachment"
-      >
-        支持office文档格式,文件不能超过5MB
-      </div>
-    </el-upload>
+    </el-button>
     <div
       v-if="
-        (JSON.stringify(attachment) !== '{}' && type === 'file') ||
+      (JSON.stringify(attachment) !== '{}' &&
+        (type === 'file' || type === 'imageSingle')) ||
           type === 'survey'
       "
       :class="type === 'survey' ? 'file-block' : 'attachment-list'"
@@ -42,28 +53,30 @@
         >
           删除
         </el-button>
-        <span
-          v-if="!isDisabled && attachment.type === 12860"
-          class="table-btn"
-        >|</span>
-        <el-button
-          v-if="attachment.type === 12860"
-          type="text"
-          @click="previewOrDownload(attachment.id, attachment.name, 'preview')"
-        >
-          预览
-        </el-button>
-        <span
-          v-if="attachment.type === 12860 && isDisabled"
-          class="table-btn"
-        >|</span>
-        <el-button
-          v-if="isDisabled"
-          type="text"
-          @click="previewOrDownload(attachment.id, attachment.name, 'download')"
-        >
-          下载
-        </el-button>
+       <span
+        v-if="
+          !isDisabled && (attachment.type === 12860 || type === 'imageSingle')
+        "
+        class="table-btn"
+      >|</span>
+      <el-button
+        v-if="attachment.type === 12860 || type === 'imageSingle'"
+        type="text"
+        @click="previewOrDownload(attachment.id, attachment.name, 'preview')"
+      >
+        预览
+      </el-button>
+      <span
+        v-if="isDisabled && attachment.type === 12860"
+        class="table-btn"
+      >|</span>
+      <el-button
+        v-if="isDisabled && (attachment.type === 12860 || type === 'file')"
+        type="text"
+        @click="previewOrDownload(attachment.id, attachment.name, 'download')"
+      >
+        下载
+      </el-button>
       </div>
     </div>
     <div
@@ -196,7 +209,7 @@ export default {
   methods: {
     getEmitData() {
       let emitFile = null;
-      if (this.type === 'file') {
+      if (this.type === 'file' || this.type === 'imageSingle') {
         emitFile = this.attachment;
       } else if (this.type === 'image') {
         emitFile = this.imgList;
@@ -230,7 +243,7 @@ export default {
               type: this.$store.state.fileRes.type
             };
             if (this.$store.state.uploadState) {
-              if (this.type === 'file') {
+              if (this.type === 'file' || this.type === 'imageSingle') {
                 this.attachment = result;
               } else if (this.type === 'image') {
                 this.imgList.push(result);
@@ -248,7 +261,7 @@ export default {
       }
     },
     deleteFile(id) {
-      if (this.type === 'file') {
+      if (this.type === 'file' || this.type === 'imageSingle') {
         this.attachment = {};
       } else if (this.type === 'image') {
         this.imgList.splice(
@@ -278,7 +291,7 @@ export default {
           if (type === 'download') {
             previewOrDownloadFile(this.$store.state.viewLink, name, 'download');
           } else {
-            if (this.type !== 'image') {
+            if (this.type !== 'image' && this.type !== 'imageSingle') {
               previewOrDownloadFile(
                 this.$store.state.viewLink,
                 name,
