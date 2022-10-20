@@ -54,7 +54,9 @@
         预览
       </el-button>
       <span
-        v-if="isDisabled"
+        v-if="
+          (attachment.type === 12860 || type === 'imageSingle') && isDisabled
+        "
         class="table-btn"
       >|</span>
       <el-button
