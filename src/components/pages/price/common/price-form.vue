@@ -3,6 +3,7 @@
     v-model="visible"
     width="50%"
     :title="title"
+    :close-on-click-modal="false"
     @close="cancel"
   >
     <el-form
@@ -228,8 +229,36 @@
           />
         </el-form-item>
       </div>
+      <div class="form-hint">
+        <span>提示：以下费用填写可通过辅助工具进行计算。</span>
+        /* IFTRUE_heyme */
+        <a
+          :href="$global.heymeLink"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="condition-link"
+        >点击前往 >>
+        </a>
+        /* FITRUE_heyme */ /* IFTRUE_basepoint */
+        <a
+          :href="$global.haomiLink"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="condition-link"
+        >点击前往 >>
+        </a>
+        /* FITRUE_basepoint */ /* IFTRUE_heytool */
+        <a
+          :href="$global.haomiLink"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="condition-link"
+        >点击前往 >>
+        </a>
+        /* FITRUE_heytool */
+      </div>
       <el-form-item
-        label="头程费用"
+        label="头程附加费"
         style="margin-bottom: 18px"
         required
       >

@@ -3,6 +3,7 @@
     v-model="visible"
     title="查看测试用户"
     width="30%"
+    :close-on-click-modal="false"
     @close="cancel"
   >
     <el-form

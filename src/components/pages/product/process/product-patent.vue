@@ -154,6 +154,7 @@
       type="apply"
       :form="applyForm"
       :product-form="patent"
+      :close-on-click-modal="false"
       @hide-dialog="closePatentApply"
     />
 
@@ -165,6 +166,7 @@
       type="review"
       :form="reviewForm"
       :product-form="patent"
+      :close-on-click-modal="false"
       @hide-dialog="closePatentReview"
     />
 
@@ -175,6 +177,7 @@
       type="view"
       :form="viewForm"
       :product-form="patent"
+      :close-on-click-modal="false"
       @hide-dialog="closeViewReview"
     />
   </div>

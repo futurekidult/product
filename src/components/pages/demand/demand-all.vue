@@ -129,7 +129,7 @@
         />
         <el-table-column
           prop="create_time"
-          label="提交时间"
+          label="创建时间"
           width="200"
         />
         <el-table-column
@@ -201,6 +201,7 @@
       v-model="reasonFormVisible"
       width="400px"
       title="查看内容"
+      :close-on-click-modal="false"
     >
       <el-form :model="reasonForm">
         <el-form-item label="不通过原因">

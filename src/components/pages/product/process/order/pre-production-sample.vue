@@ -71,6 +71,7 @@
       v-model="followupSheetDialog"
       title="大货样跟进单"
       width="30%"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="followupForm"
@@ -127,6 +128,7 @@
       v-model="courierNumberDialog"
       title="快递单号"
       width="30%"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="courierNumberForm"
@@ -178,6 +180,7 @@
       v-model="confirmVisible"
       width="25%"
       title="提示"
+      :close-on-click-modal="false"
     >
       <div class="result-content">
         是否确认大货样

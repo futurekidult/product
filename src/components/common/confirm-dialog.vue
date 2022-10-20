@@ -3,6 +3,7 @@
     v-model="visible"
     title="提示"
     width="25%"
+    :close-on-click-modal="false"
     @close="closeConfirmDialog"
   >
     <div class="result-content">

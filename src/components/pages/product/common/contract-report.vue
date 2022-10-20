@@ -92,6 +92,7 @@
       v-model="uploadVisible"
       title="上传"
       width="35%"
+      :close-on-click-modal="false"
     >
       <el-form
         ref="uploadForm"
