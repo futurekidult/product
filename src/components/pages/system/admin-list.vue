@@ -287,6 +287,7 @@ export default {
       try {
         await this.$store.dispatch('system/blockAdmin', { id });
         this.getAdminList();
+        this.$store.dispatch('getOrganizationList');
       } catch (err) {
         return;
       }
@@ -295,6 +296,7 @@ export default {
       try {
         await this.$store.dispatch('system/unblockAdmin', { id });
         this.getAdminList();
+        this.$store.dispatch('getOrganizationList');
       } catch (err) {
         return;
       }
