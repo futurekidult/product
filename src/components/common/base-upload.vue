@@ -54,13 +54,11 @@
         预览
       </el-button>
       <span
-        v-if="
-          (attachment.type === 12860 || type === 'imageSingle') && isDisabled
-        "
+        v-if="isDisabled && attachment.type === 12860"
         class="table-btn"
       >|</span>
       <el-button
-        v-if="isDisabled"
+        v-if="isDisabled && (attachment.type === 12860 || type === 'file')"
         type="text"
         @click="previewOrDownload(attachment.id, attachment.name, 'download')"
       >
