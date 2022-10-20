@@ -38,7 +38,7 @@
           class="header-divider"
         />
         <div class="system">
-          新品开发系统 0.0.5
+          新品开发系统 {{ $version }}
         </div>
       </div>
       <div class="header-right">
