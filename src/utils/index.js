@@ -204,3 +204,7 @@ export const changeApprovalColor = (val) => {
     return 'result-pass';
   }
 };
+
+export const setDisabledDate = (time) => {
+  return time.getTime() < Date.now() - 1000 * 60 * 60 * 24;
+};

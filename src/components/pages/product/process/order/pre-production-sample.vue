@@ -88,7 +88,8 @@
             type="datetime"
             placeholder="请选择日期"
             clearable
-            :default-time="defaultTime"
+            :default-time="$global.defaultTime"
+            :disabled-date="setDisabledDate"
           />
         </el-form-item>
         <el-form-item
@@ -155,7 +156,7 @@
             type="datetime"
             placeholder="选择日期时间"
             clearable
-            :default-time="defaultTime"
+            :default-time="$global.defaultTime"
           />
         </el-form-item>
         <el-divider />
@@ -205,7 +206,7 @@
 </template>
 
 <script>
-import { timestamp } from '../../../../../utils';
+import { timestamp, setDisabledDate } from '../../../../../utils';
 export default {
   inject: ['changeColor', 'getPreProductSample'],
   props: ['preProductSample'],
@@ -244,11 +245,11 @@ export default {
           }
         ]
       },
-      id: 0,
-      defaultTime: new Date(2000, 1, 1, 23, 59, 59)
+      id: 0
     };
   },
   methods: {
+    setDisabledDate,
     showFollowupSheet() {
       this.followupSheetDialog = true;
     },

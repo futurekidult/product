@@ -33,7 +33,8 @@
           placeholder="请选择日期"
           :disabled="isDisabled"
           clearable
-          :default-time="defaultTime"
+          :default-time="$global.defaultTime"
+          :disabled-date="setDisabledDate"
         />
       </el-form-item>
       <el-form-item
@@ -149,7 +150,8 @@
 import {
   formatterTime,
   getOrganizationList,
-  timestamp
+  timestamp,
+  setDisabledDate
 } from '../../../../utils';
 
 export default {
@@ -214,8 +216,7 @@ export default {
         children: 'children',
         label: 'name',
         disabled: 'disabled'
-      },
-      defaultTime: new Date(2000, 1, 1, 23, 59, 59)
+      }
     };
   },
   computed: {
@@ -254,6 +255,7 @@ export default {
     }
   },
   methods: {
+    setDisabledDate,
     async createTestApply(val) {
       let body = {
         sample_id: +this.$route.params.id,

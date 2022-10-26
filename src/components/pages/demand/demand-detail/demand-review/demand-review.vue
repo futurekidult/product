@@ -183,7 +183,8 @@
                 placeholder="请选择日期"
                 style="width: 100%"
                 clearable
-                :default-time="defaultTime"
+                :default-time="$global.defaultTime"
+                :disabled-date="setDisabledDate"
               />
             </el-form-item>
             <el-form-item
@@ -196,7 +197,8 @@
                 placeholder="请选择日期"
                 style="width: 100%"
                 clearable
-                :default-time="defaultTime"
+                :default-time="$global.defaultTime"
+                :disabled-date="setDisabledDate"
               />
             </el-form-item>
             <el-form-item
@@ -210,7 +212,8 @@
                 placeholder="请选择日期"
                 style="width: 100%"
                 clearable
-                :default-time="defaultTime"
+                :default-time="$global.defaultTime"
+                :disabled-date="setDisabledDate"
               />
             </el-form-item>
             <el-form-item
@@ -224,7 +227,8 @@
                 placeholder="请选择日期"
                 style="width: 100%"
                 clearable
-                :default-time="defaultTime"
+                :default-time="$global.defaultTime"
+                :disabled-date="setDisabledDate"
               />
             </el-form-item>
             <el-form-item
@@ -237,7 +241,8 @@
                 placeholder="请选择日期"
                 style="width: 100%"
                 clearable
-                :default-time="defaultTime"
+                :default-time="$global.defaultTime"
+                :disabled-date="setDisabledDate"
               />
             </el-form-item>
             <el-form-item
@@ -251,7 +256,8 @@
                 placeholder="请选择日期"
                 style="width: 100%"
                 clearable
-                :default-time="defaultTime"
+                :default-time="$global.defaultTime"
+                :disabled-date="setDisabledDate"
               />
             </el-form-item>
           </div>
@@ -494,7 +500,8 @@
 import {
   timestamp,
   getOrganizationList,
-  changeDemandColor
+  changeDemandColor,
+  setDisabledDate
 } from '../../../../../utils';
 
 export default {
@@ -696,7 +703,6 @@ export default {
         label: 'name',
         disabled: 'disabled'
       },
-      defaultTime: new Date(2000, 1, 1, 23, 59, 59),
       show: true
     };
   },
@@ -743,7 +749,7 @@ export default {
         this.isNewCategoryIsNewProduct = false;
       }
     },
-    'reviewForm.state' (val) {
+    'reviewForm.state'(val) {
       if (val === 1) {
         this.getDefaultMember(val);
       }
@@ -757,6 +763,7 @@ export default {
   },
   methods: {
     changeDemandColor,
+    setDisabledDate,
     async reviewDemandForm(val) {
       let body = val;
       body['demand_id'] = +this.$route.params.id;
