@@ -21,14 +21,18 @@
           </el-form-item>
           <el-form-item label="部门">
             <el-tree-select
+              ref="tree"
               v-model="chooseForm.dept_ids"
               :data="$store.state.system.organizationList"
               clearable
               multiple
               collapse-tags
-              :props="defaultProps"
               show-checkbox
-              @clear="getAdminList"
+              :props="defaultProps"
+              @clear="clearDeptIds"
+              @change="getCheckedNodes"
+              @remove-tag="removeTag"
+              @check-change="getCheckedNodes"
             />
           </el-form-item>
           <el-form-item label="状态">
@@ -231,7 +235,7 @@ export default {
         page_size: this.pageSize,
         name: this.chooseForm.name,
         dept_ids: !this.chooseForm.dept_ids
-          ? ''
+          ? []
           : this.chooseForm.dept_ids.join(','),
         state: this.chooseForm.state
       };
@@ -326,6 +330,42 @@ export default {
       } else {
         return '#999999';
       }
+    },
+    getCheckedNodes(nodeData) {
+      this.chooseForm.dept_ids = [];
+      let checkedArr = this.$refs.tree.getCheckedNodes();
+      for (let i in checkedArr) {
+        this.chooseForm.dept_ids.push(checkedArr[i].value);
+      }
+      if (nodeData.id) {
+        let node = this.$refs.tree.getNode(nodeData.id);
+        this.expandCheckedNotExpandNodes(node);
+      }
+    },
+    expandCheckedNotExpandNodes(node) {
+      let { tree } = this.$refs;
+      if (node.checked && !node.expanded && !node.isLeaf) {
+        node.expand(() => {
+          let { childNodes } = node;
+          for (let i = 0; i < childNodes.length; i++) {
+            let childNode = childNodes[i];
+            tree.$emit(
+              'check-change',
+              childNode.data,
+              childNode.checked,
+              childNode.indeterminate
+            );
+          }
+        });
+      }
+    },
+    clearDeptIds() {
+      this.$refs.tree.setCheckedKeys([]);
+      this.chooseForm.dept_ids = [];
+      this.getAdminList();
+    },
+    removeTag(val) {
+      this.$refs.tree.setChecked(val, false, true);
     }
   }
 };
@@ -345,10 +385,12 @@ export default {
   padding: 0;
   background-color: #fff;
 }
+
 .el-tree {
   color: #999999 !important;
   font-weight: 500;
 }
+
 .pagination {
   display: flex;
   justify-content: right;
