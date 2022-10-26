@@ -125,7 +125,8 @@
           type="datetime"
           placeholder="请选择日期"
           clearable
-          :default-time="defaultTime"
+          :default-time="$global.defaultTime"
+          :disabled-date="setDisabledDate"
         />
       </el-form-item>
       <el-divider />
@@ -441,7 +442,7 @@
 </template>
 
 <script>
-import { timestamp, checkValid } from '../../../../utils/index.js';
+import { timestamp, checkValid,setDisabledDate } from '../../../../utils/index.js';
 
 export default {
   props: ['dialogVisible', 'title', 'id', 'getList', 'productId', 'market'],
@@ -597,14 +598,14 @@ export default {
       isHigh: 0,
       attachment: {},
       currency: [],
-      show: false,
-      defaultTime: new Date(2000, 1, 1, 23, 59, 59)
+      show: false
     };
   },
   mounted() {
     this.getParams();
   },
   methods: {
+    setDisabledDate,
     cancel() {
       this.visible = false;
       this.$emit('hide-dialog', false);

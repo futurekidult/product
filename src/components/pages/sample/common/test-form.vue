@@ -99,7 +99,8 @@
           :disabled="disabled"
           clearable
           type="datetime"
-          :default-time="defaultTime"
+          :default-time="$global.defaultTime"
+          :disabled-date="setDisabledDate"
         />
       </el-form-item>
       <el-divider v-if="type !== 'apply'" />
@@ -163,7 +164,8 @@
 import {
   timestamp,
   getOrganizationList,
-  formatterTime
+  formatterTime,
+  setDisabledDate
 } from '../../../../utils';
 export default {
   inject: ['getTest', 'getQualityDetail', 'refreshTestSupply'],
@@ -232,8 +234,7 @@ export default {
         children: 'children',
         label: 'name',
         disabled: 'disabled'
-      },
-      defaultTime: new Date(2000, 1, 1, 23, 59, 59)
+      }
     };
   },
   computed: {
@@ -256,6 +257,7 @@ export default {
     });
   },
   methods: {
+    setDisabledDate,
     getMsg() {
       if (this.type === 'apply') {
         this.getSampleMarketList();
