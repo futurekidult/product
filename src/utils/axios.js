@@ -79,7 +79,7 @@ http.interceptors.response.use(
       } else if (status === 500) {
         ElMessage.error('服务器出错！');
       } else if (status === 503) {
-        window.location.href = `http://${window.location.host}/503.html`;
+        window.location.href = `${window.location.protocol}//${window.location.host}/503.html`;
       } else {
         ElMessage.error('未知错误！');
       }
