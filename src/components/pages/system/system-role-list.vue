@@ -35,7 +35,7 @@
               >
                 删除
               </el-button>
-              <el-button @click="showRoleRelatedMemberList(scope.row.id, true)">
+              <el-button @click="showViewDialog(scope.row.id, true)">
                 查看成员
               </el-button>
               <el-button
@@ -98,7 +98,8 @@
     <el-dialog
       v-model="viewMemberDialogVisible"
       title="查看成员"
-      width="40%"
+      width="45%"
+      :close-on-click-modal="false"
       @close="closeViewDialog"
     >
       <el-table
@@ -111,12 +112,17 @@
         <el-table-column
           prop="name"
           label="姓名"
+          width="100"
         />
         <el-table-column
           prop="department"
           label="所属部门"
         />
-        <el-table-column label="状态">
+        <el-table-column
+          label="状态"
+          width="100"
+          fixed="right"
+        >
           <template #default="scope">
             <div :style="{ color: adminStateColor(scope.row.state) }">
               {{ scope.row.state_desc }}
@@ -204,8 +210,7 @@ export default {
     closeConfirmDialog() {
       this.confirmDialog = false;
     },
-    async showRoleRelatedMemberList(id, showDialog) {
-      this.roleId = id;
+    async getRoleRelatedMemberList(id, showDialog) {
       try {
         let params = {
           role_id: id,
@@ -223,16 +228,23 @@ export default {
         return;
       }
     },
+    showViewDialog(id, showDialog) {
+      this.roleId = id;
+      this.currentPage = 1;
+      this.pageSize = 10;
+      this.getRoleRelatedMemberList(id, showDialog);
+    },
     closeViewDialog() {
       this.viewMemberDialogVisible = false;
     },
     changePageSize(val) {
       this.pageSize = val;
-      this.showRoleRelatedMemberList(this.roleId, false);
+      this.currentPage = 1;
+      this.getRoleRelatedMemberList(this.roleId, false);
     },
     changeCurrentPage(val) {
       this.currentPage = val;
-      this.showRoleRelatedMemberList(this.roleId, false);
+      this.getRoleRelatedMemberList(this.roleId, false);
     }
   }
 };
