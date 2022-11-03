@@ -205,6 +205,16 @@ export const changeApprovalColor = (val) => {
   }
 };
 
+export const adminStateColor = (key) => {
+  if (key === 1) {
+    return '#379f0d';
+  } else if (key === 2) {
+    return '#ea1d1d';
+  } else {
+    return '#999999';
+  }
+};
+
 export const setDisabledDate = (time) => {
   return time.getTime() < Date.now() - 1000 * 60 * 60 * 24;
 };
