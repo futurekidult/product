@@ -90,7 +90,7 @@
           />
           <el-table-column label="状态">
             <template #default="scope">
-              <div :style="{ color: stateColor(scope.row.state) }">
+              <div :style="{ color: adminStateColor(scope.row.state) }">
                 {{ scope.row.state_desc }}
               </div>
             </template>
@@ -183,6 +183,8 @@
 </template>
 
 <script>
+import { adminStateColor } from '../../../utils/index.js';
+
 export default {
   data() {
     return {
@@ -220,6 +222,7 @@ export default {
     this.getOrganizationList();
   },
   methods: {
+    adminStateColor,
     async getOrganizationList() {
       this.$store.commit('system/setOrganizationLoading', true);
       try {
@@ -321,15 +324,6 @@ export default {
     searchAdmin() {
       this.currentPage = 1;
       this.getAdminList();
-    },
-    stateColor(key) {
-      if (key === 1) {
-        return '#379f0d';
-      } else if (key === 2) {
-        return '#ea1d1d';
-      } else {
-        return '#999999';
-      }
     },
     getCheckedNodes(nodeData) {
       this.chooseForm.dept_ids = [];
