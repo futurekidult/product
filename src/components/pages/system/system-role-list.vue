@@ -239,12 +239,7 @@ export default {
     },
     changePageSize(val) {
       this.pageSize = val;
-      if (
-        this.currentPage * this.pageSize >=
-        this.$store.state.system.roleRelatedMemberListLength
-      ) {
-        this.currentPage = 1;
-      }
+      this.currentPage = 1;
       this.getRoleRelatedMemberList(this.roleId, false);
     },
     changeCurrentPage(val) {
