@@ -876,11 +876,12 @@ export default {
   font-size: 14px;
   margin: 15px 0px 0px 0px;
   color: #409eff;
+  cursor: pointer;
 }
 
 .pass-form_icon {
   font-size: 18px;
-  margin: 15px 0px 15px 0px;
+  margin: 15px 5px 15px 0px;
   color: #409eff;
 }
 
