@@ -237,6 +237,7 @@ export default {
     },
     changePageSize(val) {
       this.pageSize = val;
+      this.currentPage = 1;
       this.getTodoList();
     },
     searchTodo() {
