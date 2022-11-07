@@ -61,6 +61,11 @@
             prop="name"
           />
           <el-table-column
+            label="接收时间"
+            prop="create_time"
+            width="200"
+          />
+          <el-table-column
             label="执行人"
             prop="user_name"
             width="150"
@@ -142,7 +147,7 @@
 </template>
 
 <script>
-import { getOrganizationList } from '../../../utils';
+import { getOrganizationList, formatterTime } from '../../../utils';
 import { Search } from '@element-plus/icons-vue';
 
 export default {
@@ -186,6 +191,9 @@ export default {
       try {
         await this.$store.dispatch('system/getTodoList', { params });
         this.todoList = this.$store.state.system.todoList;
+        this.todoList.map((item) => {
+          item.create_time = formatterTime(item.create_time);
+        });
       } catch (err) {
         this.$store.commit('system/setTodoLoading', false);
         return;
@@ -229,6 +237,7 @@ export default {
     },
     changePageSize(val) {
       this.pageSize = val;
+      this.currentPage = 1;
       this.getTodoList();
     },
     searchTodo() {
