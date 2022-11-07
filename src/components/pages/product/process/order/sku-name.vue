@@ -30,32 +30,32 @@
       :rules="skuRules"
     >
       <div class="standard-link-div">
-        注：SKU命名需规范填写
+        注：SKU命名须严格按照规范进行填写，
         <span>
           /* IFTRUE_heyme */
           <a
             target="_blank"
-            class="standard-link-a"
+            class="condition-link"
             href="https://alidocs.dingtalk.com/i/nodes/yZvMRzlLwOAWrl4bozoMJnjY02pBqGox?corpId=ding6b2f4d380e29440d35c2f4657eb6378f&utm_medium=im_card&iframeQuery=utm_medium%3Dim_card%26utm_source%3Dim&utm_source=im"
-          >点击可查看命名规范文档</a>
+          >点击可查看命名规范文档 >></a>
           /* FITRUE_heyme */
         </span>
         <span>
           /* IFTRUE_basepoint */
           <a
             target="_blank"
-            class="standard-link-a"
+            class="condition-link"
             href="https://alidocs.dingtalk.com/i/nodes/Mk5evdR04jBV5XrKeOQ3WQL3x2OlParn?nav=share&navQuery=spaceId%3De3RmQZM4jJKQ0GaP"
-          >点击可查看命名规范文档</a>
+          >点击可查看命名规范文档 >></a>
           /* FITRUE_basepoint */
         </span>
         <span>
           /* IFTRUE_heytool */
           <a
             target="_blank"
-            class="standard-link-a"
+            class="condition-link"
             href="https://alidocs.dingtalk.com/i/spaces/xMEGYVY2b1opLzoQ/overview?dontjump=true"
-          >点击可查看命名规范文档</a>
+          >点击可查看命名规范文档 >></a>
           /* FITRUE_heytool */
         </span>
       </div>
@@ -333,9 +333,5 @@ export default {
   margin: 10px 0px 20px 5px;
   color: red;
   font-weight: 600;
-}
-
-.standard-link-a {
-  color: #409eff;
 }
 </style>
