@@ -374,7 +374,7 @@
                       @click="
                         previewOrDownload(
                           scope.row.attachment.id,
-                          attachment.name,
+                          scope.row.attachment.name,
                           'preview'
                         )
                       "
@@ -402,7 +402,7 @@
                       @click="
                         previewOrDownload(
                           scope.row.attachment.id,
-                          attachment.name,
+                          scope.row.attachment.name,
                           'preview'
                         )
                       "
