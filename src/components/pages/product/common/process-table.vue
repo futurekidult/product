@@ -94,8 +94,9 @@
             type="datetime"
             placeholder="请选择计划完成时间"
             clearable
-            :default-time="defaultTime"
+            :default-time="$global.defaultTime"
             style="width: 100%"
+            :disabled-date="setDisabledDate"
           />
         </el-form-item>
         <el-form-item
@@ -107,8 +108,9 @@
             type="datetime"
             placeholder="请选择计划完成时间"
             clearable
-            :default-time="defaultTime"
+            :default-time="$global.defaultTime"
             style="width: 100%"
+            :disabled-date="setDisabledDate"
           />
         </el-form-item>
         <el-form-item
@@ -120,8 +122,9 @@
             type="datetime"
             placeholder="请选择计划完成时间"
             clearable
-            :default-time="defaultTime"
+            :default-time="$global.defaultTime"
             style="width: 100%"
+            :disabled-date="setDisabledDate"
           />
         </el-form-item>
         <el-form-item
@@ -133,8 +136,9 @@
             type="datetime"
             placeholder="请选择计划完成时间"
             clearable
-            :default-time="defaultTime"
+            :default-time="$global.defaultTime"
             style="width: 100%"
+            :disabled-date="setDisabledDate"
           />
         </el-form-item>
         <el-form-item
@@ -146,8 +150,9 @@
             type="datetime"
             placeholder="请选择计划完成时间"
             clearable
-            :default-time="defaultTime"
+            :default-time="$global.defaultTime"
             style="width: 100%"
+            :disabled-date="setDisabledDate"
           />
         </el-form-item>
         <el-form-item
@@ -159,8 +164,9 @@
             type="datetime"
             placeholder="请选择计划完成时间"
             clearable
-            :default-time="defaultTime"
+            :default-time="$global.defaultTime"
             style="width: 100%"
+            :disabled-date="setDisabledDate"
           />
         </el-form-item>
         <el-form-item
@@ -172,8 +178,9 @@
             type="datetime"
             placeholder="请选择计划完成时间"
             clearable
-            :default-time="defaultTime"
+            :default-time="$global.defaultTime"
             style="width: 100%"
+            :disabled-date="setDisabledDate"
           />
         </el-form-item>
         <el-divider />
@@ -214,8 +221,9 @@
             type="datetime"
             placeholder="请选择计划完成时间"
             clearable
-            :default-time="defaultTime"
+            :default-time="$global.defaultTime"
             style="width: 100%"
+            :disabled-date="setDisabledDate"
           />
         </el-form-item>
         <el-divider />
@@ -256,7 +264,7 @@
             type="datetime"
             placeholder="请选择实际完成时间"
             clearable
-            :default-time="defaultTime"
+            :default-time="$global.defaultTime"
             style="width: 100%"
           />
         </el-form-item>
@@ -281,7 +289,7 @@
 </template>
 
 <script>
-import { timestamp } from '../../../../utils';
+import { timestamp,setDisabledDate } from '../../../../utils';
 export default {
   inject: ['getProcessTable'],
   props: ['getSchedule', 'changeColor'],
@@ -346,8 +354,7 @@ export default {
       },
       actualTimeVisible: false,
       timeForm: {},
-      projectScheduleId: 0,
-      defaultTime: new Date(2000, 1, 1, 23, 59, 59)
+      projectScheduleId: 0
     };
   },
   computed: {
@@ -359,6 +366,7 @@ export default {
     }
   },
   methods: {
+    setDisabledDate,
     editStage(desc, code, time) {
       this.editStageVisible = true;
       this.stageLabel = desc;

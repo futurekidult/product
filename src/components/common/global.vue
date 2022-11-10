@@ -21,9 +21,12 @@ const heymeLink =
 const haomiLink =
   'https://docs.dingtalk.com/i/nodes/jkB7yl4ZK3vV6Z99aRLeVPMX2O6oxqw0?nav=share&navQuery=spaceId%3DxMEGYV9n6db25zoQ';
 
+const defaultTime = new Date(2000, 1, 1, 23, 59, 59);
+
 export default {
   reviewOptions,
   heymeLink,
-  haomiLink
+  haomiLink,
+  defaultTime
 };
 </script>

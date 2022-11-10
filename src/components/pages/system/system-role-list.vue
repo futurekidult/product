@@ -35,6 +35,9 @@
               >
                 删除
               </el-button>
+              <el-button @click="showViewDialog(scope.row.id, true)">
+                查看成员
+              </el-button>
               <el-button
                 type="primary"
                 @click="showEditDialog(scope.row.id)"
@@ -92,11 +95,56 @@
         </div>
       </el-dialog>
     </div>
+    <el-dialog
+      v-model="viewMemberDialogVisible"
+      title="查看成员"
+      width="45%"
+      :close-on-click-modal="false"
+      @close="closeViewDialog"
+    >
+      <el-table
+        :data="memberList"
+        border
+        stripe
+        empty-text="无数据"
+        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+      >
+        <el-table-column
+          prop="name"
+          label="姓名"
+          width="100"
+        />
+        <el-table-column
+          prop="department"
+          label="所属部门"
+        />
+        <el-table-column
+          label="状态"
+          width="100"
+          fixed="right"
+        >
+          <template #default="scope">
+            <div :style="{ color: adminStateColor(scope.row.state) }">
+              {{ scope.row.state_desc }}
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <base-pagination
+        :length="$store.state.system.roleRelatedMemberListLength"
+        :current-page="currentPage"
+        :page-num="pageSize"
+        @change-size="changePageSize"
+        @change-page="changeCurrentPage"
+      />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import RoleForm from './common/role-form.vue';
+import { adminStateColor } from '../../../utils/index.js';
 
 export default {
   components: {
@@ -107,15 +155,20 @@ export default {
       createVisible: false,
       editVisible: false,
       confirmDialog: false,
+      viewMemberDialogVisible: false,
       roleId: 0,
       deleteId: 0,
-      roleList: []
+      roleList: [],
+      currentPage: 1,
+      pageSize: 10,
+      memberList: []
     };
   },
   mounted() {
     this.getRoleList();
   },
   methods: {
+    adminStateColor,
     async getRoleList() {
       this.$store.commit('system/setSystemRoleLoading', true);
       try {
@@ -150,12 +203,48 @@ export default {
     closeEditDialog() {
       this.editVisible = false;
     },
-    async showDeleteRole(id) {
+    showDeleteRole(id) {
       this.confirmDialog = true;
       this.deleteId = id;
     },
     closeConfirmDialog() {
       this.confirmDialog = false;
+    },
+    async getRoleRelatedMemberList(id, showDialog) {
+      try {
+        let params = {
+          role_id: id,
+          current_page: this.currentPage,
+          page_size: this.pageSize
+        };
+        await this.$store.dispatch('system/getRoleRelatedMemberList', {
+          params
+        });
+        this.memberList = this.$store.state.system.roleRelatedMemberList;
+        if (showDialog) {
+          this.viewMemberDialogVisible = true;
+        }
+      } catch (err) {
+        return;
+      }
+    },
+    showViewDialog(id, showDialog) {
+      this.roleId = id;
+      this.currentPage = 1;
+      this.pageSize = 10;
+      this.getRoleRelatedMemberList(id, showDialog);
+    },
+    closeViewDialog() {
+      this.viewMemberDialogVisible = false;
+    },
+    changePageSize(val) {
+      this.pageSize = val;
+      this.currentPage = 1;
+      this.getRoleRelatedMemberList(this.roleId, false);
+    },
+    changeCurrentPage(val) {
+      this.currentPage = val;
+      this.getRoleRelatedMemberList(this.roleId, false);
     }
   }
 };

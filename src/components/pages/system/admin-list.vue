@@ -21,14 +21,18 @@
           </el-form-item>
           <el-form-item label="部门">
             <el-tree-select
+              ref="tree"
               v-model="chooseForm.dept_ids"
               :data="$store.state.system.organizationList"
               clearable
               multiple
               collapse-tags
-              :props="defaultProps"
               show-checkbox
-              @clear="getAdminList"
+              :props="defaultProps"
+              @clear="clearDeptIds"
+              @change="getCheckedNodes"
+              @remove-tag="removeTag"
+              @check-change="getCheckedNodes"
             />
           </el-form-item>
           <el-form-item label="状态">
@@ -86,7 +90,7 @@
           />
           <el-table-column label="状态">
             <template #default="scope">
-              <div :style="{ color: stateColor(scope.row.state) }">
+              <div :style="{ color: adminStateColor(scope.row.state) }">
                 {{ scope.row.state_desc }}
               </div>
             </template>
@@ -179,6 +183,8 @@
 </template>
 
 <script>
+import { adminStateColor } from '../../../utils/index.js';
+
 export default {
   data() {
     return {
@@ -216,6 +222,7 @@ export default {
     this.getOrganizationList();
   },
   methods: {
+    adminStateColor,
     async getOrganizationList() {
       this.$store.commit('system/setOrganizationLoading', true);
       try {
@@ -231,7 +238,7 @@ export default {
         page_size: this.pageSize,
         name: this.chooseForm.name,
         dept_ids: !this.chooseForm.dept_ids
-          ? ''
+          ? []
           : this.chooseForm.dept_ids.join(','),
         state: this.chooseForm.state
       };
@@ -318,14 +325,41 @@ export default {
       this.currentPage = 1;
       this.getAdminList();
     },
-    stateColor(key) {
-      if (key === 1) {
-        return '#379f0d';
-      } else if (key === 2) {
-        return '#ea1d1d';
-      } else {
-        return '#999999';
+    getCheckedNodes(nodeData) {
+      this.chooseForm.dept_ids = [];
+      let checkedArr = this.$refs.tree.getCheckedNodes();
+      for (let i in checkedArr) {
+        this.chooseForm.dept_ids.push(checkedArr[i].value);
       }
+      if (nodeData.id) {
+        let node = this.$refs.tree.getNode(nodeData.id);
+        this.expandCheckedNotExpandNodes(node);
+      }
+    },
+    expandCheckedNotExpandNodes(node) {
+      let { tree } = this.$refs;
+      if (node.checked && !node.expanded && !node.isLeaf) {
+        node.expand(() => {
+          let { childNodes } = node;
+          for (let i = 0; i < childNodes.length; i++) {
+            let childNode = childNodes[i];
+            tree.$emit(
+              'check-change',
+              childNode.data,
+              childNode.checked,
+              childNode.indeterminate
+            );
+          }
+        });
+      }
+    },
+    clearDeptIds() {
+      this.$refs.tree.setCheckedKeys([]);
+      this.chooseForm.dept_ids = [];
+      this.getAdminList();
+    },
+    removeTag(val) {
+      this.$refs.tree.setChecked(val, false, true);
     }
   }
 };
@@ -345,10 +379,12 @@ export default {
   padding: 0;
   background-color: #fff;
 }
+
 .el-tree {
   color: #999999 !important;
   font-weight: 500;
 }
+
 .pagination {
   display: flex;
   justify-content: right;

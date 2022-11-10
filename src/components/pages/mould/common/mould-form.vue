@@ -45,7 +45,8 @@
           type="datetime"
           placeholder="请选择日期"
           clearable
-          :default-time="defaultTime"
+          :default-time="$global.defaultTime"
+          :disabled-date="setDisabledDate"
         />
       </el-form-item>
       <el-form-item label="说明">
@@ -79,7 +80,7 @@
 </template>
 
 <script>
-import { timestamp } from '../../../../utils/index';
+import { timestamp,setDisabledDate } from '../../../../utils/index';
 
 export default {
   props: ['dialogVisible', 'title', 'type', 'editForm', 'getList'],
@@ -107,8 +108,7 @@ export default {
           }
         ]
       },
-      visible: this.dialogVisible,
-      defaultTime: new Date(2000, 1, 1, 23, 59, 59)
+      visible: this.dialogVisible
     };
   },
   mounted() {
@@ -117,6 +117,7 @@ export default {
     }
   },
   methods: {
+    setDisabledDate,
     async createMakingMould(body) {
       try {
         await this.$store.dispatch('mould/createMakingMould', body);

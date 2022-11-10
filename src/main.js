@@ -32,5 +32,5 @@ app.use(router);
 app.use(store);
 app.config.globalProperties.$message = ElMessage;
 app.config.globalProperties.$global = global;
-app.config.globalProperties.$version = '0.0.5';
+app.config.globalProperties.$version = '0.0.6';
 app.mount('#app');

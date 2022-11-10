@@ -308,7 +308,8 @@
                     v-model="scope.row.estimated_finish_time"
                     type="datetime"
                     placeholder="请选择时间"
-                    :default-time="defaultTime"
+                    :default-time="$global.defaultTime"
+                    :disabled-date="setDisabledDate"
                   />
                 </el-form-item>
                 <span v-else>{{ scope.row.estimated_finish_time }}</span>
@@ -373,7 +374,7 @@
                       @click="
                         previewOrDownload(
                           scope.row.attachment.id,
-                          attachment.name,
+                          scope.row.attachment.name,
                           'preview'
                         )
                       "
@@ -401,7 +402,7 @@
                       @click="
                         previewOrDownload(
                           scope.row.attachment.id,
-                          attachment.name,
+                          scope.row.attachment.name,
                           'preview'
                         )
                       "
@@ -648,7 +649,8 @@ import {
   previewOrDownloadFile,
   getFile,
   getOrganizationList,
-  timestamp
+  timestamp,
+  setDisabledDate
 } from '../../../../../utils';
 import SurveyForm from '../../common/survey-form.vue';
 import SurveySuggestion from '../../common/survey-suggestion.vue';
@@ -699,7 +701,6 @@ export default {
         disabled: 'disabled'
       },
       viewId: 0,
-      defaultTime: new Date(2000, 1, 1, 23, 59, 59),
       form: {
         rules: {
           proceeding: [{ required: true, message: '请选择' }],
@@ -723,6 +724,7 @@ export default {
     });
   },
   methods: {
+    setDisabledDate,
     async getParams() {
       if (localStorage.getItem('params')) {
         this.planOptions = JSON.parse(
