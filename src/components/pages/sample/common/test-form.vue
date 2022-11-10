@@ -43,7 +43,7 @@
           show-word-limit
         />
       </el-form-item>
-      <el-form-item label="售卖国整数与测试报告">
+      <el-form-item label="售卖国证书与测试报告">
         <el-input
           v-model="applyForm.certificate_and_report"
           placeholder="请输入"
