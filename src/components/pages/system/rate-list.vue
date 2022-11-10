@@ -43,6 +43,10 @@
             prop="jpy_to_cny"
           />
           <el-table-column
+            label="加拿大元"
+            prop="cad_to_cny"
+          />
+          <el-table-column
             label="创建时间"
             prop="create_time"
           />
@@ -124,6 +128,16 @@
             clearable
           />
         </el-form-item>
+        <el-form-item
+          label="加拿大元"
+          prop="cad_to_cny"
+        >
+          <el-input
+            v-model="rateForm.cad_to_cny"
+            placeholder="请输入"
+            clearable
+          />
+        </el-form-item>
         <el-divider />
         <div style="text-align: right">
           <el-button
@@ -197,6 +211,12 @@ export default {
           }
         ],
         jpy_to_cny: [
+          {
+            required: true,
+            message: '请输入'
+          }
+        ],
+        cad_to_cny: [
           {
             required: true,
             message: '请输入'
@@ -275,6 +295,7 @@ export default {
     },
     changePageSize(val) {
       this.pageSize = val;
+      this.currentPage = 1;
       this.getRateList();
     }
   }

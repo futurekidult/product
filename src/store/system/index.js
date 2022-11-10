@@ -28,7 +28,9 @@ export default {
       calculationRuleListLength: 0,
       rateListLength: 0,
       todoListLength: 0,
-      adminListLength: 0
+      adminListLength: 0,
+      roleRelatedMemberList: [],
+      roleRelatedMemberListLength: 0
     };
   },
   mutations: {
@@ -91,6 +93,10 @@ export default {
     },
     setRateListLoading(state, payload) {
       state.rateListLoading = payload;
+    },
+    setRoleRelatedMemberList(state, payload) {
+      state.roleRelatedMemberList = payload.list;
+      state.roleRelatedMemberListLength = payload.total;
     }
   },
   actions: {
@@ -160,6 +166,17 @@ export default {
       await axios.get('/system/role/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setSystemRole', res.data);
+        }
+      });
+    },
+    async getRoleRelatedMemberList(context, payload) {
+      await axios.get('/system/role/admin-list', payload).then((res) => {
+        if (res.code === 200) {
+          let data = {
+            list: res.data.list,
+            total: res.data.total
+          };
+          context.commit('setRoleRelatedMemberList', data);
         }
       });
     },

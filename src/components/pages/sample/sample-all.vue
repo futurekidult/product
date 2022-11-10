@@ -113,11 +113,6 @@
           width="110"
         />
         <el-table-column
-          label="供应商名称"
-          prop="supplier"
-          min-width="170"
-        />
-        <el-table-column
           label="计划完成时间"
           prop="estimated_finish_time"
           width="200"

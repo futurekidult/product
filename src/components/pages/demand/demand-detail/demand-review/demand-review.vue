@@ -85,8 +85,23 @@
         </el-form-item>
         <div v-if="reviewForm.state === 1">
           <el-divider />
-          <div class="pass-form_title">
-            填写补充信息
+          <div style="display: flex">
+            <div class="pass-form_title">
+              填写补充信息
+            </div>
+            <el-icon class="pass-form_icon">
+              <WarningFilled />
+            </el-icon>
+            <el-popover
+              :width="600"
+              trigger="click"
+              placement="right-start"
+              content="新品类是针对我们公司而言，我们公司现已在做的品类，都是老品类，否则为新品类。新产品的定义是市面上没有类似同款，在功能上做了迭代的产品。如功能无变化，仅外观上和颜色上的改动，都是老产品。"
+            >
+              <template #reference>
+                <span class="pass-form_span">点击查看产品定位说明</span>
+              </template>
+            </el-popover>
           </div>
           <el-form-item
             label="是否为新品类"
@@ -183,7 +198,8 @@
                 placeholder="请选择日期"
                 style="width: 100%"
                 clearable
-                :default-time="defaultTime"
+                :default-time="$global.defaultTime"
+                :disabled-date="setDisabledDate"
               />
             </el-form-item>
             <el-form-item
@@ -196,7 +212,8 @@
                 placeholder="请选择日期"
                 style="width: 100%"
                 clearable
-                :default-time="defaultTime"
+                :default-time="$global.defaultTime"
+                :disabled-date="setDisabledDate"
               />
             </el-form-item>
             <el-form-item
@@ -210,7 +227,8 @@
                 placeholder="请选择日期"
                 style="width: 100%"
                 clearable
-                :default-time="defaultTime"
+                :default-time="$global.defaultTime"
+                :disabled-date="setDisabledDate"
               />
             </el-form-item>
             <el-form-item
@@ -224,7 +242,8 @@
                 placeholder="请选择日期"
                 style="width: 100%"
                 clearable
-                :default-time="defaultTime"
+                :default-time="$global.defaultTime"
+                :disabled-date="setDisabledDate"
               />
             </el-form-item>
             <el-form-item
@@ -237,7 +256,8 @@
                 placeholder="请选择日期"
                 style="width: 100%"
                 clearable
-                :default-time="defaultTime"
+                :default-time="$global.defaultTime"
+                :disabled-date="setDisabledDate"
               />
             </el-form-item>
             <el-form-item
@@ -251,7 +271,8 @@
                 placeholder="请选择日期"
                 style="width: 100%"
                 clearable
-                :default-time="defaultTime"
+                :default-time="$global.defaultTime"
+                :disabled-date="setDisabledDate"
               />
             </el-form-item>
           </div>
@@ -494,10 +515,15 @@
 import {
   timestamp,
   getOrganizationList,
-  changeDemandColor
+  changeDemandColor,
+  setDisabledDate
 } from '../../../../../utils';
+import { WarningFilled } from '@element-plus/icons-vue';
 
 export default {
+  components: {
+    WarningFilled
+  },
   data() {
     return {
       reviewForm: {
@@ -696,7 +722,6 @@ export default {
         label: 'name',
         disabled: 'disabled'
       },
-      defaultTime: new Date(2000, 1, 1, 23, 59, 59),
       show: true
     };
   },
@@ -743,7 +768,7 @@ export default {
         this.isNewCategoryIsNewProduct = false;
       }
     },
-    'reviewForm.state' (val) {
+    'reviewForm.state'(val) {
       if (val === 1) {
         this.getDefaultMember(val);
       }
@@ -757,6 +782,7 @@ export default {
   },
   methods: {
     changeDemandColor,
+    setDisabledDate,
     async reviewDemandForm(val) {
       let body = val;
       body['demand_id'] = +this.$route.params.id;
@@ -844,6 +870,19 @@ export default {
 .pass-form_title {
   font-size: 14px;
   margin: 15px;
+}
+
+.pass-form_span {
+  font-size: 14px;
+  margin: 15px 0px 0px 0px;
+  color: #409eff;
+  cursor: pointer;
+}
+
+.pass-form_icon {
+  font-size: 18px;
+  margin: 15px 5px 15px 0px;
+  color: #409eff;
 }
 
 .review-msg {

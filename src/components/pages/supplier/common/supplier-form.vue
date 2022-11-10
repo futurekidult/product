@@ -424,7 +424,7 @@
             placeholder="请输入开户银行账号"
             clearable
             :disabled="isDisabled"
-            maxlength="15"
+            maxlength="25"
             show-word-limit
           />
         </el-form-item>

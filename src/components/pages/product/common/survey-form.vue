@@ -64,7 +64,8 @@
           placeholder="请选择时间"
           :disabled="isDisabled"
           clearable
-          :default-time="defaultTime"
+          :default-time="$global.defaultTime"
+          :disabled-date="setDisabledDate"
         />
       </el-form-item>
       <el-divider />
@@ -128,7 +129,8 @@
 import {
   formatterTime,
   timestamp,
-  getOrganizationList
+  getOrganizationList,
+  setDisabledDate
 } from '../../../../utils';
 export default {
   inject: ['getUserSurvey'],
@@ -179,7 +181,6 @@ export default {
         ]
       },
       reviewOptions: this.$global.reviewOptions,
-      defaultTime: new Date(2000, 1, 1, 23, 59, 59),
       memberList: [],
       defaultProps: {
         children: 'children',
@@ -221,6 +222,7 @@ export default {
     }
   },
   methods: {
+    setDisabledDate,
     async createApply(body) {
       try {
         await this.$store.dispatch(

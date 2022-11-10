@@ -72,12 +72,14 @@ http.interceptors.response.use(
   (err) => {
     if (err.response) {
       let { status } = err.response;
-      if (status === 413) {
+      if (status === 404) {
+        ElMessage.error('找不到页面！');
+      } else if (status === 413) {
         ElMessage.warning('附件大小超过限制，请重新上传！');
       } else if (status === 500) {
         ElMessage.error('服务器出错！');
-      } else if (status === 404) {
-        ElMessage.error('找不到页面！');
+      } else if (status === 503) {
+        window.location.href = `${window.location.protocol}//${window.location.host}/503.html`;
       } else {
         ElMessage.error('未知错误！');
       }

@@ -186,7 +186,8 @@
               type="datetime"
               placeholder="请选择日期"
               clearable
-              :default-time="defaultTime"
+              :default-time="$global.defaultTime"
+              :disabled-date="setDisabledDate"
             />
           </el-form-item>
           <el-divider />
@@ -214,7 +215,8 @@
 import {
   formatterTime,
   getOrganizationList,
-  timestamp
+  timestamp,
+  setDisabledDate
 } from '../../../utils/index.js';
 
 export default {
@@ -245,7 +247,6 @@ export default {
         label: 'name',
         disabled: 'disabled'
       },
-      defaultTime: new Date(2000, 1, 1, 23, 59, 59),
       currentPage: 1,
       pageSize: 10
     };
@@ -258,6 +259,7 @@ export default {
     });
   },
   methods: {
+    setDisabledDate,
     async getState() {
       if (localStorage.getItem('params')) {
         this.mouldState = JSON.parse(
