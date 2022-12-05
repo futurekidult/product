@@ -277,8 +277,40 @@
             </el-form-item>
           </div>
           <el-divider />
-          <div class="pass-form_title">
-            设置项目成员
+          <div style="display: flex">
+            <div class="pass-form_title">
+              设置项目成员
+            </div>
+            <el-icon class="pass-form_icon">
+              <WarningFilled />
+            </el-icon>
+            <span class="pass-form_span_sub">
+              /* IFTRUE_heyme */
+              <a
+                target="_blank"
+                class="condition-link"
+                href="https://docs.dingtalk.com/i/nodes/3mzaPNMZ6jkJq3RRmbn2WYLDwXq4Ky1r?nav=share&navQuery=spaceId%3D9JOGO7YJjJAJeG4Q"
+              >点击查看项目成员职责说明文档 >></a>
+              /* FITRUE_heyme */
+            </span>
+            <span class="pass-form_span_sub">
+              /* IFTRUE_basepoint */
+              <a
+                target="_blank"
+                class="condition-link"
+                href="https://docs.dingtalk.com/i/nodes/D1YKdxGX7EqVQRmRQYpmJe4QrZk95AzP?nav=share&navQuery=spaceId%3DxMEGYV9n6db25zoQ"
+              >点击查看项目成员职责说明文档 >></a>
+              /* FITRUE_basepoint */
+            </span>
+            <span class="pass-form_span_sub">
+              /* IFTRUE_heytool */
+              <a
+                target="_blank"
+                class="condition-link"
+                href="https://docs.dingtalk.com/i/nodes/D1YKdxGX7EqVQRmRQYpmJe4QrZk95AzP?nav=share&navQuery=spaceId%3DxMEGYV9n6db25zoQ"
+              >点击查看项目成员职责说明文档 >></a>
+              /* FITRUE_heytool */
+            </span>
           </div>
           <div class="form-item">
             <el-form-item
@@ -877,6 +909,13 @@ export default {
   margin: 15px 0px 0px 0px;
   color: #409eff;
   cursor: pointer;
+}
+
+.pass-form_span_sub {
+  font-size: 14px;
+  color: #409eff;
+  cursor: pointer;
+  margin: 15px 0px;
 }
 
 .pass-form_icon {
