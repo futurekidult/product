@@ -917,6 +917,7 @@ export default {
   cursor: pointer;
   margin: 15px 0px;
 }
+
 .pass-form_icon {
   font-size: 18px;
   margin: 15px 5px 15px 0px;
