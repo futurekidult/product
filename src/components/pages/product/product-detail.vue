@@ -776,26 +776,32 @@ export default {
       switch (type) {
         case 'member':
           this.memberPageSize = val;
+          this.memberCurrentPage = 1;
           this.getProjectMember();
           break;
         case 'mould':
           this.mouldPageSize = val;
+          this.mouldCurrentPage = 1;
           this.getMouldList();
           break;
         case 'sample':
           this.samplePageSize = val;
+          this.sampleCurrentPage = 1;
           this.getSampleList();
           break;
         case 'question':
           this.questionPageSize = val;
+          this.questionCurrentPage = 1;
           this.getQuestionList();
           break;
         case 'order':
           this.orderPageSize = val;
+          this.orderCurrentPage = 1;
           this.getOrderList();
           break;
         case 'package':
           this.packagePageSize = val;
+          this.packageCurrentPage = 1;
           this.getPackageList();
           break;
         default:
