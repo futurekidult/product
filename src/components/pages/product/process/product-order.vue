@@ -99,6 +99,7 @@ export default {
     },
     pageSize(val) {
       this.pageNum = val;
+      this.page = 1;
     }
   },
   methods: {
