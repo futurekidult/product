@@ -45,7 +45,7 @@
             placeholder="请输入供应商名称"
             clearable
             :disabled="isDisabled"
-            maxlength="15"
+            maxlength="100"
             show-word-limit
           />
         </el-form-item>
@@ -398,7 +398,7 @@
             placeholder="请输入开户银行户名"
             clearable
             :disabled="isDisabled"
-            maxlength="15"
+            maxlength="100"
             show-word-limit
           />
         </el-form-item>
@@ -411,7 +411,7 @@
             placeholder="请输入开户银行名称"
             clearable
             :disabled="isDisabled"
-            maxlength="15"
+            maxlength="100"
             show-word-limit
           />
         </el-form-item>
