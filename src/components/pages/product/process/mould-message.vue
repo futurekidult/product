@@ -281,12 +281,12 @@ export default {
       this.$emit('change-size', this.pageNum);
     },
     changeAllCurrentPage(val) {
-      this.currentPage = val;
+      this.allCurrentPage = val;
       this.getAllMouldList();
     },
     changeAllPageSize(val) {
-      this.pageSize = val;
-      this.currentPage = 1;
+      this.allPageSize = val;
+      this.allCurrentPage = 1;
       this.getAllMouldList();
     }
   }
