@@ -125,6 +125,7 @@ export default {
     },
     changePageSize(val) {
       this.pageNum = val;
+      this.page = 1;
       this.$emit('change-size', this.pageNum);
     }
   }

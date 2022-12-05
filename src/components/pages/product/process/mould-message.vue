@@ -276,6 +276,7 @@ export default {
     },
     changePageSize(val) {
       this.pageNum = val;
+      this.currentPage = 1;
       this.$emit('change-size', this.pageNum);
     },
     changeAllCurrentPage(val) {
@@ -284,6 +285,7 @@ export default {
     },
     changeAllPageSize(val) {
       this.pageSize = val;
+      this.currentPage = 1;
       this.getAllMouldList();
     }
   }
