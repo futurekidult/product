@@ -101,7 +101,10 @@
           <el-form-item v-if="profitForm.list[index].platform">
             <el-collapse style="width: 100%">
               <el-collapse-item :title="'利润核算参数明细表' + (index + 1)">
-                <profit-params :profit-params="profitParams" />
+                <profit-params
+                  v-if="profitParams[item.platform]"
+                  :profit-params="profitParams[item.platform]"
+                />
               </el-collapse-item>
             </el-collapse>
           </el-form-item>
@@ -178,11 +181,16 @@
             <el-collapse style="width: 100%">
               <el-collapse-item :title="'核算系数明细' + (index + 1)">
                 <div>采购价=</div>
-                <div style="margin: 10px">
-                  {{ calculationResult.coef_selling }}*销售价 -
-                  {{ calculationResult.coef_volume }}*体积*海运单价 -
-                  {{ calculationResult.coef_head }}*头程附加 -
-                  {{ calculationResult.coef_tail }}*尾程
+                <div
+                  v-if="calculationResult[item.platform]"
+                  style="margin: 10px"
+                >
+                  {{ calculationResult[item.platform].coef_selling }}*销售价 -
+                  {{
+                    calculationResult[item.platform].coef_volume
+                  }}*体积*海运单价 -
+                  {{ calculationResult[item.platform].coef_head }}*头程附加 -
+                  {{ calculationResult[item.platform].coef_tail }}*尾程
                 </div>
               </el-collapse-item>
             </el-collapse>
@@ -382,10 +390,10 @@ export default {
           await this.$store.dispatch('product/project/getProfitParams', {
             params
           });
-          this.profitParams = this.$store.state.product.project.profitParams;
-          if (this.type !== 'view') {
-            this.getPrice(market, platform, currency, price, index);
-          }
+          Object.assign(this.profitParams, {
+            [platform]: this.$store.state.product.project.profitParams
+          });
+          this.getPrice(market, platform, currency, price, index);
         } catch (err) {
           return;
         }
@@ -424,17 +432,13 @@ export default {
           }
         });
         this.profitForm.list.forEach((item, index) => {
-
-          if (this.type !== 'view') {
-            this.getPrice(
-              this.id,
-              item.platform,
-              item.currency,
-              item.selling_price,
-              index
-            );
-          }
-          this.getProfitParams(item.market, item.platform);
+          this.getProfitParams(
+            item.market,
+            item.platform,
+            item.currency,
+            item.selling_price,
+            index
+          );
         });
       } catch (err) {
         return;
@@ -508,12 +512,17 @@ export default {
               selling_price: price
             }
           });
-          this.calculationResult =
+          let calculateReferencePrice =
             this.$store.state.product.project.referencePrice;
-          this.profitForm.list[index].selling_price_rmb =
-            this.calculationResult.selling_price_rmb;
-          this.profitForm.list[index].reference_price =
-            this.calculationResult.reference_price;
+          Object.assign(this.calculationResult, {
+            [platform]: calculateReferencePrice
+          });
+          if (this.type !== 'view') {
+            this.profitForm.list[index].selling_price_rmb =
+              calculateReferencePrice.selling_price_rmb;
+            this.profitForm.list[index].reference_price =
+              calculateReferencePrice.reference_price;
+          }
           this.isNegativeProfit = false;
           this.isNegativeReference = false;
         } catch (err) {
