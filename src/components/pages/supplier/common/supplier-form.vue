@@ -119,7 +119,6 @@
             :disabled="isDisabled"
             maxlength="15"
             show-word-limit
-            @change="checkEmail('qq', item.qq, index + 1)"
           />
         </el-form-item>
         <el-form-item :label="'电子邮件' + (index + 1)">
@@ -267,7 +266,7 @@
             placeholder="请输入工厂规模"
             clearable
             :disabled="isDisabled"
-            maxlength="15"
+            maxlength="7"
             show-word-limit
           />
         </el-form-item>
