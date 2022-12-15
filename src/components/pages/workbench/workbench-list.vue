@@ -188,6 +188,7 @@ export default {
     },
     changePageSize(val) {
       this.pageSize = val;
+      this.currentPage = 1;
       this.getTodoList();
     },
     searchTodo() {
@@ -196,6 +197,7 @@ export default {
     },
     changeInformPageSize(val) {
       this.informPageSize = val;
+      this.informCurrentPage = 1;
       this.getNotificationList();
     },
     changeInformCurrentPage(val) {

@@ -201,6 +201,7 @@ export default {
     },
     pageSize(val) {
       this.pageNum = val;
+      this.page = 1;
     }
   },
   methods: {
@@ -276,14 +277,16 @@ export default {
     },
     changePageSize(val) {
       this.pageNum = val;
+      this.page = 1;
       this.$emit('change-size', this.pageNum);
     },
     changeAllCurrentPage(val) {
-      this.currentPage = val;
+      this.allCurrentPage = val;
       this.getAllMouldList();
     },
     changeAllPageSize(val) {
-      this.pageSize = val;
+      this.allPageSize = val;
+      this.allCurrentPage = 1;
       this.getAllMouldList();
     }
   }
