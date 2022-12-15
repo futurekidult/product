@@ -1,5 +1,5 @@
 <template>
-  <div 
+  <div
     v-if="length > pageSize"
     class="pagination"
   >
@@ -31,11 +31,13 @@ export default {
     },
     pageNum(val) {
       this.pageSize = val;
+      this.page = 1;
     }
   },
   methods: {
     handleSizeChange(val) {
       this.pageSize = val;
+      this.page = 1;
       this.$emit('change-size', this.pageSize);
     },
     handleCurrentChange(val) {
