@@ -143,7 +143,7 @@ export default {
     SurveySchedule,
     SurveySuggestion
   },
-  inject: ['getBase'],
+  inject: ['getBase', 'getSurveySchedule'],
   props: ['progress', 'attachment', 'riskForm', 'getList'],
   data() {
     return {
@@ -235,6 +235,7 @@ export default {
         await this.$store.dispatch('product/survey/risk/submitRisk', body);
         this.getList();
         this.getBase();
+        this.getSurveySchedule();
       } catch (err) {
         return;
       }

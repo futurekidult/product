@@ -23,26 +23,25 @@
         />
       </el-tab-pane>
       <el-tab-pane
-        v-if="isNewCategory"
+        v-if="surveyCondition & 0b000010"
         label="市场调研"
         name="market"
       >
         <market-survey
-          v-if="hasMarketTask && isGetMarketData"
+          v-if="isGetMarketData"
           :change-color="changeColor"
           :get-list="getMarket"
           :progress="marketProgress"
-          :attachment="markeAttachment"
+          :attachment="marketAttachment"
         />
-        <not-task v-else />
       </el-tab-pane>
       <el-tab-pane
-        v-if="isNewCategoryProduct"
+        v-if="surveyCondition & 0b000100"
         label="用户分析"
         name="analysis"
       >
         <user-analysis
-          v-if="hasAnalysisTask && isGetAnalysisData"
+          v-if="isGetAnalysisData"
           :get-list="getAnalysis"
           :progress="analysisProgress"
           :attachment="analysisAttachment"
@@ -50,43 +49,40 @@
           :scenario-visible="scenarioVisible"
           :country-visible="countryVisible"
         />
-        <not-task v-else />
       </el-tab-pane>
       <el-tab-pane
-        v-if="isNewProduct"
+        v-if="surveyCondition & 0b001000"
         label="产品方案"
         name="plan"
       >
         <product-plan
-          v-if="hasPlanTask && isGetPlanData"
+          v-if="isGetPlanData"
           :get-list="getPlan"
           :progress="planProgress"
           :attachment="planAttachment"
           :product-form="planForm"
           :scenario-visible="planScenarioVisible"
         />
-        <not-task v-else />
       </el-tab-pane>
       <el-tab-pane
+        v-if="surveyCondition & 0b010000"
         label="风险调研"
         name="risk"
       >
         <risk-survey
-          v-if="hasRiskTask && isGetRiskData"
+          v-if="isGetRiskData"
           :get-list="getRisk"
           :progress="riskProgress"
           :attachment="riskAttachment"
           :risk-form="riskForm"
         />
-        <not-task v-else />
       </el-tab-pane>
       <el-tab-pane
-        v-if="isNewProduct"
+        v-if="surveyCondition & 0b100000"
         label="用户调研"
         name="user"
       >
         <user-survey
-          v-if="hasUserSurveyTask"
           :progress="userProgress"
           :button-state="buttonState"
           :survey-apply="surveyApply"
@@ -95,7 +91,6 @@
           :get-list="getUserSurvey"
           :user-id="userSurveyPrincipalId"
         />
-        <not-task v-else />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -109,7 +104,6 @@ import UserAnalysis from './survey/user-analysis.vue';
 import ProductPlan from './survey/product-plan.vue';
 import RiskSurvey from './survey/risk-survey.vue';
 import UserSurvey from './survey/user-survey.vue';
-import NotTask from '../../../common/not-task.vue';
 
 export default {
   components: {
@@ -118,8 +112,7 @@ export default {
     UserAnalysis,
     ProductPlan,
     RiskSurvey,
-    UserSurvey,
-    NotTask
+    UserSurvey
   },
   inject: ['getPlatform'],
   provide() {
@@ -133,14 +126,12 @@ export default {
     'platformForm',
     'productImages',
     'platformAttachment',
-    'isNewCategory',
-    'isNewProduct',
-    'isNewCategoryProduct'
+    'surveyCondition'
   ],
   data() {
     return {
       activeName: 'platform',
-      markeAttachment: {},
+      marketAttachment: {},
       marketProgress: {},
       analysisProgress: {},
       analysisForm: {},
@@ -163,12 +154,7 @@ export default {
       isGetRiskData: false,
       countryVisible: false,
       scenarioVisible: false,
-      planScenarioVisible: false,
-      hasMarketTask: 0,
-      hasAnalysisTask: 0,
-      hasPlanTask: 0,
-      hasRiskTask: 0,
-      hasUserSurveyTask: 0
+      planScenarioVisible: false
     };
   },
   methods: {
@@ -182,9 +168,8 @@ export default {
           params
         });
         let { market } = this.$store.state.product.survey.market;
-        this.hasMarketTask = market.has_task;
         this.marketProgress = market.progress || {};
-        this.markeAttachment = market.report || {};
+        this.marketAttachment = market.report || {};
         changeTimestamp(this.marketProgress, 'estimated_finish_time');
         changeTimestamp(this.marketProgress, 'actual_finish_time');
         this.isGetMarketData = true;
@@ -206,7 +191,6 @@ export default {
           params
         });
         let { userAnalysis } = this.$store.state.product.survey.userAnalysis;
-        this.hasAnalysisTask = userAnalysis.has_task;
         this.analysisProgress = userAnalysis.progress || {};
         changeTimestamp(this.analysisProgress, 'estimated_finish_time');
         changeTimestamp(this.analysisProgress, 'actual_finish_time');
@@ -244,7 +228,6 @@ export default {
       try {
         await this.$store.dispatch('product/survey/plan/getPlan', { params });
         let { plan } = this.$store.state.product.survey.plan;
-        this.hasPlanTask = plan.has_task;
         this.planProgress = plan.progress || {};
         changeTimestamp(this.planProgress, 'estimated_finish_time');
         changeTimestamp(this.planProgress, 'actual_finish_time');
@@ -271,7 +254,6 @@ export default {
       try {
         await this.$store.dispatch('product/survey/risk/getRisk', { params });
         let { risk } = this.$store.state.product.survey.risk;
-        this.hasRiskTask = risk.has_task;
         this.riskProgress = risk.progress || {};
         changeTimestamp(this.riskProgress, 'estimated_finish_time');
         changeTimestamp(this.riskProgress, 'actual_finish_time');
@@ -293,7 +275,6 @@ export default {
           params
         });
         let userSurvey = this.$store.state.product.survey.user;
-        this.hasUserSurveyTask = userSurvey.hasTask;
         this.userSurveyPrincipalId = userSurvey.userId;
         this.buttonState = userSurvey.buttonState || {};
         this.surveyApply = userSurvey.surveyApply || [];
@@ -346,19 +327,6 @@ export default {
           this.getUserSurvey();
           break;
         default:
-      }
-    },
-    getState() {
-      let state = JSON.parse(localStorage.getItem('position'));
-      let val = String(state.is_new_category) + String(state.is_new_product);
-      if (val === '11') {
-        this.isNewCategoryProduct = true;
-        this.isNewCategory = true;
-        this.isNewProduct = true;
-      } else if (val === '10') {
-        this.isNewCategory = true;
-      } else if (val === '01') {
-        this.isNewProduct = true;
       }
     }
   }
