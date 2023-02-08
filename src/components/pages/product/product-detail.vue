@@ -2,7 +2,10 @@
   <div>
     <router-view />
     <div v-if="isParent">
-      <div class="border">
+      <div
+        v-loading="$store.state.product.baseLoading"
+        class="border"
+      >
         <div class="detail-title">
           {{ productBase.name }}
           <div class="tag-position">
@@ -74,7 +77,10 @@
         </div>
       </div>
 
-      <div class="border">
+      <div
+        v-loading="$store.state.product.detailLoading"
+        class="border"
+      >
         <el-tabs
           v-model="$store.state.activeTab"
           @tab-click="handleClick"
@@ -368,6 +374,7 @@ export default {
   },
   methods: {
     async getProductBase() {
+      this.$store.commit('product/setBaseLoading', true);
       try {
         await this.$store.dispatch('product/getProductBase', {
           params: {
@@ -383,6 +390,7 @@ export default {
           this.mode = 'warning';
         }
       } catch (err) {
+        this.$store.commit('product/setBaseLoading', false);
         return;
       }
     },
