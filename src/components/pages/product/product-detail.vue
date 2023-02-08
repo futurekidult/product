@@ -116,7 +116,10 @@
             />
           </el-tab-pane>
           <el-tab-pane
-            v-if="productBase.state >= 20"
+            v-if="
+              (productBase.state >= 20 && productBase.state !== 90) ||
+                unterminated & 0b00000001000
+            "
             label="项目立项"
             name="project"
           >
@@ -130,7 +133,10 @@
             />
           </el-tab-pane>
           <el-tab-pane
-            v-if="productBase.state >= 40"
+            v-if="
+              (productBase.state >= 40 && productBase.state !== 90) ||
+                unterminated & 0b00000010000
+            "
             label="定价信息"
             name="price"
           >
@@ -140,7 +146,10 @@
             />
           </el-tab-pane>
           <el-tab-pane
-            v-if="productBase.state >= 40"
+            v-if="
+              (productBase.state >= 40 && productBase.state !== 90) ||
+                unterminated & 0b00100000000
+            "
             label="专利排查"
             name="patent"
           >
@@ -152,7 +161,10 @@
             />
           </el-tab-pane>
           <el-tab-pane
-            v-if="productBase.state >= 40"
+            v-if="
+              (productBase.state >= 40 && productBase.state !== 90) ||
+                unterminated & 0b00100000000
+            "
             label="模具信息"
             name="mould"
           >
@@ -165,7 +177,10 @@
             />
           </el-tab-pane>
           <el-tab-pane
-            v-if="productBase.state >= 40"
+            v-if="
+              (productBase.state >= 40 && productBase.state !== 90) ||
+                unterminated & 0b00100000000
+            "
             label="样品信息"
             name="sample"
           >
@@ -178,7 +193,10 @@
             />
           </el-tab-pane>
           <el-tab-pane
-            v-if="productBase.state >= 40"
+            v-if="
+              (productBase.state >= 40 && productBase.state !== 90) ||
+                unterminated & 0b00100000000
+            "
             label="测试问题"
             name="question"
           >
@@ -191,7 +209,10 @@
             />
           </el-tab-pane>
           <el-tab-pane
-            v-if="productBase.state >= 40"
+            v-if="
+              (productBase.state >= 40 && productBase.state !== 90) ||
+                unterminated & 0b01000000000
+            "
             label="下单信息"
             name="order"
           >
@@ -204,7 +225,10 @@
             />
           </el-tab-pane>
           <el-tab-pane
-            v-if="productBase.state >= 40"
+            v-if="
+              (productBase.state >= 40 && productBase.state !== 90) ||
+                unterminated & 0b10000000000
+            "
             label="包材设计"
             name="package"
           >
@@ -349,7 +373,8 @@ export default {
       orderPageSize: 10,
       packageCurrentPage: 1,
       packagePageSize: 10,
-      confirmDialogVisible: false
+      confirmDialogVisible: false,
+      unterminated: 0
     };
   },
   computed: {
@@ -375,6 +400,11 @@ export default {
           }
         });
         this.productBase = this.$store.state.product.productBase;
+        let unterminatedStateNum = this.productBase.unterminated_state;
+        if (unterminatedStateNum !== 0) {
+          this.unterminated =
+            this.$global.unterminatedStateCode[unterminatedStateNum];
+        }
         if (this.productBase.state === 90) {
           this.mode = 'info';
         } else if (this.productBase.state === 80) {

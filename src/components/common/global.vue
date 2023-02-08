@@ -23,10 +23,22 @@ const haomiLink =
 
 const defaultTime = new Date(2000, 1, 1, 23, 59, 59);
 
+//终止前状态对应阶段二进制表示方法
+const unterminatedStateCode = {
+  10: 0b00000000111,
+  20: 0b00000001111,
+  30: 0b00000001111,
+  40: 0b00000011111,
+  50: 0b00111111111,
+  60: 0b01111111111,
+  70: 0b11111111111
+};
+
 export default {
   reviewOptions,
   heymeLink,
   haomiLink,
-  defaultTime
+  defaultTime,
+  unterminatedStateCode
 };
 </script>
