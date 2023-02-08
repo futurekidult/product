@@ -370,4 +370,26 @@ body {
 .el-form-item__content {
   display: block !important;
 }
+
+.el-tabs__item {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+
+.el-tabs--card > .el-tabs__header .el-tabs__item:first-child {
+  border-left: none !important;
+}
+
+.el-tabs--card > .el-tabs__header .el-tabs__item {
+  border-left: 1px solid #d9d9d9 !important;
+}
+
+.el-tabs--card > .el-tabs__header .el-tabs__nav {
+  border: 1px solid #d9d9d9 !important;
+  border-bottom: none !important;
+}
+
+.el-tabs--card > .el-tabs__header {
+  border-bottom: 1px solid #d9d9d9 !important;
+}
 </style>
