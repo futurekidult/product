@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="$store.state.product.baseLoading">
+  <div>
     <router-view />
     <div v-if="isParent">
       <div class="border">
