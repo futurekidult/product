@@ -116,9 +116,7 @@
               :platform-form="platformForm"
               :product-images="productImages"
               :platform-attachment="platformAttachment"
-              :is-new-category="isNewCategory"
-              :is-new-product="isNewProduct"
-              :is-new-category-product="isNewCategoryProduct"
+              :survey-condition="surveyCondition"
             />
           </el-tab-pane>
           <el-tab-pane
@@ -304,7 +302,8 @@ export default {
       getPatentContract: this.getContract,
       getProject: this.getProject,
       getPlatform: this.getPlatform,
-      getBase: this.getProductBase
+      getBase: this.getProductBase,
+      getSurveySchedule: this.getSurveySchedule
     };
   },
   props: ['productId', 'orderId'],
@@ -338,9 +337,6 @@ export default {
       platformForm: {},
       productImages: [],
       platformAttachment: {},
-      isNewCategory: false,
-      isNewProduct: false,
-      isNewCategoryProduct: false,
       isGetData: false,
       isGetProjectData: false,
       memberCurrentPage: 1,
@@ -355,7 +351,8 @@ export default {
       orderPageSize: 10,
       packageCurrentPage: 1,
       packagePageSize: 10,
-      confirmDialogVisible: false
+      confirmDialogVisible: false,
+      surveyCondition: null
     };
   },
   computed: {
@@ -405,17 +402,12 @@ export default {
         this.productForm = this.$store.state.product.productDetail;
         this.productAttachment = this.productForm.images;
         let val =
-          String(this.productForm.is_new_category) +
-          String(this.productForm.is_new_product);
-        if (val === '11') {
-          this.isNewCategoryProduct = true;
-          this.isNewCategory = true;
-          this.isNewProduct = true;
-        } else if (val === '10') {
-          this.isNewCategory = true;
-        } else if (val === '01') {
-          this.isNewProduct = true;
-        }
+          (this.productForm.is_new_category << 1) +
+          this.productForm.is_new_product;
+        localStorage.setItem(
+          'product-position',
+          JSON.stringify(this.$global.categoryProductMap[val])
+        );
       } catch (err) {
         this.$store.commit('product/setDetailLoading', false);
         return;
@@ -724,8 +716,26 @@ export default {
           break;
         case 'survey':
           this.getPlatform();
+          this.getSurveySchedule();
           break;
         default:
+      }
+    },
+    async getSurveySchedule() {
+      try {
+        await this.$store.dispatch('product/survey/getSurveySchedule', {
+          params: {
+            product_id: +this.$route.params.productId
+          }
+        });
+        let { currentSurvey } = this.$store.state.product.survey;
+        this.surveyCondition = parseInt(
+          JSON.parse(localStorage.getItem('product-position'))[
+            currentSurvey.current_survey
+          ]
+        );
+      } catch (err) {
+        return;
       }
     },
     handleClick(tab) {

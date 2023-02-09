@@ -19,12 +19,16 @@ export default {
   },
   state() {
     return {
-      suggestion: {}
+      suggestion: {},
+      currentSurvey: {}
     };
   },
   mutations: {
     setSuggestion(state, payload) {
       state.suggestion = payload;
+    },
+    setCurrentSurvey(state, payload) {
+      state.currentSurvey = payload;
     }
   },
   actions: {
@@ -63,6 +67,13 @@ export default {
             ElMessage.success(res.message);
           }
         });
+    },
+    async getSurveySchedule(context, payload) {
+      await axios.get('/survey/schedule/get', payload).then((res) => {
+        if (res.code === 200) {
+          context.commit('setCurrentSurvey', res.data);
+        }
+      });
     }
   }
 };
