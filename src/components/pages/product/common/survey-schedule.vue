@@ -60,7 +60,7 @@ export default {
       };
       try {
         await this.$store.dispatch('product/survey/plan/approvalPlan', body);
-        this.$emit('refresh-plan');
+        this.$emit('refresh-plan', val);
       } catch (err) {
         return;
       }

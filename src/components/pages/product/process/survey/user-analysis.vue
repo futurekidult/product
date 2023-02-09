@@ -297,7 +297,7 @@ export default {
     SurveySchedule,
     SurveySuggestion
   },
-  inject: ['getBase'],
+  inject: ['getBase', 'getSurveySchedule'],
   props: [
     'progress',
     'attachment',
@@ -474,6 +474,7 @@ export default {
         );
         this.getList();
         this.getBase();
+        this.getSurveySchedule();
       } catch (err) {
         return;
       }
