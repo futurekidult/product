@@ -42,17 +42,7 @@
         </div>
       </div>
       <div class="header-right">
-        <div class="handbook">
-          <a
-            class="handbook-link"
-            target="_blank"
-            href="https://alidocs.dingtalk.com/i/nodes/EGd6jK4Nvk3Jl9mOG0pl8ZOP0LawMmQq"
-          >
-            <el-icon
-              class="handbook-icon"
-              :size="20"
-            > <Reading /> </el-icon>操作手册</a>
-        </div>
+        <base-handbook />
         <div>欢迎您，{{ $store.state.userInfo.name }}</div>
         <el-divider
           direction="vertical"
@@ -188,8 +178,7 @@ import {
   Coin,
   Postcard,
   Tickets,
-  Collection,
-  Reading
+  Collection
 } from '@element-plus/icons-vue';
 export default {
   components: {
@@ -211,8 +200,7 @@ export default {
     Coin,
     Postcard,
     Tickets,
-    Collection,
-    Reading
+    Collection
   },
   data() {
     return {

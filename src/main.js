@@ -8,6 +8,7 @@ import BaseTag from './components/common/base-tag.vue';
 import ConfirmDialog from './components/common/confirm-dialog.vue';
 import BaseDelete from './components/common/base-delete.vue';
 import BaseUpload from './components/common/base-upload.vue';
+import BaseHandbook from './components/common/base-handbook.vue';
 import 'element-plus/dist/index.css';
 import global from './components/common/global.vue';
 import { ElMessage } from 'element-plus';
@@ -27,6 +28,7 @@ app.component('BaseTag', BaseTag);
 app.component('ConfirmDialog', ConfirmDialog);
 app.component('BaseDelete', BaseDelete);
 app.component('BaseUpload', BaseUpload);
+app.component('BaseHandbook', BaseHandbook);
 
 app.use(router);
 app.use(store);

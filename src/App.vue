@@ -392,27 +392,4 @@ body {
 .el-tabs--card > .el-tabs__header {
   border-bottom: 1px solid #d9d9d9 !important;
 }
-
-.handbook {
-  display: flex;
-  margin-right: 40px;
-  justify-content: center;
-}
-
-.handbook-icon {
-  height: 24px !important;
-  vertical-align: middle;
-  margin-right: 5px;
-  align-items: unset !important;
-}
-
-.handbook-link {
-  color: #fff;
-  text-decoration: none;
-}
-
-.handbook-link:hover,
-.handbook-link:focus {
-  color: #f8ba2b;
-}
 </style>
