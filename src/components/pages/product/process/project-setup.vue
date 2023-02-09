@@ -129,7 +129,26 @@
             url="sales-plan"
             :file="file"
             :is-disabled="isDisabled"
-            @get-file="getUploadFile"
+            @get-file="(val) => getUploadFile(val, 'sales_plan')"
+          />
+        </el-form-item>
+      </div>
+      <div v-if="form.review_result === 1 || form.review_result === 0">
+        <div class="profit-plan_title">
+          会议附件内容
+        </div>
+        <el-form-item
+          class="sales-plan"
+          label="会议纪要"
+          prop="meeting_summary_file"
+        >
+          <base-upload
+            type="file"
+            tag="会议纪要"
+            url="meeting-summary"
+            :file="meetingFile"
+            :is-disabled="isDisabled"
+            @get-file="(val) => getUploadFile(val, 'meeting_summary_file')"
           />
         </el-form-item>
       </div>
@@ -147,7 +166,14 @@ export default {
     ProcessTable
   },
   inject: ['getProject', 'getProfitCalcaulation', 'getProcessTable', 'getBase'],
-  props: ['progress', 'attachment', 'projectForm', 'profit', 'schedule'],
+  props: [
+    'progress',
+    'attachment',
+    'meetingAttachment',
+    'projectForm',
+    'profit',
+    'schedule'
+  ],
   data() {
     return {
       rules: {
@@ -172,6 +198,7 @@ export default {
       },
       reviewOptions: this.$global.reviewOptions,
       file: this.attachment,
+      meetingFile: this.meetingAttachment,
       form: this.projectForm
     };
   },
@@ -183,6 +210,9 @@ export default {
   watch: {
     attachment(val) {
       this.file = val;
+    },
+    meetingAttachment(val) {
+      this.meetingFile = val;
     },
     projectForm(val) {
       this.form = val;
@@ -203,6 +233,7 @@ export default {
     },
     submitProjectForm() {
       this.form.sales_plan = this.file.id;
+      this.form.meeting_summary_file = this.meetingFile.id;
       let form = JSON.parse(JSON.stringify(this.form));
       if (form.review_result === 1) {
         delete form.unapproved_reason;
@@ -255,8 +286,13 @@ export default {
         this.getProcessTable();
       }
     },
-    getUploadFile(e) {
-      this.file = e;
+    getUploadFile(e, str) {
+      if (str === 'sales_plan') {
+        this.file = e;
+      }
+      if (str === 'meeting_summary_file') {
+        this.meetingFile = e;
+      }
     }
   }
 };

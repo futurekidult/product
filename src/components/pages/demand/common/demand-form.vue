@@ -506,6 +506,25 @@
         保存
       </el-button>
     </el-form-item>
+    <div v-if="type !== 'review' && demandForm.state !== 20">
+      <el-divider />
+      <div class="pass-form_title">
+        会议附件内容
+      </div>
+      <el-form-item
+        label="会议纪要"
+        prop="meeting_summary_file"
+      >
+        <base-upload
+          type="file"
+          tag="会议纪要"
+          url="meeting-file"
+          :file="file"
+          :is-disabled="isDisabled"
+          @get-file="(val) => getUploadFile(val)"
+        />
+      </el-form-item>
+    </div>
   </el-form>
 </template>
 
@@ -517,6 +536,7 @@ export default {
   props: ['type', 'id'],
   data() {
     return {
+      file: {},
       demandForm: {
         images: [],
         competitive_product: [
@@ -736,6 +756,7 @@ export default {
         await getDemandDetail(this.$route.params.id, type, false);
       }
       this.demandForm = this.$store.state.demand.demandDetail;
+      this.file = this.demandForm.meeting_summary_file;
       this.$store.commit('demand/setDemandDetailLoading', false);
       if (this.type === 'detail') {
         this.isDisabled = true;
