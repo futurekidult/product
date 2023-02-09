@@ -80,6 +80,9 @@ export default {
     setProductDetail(state, payload) {
       state.productDetail = payload;
     },
+    setBaseLoading(state, payload) {
+      state.baseLoading = payload;
+    },
     setDetailLoading(state, payload) {
       state.detailLoading = payload;
     },
@@ -122,7 +125,7 @@ export default {
       await axios.get('/product/base/get', payload).then((res) => {
         if (res.code === 200) {
           context.commit('setProductBase', res.data);
-          context.state.baseLoading = false;
+          context.commit('setBaseLoading', false);
         }
       });
     },

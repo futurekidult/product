@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div class="border">
+    <div
+      v-loading="$store.state.sample.baseLoading"
+      class="border"
+    >
       <el-descriptions
         :title="sampleBase.product_name"
         :column="4"
