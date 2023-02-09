@@ -506,7 +506,7 @@
         保存
       </el-button>
     </el-form-item>
-    <div v-if="type !== 'review' && demandForm.state !== 20">
+    <div v-if="type !== 'review' && demandForm.state > 20">
       <el-divider />
       <div class="pass-form_title">
         会议附件内容
