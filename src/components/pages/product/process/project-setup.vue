@@ -287,11 +287,14 @@ export default {
       }
     },
     getUploadFile(e, str) {
-      if (str === 'sales_plan') {
-        this.file = e;
-      }
-      if (str === 'meeting_summary_file') {
-        this.meetingFile = e;
+      switch (str) {
+        case 'sales_plan':
+          this.file = e;
+          break;
+        case 'meeting_summary_file':
+          this.meetingFile = e;
+          break;
+        default:
       }
     }
   }

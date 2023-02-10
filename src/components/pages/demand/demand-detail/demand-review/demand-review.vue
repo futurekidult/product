@@ -787,7 +787,7 @@ export default {
       return this.$store.state.demand.demandDetail;
     },
     isDisabled() {
-      return this.demandDetail.state !== 20 ? true : false;
+      return this.demandDetail.state !== 20;
     }
   },
   watch: {
