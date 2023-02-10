@@ -17,7 +17,7 @@
     </div>
     <el-descriptions
       border
-      :column="8"
+      :column="9"
       direction="vertical"
     >
       <el-descriptions-item label="任务负责人">
@@ -26,14 +26,64 @@
       <el-descriptions-item label="开模费用">
         {{ progress.cost }}
       </el-descriptions-item>
-      <el-descriptions-item label="说明">
-        {{ progress.illustration_text }}
+      <el-descriptions-item
+        label="说明"
+        width="150px"
+      >
+        <el-popover
+          placement="bottom-start"
+          trigger="hover"
+          :content="progress.illustration_text"
+          effect="dark"
+        >
+          <template #reference>
+            <div
+              style="
+                max-width: 150px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+              "
+            >
+              {{ progress.illustration_text }}
+            </div>
+          </template>
+        </el-popover>
       </el-descriptions-item>
       <el-descriptions-item label="计划完成时间">
         {{ progress.estimated_finish_time }}
       </el-descriptions-item>
       <el-descriptions-item label="开模工厂">
         {{ progress.mould_factory }}
+      </el-descriptions-item>
+      <el-descriptions-item label="协议附件">
+        <span v-if="visible">
+          <el-button
+            type="text"
+            @click="
+              previewOrDownload(
+                progress.agreement_file.id,
+                progress.agreement_file.name,
+                'preview'
+              )
+            "
+          >
+            预览
+          </el-button>
+          <span class="table-btn">|</span>
+        </span>
+        <el-button
+          type="text"
+          @click="
+            previewOrDownload(
+              progress.agreement_file.id,
+              progress.agreement_file.name,
+              'download'
+            )
+          "
+        >
+          下载
+        </el-button>
       </el-descriptions-item>
       <el-descriptions-item label="实际完成时间">
         {{ progress.actual_finish_time }}
@@ -94,10 +144,10 @@
       :dialog-visible="applyFormVisible"
       type="create"
       :get-list="getList"
+      :attachment="agreementAttachment"
       :close-on-click-modal="false"
       @hide-dialog="closeApplyForm"
     />
-
     <mould-form
       v-if="editFormVisible"
       title="编辑"
@@ -105,6 +155,7 @@
       :edit-form="editForm"
       type="edit"
       :get-list="getList"
+      :attachment="agreementAttachment"
       :close-on-click-modal="false"
       @hide-dialog="closeEditForm"
     />
@@ -113,19 +164,34 @@
 
 <script>
 import MouldForm from '../common/mould-form.vue';
+import { previewOrDownloadFile } from '../../../../utils';
 
 export default {
   components: {
     MouldForm
   },
   inject: ['getMould'],
-  props: ['progress', 'changeColor', 'getList', 'buttonState'],
+  props: ['progress', 'changeColor', 'getList', 'buttonState', 'attachment'],
   data() {
     return {
       applyFormVisible: false,
       editFormVisible: false,
-      editForm: {}
+      editForm: {},
+      agreementAttachment: {},
+      visible: false
     };
+  },
+  watch: {
+    attachment(val) {
+      this.agreementAttachment = val;
+    },
+    progress(val) {
+      if (val.agreement_file) {
+        if (val.agreement_file.type === 12860) {
+          this.visible = true;
+        }
+      }
+    }
   },
   methods: {
     showApplyForm() {
@@ -162,6 +228,24 @@ export default {
         await this.$store.dispatch('mould/approvalMakingMould', body);
         this.getMould();
         this.getList();
+      } catch (err) {
+        return;
+      }
+    },
+    async previewOrDownload(id, name, type) {
+      this.$store.commit('setAttachmentState', false);
+      try {
+        await this.$store.dispatch('getViewLink', {
+          params: { id },
+          url: 'mould-agreement'
+        });
+        if (this.$store.state.attachmentState) {
+          if (type === 'download') {
+            previewOrDownloadFile(this.$store.state.viewLink, name, 'download');
+          } else {
+            previewOrDownloadFile(this.$store.state.viewLink, name, 'preview');
+          }
+        }
       } catch (err) {
         return;
       }
