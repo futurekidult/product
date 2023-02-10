@@ -42,6 +42,7 @@
         </div>
       </div>
       <div class="header-right">
+        <base-handbook />
         <div>欢迎您，{{ $store.state.userInfo.name }}</div>
         <el-divider
           direction="vertical"

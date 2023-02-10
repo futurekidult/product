@@ -34,14 +34,31 @@ export const timestamp = (val) => {
   }
 };
 
-export const previewOrDownloadFile = (val, name, type) => {
-  let link = document.createElement('a');
-  link.href = val;
-  link.target = '_blank';
+export const download = (href, filename, type) => {
+  const a = document.createElement('a');
+  a.href = href;
   if (type === 'download') {
-    link.download = name;
+    a.download = filename;
+  } else {
+    a.target = '_blank';
   }
-  link.click();
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+};
+
+export const previewOrDownloadFile = (url, filename = '', type) => {
+  fetch(url, {
+    mode: 'cors'
+  })
+    .then((res) => {
+      return res.blob();
+    })
+    .then((blob) => {
+      const blobUrl = window.URL.createObjectURL(blob);
+      download(blobUrl, filename, type);
+      window.URL.revokeObjectURL(blobUrl);
+    });
 };
 
 export const getFile = (e) => {
