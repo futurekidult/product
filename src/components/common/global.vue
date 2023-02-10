@@ -32,6 +32,7 @@ const unterminatedStateCode = {
   50: 0b00111111111,
   60: 0b01111111111,
   70: 0b11111111111
+};
 
 //产品定位与项目调研映射
 const categoryProductMap = {
