@@ -34,17 +34,9 @@
           placement="bottom-start"
           trigger="hover"
           :content="progress.illustration_text"
-          effect="dark"
         >
           <template #reference>
-            <div
-              style="
-                max-width: 150px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-              "
-            >
+            <div class="description-text">
               {{ progress.illustration_text }}
             </div>
           </template>
@@ -73,6 +65,7 @@
           <span class="table-btn">|</span>
         </span>
         <el-button
+          v-if="progress.agreement_file"
           type="text"
           @click="
             previewOrDownload(
@@ -240,11 +233,7 @@ export default {
           url: 'mould-agreement'
         });
         if (this.$store.state.attachmentState) {
-          if (type === 'download') {
-            previewOrDownloadFile(this.$store.state.viewLink, name, 'download');
-          } else {
-            previewOrDownloadFile(this.$store.state.viewLink, name, 'preview');
-          }
+          previewOrDownloadFile(this.$store.state.viewLink, name, type);
         }
       } catch (err) {
         return;
@@ -257,5 +246,12 @@ export default {
 <style scoped>
 .hide {
   display: none;
+}
+
+.description-text {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>
