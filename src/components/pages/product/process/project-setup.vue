@@ -145,7 +145,7 @@
           <base-upload
             type="file"
             tag="会议纪要"
-            url="meeting-summary"
+            url="project-meeting-summary"
             :file="meetingFile"
             :is-disabled="isDisabled"
             @get-file="(val) => getUploadFile(val, 'meeting_summary_file')"

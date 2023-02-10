@@ -535,7 +535,7 @@
             <base-upload
               type="file"
               tag="会议纪要"
-              url="meeting-file"
+              url="demand-meeting-summary"
               :file="attachment"
               :is-disabled="isDisabled"
               @get-file="getUploadFile"
