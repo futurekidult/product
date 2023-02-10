@@ -370,4 +370,9 @@ body {
 .el-form-item__content {
   display: block !important;
 }
+
+.pass-form_title {
+  font-size: 14px;
+  margin: 15px;
+}
 </style>

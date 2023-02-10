@@ -957,9 +957,4 @@ export default {
   padding: 0px 0 0 45px;
   margin: 18px 0;
 }
-
-.pass-form_title {
-  font-size: 14px;
-  margin: 15px;
-}
 </style>

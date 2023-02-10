@@ -919,11 +919,6 @@ export default {
   width: 100%;
 }
 
-.pass-form_title {
-  font-size: 14px;
-  margin: 15px;
-}
-
 .pass-form_span {
   font-size: 14px;
   margin: 15px 0px 0px 0px;
