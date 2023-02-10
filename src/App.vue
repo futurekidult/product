@@ -371,6 +371,11 @@ body {
   display: block !important;
 }
 
+.pass-form_title {
+  font-size: 14px;
+  margin: 15px;
+}
+
 .el-tabs__item {
   font-size: 15px !important;
   font-weight: 600 !important;

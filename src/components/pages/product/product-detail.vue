@@ -132,6 +132,7 @@
               :progress="projectProgress"
               :project-form="projectForm"
               :attachment="projectAttachment"
+              :meeting-attachment="meetingAttachment"
               :profit="projectProfit"
               :schedule="projectSchedule"
             />
@@ -326,6 +327,7 @@ export default {
       projectProgress: {},
       projectForm: {},
       projectAttachment: {},
+      meetingAttachment: {},
       projectProfit: {},
       projectSchedule: {},
       patent: {},
@@ -569,6 +571,7 @@ export default {
         this.projectProgress = project.schedule || {};
         this.projectForm = project.form || {};
         this.projectAttachment = this.projectForm.sales_plan || {};
+        this.meetingAttachment = this.projectForm.meeting_summary_file || {};
         changeTimestamp(this.projectProgress, 'actual_finish_time');
         this.isGetProjectData = true;
       } catch (err) {

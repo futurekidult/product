@@ -505,14 +505,6 @@
               />
             </el-form-item>
           </div>
-          <el-form-item>
-            <el-button
-              type="primary"
-              @click="submitDemandForm"
-            >
-              提交
-            </el-button>
-          </el-form-item>
         </div>
         <div v-if="reviewForm.state === 0">
           <el-divider />
@@ -530,6 +522,26 @@
               show-word-limit
             />
           </el-form-item>
+        </div>
+        <div v-if="reviewForm.state === 0 || reviewForm.state === 1">
+          <el-divider />
+          <div class="pass-form_title">
+            会议附件内容
+          </div>
+          <el-form-item
+            label="会议纪要"
+            prop="meeting_summary_file"
+          >
+            <base-upload
+              type="file"
+              tag="会议纪要"
+              url="meeting-file"
+              :file="attachment"
+              :is-disabled="isDisabled"
+              @get-file="getUploadFile"
+            />
+          </el-form-item>
+          <el-divider />
           <el-form-item>
             <el-button
               type="primary"
@@ -558,6 +570,7 @@ export default {
   },
   data() {
     return {
+      attachment: {},
       reviewForm: {
         market: [{}]
       },
@@ -772,6 +785,9 @@ export default {
     },
     demandDetail() {
       return this.$store.state.demand.demandDetail;
+    },
+    isDisabled() {
+      return this.demandDetail.state !== 20;
     }
   },
   watch: {
@@ -826,6 +842,7 @@ export default {
       }
     },
     submitDemandForm() {
+      this.reviewForm.meeting_summary_file = this.attachment.id;
       let timeForm = JSON.parse(JSON.stringify(this.reviewForm));
       for (let item of Object.keys(timeForm)) {
         if (item.indexOf('time') !== -1) {
@@ -889,6 +906,9 @@ export default {
       } catch (err) {
         return;
       }
+    },
+    getUploadFile(e) {
+      this.attachment = e;
     }
   }
 };
@@ -897,11 +917,6 @@ export default {
 <style scoped>
 .review-form_item {
   width: 100%;
-}
-
-.pass-form_title {
-  font-size: 14px;
-  margin: 15px;
 }
 
 .pass-form_span {
