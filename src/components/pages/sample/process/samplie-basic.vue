@@ -35,12 +35,9 @@
       </el-descriptions-item>
       <el-descriptions-item label="操作">
         <el-button
-          v-if="sampleDetail.test_result !== -1"
+          v-if="sampleDetail.state > 20 && sampleDetail.test_result !== -1"
           type="text"
-          :disabled="
-            sampleDetail.state !== 20 && sampleDetail.test_result !== -1
-          "
-          :class="sampleDetail.state === undefined ? 'hide' : ''"
+          :disabled="sampleDetail.state !== 25"
           @click="confirmResult"
         >
           样品测试结果确认
@@ -154,9 +151,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.hide {
-  display: none;
-}
-</style>
