@@ -186,6 +186,10 @@ body {
   width: 100px;
 }
 
+.is-link {
+  width: auto !important;
+}
+
 .profit-plan_title {
   font-size: 14px;
   margin: 15px 0;

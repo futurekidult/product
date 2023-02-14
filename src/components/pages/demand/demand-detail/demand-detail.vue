@@ -19,12 +19,9 @@
             v-if="demandDetail.state === 30"
             label="关联产品:"
           >
-            <el-button
-              type="text"
-              @click="toProductDetail(demandDetail.product_id)"
-            >
+            <text-btn @handle-click="toProductDetail(demandDetail.product_id)">
               查看
-            </el-button>
+            </text-btn>
           </el-descriptions-item>
           <el-descriptions-item label="创建人:">
             {{ demandDetail.creator_desc }}

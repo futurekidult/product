@@ -183,12 +183,9 @@
         "
         label="操作"
       >
-        <el-button
-          type="text"
-          @click="completeEntry"
-        >
+        <text-btn @handle-click="completeEntry">
           完成SKU录入甲骨文
-        </el-button>
+        </text-btn>
       </el-descriptions-item>
     </el-descriptions>
   </div>

@@ -36,37 +36,38 @@
     >
       <div>{{ attachment.name }}</div>
       <div>
-        <el-button
+        <text-btn
           v-if="!isDisabled"
-          type="text"
-          @click="deleteFile(attachment.id)"
+          @handle-click="deleteFile(attachment.id)"
         >
           删除
-        </el-button>
+        </text-btn>
         <span
           v-if="
             !isDisabled && (attachment.type === 12860 || type === 'imageSingle')
           "
           class="table-btn"
         >|</span>
-        <el-button
+        <text-btn
           v-if="attachment.type === 12860 || type === 'imageSingle'"
-          type="text"
-          @click="previewOrDownload(attachment.id, attachment.name, 'preview')"
+          @handle-click="
+            previewOrDownload(attachment.id, attachment.name, 'preview')
+          "
         >
           预览
-        </el-button>
+        </text-btn>
         <span
           v-if="isDisabled && attachment.type === 12860"
           class="table-btn"
         >|</span>
-        <el-button
+        <text-btn
           v-if="isDisabled && type !== 'imageSingle'"
-          type="text"
-          @click="previewOrDownload(attachment.id, attachment.name, 'download')"
+          @handle-click="
+            previewOrDownload(attachment.id, attachment.name, 'download')
+          "
         >
           下载
-        </el-button>
+        </text-btn>
       </div>
     </div>
     <div
@@ -82,23 +83,21 @@
           {{ item.name }}
         </div>
         <div>
-          <el-button
+          <text-btn
             v-if="!isDisabled"
-            type="text"
-            @click="deleteFile(item.id)"
+            @handle-click="deleteFile(item.id)"
           >
             删除
-          </el-button>
+          </text-btn>
           <span
             v-if="!isDisabled"
             class="table-btn"
           >|</span>
-          <el-button
-            type="text"
-            @click="previewOrDownload(item.id, item.name, 'preview')"
+          <text-btn
+            @handle-click="previewOrDownload(item.id, item.name, 'preview')"
           >
             预览
-          </el-button>
+          </text-btn>
         </div>
       </div>
     </div>
@@ -115,35 +114,32 @@
           {{ item.name }}
         </div>
         <div>
-          <el-button
+          <text-btn
             v-if="!isDisabled"
-            type="text"
-            @click="deleteFile(item.id)"
+            @handle-click="deleteFile(item.id)"
           >
             删除
-          </el-button>
+          </text-btn>
           <span
             v-if="!isDisabled && item.type === 12860"
             class="table-btn"
           >|</span>
-          <el-button
+          <text-btn
             v-if="item.type === 12860"
-            type="text"
-            @click="previewOrDownload(item.id, item.name, 'preview')"
+            @handle-click="previewOrDownload(item.id, item.name, 'preview')"
           >
             预览
-          </el-button>
+          </text-btn>
           <span
             v-if="item.type === 12860 && isDisabled"
             class="table-btn"
           >|</span>
-          <el-button
+          <text-btn
             v-if="isDisabled"
-            type="text"
-            @click="previewOrDownload(item.id, item.name, 'download')"
+            @handle-click="previewOrDownload(item.id, item.name, 'download')"
           >
             下载
-          </el-button>
+          </text-btn>
         </div>
       </div>
     </div>

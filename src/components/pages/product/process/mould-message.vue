@@ -50,19 +50,13 @@
         fixed="right"
       >
         <template #default="scope">
-          <el-button
-            type="text"
-            @click="showDeleteDialog(scope.row.id)"
-          >
+          <text-btn @handle-click="showDeleteDialog(scope.row.id)">
             删除
-          </el-button>
+          </text-btn>
           <span class="table-btn">|</span>
-          <el-button
-            type="text"
-            @click="toDetail(scope.row.mould_id)"
-          >
+          <text-btn @handle-click="toDetail(scope.row.mould_id)">
             查看
-          </el-button>
+          </text-btn>
         </template>
       </el-table-column>
     </el-table>

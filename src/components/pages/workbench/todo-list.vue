@@ -52,14 +52,13 @@
         width="100"
       >
         <template #default="scope">
-          <el-button
-            type="text"
-            @click="
+          <text-btn
+            @handle-click="
               toDetail(scope.row.task_id, scope.row.related_id, scope.row.state)
             "
           >
             查看详情
-          </el-button>
+          </text-btn>
         </template>
       </el-table-column>
     </el-table>

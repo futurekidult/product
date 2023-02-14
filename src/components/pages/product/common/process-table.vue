@@ -37,10 +37,9 @@
         </el-table-column>
         <el-table-column label="操作">
           <template #default="scope">
-            <el-button
+            <text-btn
               v-if="isDisabled"
-              type="text"
-              @click="
+              @handle-click="
                 editStage(
                   scope.row.stage_desc,
                   scope.row.id,
@@ -49,18 +48,17 @@
               "
             >
               编辑
-            </el-button>
-            <el-button
+            </text-btn>
+            <text-btn
               v-if="
                 show &&
                   (scope.row.stage === 60 || scope.row.stage === 70) &&
                   scope.row.actual_finish_time === ''
               "
-              type="text"
-              @click="showActualTimeForm(scope.row.id)"
+              @handle-click="showActualTimeForm(scope.row.id)"
             >
               填写实际完成时间
-            </el-button>
+            </text-btn>
           </template>
         </el-table-column>
       </el-table>
@@ -289,7 +287,7 @@
 </template>
 
 <script>
-import { timestamp,setDisabledDate } from '../../../../utils';
+import { timestamp, setDisabledDate } from '../../../../utils';
 export default {
   inject: ['getProcessTable'],
   props: ['getSchedule', 'changeColor'],

@@ -48,13 +48,12 @@
           direction="vertical"
           class="header-right_divider"
         />
-        <el-button
-          type="text"
+        <text-btn
           class="exit-btn"
-          @click="logout"
+          @handle-click="logout"
         >
           退出
-        </el-button>
+        </text-btn>
       </div>
     </el-header>
     <el-container>

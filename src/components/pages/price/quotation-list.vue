@@ -8,12 +8,13 @@
           style="width: 80%"
         >
           <el-descriptions-item label="产品信息:">
-            <el-button
-              type="text"
-              @click="getProductDetailDialog(quotationList.related_product_id)"
+            <text-btn
+              @handle-click="
+                getProductDetailDialog(quotationList.related_product_id)
+              "
             >
               查看
-            </el-button>
+            </text-btn>
           </el-descriptions-item>
           <el-descriptions-item label="定价ID:">
             {{ quotationList.pricing_id }}
@@ -22,12 +23,9 @@
             <template #label>
               采购参考价:
             </template>
-            <el-button
-              type="text"
-              @click="showReferencePriceForm"
-            >
+            <text-btn @handle-click="showReferencePriceForm">
               查看内容
-            </el-button>
+            </text-btn>
           </el-descriptions-item>
           <el-descriptions-item label="项目管理员:">
             {{ quotationList.project_administrator }}
@@ -70,12 +68,9 @@
             min-width="200"
           >
             <template #default="scope">
-              <el-button
-                type="text"
-                @click="toDetail(scope.row.supplier_id)"
-              >
+              <text-btn @handle-click="toDetail(scope.row.supplier_id)">
                 {{ scope.row.supplier_name }}
-              </el-button>
+              </text-btn>
             </template>
           </el-table-column>
           <el-table-column
@@ -101,12 +96,9 @@
             width="100"
           >
             <template #default="scope">
-              <el-button
-                type="text"
-                @click="showTargetPriceForm(scope.row.id)"
-              >
+              <text-btn @handle-click="showTargetPriceForm(scope.row.id)">
                 查看内容
-              </el-button>
+              </text-btn>
             </template>
           </el-table-column>
           <el-table-column

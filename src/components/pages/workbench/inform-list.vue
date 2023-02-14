@@ -37,13 +37,12 @@
         fixed="right"
       >
         <template #default="scope">
-          <el-button
-            type="text"
+          <text-btn
             :disabled="scope.row.state === 1"
-            @click="noticationRead(scope.row.id)"
+            @handle-click="noticationRead(scope.row.id)"
           >
             已读
-          </el-button>
+          </text-btn>
         </template>
       </el-table-column>
     </el-table>
