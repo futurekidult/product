@@ -124,11 +124,4 @@ export default {
 .header-right > div {
   margin-left: 10px;
 }
-
-.header-right_divider,
-.exit-btn {
-  height: 20px;
-  margin: 12px 5px;
-  color: #fff;
-}
 </style>

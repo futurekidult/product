@@ -274,25 +274,6 @@ export default {
   margin-left: 10px;
 }
 
-.header-right_divider,
-.exit-btn {
-  height: 20px;
-  margin: 12px 5px;
-  color: #fff;
-}
-
-.exit-btn:hover {
-  /* IFTRUE_heyme */
-  color: #f8ba2b;
-  /* FITRUE_heyme */
-  /* IFTRUE_basepoint */
-  color: #ff7564;
-  /* FITRUE_basepoint */
-  /* IFTRUE_heytool */
-  color: #288cff;
-  /* FITRUE_heytool */
-}
-
 .toggle-btn {
   margin-right: 10px;
   margin-left: 10px;
