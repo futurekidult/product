@@ -49,6 +49,7 @@
           class="header-right_divider"
         />
         <text-btn
+          style="height: auto !important"
           class="exit-btn"
           @handle-click="logout"
         >

@@ -213,6 +213,10 @@ body {
   /* FITRUE_heytool */
 }
 
+.el-button.is-link {
+  height: 32px !important;
+}
+
 .profit-plan_title {
   font-size: 14px;
   margin: 15px 0;
