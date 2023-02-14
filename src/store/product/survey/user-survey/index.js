@@ -12,7 +12,6 @@ export default {
       userSurveyDetail: {},
       userLoading: true,
       userId: 0,
-      hasTask: 0,
       ids: {}
     };
   },
@@ -38,9 +37,6 @@ export default {
     setUserId(state, payload) {
       state.userId = payload;
     },
-    setTaskStatus(state, payload) {
-      state.hasTask = payload;
-    },
     setIds(state, payload) {
       state.ids = {
         survey_id: payload.survey_id,
@@ -58,7 +54,6 @@ export default {
           context.commit('setSurveyApply', res.data.survey_apply);
           context.commit('setPlanList', res.data.plan_list);
           context.commit('setUserId', res.data.default_operator_id);
-          context.commit('setTaskStatus', res.data.has_task);
           context.commit('setUserLoading', false);
         }
       });
