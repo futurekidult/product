@@ -106,7 +106,7 @@
           v-if="progress.state !== 40 && progress.state !== undefined"
           label="操作"
         >
-          <text-btn @handle-click="confirmPatent(scope.row.id)">
+          <text-btn @handle-click="confirmPatent">
             专利排查完成
           </text-btn>
         </el-descriptions-item>
