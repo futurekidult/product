@@ -15,14 +15,13 @@
             >
               <span>{{ productBase.state_desc }}</span>
             </base-tag>
-            <el-button
+            <text-btn
               v-if="productBase.state === 90"
-              type="text"
               class="terminate-btn"
-              @click="showViewReasonForm(productBase.termination_reason)"
+              @handle-click="showViewReasonForm(productBase.termination_reason)"
             >
               查看终止原因
-            </el-button>
+            </text-btn>
           </div>
         </div>
         <div style="display: flex; justify-content: space-between">
@@ -40,12 +39,9 @@
               <template #label>
                 关联需求ID:
               </template>
-              <el-button
-                type="text"
-                @click="toRelatedDemand(productBase.demand_id)"
-              >
+              <text-btn @handle-click="toRelatedDemand(productBase.demand_id)">
                 {{ productBase.demand_id }}
-              </el-button>
+              </text-btn>
             </el-descriptions-item>
             <el-descriptions-item label="产品定位:">
               {{ productBase.positioning_desc }}

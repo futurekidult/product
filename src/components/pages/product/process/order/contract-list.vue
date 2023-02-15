@@ -24,12 +24,9 @@
         v-if="exportContract.state !== 40 && exportContract.state !== undefined"
         label="操作"
       >
-        <el-button
-          type="text"
-          @click="confirmExportContract(exportContract.id)"
-        >
+        <text-btn @handle-click="confirmExportContract(exportContract.id)">
           确认合同
-        </el-button>
+        </text-btn>
       </el-descriptions-item>
     </el-descriptions>
 
@@ -60,17 +57,13 @@
             :show-file-list="false"
             :http-request="(e) => handleFileSuccess(e, 'manual')"
           >
-            <el-button
-              v-if="JSON.stringify(manualFile) === '{}'"
-              type="text"
-            >
+            <text-btn v-if="JSON.stringify(manualFile) === '{}'">
               上传
-            </el-button>
+            </text-btn>
           </el-upload>
           <div v-if="manualFile !== undefined && manualFile.type === 12860">
-            <el-button
-              type="text"
-              @click="
+            <text-btn
+              @handle-click="
                 previewOrDownload(
                   manualFile.id,
                   manualFile.name,
@@ -80,7 +73,7 @@
               "
             >
               预览
-            </el-button>
+            </text-btn>
           </div>
           <div
             v-if="purchaseContract.state !== 10"
@@ -90,9 +83,8 @@
               v-if="manualFile !== undefined && manualFile.type === 12860"
               class="table-btn"
             >|</span>
-            <el-button
-              type="text"
-              @click="
+            <text-btn
+              @handle-click="
                 previewOrDownload(
                   manualFile.id,
                   manualFile.name,
@@ -102,7 +94,7 @@
               "
             >
               下载
-            </el-button>
+            </text-btn>
           </div>
           <div
             v-if="
@@ -114,12 +106,9 @@
               v-if="manualFile !== undefined && manualFile.type === 12860"
               class="table-btn"
             >|</span>
-            <el-button
-              type="text"
-              @click="deleteFile('manual')"
-            >
+            <text-btn @handle-click="deleteFile('manual')">
               删除
-            </el-button>
+            </text-btn>
           </div>
         </div>
       </el-descriptions-item>
@@ -133,17 +122,13 @@
             :show-file-list="false"
             :http-request="(e) => handleFileSuccess(e, 'diecuts')"
           >
-            <el-button
-              v-if="JSON.stringify(diecutsFile) === '{}'"
-              type="text"
-            >
+            <text-btn v-if="JSON.stringify(diecutsFile) === '{}'">
               上传
-            </el-button>
+            </text-btn>
           </el-upload>
           <div v-if="diecutsFile !== undefined && diecutsFile.type === 12860">
-            <el-button
-              type="text"
-              @click="
+            <text-btn
+              @handle-click="
                 previewOrDownload(
                   diecutsFile.id,
                   diecutsFile.name,
@@ -153,7 +138,7 @@
               "
             >
               预览
-            </el-button>
+            </text-btn>
           </div>
           <div
             v-if="purchaseContract.state !== 10"
@@ -163,9 +148,8 @@
               v-if="diecutsFile !== undefined && diecutsFile.type === 12860"
               class="table-btn"
             >|</span>
-            <el-button
-              type="text"
-              @click="
+            <text-btn
+              @handle-click="
                 previewOrDownload(
                   diecutsFile.id,
                   diecutsFile.name,
@@ -175,7 +159,7 @@
               "
             >
               下载
-            </el-button>
+            </text-btn>
           </div>
           <div
             v-if="
@@ -187,12 +171,9 @@
               v-if="diecutsFile !== undefined && diecutsFile.type === 12860"
               class="table-btn"
             >|</span>
-            <el-button
-              type="text"
-              @click="deleteFile('diecuts')"
-            >
+            <text-btn @handle-click="deleteFile('diecuts')">
               删除
-            </el-button>
+            </text-btn>
           </div>
         </div>
       </el-descriptions-item>
@@ -202,12 +183,9 @@
         "
         label="操作"
       >
-        <el-button
-          type="text"
-          @click="confirmPurchaseContract(purchaseContract.id)"
-        >
+        <text-btn @handle-click="confirmPurchaseContract(purchaseContract.id)">
           提交
-        </el-button>
+        </text-btn>
       </el-descriptions-item>
     </el-descriptions>
   </div>

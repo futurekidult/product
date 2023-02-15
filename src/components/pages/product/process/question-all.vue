@@ -23,12 +23,9 @@
         width="110"
       >
         <template #default="scope">
-          <el-button
-            type="text"
-            @click="toSampleDetail(scope.row.sample_id)"
-          >
+          <text-btn @handle-click="toSampleDetail(scope.row.sample_id)">
             {{ scope.row.sample_id }}
-          </el-button>
+          </text-btn>
         </template>
       </el-table-column>
       <el-table-column
@@ -47,12 +44,9 @@
         min-width="150"
       >
         <template #default="scope">
-          <el-button
-            type="text"
-            @click="showConsequenceForm(scope.row.consequence)"
-          >
+          <text-btn @handle-click="showConsequenceForm(scope.row.consequence)">
             查看内容
-          </el-button>
+          </text-btn>
         </template>
       </el-table-column>
       <el-table-column
@@ -90,13 +84,12 @@
         min-width="100"
       >
         <template #default="scope">
-          <el-button
+          <text-btn
             v-if="scope.row.state === 30"
-            type="text"
-            @click="showReasonForm(scope.row.ignore_reason_id)"
+            @handle-click="showReasonForm(scope.row.ignore_reason_id)"
           >
             查看内容
-          </el-button>
+          </text-btn>
         </template>
       </el-table-column>
       <el-table-column

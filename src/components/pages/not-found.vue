@@ -35,13 +35,13 @@
             direction="vertical"
             class="header-right_divider"
           />
-          <el-button
-            type="text"
+          <text-btn
+            style="height: auto !important"
             class="exit-btn"
-            @click="logout"
+            @handle-click="logout"
           >
             退出
-          </el-button>
+          </text-btn>
         </div>
       </el-header>
     </el-container>
@@ -124,12 +124,5 @@ export default {
 
 .header-right > div {
   margin-left: 10px;
-}
-
-.header-right_divider,
-.exit-btn {
-  height: 20px;
-  margin: 12px 5px;
-  color: #fff;
 }
 </style>

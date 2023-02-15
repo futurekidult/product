@@ -61,13 +61,12 @@
         fixed="right"
       >
         <template #default="scope">
-          <el-button
-            type="text"
+          <text-btn
             :disabled="scope.row.result_path !== ''"
-            @click="showResultForm(scope.row.id)"
+            @handle-click="showResultForm(scope.row.id)"
           >
             上传结果
-          </el-button>
+          </text-btn>
         </template>
       </el-table-column>
     </el-table>

@@ -56,20 +56,18 @@
           fixed="right"
         >
           <template #default="scope">
-            <el-button
+            <text-btn
               v-if="scope.row.state === 10"
-              type="text"
-              @click="showReviewForm(scope.row.id)"
+              @handle-click="showReviewForm(scope.row.id)"
             >
               用户调研需求评审
-            </el-button>
-            <el-button
+            </text-btn>
+            <text-btn
               v-else
-              type="text"
-              @click="showViewReviewForm(scope.row.id)"
+              @handle-click="showViewReviewForm(scope.row.id)"
             >
               查看用户调研需求
-            </el-button>
+            </text-btn>
           </template>
         </el-table-column>
       </el-table>
@@ -101,12 +99,9 @@
             label="实际调研开始时间"
             width="200px"
           >
-            <el-button
-              type="text"
-              @click="showSetTime"
-            >
+            <text-btn @handle-click="showSetTime">
               填写时间
-            </el-button>
+            </text-btn>
           </el-descriptions-item>
           <el-descriptions-item
             v-else
@@ -134,13 +129,12 @@
             label="操作"
             width="200px"
           >
-            <el-button
-              type="text"
+            <text-btn
               :disabled="progress.state === 50"
-              @click="confirmUserSurvey(progress.id)"
+              @handle-click="confirmUserSurvey(progress.id)"
             >
               用户调研结果确认
-            </el-button>
+            </text-btn>
           </el-descriptions-item>
         </el-descriptions>
 
@@ -358,9 +352,7 @@
                           )
                       "
                     >
-                      <el-button type="text">
-                        上传
-                      </el-button>
+                      <text-btn> 上传 </text-btn>
                     </el-upload>
                   </div>
                   <div
@@ -369,9 +361,8 @@
                         scope.row.attachment.type === 12860
                     "
                   >
-                    <el-button
-                      type="text"
-                      @click="
+                    <text-btn
+                      @handle-click="
                         previewOrDownload(
                           scope.row.attachment.id,
                           scope.row.attachment.name,
@@ -380,7 +371,7 @@
                       "
                     >
                       预览
-                    </el-button>
+                    </text-btn>
                     <span class="table-btn">|</span>
                   </div>
                   <div
@@ -389,17 +380,13 @@
                         (scope.row.state === 10 || scope.row.state === 30)
                     "
                   >
-                    <el-button
-                      type="text"
-                      @click="deleteFile(scope.row.id)"
-                    >
+                    <text-btn @handle-click="deleteFile(scope.row.id)">
                       删除
-                    </el-button>
+                    </text-btn>
                     <span class="table-btn">|</span>
-                    <el-button
+                    <text-btn
                       v-if="scope.row.attachment.type === 12860"
-                      type="text"
-                      @click="
+                      @handle-click="
                         previewOrDownload(
                           scope.row.attachment.id,
                           scope.row.attachment.name,
@@ -408,16 +395,15 @@
                       "
                     >
                       预览
-                    </el-button>
+                    </text-btn>
                     <span
                       v-if="scope.row.attachment.type === 12860"
                       class="table-btn"
                     >|</span>
                   </div>
                   <div v-if="JSON.stringify(scope.row.attachment) !== '{}'">
-                    <el-button
-                      type="text"
-                      @click="
+                    <text-btn
+                      @handle-click="
                         previewOrDownload(
                           scope.row.attachment.id,
                           scope.row.attachment.name,
@@ -426,7 +412,7 @@
                       "
                     >
                       下载
-                    </el-button>
+                    </text-btn>
                   </div>
                 </div>
               </template>
@@ -465,17 +451,16 @@
                   </el-button>
                 </div>
                 <div v-else>
-                  <el-button
+                  <text-btn
                     v-if="
                       progress.state === 10 ||
                         progress.state === 30 ||
                         (progress.state === 40 && !scope.row.id)
                     "
-                    type="text"
-                    @click="deletePlanItem(scope.$index + 1)"
+                    @handle-click="deletePlanItem(scope.$index + 1)"
                   >
                     删除
-                  </el-button>
+                  </text-btn>
                   <el-button
                     v-if="
                       buttonState.plan === 0 &&

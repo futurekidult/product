@@ -47,31 +47,28 @@
       </el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
-          <el-button
+          <text-btn
             v-if="scope.row.review_state === 10"
-            type="text"
-            @click="showReviewForm(scope.row.id)"
+            @handle-click="showReviewForm(scope.row.id)"
           >
             {{ reviewBtnContent }}
-          </el-button>
-          <el-button
+          </text-btn>
+          <text-btn
             v-if="scope.row.review_state === 30 && type === 'apply'"
-            type="text"
-            @click="showEditForm(scope.row.id)"
+            @handle-click="showEditForm(scope.row.id)"
           >
             编辑
-          </el-button>
+          </text-btn>
           <span
             v-if="scope.row.review_state === 30 && type === 'apply'"
             class="table-btn"
           >|</span>
-          <el-button
+          <text-btn
             v-if="scope.row.review_state !== 10"
-            type="text"
-            @click="showViewForm(scope.row.id)"
+            @handle-click="showViewForm(scope.row.id)"
           >
             查看
-          </el-button>
+          </text-btn>
         </template>
       </el-table-column>
     </el-table>

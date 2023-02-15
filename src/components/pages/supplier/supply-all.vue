@@ -68,12 +68,9 @@
       <div class="select-title supplier-item">
         <div>
           <span class="line">|</span> 供应商列表
-          <el-button
-            type="text"
-            @click="toBlackList"
-          >
+          <text-btn @handle-click="toBlackList">
             查看黑名单
-          </el-button>
+          </text-btn>
         </div>
         <el-button
           type="primary"
@@ -145,27 +142,18 @@
         >
           <template #default="scope">
             <div style="display: flex">
-              <el-button
-                type="text"
-                @click="toDetail(scope.row.id, 'view')"
-              >
+              <text-btn @handle-click="toDetail(scope.row.id, 'view')">
                 查看
-              </el-button>
+              </text-btn>
               <div v-if="scope.row.state === 10">
                 <span class="table-btn">|</span>
-                <el-button
-                  type="text"
-                  @click="showDeleteDialog(scope.row.id)"
-                >
+                <text-btn @handle-click="showDeleteDialog(scope.row.id)">
                   删除
-                </el-button>
+                </text-btn>
                 <span class="table-btn">|</span>
-                <el-button
-                  type="text"
-                  @click="toDetail(scope.row.id, 'approval')"
-                >
+                <text-btn @handle-click="toDetail(scope.row.id, 'approval')">
                   供应商审批
-                </el-button>
+                </text-btn>
               </div>
               <div
                 v-else
@@ -173,21 +161,15 @@
               >
                 <div v-if="scope.row.state === 30">
                   <span class="table-btn">|</span>
-                  <el-button
-                    type="text"
-                    @click="toUpdate(scope.row.id)"
-                  >
+                  <text-btn @handle-click="toUpdate(scope.row.id)">
                     编辑
-                  </el-button>
+                  </text-btn>
                 </div>
                 <div>
                   <span class="table-btn">|</span>
-                  <el-button
-                    type="text"
-                    @click="showBlackDialog(scope.row.id)"
-                  >
+                  <text-btn @handle-click="showBlackDialog(scope.row.id)">
                     加入黑名单
-                  </el-button>
+                  </text-btn>
                 </div>
               </div>
             </div>

@@ -64,12 +64,9 @@
             width="100"
           >
             <template #default="scope">
-              <el-button
-                type="text"
-                @click="showEditForm(scope.row.id)"
-              >
+              <text-btn @handle-click="showEditForm(scope.row.id)">
                 编辑
-              </el-button>
+              </text-btn>
             </template>
           </el-table-column>
         </el-table>

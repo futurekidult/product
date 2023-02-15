@@ -52,12 +52,9 @@
           />
           <el-table-column label="操作">
             <template #default="scope">
-              <el-button
-                type="text"
-                @click="showDeleteDialog(scope.row.id)"
-              >
+              <text-btn @handle-click="showDeleteDialog(scope.row.id)">
                 删除
-              </el-button>
+              </text-btn>
             </template>
           </el-table-column>
         </el-table>

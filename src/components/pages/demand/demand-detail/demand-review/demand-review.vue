@@ -18,12 +18,9 @@
           v-if="demandDetail.state === 30"
           label="关联产品:"
         >
-          <el-button
-            type="text"
-            @click="toProductDetail(demandDetail.product_id)"
-          >
+          <text-btn @handle-click="toProductDetail(demandDetail.product_id)">
             查看
-          </el-button>
+          </text-btn>
         </el-descriptions-item>
         <el-descriptions-item label="创建人:">
           {{ demandDetail.creator_desc }}
@@ -38,20 +35,18 @@
       <div class="select-title review-msg">
         <div><span class="line">|</span> 需求信息</div>
         <div>
-          <el-button
+          <text-btn
             v-if="!show"
-            type="text"
-            @click="showForm"
+            @handle-click="showForm"
           >
             展开内容
-          </el-button>
-          <el-button
+          </text-btn>
+          <text-btn
             v-else
-            type="text"
-            @click="show = !show"
+            @handle-click="show = !show"
           >
             收起内容
-          </el-button>
+          </text-btn>
         </div>
       </div>
       <demand-form

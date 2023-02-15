@@ -43,21 +43,17 @@
         width="150"
       >
         <template #default="scope">
-          <el-button
-            type="text"
-            @click="
+          <text-btn
+            @handle-click="
               showEditForm(scope.row.id, scope.row.user_id, scope.row.role_id)
             "
           >
             修改
-          </el-button>
+          </text-btn>
           <span class="table-btn">|</span>
-          <el-button
-            type="text"
-            @click="showDeleteDialog(scope.row.id)"
-          >
+          <text-btn @handle-click="showDeleteDialog(scope.row.id)">
             删除
-          </el-button>
+          </text-btn>
         </template>
       </el-table-column>
     </el-table>

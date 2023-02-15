@@ -20,31 +20,32 @@
         </el-descriptions-item>
         <el-descriptions-item label="结果附件">
           <div v-if="JSON.stringify(data) !== '{}'">
-            <el-button
+            <text-btn
               v-if="data.state === 10 && JSON.stringify(file) === '{}'"
-              type="text"
-              @click="showFileDialog"
+              @handle-click="showFileDialog"
             >
               上传
-            </el-button>
+            </text-btn>
             <div
               v-if="data.state === 40"
               style="display: flex"
             >
-              <el-button
-                type="text"
-                @click="previewOrDownload(file.id, file.name, 'download')"
+              <text-btn
+                @handle-click="
+                  previewOrDownload(file.id, file.name, 'download')
+                "
               >
                 下载
-              </el-button>
+              </text-btn>
               <div v-if="data.result_file.type === 12860">
                 <span class="table-btn">|</span>
-                <el-button
-                  type="text"
-                  @click="previewOrDownload(file.id, file.name, 'preview')"
+                <text-btn
+                  @handle-click="
+                    previewOrDownload(file.id, file.name, 'preview')
+                  "
                 >
                   预览
-                </el-button>
+                </text-btn>
               </div>
             </div>
             <div
@@ -52,20 +53,18 @@
               style="display: flex"
             >
               <div v-if="data.result_file.type === 12860">
-                <el-button
-                  type="text"
-                  @click="previewOrDownload(file.id, file.name, 'preview')"
+                <text-btn
+                  @handle-click="
+                    previewOrDownload(file.id, file.name, 'preview')
+                  "
                 >
                   预览
-                </el-button>
+                </text-btn>
                 <span class="table-btn">|</span>
               </div>
-              <el-button
-                type="text"
-                @click="deleteFile"
-              >
+              <text-btn @handle-click="deleteFile">
                 删除
-              </el-button>
+              </text-btn>
             </div>
           </div>
         </el-descriptions-item>
@@ -78,12 +77,9 @@
           v-if="data.state !== 40 && data.state !== undefined"
           label="操作"
         >
-          <el-button
-            type="text"
-            @click="uploadAttachment"
-          >
+          <text-btn @handle-click="uploadAttachment">
             完成
-          </el-button>
+          </text-btn>
         </el-descriptions-item>
       </el-descriptions>
     </div>
@@ -124,23 +120,19 @@
           >
             <div>{{ file.name }}</div>
             <div style="display: flex">
-              <el-button
-                type="text"
-                @click="deleteFile"
-              >
+              <text-btn @handle-click="deleteFile">
                 删除
-              </el-button>
+              </text-btn>
               <span
                 v-if="file.type === 12860"
                 class="table-btn"
               >|</span>
-              <el-button
+              <text-btn
                 v-if="file.type === 12860"
-                type="text"
-                @click="previewOrDownload(file.id, file.name, 'preview')"
+                @handle-click="previewOrDownload(file.id, file.name, 'preview')"
               >
                 预览
-              </el-button>
+              </text-btn>
             </div>
           </div>
         </el-form-item>

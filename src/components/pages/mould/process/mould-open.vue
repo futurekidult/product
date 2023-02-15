@@ -50,9 +50,8 @@
       </el-descriptions-item>
       <el-descriptions-item label="协议附件">
         <span v-if="visible">
-          <el-button
-            type="text"
-            @click="
+          <text-btn
+            @handle-click="
               previewOrDownload(
                 progress.agreement_file.id,
                 progress.agreement_file.name,
@@ -61,13 +60,12 @@
             "
           >
             预览
-          </el-button>
+          </text-btn>
           <span class="table-btn">|</span>
         </span>
-        <el-button
+        <text-btn
           v-if="progress.agreement_file"
-          type="text"
-          @click="
+          @handle-click="
             previewOrDownload(
               progress.agreement_file.id,
               progress.agreement_file.name,
@@ -76,7 +74,7 @@
           "
         >
           下载
-        </el-button>
+        </text-btn>
       </el-descriptions-item>
       <el-descriptions-item label="实际完成时间">
         {{ progress.actual_finish_time }}
@@ -112,9 +110,8 @@
             </el-button>
           </div>
           <div v-if="progress.state === 30">
-            <el-button
-              type="text"
-              @click="
+            <text-btn
+              @handle-click="
                 editMakingMould(
                   progress.id,
                   progress.cost,
@@ -125,7 +122,7 @@
               "
             >
               编辑
-            </el-button>
+            </text-btn>
           </div>
         </div>
       </el-descriptions-item>
