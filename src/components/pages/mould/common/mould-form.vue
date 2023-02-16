@@ -60,6 +60,18 @@
           show-word-limit
         />
       </el-form-item>
+      <el-form-item
+        label="协议附件"
+        prop="agreement_file"
+      >
+        <base-upload
+          type="file"
+          tag="协议附件"
+          url="mould-agreement"
+          :file="file"
+          @get-file="getUploadFile"
+        />
+      </el-form-item>
       <el-divider />
       <div style="text-align: right">
         <el-button
@@ -80,15 +92,29 @@
 </template>
 
 <script>
-import { timestamp,setDisabledDate } from '../../../../utils/index';
+import { timestamp, setDisabledDate } from '../../../../utils/index';
 
 export default {
-  props: ['dialogVisible', 'title', 'type', 'editForm', 'getList'],
+  props: [
+    'dialogVisible',
+    'title',
+    'type',
+    'editForm',
+    'getList',
+    'attachment'
+  ],
   emits: ['hide-dialog'],
   data() {
     return {
+      file: this.attachment,
       form: {},
       rules: {
+        agreement_file: [
+          {
+            required: true,
+            message: '请上传附件'
+          }
+        ],
         cost: [
           {
             required: true,
@@ -110,6 +136,11 @@ export default {
       },
       visible: this.dialogVisible
     };
+  },
+  watch: {
+    attachment(val) {
+      this.file = val;
+    }
   },
   mounted() {
     if (this.type === 'edit') {
@@ -141,13 +172,15 @@ export default {
       this.$emit('hide-dialog', false);
     },
     submitForm() {
+      this.form.agreement_file = this.file.id;
       this.$refs.form.validate((valid) => {
         if (valid) {
           let val = {
             cost: +this.form.cost,
             mould_factory: this.form.mould_factory,
             estimated_finish_time: timestamp(this.form.estimated_finish_time),
-            illustration_text: this.form.illustration_text
+            illustration_text: this.form.illustration_text,
+            agreement_file: this.form.agreement_file
           };
           if (this.type === 'create') {
             val['mould_id'] = +this.$route.params.id;
@@ -158,6 +191,9 @@ export default {
           }
         }
       });
+    },
+    getUploadFile(e) {
+      this.file = e;
     }
   }
 };

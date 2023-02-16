@@ -41,27 +41,24 @@
         width="200px"
       >
         <div :class="progress.state === undefined ? 'hide' : ''">
-          <el-button
+          <text-btn
             v-if="progress.state === 20"
-            type="text"
-            @click="showProofingApproval"
+            @handle-click="showProofingApproval"
           >
             打样单审批
-          </el-button>
-          <el-button
+          </text-btn>
+          <text-btn
             v-if="progress.state === 30"
-            type="text"
-            @click="showProofingEdit"
+            @handle-click="showProofingEdit"
           >
             重新编辑
-          </el-button>
-          <el-button
+          </text-btn>
+          <text-btn
             v-if="progress.state === 40"
-            type="text"
-            @click="showProofingView"
+            @handle-click="showProofingView"
           >
             查看
-          </el-button>
+          </text-btn>
         </div>
       </el-descriptions-item>
     </el-descriptions>

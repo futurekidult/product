@@ -69,12 +69,9 @@
       <div class="select-title demand-title">
         <div>
           <span class="line">|</span> 需求列表
-          <el-button
-            type="text"
-            @click="toDraft"
-          >
+          <text-btn @handle-click="toDraft">
             我的草稿
-          </el-button>
+          </text-btn>
         </div>
         <el-button
           type="primary"
@@ -110,12 +107,9 @@
           width="110"
         >
           <template #default="scope">
-            <el-button
-              type="text"
-              @click="toProductDetail(scope.row.product_id)"
-            >
+            <text-btn @handle-click="toProductDetail(scope.row.product_id)">
               {{ scope.row.product_id }}
-            </el-button>
+            </text-btn>
           </template>
         </el-table-column>
         <el-table-column
@@ -167,23 +161,19 @@
           width="170"
         >
           <template #default="scope">
-            <el-button
-              type="text"
-              @click="toDetail(scope.row.id)"
-            >
+            <text-btn @handle-click="toDetail(scope.row.id)">
               查看详情
-            </el-button>
+            </text-btn>
             <span
               v-if="scope.row.state === 20"
               class="table-btn"
             >|</span>
-            <el-button
+            <text-btn
               v-if="scope.row.state === 20"
-              type="text"
-              @click="toReview(scope.row.id)"
+              @handle-click="toReview(scope.row.id)"
             >
               需求评审
-            </el-button>
+            </text-btn>
           </template>
         </el-table-column>
       </el-table>

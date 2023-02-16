@@ -67,9 +67,8 @@
                   scope.row.test_result_file.type === 12860
               "
             >
-              <el-button
-                type="text"
-                @click="
+              <text-btn
+                @handle-click="
                   previewOrDownload(
                     scope.row.test_result_file.id,
                     scope.row.test_result_file.name,
@@ -78,16 +77,15 @@
                 "
               >
                 预览
-              </el-button>
+              </text-btn>
             </div>
             <div v-if="scope.row.button_state.is_upload === 1">
               <span
                 v-if="scope.row.test_result_file.type === 12860"
                 class="table-btn"
               >|</span>
-              <el-button
-                type="text"
-                @click="
+              <text-btn
+                @handle-click="
                   previewOrDownload(
                     scope.row.test_result_file.id,
                     scope.row.test_result_file.name,
@@ -96,7 +94,7 @@
                 "
               >
                 下载
-              </el-button>
+              </text-btn>
             </div>
           </div>
         </template>
@@ -107,32 +105,31 @@
         fixed="right"
       >
         <template #default="scope">
-          <el-button
-            type="text"
+          <text-btn
             :disabled="scope.row.is_delivered_desc === '是'"
-            @click="deliverSample(scope.row.user_test_apply_id, scope.row.id)"
+            @handle-click="
+              deliverSample(scope.row.user_test_apply_id, scope.row.id)
+            "
           >
             样品已寄送
-          </el-button>
+          </text-btn>
           <span class="table-btn">|</span>
-          <el-button
-            type="text"
+          <text-btn
             :disabled="JSON.stringify(scope.row.test_result_file) !== '{}'"
-            @click="showResultForm(scope.row.user_test_apply_id, scope.row.id)"
+            @handle-click="
+              showResultForm(scope.row.user_test_apply_id, scope.row.id)
+            "
           >
             {{
               JSON.stringify(scope.row.test_result_file) === '{}'
                 ? '上传结果'
                 : '已上传'
             }}
-          </el-button>
+          </text-btn>
           <span class="table-btn">|</span>
-          <el-button
-            type="text"
-            @click="showViewUserForm(scope.row.id)"
-          >
+          <text-btn @handle-click="showViewUserForm(scope.row.id)">
             查看信息
-          </el-button>
+          </text-btn>
         </template>
       </el-table-column>
     </el-table>

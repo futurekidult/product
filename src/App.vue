@@ -186,6 +186,37 @@ body {
   width: 100px;
 }
 
+.is-link {
+  width: auto !important;
+}
+
+.header-right_divider,
+.exit-btn {
+  height: 20px !important;
+  margin: 12px 5px !important;
+  color: #fff !important;
+}
+
+.header-right_divider {
+  margin-left: 15px !important;
+}
+
+.exit-btn:hover {
+  /* IFTRUE_heyme */
+  color: #f8ba2b !important;
+  /* FITRUE_heyme */
+  /* IFTRUE_basepoint */
+  color: #ff7564;
+  /* FITRUE_basepoint */
+  /* IFTRUE_heytool */
+  color: #288cff;
+  /* FITRUE_heytool */
+}
+
+.el-button.is-link {
+  height: 32px !important;
+}
+
 .profit-plan_title {
   font-size: 14px;
   margin: 15px 0;
@@ -369,5 +400,32 @@ body {
 
 .el-form-item__content {
   display: block !important;
+}
+
+.pass-form_title {
+  font-size: 14px;
+  margin: 15px;
+}
+
+.el-tabs__item {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+
+.el-tabs--card > .el-tabs__header .el-tabs__item:first-child {
+  border-left: none !important;
+}
+
+.el-tabs--card > .el-tabs__header .el-tabs__item {
+  border-left: 1px solid #d9d9d9 !important;
+}
+
+.el-tabs--card > .el-tabs__header .el-tabs__nav {
+  border: 1px solid #d9d9d9 !important;
+  border-bottom: none !important;
+}
+
+.el-tabs--card > .el-tabs__header {
+  border-bottom: 1px solid #d9d9d9 !important;
 }
 </style>

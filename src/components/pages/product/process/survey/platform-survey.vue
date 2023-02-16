@@ -350,7 +350,7 @@ export default {
   components: {
     SurveySuggestion
   },
-  inject: ['getBase'],
+  inject: ['getBase', 'getSurveySchedule'],
   props: [
     'changeColor',
     'progress',
@@ -524,6 +524,7 @@ export default {
         );
         this.getList();
         this.getBase();
+        this.getSurveySchedule();
       } catch (err) {
         return;
       }

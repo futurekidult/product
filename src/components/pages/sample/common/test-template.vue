@@ -39,10 +39,9 @@
         width="100"
       >
         <template #default="scope">
-          <el-button
+          <text-btn
             v-if="state !== 1"
-            type="text"
-            @click="
+            @handle-click="
               showEditQuestions(
                 scope.row.id,
                 scope.row.name,
@@ -51,15 +50,14 @@
             "
           >
             编辑
-          </el-button>
-          <el-button
+          </text-btn>
+          <text-btn
             v-else
             :disabled="scope.row.is_record === 1"
-            type="text"
-            @click="recordProblem(scope.row.id)"
+            @handle-click="recordProblem(scope.row.id)"
           >
             记录问题
-          </el-button>
+          </text-btn>
         </template>
       </el-table-column>
     </el-table>

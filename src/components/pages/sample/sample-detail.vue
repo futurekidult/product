@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div class="border">
+    <div
+      v-loading="$store.state.sample.baseLoading"
+      class="border"
+    >
       <el-descriptions
         :title="sampleBase.product_name"
         :column="4"
@@ -10,12 +13,9 @@
           <template #label>
             关联产品:
           </template>
-          <el-button
-            type="text"
-            @click="toProduct(sampleBase.product_id)"
-          >
+          <text-btn @handle-click="toProduct(sampleBase.product_id)">
             查看
-          </el-button>
+          </text-btn>
         </el-descriptions-item>
         <el-descriptions-item label="采购负责人:">
           {{ sampleBase.purchase_principal }}
@@ -27,12 +27,9 @@
           <template #label>
             供应商:
           </template>
-          <el-button
-            type="text"
-            @click="toSupplier(sampleBase.supplier_id)"
-          >
+          <text-btn @handle-click="toSupplier(sampleBase.supplier_id)">
             查看
-          </el-button>
+          </text-btn>
         </el-descriptions-item>
       </el-descriptions>
     </div>

@@ -1,0 +1,34 @@
+@startuml
+title 项目调研tag显示问题(issue: #391)
+start
+  note 
+    涉及的组件: product-detail, product-survey
+  end note
+  :作产品定位与项目调研的映射关系(categoryProductMap);
+  :从'product/base/get'获取到该新品的产品定位;
+  :从映射关系中获取到该产品的产品定位对应的映射值(categoryProductMap[产品定位]), , 并进行本地存储;
+  :选择项目调研tag时, 将产品id作为参数传递, 请求'survey/schedule/get';
+  if(res.code === 200) then (yes)
+    :获取到当前第一个未完成的任务的key, 
+    去映射关系中找到该key对应的二进制值(categoryProductMap[产品定位][key]);
+  else (no)
+    :返回错误信息;
+    stop
+  endif
+  :判断对应的调研显示情况;
+  note
+    比如: categoryProductMap[产品定位][key] & 0b100000
+  end note
+end
+
+start 
+  note 
+    涉及的组件: market-survey, platform-survey, product-plan, risk-survey, user-analysis
+  end note
+  if(调研任务为产品方案) then (yes)
+    :审批通过后更新项目调研tag显示情况;
+  else (no)
+    :任务成功提交后更新项目调研tag显示情况;
+  endif 
+end
+@enduml

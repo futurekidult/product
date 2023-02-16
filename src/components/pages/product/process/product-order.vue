@@ -62,12 +62,9 @@
         width="100"
       >
         <template #default="scope">
-          <el-button
-            type="text"
-            @click="toDetail(scope.row.id)"
-          >
+          <text-btn @handle-click="toDetail(scope.row.id)">
             下单详情
-          </el-button>
+          </text-btn>
         </template>
       </el-table-column>
     </el-table>
