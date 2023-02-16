@@ -143,12 +143,9 @@
           width="100"
         >
           <template #default="scope">
-            <el-button
-              type="text"
-              @click="toQuotation(scope.row.id)"
-            >
+            <text-btn @handle-click="toQuotation(scope.row.id)">
               报价列表
-            </el-button>
+            </text-btn>
           </template>
         </el-table-column>
       </el-table>

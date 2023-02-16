@@ -42,18 +42,19 @@
         </div>
       </div>
       <div class="header-right">
+        <base-handbook />
         <div>欢迎您，{{ $store.state.userInfo.name }}</div>
         <el-divider
           direction="vertical"
           class="header-right_divider"
         />
-        <el-button
-          type="text"
+        <text-btn
+          style="height: auto !important"
           class="exit-btn"
-          @click="logout"
+          @handle-click="logout"
         >
           退出
-        </el-button>
+        </text-btn>
       </div>
     </el-header>
     <el-container>
@@ -272,25 +273,6 @@ export default {
 
 .header-right > div {
   margin-left: 10px;
-}
-
-.header-right_divider,
-.exit-btn {
-  height: 20px;
-  margin: 12px 5px;
-  color: #fff;
-}
-
-.exit-btn:hover {
-  /* IFTRUE_heyme */
-  color: #f8ba2b;
-  /* FITRUE_heyme */
-  /* IFTRUE_basepoint */
-  color: #ff7564;
-  /* FITRUE_basepoint */
-  /* IFTRUE_heytool */
-  color: #288cff;
-  /* FITRUE_heytool */
 }
 
 .toggle-btn {

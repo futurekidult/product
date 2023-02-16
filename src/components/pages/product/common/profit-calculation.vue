@@ -33,63 +33,51 @@
         <el-table-column label="调价记录">
           <template #default="scope">
             <div v-if="!isShow">
-              <el-button
-                type="text"
-                @click="showPricingList(scope.row.market)"
-              >
+              <text-btn @handle-click="showPricingList(scope.row.market)">
                 记录
-              </el-button>
+              </text-btn>
               <span class="table-btn">|</span>
-              <el-button
-                type="text"
-                @click="showAdjustPrice(scope.row.market)"
-              >
+              <text-btn @handle-click="showAdjustPrice(scope.row.market)">
                 调价
-              </el-button>
+              </text-btn>
             </div>
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template #default="scope">
-            <el-button
+            <text-btn
               v-if="isShow"
-              type="text"
-              @click="showEditProfit(scope.row.market)"
+              @handle-click="showEditProfit(scope.row.market)"
             >
               编辑
-            </el-button>
+            </text-btn>
             <span
               v-if="isShow"
               class="table-btn"
             >|</span>
-            <el-button
+            <text-btn
               v-if="!isShow"
-              type="text"
-              @click="ShowConfirmParamsDialog(scope.row.market)"
+              @handle-click="ShowConfirmParamsDialog(scope.row.market)"
             >
               参数修改确认
-            </el-button>
+            </text-btn>
             <span
               v-if="!isShow"
               class="table-btn"
             >|</span>
-            <el-button
+            <text-btn
               v-if="isShow"
-              type="text"
-              @click="showDeleteDialog(scope.row.market)"
+              @handle-click="showDeleteDialog(scope.row.market)"
             >
               删除
-            </el-button>
+            </text-btn>
             <span
               v-if="isShow"
               class="table-btn"
             >|</span>
-            <el-button
-              type="text"
-              @click="showViewProfit(scope.row.market)"
-            >
+            <text-btn @handle-click="showViewProfit(scope.row.market)">
               查看
-            </el-button>
+            </text-btn>
           </template>
         </el-table-column>
       </el-table>

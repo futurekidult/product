@@ -46,13 +46,12 @@
               通过
             </el-button>
           </div>
-          <el-button
+          <text-btn
             v-else
-            type="text"
-            @click="confirmTestingMould(progress.mould_id)"
+            @handle-click="confirmTestingMould(progress.mould_id)"
           >
             完成
-          </el-button>
+          </text-btn>
         </div>
       </el-descriptions-item>
     </el-descriptions>

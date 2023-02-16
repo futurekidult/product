@@ -46,21 +46,21 @@
         width="150"
       >
         <template #default="scope">
-          <el-button
-            type="text"
+          <text-btn
             :disabled="disabled"
-            @click="deleteSuggestionItem(scope.row.id)"
+            @handle-click="deleteSuggestionItem(scope.row.id)"
           >
             删除
-          </el-button>
+          </text-btn>
           <span class="table-btn">|</span>
-          <el-button
-            type="text"
+          <text-btn
             :disabled="disabled"
-            @click="updateSuggestionItem(scope.row.id, scope.row.suggestion)"
+            @handle-click="
+              updateSuggestionItem(scope.row.id, scope.row.suggestion)
+            "
           >
             编辑
-          </el-button>
+          </text-btn>
         </template>
       </el-table-column>
     </el-table>

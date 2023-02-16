@@ -35,6 +35,7 @@
           :progress="makingMould"
           :get-list="getMakingMould"
           :button-state="buttonState"
+          :attachment="mouldAttachment"
         />
       </el-tab-pane>
       <el-tab-pane
@@ -73,7 +74,8 @@ export default {
       attachment: [],
       makingMould: {},
       testingMould: {},
-      buttonState: 0
+      buttonState: 0,
+      mouldAttachment: {}
     };
   },
   mounted() {
@@ -123,6 +125,7 @@ export default {
           }
         });
         this.makingMould = this.$store.state.mould.makingMouldProgress;
+        this.mouldAttachment = this.makingMould.agreement_file || {};
         this.buttonState = this.makingMould.button_state;
         changeTimestamp(this.makingMould, 'actual_finish_time');
         changeTimestamp(this.makingMould, 'estimated_finish_time');

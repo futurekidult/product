@@ -98,12 +98,9 @@
           width="110"
         >
           <template #default="scope">
-            <el-button
-              type="text"
-              @click="toDemand(scope.row.demand_id)"
-            >
+            <text-btn @handle-click="toDemand(scope.row.demand_id)">
               {{ scope.row.demand_id }}
-            </el-button>
+            </text-btn>
           </template>
         </el-table-column>
         <el-table-column
@@ -142,20 +139,18 @@
         >
           <template #default="scope">
             <div style="display: flex">
-              <el-button
-                type="text"
-                @click="toDetail(scope.row.id)"
-              >
+              <text-btn @handle-click="toDetail(scope.row.id)">
                 查看详情
-              </el-button>
+              </text-btn>
               <div v-if="scope.row.state !== 90">
                 <span class="table-btn">|</span>
-                <el-button
-                  type="text"
-                  @click="showEditForm(scope.row.id, scope.row.category_id)"
+                <text-btn
+                  @handle-click="
+                    showEditForm(scope.row.id, scope.row.category_id)
+                  "
                 >
                   编辑
-                </el-button>
+                </text-btn>
               </div>
             </div>
           </template>

@@ -1,8 +1,11 @@
 <template>
-  <div v-loading="$store.state.product.baseLoading">
+  <div>
     <router-view />
     <div v-if="isParent">
-      <div class="border">
+      <div
+        v-loading="$store.state.product.baseLoading"
+        class="border"
+      >
         <div class="detail-title">
           {{ productBase.name }}
           <div class="tag-position">
@@ -12,14 +15,13 @@
             >
               <span>{{ productBase.state_desc }}</span>
             </base-tag>
-            <el-button
+            <text-btn
               v-if="productBase.state === 90"
-              type="text"
               class="terminate-btn"
-              @click="showViewReasonForm(productBase.termination_reason)"
+              @handle-click="showViewReasonForm(productBase.termination_reason)"
             >
               查看终止原因
-            </el-button>
+            </text-btn>
           </div>
         </div>
         <div style="display: flex; justify-content: space-between">
@@ -37,12 +39,9 @@
               <template #label>
                 关联需求ID:
               </template>
-              <el-button
-                type="text"
-                @click="toRelatedDemand(productBase.demand_id)"
-              >
+              <text-btn @handle-click="toRelatedDemand(productBase.demand_id)">
                 {{ productBase.demand_id }}
-              </el-button>
+              </text-btn>
             </el-descriptions-item>
             <el-descriptions-item label="产品定位:">
               {{ productBase.positioning_desc }}
@@ -74,7 +73,10 @@
         </div>
       </div>
 
-      <div class="border">
+      <div
+        v-loading="$store.state.product.detailLoading"
+        class="border"
+      >
         <el-tabs
           v-model="$store.state.activeTab"
           @tab-click="handleClick"
@@ -110,13 +112,14 @@
               :platform-form="platformForm"
               :product-images="productImages"
               :platform-attachment="platformAttachment"
-              :is-new-category="isNewCategory"
-              :is-new-product="isNewProduct"
-              :is-new-category-product="isNewCategoryProduct"
+              :survey-condition="surveyCondition"
             />
           </el-tab-pane>
           <el-tab-pane
-            v-if="productBase.state >= 20"
+            v-if="
+              (productBase.state >= 20 && productBase.state !== 90) ||
+                unterminated & 0b00000001000
+            "
             label="项目立项"
             name="project"
           >
@@ -125,12 +128,13 @@
               :progress="projectProgress"
               :project-form="projectForm"
               :attachment="projectAttachment"
+              :meeting-attachment="meetingAttachment"
               :profit="projectProfit"
               :schedule="projectSchedule"
             />
           </el-tab-pane>
           <el-tab-pane
-            v-if="productBase.state >= 40"
+            v-if="getState || unterminated & 0b00000010000"
             label="定价信息"
             name="price"
           >
@@ -140,7 +144,7 @@
             />
           </el-tab-pane>
           <el-tab-pane
-            v-if="productBase.state >= 40"
+            v-if="getState || unterminated & 0b00100000000"
             label="专利排查"
             name="patent"
           >
@@ -152,7 +156,7 @@
             />
           </el-tab-pane>
           <el-tab-pane
-            v-if="productBase.state >= 40"
+            v-if="getState || unterminated & 0b00100000000"
             label="模具信息"
             name="mould"
           >
@@ -165,7 +169,7 @@
             />
           </el-tab-pane>
           <el-tab-pane
-            v-if="productBase.state >= 40"
+            v-if="getState || unterminated & 0b00100000000"
             label="样品信息"
             name="sample"
           >
@@ -178,7 +182,7 @@
             />
           </el-tab-pane>
           <el-tab-pane
-            v-if="productBase.state >= 40"
+            v-if="getState || unterminated & 0b00100000000"
             label="测试问题"
             name="question"
           >
@@ -191,7 +195,7 @@
             />
           </el-tab-pane>
           <el-tab-pane
-            v-if="productBase.state >= 40"
+            v-if="getState || unterminated & 0b01000000000"
             label="下单信息"
             name="order"
           >
@@ -204,7 +208,7 @@
             />
           </el-tab-pane>
           <el-tab-pane
-            v-if="productBase.state >= 40"
+            v-if="getState || unterminated & 0b10000000000"
             label="包材设计"
             name="package"
           >
@@ -298,7 +302,8 @@ export default {
       getPatentContract: this.getContract,
       getProject: this.getProject,
       getPlatform: this.getPlatform,
-      getBase: this.getProductBase
+      getBase: this.getProductBase,
+      getSurveySchedule: this.getSurveySchedule
     };
   },
   props: ['productId', 'orderId'],
@@ -318,6 +323,7 @@ export default {
       projectProgress: {},
       projectForm: {},
       projectAttachment: {},
+      meetingAttachment: {},
       projectProfit: {},
       projectSchedule: {},
       patent: {},
@@ -332,9 +338,6 @@ export default {
       platformForm: {},
       productImages: [],
       platformAttachment: {},
-      isNewCategory: false,
-      isNewProduct: false,
-      isNewCategoryProduct: false,
       isGetData: false,
       isGetProjectData: false,
       memberCurrentPage: 1,
@@ -349,12 +352,17 @@ export default {
       orderPageSize: 10,
       packageCurrentPage: 1,
       packagePageSize: 10,
-      confirmDialogVisible: false
+      confirmDialogVisible: false,
+      unterminated: 0,
+      surveyCondition: null
     };
   },
   computed: {
     isParent() {
       return this.$route.name !== 'order detail';
+    },
+    getState() {
+      return this.productBase.state >= 40 && this.productBase.state !== 90;
     }
   },
   mounted() {
@@ -368,6 +376,7 @@ export default {
   },
   methods: {
     async getProductBase() {
+      this.$store.commit('product/setBaseLoading', true);
       try {
         await this.$store.dispatch('product/getProductBase', {
           params: {
@@ -375,6 +384,11 @@ export default {
           }
         });
         this.productBase = this.$store.state.product.productBase;
+        let unterminatedStateNum = this.productBase.unterminated_state;
+        if (unterminatedStateNum !== 0) {
+          this.unterminated =
+            this.$global.unterminatedStateCode[unterminatedStateNum];
+        }
         if (this.productBase.state === 90) {
           this.mode = 'info';
         } else if (this.productBase.state === 80) {
@@ -383,6 +397,7 @@ export default {
           this.mode = 'warning';
         }
       } catch (err) {
+        this.$store.commit('product/setBaseLoading', false);
         return;
       }
     },
@@ -397,17 +412,12 @@ export default {
         this.productForm = this.$store.state.product.productDetail;
         this.productAttachment = this.productForm.images;
         let val =
-          String(this.productForm.is_new_category) +
-          String(this.productForm.is_new_product);
-        if (val === '11') {
-          this.isNewCategoryProduct = true;
-          this.isNewCategory = true;
-          this.isNewProduct = true;
-        } else if (val === '10') {
-          this.isNewCategory = true;
-        } else if (val === '01') {
-          this.isNewProduct = true;
-        }
+          (this.productForm.is_new_category << 1) +
+          this.productForm.is_new_product;
+        localStorage.setItem(
+          'product-position',
+          JSON.stringify(this.$global.categoryProductMap[val])
+        );
       } catch (err) {
         this.$store.commit('product/setDetailLoading', false);
         return;
@@ -557,6 +567,7 @@ export default {
         this.projectProgress = project.schedule || {};
         this.projectForm = project.form || {};
         this.projectAttachment = this.projectForm.sales_plan || {};
+        this.meetingAttachment = this.projectForm.meeting_summary_file || {};
         changeTimestamp(this.projectProgress, 'actual_finish_time');
         this.isGetProjectData = true;
       } catch (err) {
@@ -716,8 +727,26 @@ export default {
           break;
         case 'survey':
           this.getPlatform();
+          this.getSurveySchedule();
           break;
         default:
+      }
+    },
+    async getSurveySchedule() {
+      try {
+        await this.$store.dispatch('product/survey/getSurveySchedule', {
+          params: {
+            product_id: +this.$route.params.productId
+          }
+        });
+        let { currentSurvey } = this.$store.state.product.survey;
+        this.surveyCondition = parseInt(
+          JSON.parse(localStorage.getItem('product-position'))[
+            currentSurvey.current_survey
+          ]
+        );
+      } catch (err) {
+        return;
       }
     },
     handleClick(tab) {

@@ -9,12 +9,9 @@
     <el-icon class="delete-icon">
       <Delete :size="20" />
     </el-icon>
-    <el-button
-      type="text"
-      class="delete-btn"
-    >
+    <text-btn class="delete-btn">
       {{ content }}
-    </el-button>
+    </text-btn>
   </div>
 </template>
 

@@ -8,7 +8,7 @@
       :id="productForm.id"
       :get-progress="progress"
       type="plan"
-      @refresh-plan="getList"
+      @refresh-plan="refreshList"
     />
 
     <div class="survey-title">
@@ -426,7 +426,7 @@ export default {
     CompetitiveTable,
     SurveySuggestion
   },
-  inject: ['getBase'],
+  inject: ['getBase', 'getSurveySchedule'],
   props: [
     'progress',
     'attachment',
@@ -658,6 +658,12 @@ export default {
     },
     getReturnData(val) {
       this.form.usage_scenario = val;
+    },
+    refreshList(val) {
+      this.getList();
+      if (val === 1) {
+        this.getSurveySchedule();
+      }
     }
   }
 };

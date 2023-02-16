@@ -62,20 +62,18 @@
         fixed="right"
       >
         <template #default="scope">
-          <el-button
+          <text-btn
             v-if="scope.row.review_state === 10"
-            type="text"
-            @click="showPatentReview(scope.row.id)"
+            @handle-click="showPatentReview(scope.row.id)"
           >
             专利排查需求评审
-          </el-button>
-          <el-button
+          </text-btn>
+          <text-btn
             v-else
-            type="text"
-            @click="showViewReview(scope.row.id)"
+            @handle-click="showViewReview(scope.row.id)"
           >
             查看
-          </el-button>
+          </text-btn>
         </template>
       </el-table-column>
     </el-table>
@@ -108,12 +106,9 @@
           v-if="progress.state !== 40 && progress.state !== undefined"
           label="操作"
         >
-          <el-button
-            type="text"
-            @click="confirmPatent"
-          >
+          <text-btn @handle-click="confirmPatent">
             专利排查完成
-          </el-button>
+          </text-btn>
         </el-descriptions-item>
       </el-descriptions>
 

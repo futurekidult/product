@@ -39,31 +39,28 @@
         label="操作"
       >
         <div style="display: flex">
-          <el-button
+          <text-btn
             v-if="preProductSample.state === 10"
-            type="text"
             class="pre-product_btn"
-            @click="showFollowupSheet(preProductSample.id)"
+            @handle-click="showFollowupSheet(preProductSample.id)"
           >
             大货样跟进单
-          </el-button>
-          <el-button
+          </text-btn>
+          <text-btn
             v-if="preProductSample.state === 20"
-            type="text"
             class="pre-product_btn"
-            @click="showCourierNumber(preProductSample.id)"
+            @handle-click="showCourierNumber(preProductSample.id)"
           >
             大货样收货
-          </el-button>
+          </text-btn>
         </div>
-        <el-button
+        <text-btn
           v-if="preProductSample.state === 30"
-          type="text"
           class="pre-product_btn"
-          @click="confirmPreProductSample(preProductSample.id)"
+          @handle-click="confirmPreProductSample(preProductSample.id)"
         >
           大货样确认
-        </el-button>
+        </text-btn>
       </el-descriptions-item>
     </el-descriptions>
 

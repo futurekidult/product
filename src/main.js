@@ -8,8 +8,10 @@ import BaseTag from './components/common/base-tag.vue';
 import ConfirmDialog from './components/common/confirm-dialog.vue';
 import BaseDelete from './components/common/base-delete.vue';
 import BaseUpload from './components/common/base-upload.vue';
+import BaseHandbook from './components/common/base-handbook.vue';
 import 'element-plus/dist/index.css';
 import global from './components/common/global.vue';
+import TextBtn from './components/common/text-btn.vue';
 import { ElMessage } from 'element-plus';
 
 let version = process.env.VERSION;
@@ -24,13 +26,15 @@ const app = createApp(App);
 app.component('BaseBreadcrumb', BaseBreadcrumb);
 app.component('BasePagination', BasePagination);
 app.component('BaseTag', BaseTag);
+app.component('TextBtn', TextBtn);
 app.component('ConfirmDialog', ConfirmDialog);
 app.component('BaseDelete', BaseDelete);
 app.component('BaseUpload', BaseUpload);
+app.component('BaseHandbook', BaseHandbook);
 
 app.use(router);
 app.use(store);
 app.config.globalProperties.$message = ElMessage;
 app.config.globalProperties.$global = global;
-app.config.globalProperties.$version = '0.0.7';
+app.config.globalProperties.$version = '0.0.8';
 app.mount('#app');

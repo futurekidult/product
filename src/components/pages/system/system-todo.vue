@@ -76,12 +76,13 @@
             width="100"
           >
             <template #default="scope">
-              <el-button
-                type="text"
-                @click="showOperatorDialog(scope.row.id, scope.row.user_name)"
+              <text-btn
+                @handle-click="
+                  showOperatorDialog(scope.row.id, scope.row.user_name)
+                "
               >
                 待办转移
-              </el-button>
+              </text-btn>
             </template>
           </el-table-column>
         </el-table>

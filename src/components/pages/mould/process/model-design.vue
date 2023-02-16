@@ -29,13 +29,12 @@
         v-if="progress.state !== 40"
         label="操作"
       >
-        <el-button
-          type="text"
+        <text-btn
           :class="progress.state === undefined ? 'hide' : ''"
-          @click="showDesignForm"
+          @handle-click="showDesignForm"
         >
           上传设计图
-        </el-button>
+        </text-btn>
       </el-descriptions-item>
     </el-descriptions>
 

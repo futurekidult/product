@@ -74,55 +74,50 @@
           fixed="right"
         >
           <template #default="scope">
-            <el-button
+            <text-btn
               v-if="scope.row.review_state === 10"
-              type="text"
-              @click="showReviewForm(scope.row.id)"
+              @handle-click="showReviewForm(scope.row.id)"
             >
               用户测试需求评审
-            </el-button>
-            <el-button
+            </text-btn>
+            <text-btn
               v-if="scope.row.review_state !== 10"
-              type="text"
-              @click="showViewForm(scope.row.id)"
+              @handle-click="showViewForm(scope.row.id)"
             >
               查看
-            </el-button>
+            </text-btn>
             <span
               v-if="scope.row.review_state === 30"
               class="table-btn"
             >|</span>
-            <el-button
+            <text-btn
               v-if="scope.row.review_state === 30"
-              type="text"
-              @click="showEditForm(scope.row.id)"
+              @handle-click="showEditForm(scope.row.id)"
             >
               编辑
-            </el-button>
+            </text-btn>
             <span
               v-if="scope.row.review_state === 30"
               class="table-btn"
             >|</span>
-            <el-button
+            <text-btn
               v-if="
                 scope.row.review_state === 30 &&
                   scope.row.test_template_state === 0
               "
-              type="text"
-              @click="showUploadForm(scope.row.id)"
+              @handle-click="showUploadForm(scope.row.id)"
             >
               上传测试模板
-            </el-button>
-            <el-button
+            </text-btn>
+            <text-btn
               v-if="
                 scope.row.review_state === 30 &&
                   scope.row.test_template_state === 1
               "
-              type="text"
-              @click="showViewTemplateForm(scope.row.id)"
+              @handle-click="showViewTemplateForm(scope.row.id)"
             >
               查看测试模板
-            </el-button>
+            </text-btn>
           </template>
         </el-table-column>
       </el-table>

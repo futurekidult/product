@@ -8,7 +8,7 @@
       <test-apply-table
         type="apply"
         label="测试申请ID"
-        review-btn-content="样式测试申请评审"
+        review-btn-content="样品测试申请评审"
         title="样品测试申请进度表"
         btn-content="申请样品测试"
         :apply-list="applyList"
