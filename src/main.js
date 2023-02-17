@@ -12,6 +12,7 @@ import BaseHandbook from './components/common/base-handbook.vue';
 import 'element-plus/dist/index.css';
 import global from './components/common/global.vue';
 import TextBtn from './components/common/text-btn.vue';
+import BaseTable from './components/common/base-table.vue';
 import { ElMessage } from 'element-plus';
 
 let version = process.env.VERSION;
@@ -31,6 +32,7 @@ app.component('ConfirmDialog', ConfirmDialog);
 app.component('BaseDelete', BaseDelete);
 app.component('BaseUpload', BaseUpload);
 app.component('BaseHandbook', BaseHandbook);
+app.component('BaseTable', BaseTable);
 
 app.use(router);
 app.use(store);
