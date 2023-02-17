@@ -155,7 +155,7 @@ export default {
           formatter: (row) => {
             return this.setContentColor(row.state);
           },
-          getProp: (row) => {
+          getSpecialProp: (row) => {
             return row.content;
           }
         },

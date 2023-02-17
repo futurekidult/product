@@ -128,12 +128,11 @@ export default {
   methods: {
     handleCurrentChange(currentPage) {
       this.listPagination.current_page = currentPage;
-      this.$emit('change-pagination', this.pagination);
+      this.$emit('change-pagination', this.listPagination);
     },
     handleSizeChange(pageSize) {
       this.listPagination.page_size = pageSize;
-      this.listPagination.current_page = 1;
-      this.$emit('change-pagination', this.listPagination);
+      this.handleCurrentChange(1);
     }
   }
 };
