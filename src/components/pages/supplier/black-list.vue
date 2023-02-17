@@ -1,6 +1,5 @@
 <template>
   <section>
-    <base-breadcrumb />
     <div
       v-loading="$store.state.supplier.blackLoading"
       class="border"

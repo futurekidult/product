@@ -1,6 +1,5 @@
 <template>
   <div>
-    <base-breadcrumb />
     <div class="border">
       <div class="system-item">
         <div class="nav-title">

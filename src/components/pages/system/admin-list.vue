@@ -1,6 +1,5 @@
 <template>
   <section>
-    <base-breadcrumb />
     <div class="border">
       <div class="nav-title">
         <span class="line">|</span> 搜索条件

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <base-breadcrumb />
     <div class="border">
       <div class="select-title">
         <span class="line">|</span> 创建需求

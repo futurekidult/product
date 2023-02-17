@@ -1,6 +1,5 @@
 <template>
   <div>
-    <base-breadcrumb />
     <div class="border">
       <el-badge
         :value="count"

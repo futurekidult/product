@@ -1,7 +1,5 @@
 <template>
   <section>
-    <base-breadcrumb />
-
     <div class="border">
       <div class="nav-title">
         <span class="line">|</span> 菜单权限列表
