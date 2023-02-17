@@ -152,6 +152,7 @@
         </el-menu>
       </el-aside>
       <el-main style="padding: 5px">
+        <base-breadcrumb />
         <router-view />
       </el-main>
     </el-container>

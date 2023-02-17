@@ -3,9 +3,6 @@ title 工作台
 
 +_ WorkBench
 ++_ BaseBreadcrumb
-++_ TodoList
-+++_ BasePagination
-++_ InformList
-+++_ BasePagination
+++_ BaseTable
 
 @endmindmap

@@ -1,7 +1,5 @@
 <template>
   <section>
-    <base-breadcrumb />
-
     <div class="border">
       <div class="nav-title todo-title">
         <div><span class="line">|</span> 利润核算规则表</div>

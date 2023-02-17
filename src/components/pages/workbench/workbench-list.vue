@@ -1,6 +1,5 @@
 <template>
   <div>
-    <base-breadcrumb />
     <div class="border">
       <el-badge
         :value="count"
@@ -13,7 +12,7 @@
       >
         <el-tab-pane
           label="待办事项"
-          name="todolist"
+          name="todo-list"
         >
           <div>
             <div class="select-title todo-title">
@@ -48,34 +47,51 @@
                 </el-select>
               </div>
             </div>
-            <todo-list
-              :todo-list="todoList"
-              :get-list="getTodoList"
-            />
-            <base-pagination
+            <base-table
+              v-loading="$store.state.workbench.todoListLoading"
+              :table-column="todoTableColumn"
+              :table-data="todoList"
+              :pagination="todoPagination"
               :length="$store.state.workbench.todoListLength"
-              :current-page="currentPage"
-              :page-num="pageSize"
-              @change-size="changePageSize"
-              @change-page="changeCurrentPage"
-            />
+              @change-pagination="changeTodoPagination"
+            >
+              <template #default="slotProps">
+                <text-btn
+                  @handle-click="
+                    toDetail(
+                      slotProps.row.task_id,
+                      slotProps.row.related_id,
+                      slotProps.row.state
+                    )
+                  "
+                >
+                  查看详情
+                </text-btn>
+              </template>
+            </base-table>
           </div>
         </el-tab-pane>
         <el-tab-pane
           label="通知"
           name="inform"
         >
-          <inform-list
-            :notification-list="notificationList"
-            :get-list="getNotificationList"
-          />
-          <base-pagination
+          <base-table
+            v-loading="$store.state.workbench.notificationListLoading"
+            :table-column="notificationTableColumn"
+            :table-data="notificationList"
+            :pagination="notificationPagination"
             :length="$store.state.workbench.notificationListLength"
-            :current-page="informCurrentPage"
-            :page-num="informPageSize"
-            @change-size="changeInformPageSize"
-            @change-page="changeInformCurrentPage"
-          />
+            @change-pagination="changeNotificationPagination"
+          >
+            <template #default="slotProps">
+              <text-btn
+                :disabled="setDisabled(slotProps.row.state)"
+                @handle-click="isRead(slotProps.row.id)"
+              >
+                已读
+              </text-btn>
+            </template>
+          </base-table>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -83,35 +99,78 @@
 </template>
 
 <script>
-import TodoList from './todo-list.vue';
-import InformList from './inform-list.vue';
-import { formatterTime } from '../../../utils';
 import { Search } from '@element-plus/icons-vue';
+import { getDemandDetail } from '../../../utils/demand';
+import {
+  getTask,
+  formatterTime,
+  resetPagination,
+  setTaskStateColor
+} from '../../../utils';
 
 export default {
   components: {
-    TodoList,
-    InformList,
     Search
   },
   data() {
     return {
-      activeName: 'todolist',
+      activeName: 'todo-list',
       todoList: [],
       notificationList: [],
       chooseForm: {},
       workbenchState: [],
       count: 0,
-      currentPage: 1,
-      pageSize: 10,
-      informCurrentPage: 1,
-      informPageSize: 10
+      todoTableColumn: [
+        { prop: 'id', label: '待办ID', width: 80, fixed: 'left' },
+        {
+          prop: 'name',
+          label: '待办名称',
+          overdue: true,
+          fixed: 'left'
+        },
+        { prop: 'create_time', label: '创建时间', width: 200 },
+        { prop: 'finish_time', label: '完成时间', width: 200 },
+        {
+          prop: 'state',
+          label: '状态',
+          width: 150,
+          formatter: (row) => {
+            return setTaskStateColor(row.state);
+          },
+          getSpecialProp: (row) => {
+            return row.state_desc;
+          }
+        }
+      ],
+      todoPagination: {
+        current_page: 1,
+        page_size: 10
+      },
+      notificationTableColumn: [
+        { prop: 'id', label: '通知ID', width: 80, fixed: 'left' },
+        {
+          prop: 'content',
+          label: '标题',
+          fixed: 'left',
+          formatter: (row) => {
+            return this.setContentColor(row.state);
+          },
+          getSpecialProp: (row) => {
+            return row.content;
+          }
+        },
+        { prop: 'create_time', label: '创建时间', width: 200 }
+      ],
+      notificationPagination: {
+        current_page: 1,
+        page_size: 10
+      }
     };
   },
   mounted() {
     this.getTodoCount();
     this.getParams();
-    this.getTodoList();
+    this.getTodoList(this.todoPagination);
   },
   methods: {
     async getTodoCount() {
@@ -136,11 +195,11 @@ export default {
         }
       }
     },
-    async getTodoList() {
+    async getTodoList(pagination) {
       this.$store.commit('workbench/setTodoListLoading', true);
       let params = this.chooseForm;
-      params['current_page'] = this.currentPage;
-      params['page_size'] = this.pageSize;
+      params['current_page'] = pagination.current_page;
+      params['page_size'] = pagination.page_size;
       try {
         await this.$store.dispatch('workbench/getTodoList', { params });
         this.todoList = this.$store.state.workbench.todoList;
@@ -153,12 +212,9 @@ export default {
         return;
       }
     },
-    async getNotificationList() {
+    async getNotificationList(pagination) {
       this.$store.commit('workbench/setNotificationListLoading', true);
-      let params = {
-        current_page: this.informCurrentPage,
-        page_size: this.informPageSize
-      };
+      let params = pagination;
       try {
         await this.$store.dispatch('workbench/getNotificationList', { params });
         this.notificationList = this.$store.state.workbench.notificationList;
@@ -171,38 +227,73 @@ export default {
       }
     },
     handleClick(tab) {
-      if (tab.props.name === 'todolist') {
-        this.currentPage = 1;
-        this.pageSize = 10;
+      if (tab.props.name === 'todo-list') {
+        resetPagination(this.todoPagination, 1, 10);
         this.getTodoCount();
-        this.getTodoList();
+        this.getTodoList(this.todoPagination);
       } else {
-        this.informCurrentPage = 1;
-        this.informPageSize = 10;
+        resetPagination(this.notificationPagination, 1, 10);
         this.getNotificationList();
       }
     },
-    changeCurrentPage(val) {
-      this.currentPage = val;
-      this.getTodoList();
-    },
-    changePageSize(val) {
-      this.pageSize = val;
-      this.currentPage = 1;
-      this.getTodoList();
-    },
     searchTodo() {
-      this.currentPage = 1;
-      this.getTodoList();
+      this.todoPagination.current_page = 1;
+      this.getTodoList(this.todoPagination);
     },
-    changeInformPageSize(val) {
-      this.informPageSize = val;
-      this.informCurrentPage = 1;
-      this.getNotificationList();
+    toDetail(taskId, id, state) {
+      let taskArr = getTask(taskId);
+      if (taskArr.length === 1) {
+        if (taskId === 760) {
+          this.$store.commit('supplier/setActionType', 'approval');
+        }
+        if (
+          this.$store.state.menuData.links.indexOf(`/${taskArr[0]}-list`) > -1
+        ) {
+          if (taskId === 10 && state === 10) {
+            getDemandDetail(id, 'review');
+          } else if (taskId === 10 && state === 40) {
+            getDemandDetail(id, 'detail');
+          } else {
+            this.$router.push(`/${taskArr[0]}-list/${id}`);
+          }
+        } else {
+          this.$message.error('无权限访问');
+        }
+      } else {
+        if (
+          this.$store.state.menuData.links.indexOf(`/${taskArr[0]}-list`) > -1
+        ) {
+          this.$router.push(`/${taskArr[0]}-list/${id}`);
+          this.$store.commit('setActiveTab', taskArr[1]);
+          this.$store.commit('setEntry', 'workbench');
+        } else {
+          this.$message.error('无权限访问');
+        }
+      }
     },
-    changeInformCurrentPage(val) {
-      this.informCurrentPage = val;
-      this.getNotificationList();
+    changeTodoPagination(pagination) {
+      this.todoPagination = pagination;
+      this.getTodoList(this.todoPagination);
+    },
+    changeNotificationPagination(pagination) {
+      this.notificationPagination = pagination;
+      this.getNotificationList(this.notificationPagination);
+    },
+    setDisabled(state) {
+      return state === 1;
+    },
+    async isRead(id) {
+      try {
+        await this.$store.dispatch('workbench/notificationRead', {
+          id
+        });
+        this.getNotificationList(this.pagination);
+      } catch (err) {
+        return;
+      }
+    },
+    setContentColor(state) {
+      return state === 0 ? 'is-read' : '';
     }
   }
 };

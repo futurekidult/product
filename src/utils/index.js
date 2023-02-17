@@ -212,16 +212,6 @@ export const changeDemandColor = (val) => {
   }
 };
 
-export const changeApprovalColor = (val) => {
-  if (val <= 20) {
-    return 'result-ing';
-  } else if (val === 30) {
-    return 'result-fail';
-  } else {
-    return 'result-pass';
-  }
-};
-
 export const adminStateColor = (key) => {
   if (key === 1) {
     return '#379f0d';
@@ -234,4 +224,21 @@ export const adminStateColor = (key) => {
 
 export const setDisabledDate = (time) => {
   return time.getTime() < Date.now() - 1000 * 60 * 60 * 24;
+};
+
+//设置任务状态颜色(【10:待完成, 20:审批中, 30:审批驳回, 40:已完成, 50:已终止】)
+export const setTaskStateColor = (state) => {
+  if (state <= 20) {
+    return 'result-ing';
+  } else if (state === 30 || state === 50) {
+    return 'result-fail';
+  } else {
+    return 'result-pass';
+  }
+};
+
+//页码重置
+export const resetPagination = (pagination, page, size) => {
+  pagination.current_page = page;
+  pagination.page_size = size;
 };
