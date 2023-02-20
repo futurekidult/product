@@ -43,10 +43,6 @@ export default {
 </script>
 
 <style scoped>
-.delete-item {
-  cursor: pointer;
-}
-
 .delete-item,
 .delete-btn,
 .delete-btn:hover {

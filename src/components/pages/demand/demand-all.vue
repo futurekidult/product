@@ -348,7 +348,6 @@ export default {
 
 <style scoped>
 .reason {
-  cursor: pointer;
   color: #409eff;
 }
 </style>

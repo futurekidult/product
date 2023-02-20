@@ -3,12 +3,12 @@
     <div class="border">
       <div class="nav-title todo-title">
         <div><span class="line">|</span> 待办列表</div>
-
         <div style="display: flex">
           <el-input
             v-model="keyword"
             placeholder="待办名称搜索"
             clearable
+            class="icon-click"
             @clear="searchTodo"
           >
             <template #append>
@@ -38,68 +38,31 @@
           </el-button>
         </div>
       </div>
-
-      <div v-loading="$store.state.system.todoLoading">
-        <el-table
-          stripe
-          :data="todoList"
-          empty-text="无数据"
-          :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-          border
-        >
-          <el-table-column
-            fixed
-            label="待办ID"
-            prop="id"
-            width="100"
-          />
-          <el-table-column
-            fixed
-            label="待办名称"
-            prop="name"
-          />
-          <el-table-column
-            label="接收时间"
-            prop="create_time"
-            width="200"
-          />
-          <el-table-column
-            label="执行人"
-            prop="user_name"
-            width="150"
-          />
-          <el-table-column
-            label="操作"
-            fixed="right"
-            width="100"
+      <base-table
+        v-loading="$store.state.system.todoLoading"
+        :table-data="todoList"
+        :pagination="pagination"
+        :length="$store.state.system.todoListLength"
+        :table-column="tableColumn"
+        @change-pagination="changePagination"
+      >
+        <template #default="slotProps">
+          <text-btn
+            @handle-click="
+              showOperatorDialog(slotProps.row.id, slotProps.row.user_name)
+            "
           >
-            <template #default="scope">
-              <text-btn
-                @handle-click="
-                  showOperatorDialog(scope.row.id, scope.row.user_name)
-                "
-              >
-                待办转移
-              </text-btn>
-            </template>
-          </el-table-column>
-        </el-table>
-
-        <base-pagination
-          :length="$store.state.system.todoListLength"
-          :current-page="currentPage"
-          :page-num="pageSize"
-          @change-size="changePageSize"
-          @change-page="changeCurrentPage"
-        />
-      </div>
+            待办转移
+          </text-btn>
+        </template>
+      </base-table>
     </div>
-
     <el-dialog
       v-model="operatorVisible"
       width="30%"
       title="待办转移"
       :close-on-click-modal="false"
+      @close="closeForm"
     >
       <el-form
         ref="operatorForm"
@@ -168,22 +131,34 @@ export default {
         disabled: 'disabled'
       },
       operatorForm: {},
-      currentPage: 1,
-      pageSize: 10
+      tableColumn: [
+        { prop: 'id', label: '待办ID', width: 80, fixed: 'left' },
+        {
+          prop: 'name',
+          label: '待办名称',
+          fixed: 'left'
+        },
+        { prop: 'create_time', label: '接收时间', width: 200 },
+        { prop: 'user_name', label: '执行人', width: 150 }
+      ],
+      pagination: {
+        current_page: 1,
+        page_size: 10
+      }
     };
   },
   mounted() {
-    this.getTodoList();
+    this.getTodoList(this.pagination);
     getOrganizationList().then((res) => {
       this.memberList = res;
     });
   },
   methods: {
-    async getTodoList() {
+    async getTodoList(pagination) {
       this.$store.commit('system/setTodoLoading', true);
       let params = {
-        current_page: this.currentPage,
-        page_size: this.pageSize,
+        current_page: pagination.current_page,
+        page_size: pagination.page_size,
         keyword: this.keyword,
         operator: this.operator
       };
@@ -199,12 +174,12 @@ export default {
       }
     },
     async transferTodo(val) {
-      let body = val;
-      body['todo_id'] = this.todoId;
+      let body = { ...val, todo_id: this.todoId };
       try {
         await this.$store.dispatch('system/transferTodo', body);
         this.operatorVisible = false;
-        this.getTodoList();
+        this.$refs.operatorForm.resetFields();
+        this.getTodoList(this.pagination);
       } catch (err) {
         return;
       }
@@ -224,24 +199,20 @@ export default {
     resetForm() {
       this.keyword = '';
       this.operator = '';
-      this.pageSize = 10;
+      this.pagination.page_size = 10;
       this.searchTodo();
     },
     closeForm() {
+      this.$refs.operatorForm.resetFields();
       this.operatorVisible = false;
     },
-    changeCurrentPage(val) {
-      this.currentPage = val;
-      this.getTodoList();
-    },
-    changePageSize(val) {
-      this.pageSize = val;
-      this.currentPage = 1;
-      this.getTodoList();
-    },
     searchTodo() {
-      this.currentPage = 1;
-      this.getTodoList();
+      this.pagination.current_page = 1;
+      this.getTodoList(this.pagination);
+    },
+    changePagination(pagination) {
+      this.pagination = pagination;
+      this.getTodoList(this.pagination);
     }
   }
 };
