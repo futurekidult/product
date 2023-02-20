@@ -23,6 +23,7 @@
         :prop="column.prop"
         :label="column.label"
         :width="column.width"
+        :min-width="column.min_width"
         :fixed="column.fixed"
       >
         <template #default="scope">
@@ -55,18 +56,16 @@
         </template>
       </el-table-column>
     </el-table>
-    <div v-if="paginationVisible">
-      <el-pagination
-        v-if="total > listPagination.page_size"
-        :total="total"
-        :page-size="listPagination.page_size"
-        :current-page="listPagination.current_page"
-        :page-sizes="[10, 20, 30, 50]"
-        layout="total, sizes, prev, pager, next, jumper"
-        @current-change="handleCurrentChange"
-        @size-change="handleSizeChange"
-      />
-    </div>
+    <el-pagination
+      v-if="total > listPagination.page_size"
+      :total="total"
+      :page-size="listPagination.page_size"
+      :current-page="listPagination.current_page"
+      :page-sizes="[10, 20, 30, 50]"
+      layout="total, sizes, prev, pager, next, jumper"
+      @current-change="handleCurrentChange"
+      @size-change="handleSizeChange"
+    />
   </main>
 </template>
 
@@ -80,10 +79,6 @@ export default {
     selectionVisible: {
       type: Boolean,
       default: false
-    },
-    paginationVisible: {
-      type: Boolean,
-      default: true
     },
     tableColumn: {
       type: Array,

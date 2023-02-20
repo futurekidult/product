@@ -8,84 +8,23 @@
         <span class="line">|</span> 黑名单
       </div>
 
-      <el-table
-        border
-        stripe
-        empty-text="无数据"
-        :data="blackList"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      >
-        <el-table-column
-          fixed
-          label="供应商ID"
-          prop="id"
-          width="100"
-        />
-        <el-table-column
-          fixed
-          label="供应商名称"
-          prop="name"
-          min-width="150"
-        />
-        <el-table-column
-          label="供应商类型"
-          prop="type"
-          min-width="100"
-        />
-        <el-table-column
-          label="合作等级"
-          prop="cooperation_level"
-          min-width="150"
-        />
-        <el-table-column
-          label="采购员"
-          prop="purchase_specialist"
-        />
-        <el-table-column
-          label="创建时间"
-          prop="create_time"
-          width="200"
-        />
-        <el-table-column
-          label="审批完成时间"
-          prop="approval_time"
-          width="200"
-        />
-        <el-table-column
-          label="状态"
-          width="100"
-          fixed="right"
-        >
-          <template #default="scope">
-            <div :class="changeColor(scope.row.state)">
-              {{ scope.row.state_desc }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          width="250"
-          fixed="right"
-        >
-          <template #default="scope">
-            <text-btn @handle-click="toDetail(scope.row.id)">
-              查看
-            </text-btn>
-            <span class="table-btn">|</span>
-            <text-btn @handle-click="showWhiteDialog(scope.row.id)">
-              加入白名单
-            </text-btn>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <base-pagination
+      <base-table
+        :table-column="$global.supplierTableColumn"
+        :table-data="blackList"
+        :pagination="blackListPagination"
         :length="$store.state.supplier.blackListLength"
-        :current-page="currentPage"
-        :page-num="pageSize"
-        @change-size="changePageSize"
-        @change-page="changeCurrentPage"
-      />
+        @change-pagination="changeBlackListPagination"
+      >
+        <template #default="slotProps">
+          <text-btn @handle-click="toDetail(slotProps.row.id)">
+            查看
+          </text-btn>
+          <span class="table-btn">|</span>
+          <text-btn @handle-click="showWhiteDialog(slotProps.row.id)">
+            加入白名单
+          </text-btn>
+        </template>
+      </base-table>
     </div>
 
     <confirm-dialog
@@ -114,8 +53,10 @@ export default {
       blackList: [],
       whiteDialogVisible: false,
       supplierWhiteId: 0,
-      currentPage: 1,
-      pageSize: 10
+      blackListPagination: {
+        current_page: 1,
+        page_size: 10
+      }
     };
   },
   mounted() {
@@ -125,8 +66,8 @@ export default {
     async getBlackList() {
       this.$store.commit('supplier/setBlackLoading', true);
       let params = {
-        current_page: this.currentPage,
-        page_size: this.pageSize
+        current_page: this.blackListPagination.current_page,
+        page_size: this.blackListPagination.page_size
       };
       try {
         await this.$store.dispatch('supplier/getBlackList', { params });
@@ -159,13 +100,8 @@ export default {
     toDetail(id) {
       this.$router.push(`/supplier-list/${id}`);
     },
-    changeCurrentPage(val) {
-      this.currentPage = val;
-      this.getBlackList();
-    },
-    changePageSize(val) {
-      this.pageSize = val;
-      this.currentPage = 1;
+    changeBlackListPagination(pagination) {
+      this.blackListPagination = pagination;
       this.getBlackList();
     }
   }

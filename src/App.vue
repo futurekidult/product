@@ -83,7 +83,7 @@ body {
 
 .el-pagination {
   margin: 10px 0;
-  float: right;
+  justify-content: flex-end;
 }
 
 .el-input-group__append,
