@@ -35,7 +35,6 @@
                   placeholder="请选择任务状态"
                   style="margin-left: 15px"
                   clearable
-                  @clear="searchTodo"
                   @change="searchTodo"
                 >
                   <el-option
@@ -170,7 +169,7 @@ export default {
   mounted() {
     this.getTodoCount();
     this.getParams();
-    this.getTodoList(this.todoPagination);
+    this.getTodoList();
   },
   methods: {
     async getTodoCount() {
@@ -195,11 +194,11 @@ export default {
         }
       }
     },
-    async getTodoList(pagination) {
+    async getTodoList() {
       this.$store.commit('workbench/setTodoListLoading', true);
       let params = this.chooseForm;
-      params['current_page'] = pagination.current_page;
-      params['page_size'] = pagination.page_size;
+      params['current_page'] = this.todoPagination.current_page;
+      params['page_size'] = this.todoPagination.page_size;
       try {
         await this.$store.dispatch('workbench/getTodoList', { params });
         this.todoList = this.$store.state.workbench.todoList;
@@ -212,9 +211,9 @@ export default {
         return;
       }
     },
-    async getNotificationList(pagination) {
+    async getNotificationList() {
       this.$store.commit('workbench/setNotificationListLoading', true);
-      let params = pagination;
+      let params = this.notificationPagination;
       try {
         await this.$store.dispatch('workbench/getNotificationList', { params });
         this.notificationList = this.$store.state.workbench.notificationList;
@@ -230,7 +229,7 @@ export default {
       if (tab.props.name === 'todo-list') {
         resetPagination(this.todoPagination, 1, 10);
         this.getTodoCount();
-        this.getTodoList(this.todoPagination);
+        this.getTodoList();
       } else {
         resetPagination(this.notificationPagination, 1, 10);
         this.getNotificationList();
@@ -238,7 +237,7 @@ export default {
     },
     searchTodo() {
       this.todoPagination.current_page = 1;
-      this.getTodoList(this.todoPagination);
+      this.getTodoList();
     },
     toDetail(taskId, id, state) {
       let taskArr = getTask(taskId);
@@ -273,11 +272,11 @@ export default {
     },
     changeTodoPagination(pagination) {
       this.todoPagination = pagination;
-      this.getTodoList(this.todoPagination);
+      this.getTodoList();
     },
     changeNotificationPagination(pagination) {
       this.notificationPagination = pagination;
-      this.getNotificationList(this.notificationPagination);
+      this.getNotificationList();
     },
     setDisabled(state) {
       return state === 1;
@@ -287,7 +286,7 @@ export default {
         await this.$store.dispatch('workbench/notificationRead', {
           id
         });
-        this.getNotificationList(this.pagination);
+        this.getNotificationList();
       } catch (err) {
         return;
       }
