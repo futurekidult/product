@@ -81,15 +81,6 @@ export default {
         return;
       }
     },
-    changeColor(val) {
-      if (val === 10) {
-        return 'result-ing';
-      } else if (val === 20) {
-        return 'result-fail';
-      } else {
-        return 'result-pass';
-      }
-    },
     showWhiteDialog(id) {
       this.whiteDialogVisible = true;
       this.supplierWhiteId = id;

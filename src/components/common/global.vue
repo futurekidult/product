@@ -1,5 +1,5 @@
 <script>
-import { setTaskStateColor } from '../../utils/index.js';
+import { changeSupplierListColor } from '../../utils/index.js';
 
 const reviewOptions = [
   {
@@ -80,7 +80,7 @@ const supplierTableColumn = [
     label: '状态',
     width: 100,
     formatter: (row) => {
-      return setTaskStateColor(row.state);
+      return changeSupplierListColor(row.state);
     },
     getSpecialProp: (row) => {
       return row.state_desc;

@@ -242,3 +242,13 @@ export const resetPagination = (pagination, page, size) => {
   pagination.current_page = page;
   pagination.page_size = size;
 };
+
+export const changeSupplierListColor = (val) => {
+  if (val === 10) {
+    return 'result-ing';
+  } else if (val === 20) {
+    return 'result-fail';
+  } else {
+    return 'result-pass';
+  }
+};

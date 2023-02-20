@@ -237,15 +237,6 @@ export default {
       this.$router.push(`/supplier-list/${id}`);
       this.$store.commit('supplier/setActionType', type);
     },
-    changeColor(val) {
-      if (val === 10) {
-        return 'result-ing';
-      } else if (val === 20) {
-        return 'result-fail';
-      } else {
-        return 'result-pass';
-      }
-    },
     resetForm() {
       this.chooseForm = {};
       this.supplierPagination.page_size = 10;
