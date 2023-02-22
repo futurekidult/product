@@ -1,4 +1,6 @@
 <script>
+import { setApproveStateColor } from '../../utils/index.js';
+
 const reviewOptions = [
   {
     label: '请选择',
@@ -65,6 +67,27 @@ const categoryProductMap = {
   }
 };
 
+const supplierTableColumn = [
+  { prop: 'id', label: '供应商ID', width: 100, fixed: 'left' },
+  { prop: 'name', label: '供应商名称', fixed: 'left', min_width: 150 },
+  { prop: 'type', label: '供应商类型', min_width: 100 },
+  { prop: 'cooperation_level', label: '合作等级', min_width: 150 },
+  { prop: 'purchase_specialist', label: '采购员' },
+  { prop: 'create_time', label: '创建时间', width: 200 },
+  { prop: 'approval_time', label: '审批完成时间', width: 200 },
+  {
+    prop: 'state',
+    label: '状态',
+    width: 100,
+    formatter: (row) => {
+      return setApproveStateColor(row.state);
+    },
+    getSpecialProp: (row) => {
+      return row.state_desc;
+    }
+  }
+];
+
 const pagination = Object.freeze({
   current_page: 1,
   page_size: 10
@@ -77,6 +100,7 @@ export default {
   pagination,
   defaultTime,
   unterminatedStateCode,
-  categoryProductMap
+  categoryProductMap,
+  supplierTableColumn
 };
 </script>

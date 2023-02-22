@@ -247,6 +247,15 @@ export const resetPagination = (pagination, page, size) => {
   pagination.page_size = size;
 };
 
+export const setApproveStateColor = (val) => {
+  if (val === 10) {
+    return 'result-ing';
+  } else if (val === 20) {
+    return 'result-fail';
+  } else {
+    return 'result-pass';
+  }
+
 //表单项重置，并移除校验结果
 export const resetFormFields = (form) => {
   setTimeout(() => {
