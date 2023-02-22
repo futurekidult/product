@@ -65,10 +65,16 @@ const categoryProductMap = {
   }
 };
 
+const pagination = Object.freeze({
+  current_page: 1,
+  page_size: 10
+});
+
 export default {
   reviewOptions,
   heymeLink,
   haomiLink,
+  pagination,
   defaultTime,
   unterminatedStateCode,
   categoryProductMap
