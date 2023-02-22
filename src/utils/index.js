@@ -255,6 +255,7 @@ export const setApproveStateColor = (val) => {
   } else {
     return 'result-pass';
   }
+};
 
 //表单项重置，并移除校验结果
 export const resetFormFields = (form) => {
