@@ -27,7 +27,6 @@
               filterable
               :props="defaultProps"
               @change="searchSupplier"
-              @clear="searchSupplier"
             />
           </el-form-item>
           <el-form-item label="状态">
@@ -36,7 +35,6 @@
               clearable
               placeholder="请选择"
               @change="searchSupplier"
-              @clear="searchSupplier"
             >
               <el-option
                 v-for="item in supplierState"
@@ -177,7 +175,7 @@ export default {
         label: 'name',
         disabled: 'disabled'
       },
-      pagination: this.$global.pagination,
+      pagination: JSON.parse(JSON.stringify(this.$global.pagination)),
       deleteDialogVisible: false,
       deleteId: 0
     };
@@ -233,7 +231,7 @@ export default {
     },
     resetForm() {
       this.chooseForm = {};
-      this.supplierPagination.page_size = 10;
+      this.pagination.page_size = 10;
       this.searchSupplier();
     },
     showDeleteDialog(id) {
@@ -265,11 +263,11 @@ export default {
       this.blackDialogVisible = false;
     },
     changeSupplierPagination(pagination) {
-      this.supplierPagination = pagination;
+      this.pagination = pagination;
       this.getSupplierList();
     },
     searchSupplier() {
-      this.supplierPagination.current_page = 1;
+      this.pagination.current_page = 1;
       this.getSupplierList();
     }
   }

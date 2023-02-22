@@ -88,10 +88,10 @@ const supplierTableColumn = [
   }
 ];
 
-const pagination = {
+const pagination = Object.freeze({
   current_page: 1,
   page_size: 10
-};
+});
 
 export default {
   reviewOptions,

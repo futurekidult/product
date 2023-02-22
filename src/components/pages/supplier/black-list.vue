@@ -53,7 +53,7 @@ export default {
       blackList: [],
       whiteDialogVisible: false,
       supplierWhiteId: 0,
-      pagination: this.$global.pagination
+      pagination: JSON.parse(JSON.stringify(this.$global.pagination))
     };
   },
   mounted() {
@@ -62,7 +62,7 @@ export default {
   methods: {
     async getBlackList() {
       this.$store.commit('supplier/setBlackLoading', true);
-      let params = this.pagination
+      let params = this.pagination;
       try {
         await this.$store.dispatch('supplier/getBlackList', { params });
         this.blackList = this.$store.state.supplier.blackList;
@@ -86,7 +86,7 @@ export default {
       this.$router.push(`/supplier-list/${id}`);
     },
     changeBlackListPagination(pagination) {
-      this.blackListPagination = pagination;
+      this.pagination = pagination;
       this.getBlackList();
     }
   }
