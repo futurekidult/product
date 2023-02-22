@@ -109,6 +109,7 @@ import {
 
 export default {
   data() {
+    const pagination = JSON.parse(JSON.stringify(this.$global.pagination));
     return {
       activeName: 'todo-list',
       todoList: [],
@@ -138,10 +139,7 @@ export default {
           }
         }
       ],
-      todoPagination: {
-        current_page: 1,
-        page_size: 10
-      },
+      todoPagination: pagination,
       notificationTableColumn: [
         { prop: 'id', label: '通知ID', width: 80, fixed: 'left' },
         {
@@ -157,10 +155,7 @@ export default {
         },
         { prop: 'create_time', label: '创建时间', width: 200 }
       ],
-      notificationPagination: {
-        current_page: 1,
-        page_size: 10
-      }
+      notificationPagination: pagination
     };
   },
   mounted() {
