@@ -212,29 +212,33 @@ export const changeDemandColor = (val) => {
   }
 };
 
-export const adminStateColor = (key) => {
-  if (key === 1) {
-    return '#379f0d';
-  } else if (key === 2) {
-    return '#ea1d1d';
-  } else {
-    return '#999999';
-  }
-};
-
 export const setDisabledDate = (time) => {
   return time.getTime() < Date.now() - 1000 * 60 * 60 * 24;
 };
 
-//设置任务状态颜色(【10:待完成, 20:审批中, 30:审批驳回, 40:已完成, 50:已终止】)
-export const setTaskStateColor = (state) => {
-  if (state <= 20) {
-    return 'result-ing';
-  } else if (state === 30 || state === 50) {
-    return 'result-fail';
-  } else {
-    return 'result-pass';
+//设置状态颜色
+export const setStateColor = (state) => {
+  let className = '';
+  switch (state) {
+    case 10:
+    case 20:
+      className = 'result-ing';
+      break;
+    case 2:
+    case 30:
+    case 50:
+      className = 'result-fail';
+      break;
+    case 1:
+    case 40:
+      className = 'result-pass';
+      break;
+    case 3:
+      className = 'result-ignore';
+      break;
+    default:
   }
+  return className;
 };
 
 //页码重置

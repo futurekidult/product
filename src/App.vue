@@ -198,7 +198,8 @@ body {
   color: #fff !important;
 }
 
-.header-right_divider {
+.header-right_divider,
+.select-element_margin {
   margin-left: 15px !important;
 }
 
