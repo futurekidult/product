@@ -19,6 +19,7 @@
           </el-select>
           <el-select
             v-model="selectedPlatform"
+            class="select-element_margin"
             placeholder="请选择平台"
             clearable
             @change="searchCalculationRules"
@@ -30,55 +31,31 @@
               :value="item.key"
             />
           </el-select>
+          <el-button
+            class="select-element_margin"
+            @click="resetForm"
+          >
+            重置
+          </el-button>
         </div>
       </div>
-
-      <div v-loading="$store.state.system.calculationRuleListLoading">
-        <el-table
-          stripe
-          border
-          empty-text="无数据"
-          :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-          :data="calculationRuleList"
-        >
-          <el-table-column
-            fixed
-            label="ID"
-            prop="id"
-            width="100"
-          />
-          <el-table-column
-            label="数据名称"
-            prop="name"
-          />
-          <el-table-column
-            label="最新更新时间"
-            prop="update_time"
-            width="200"
-          />
-          <el-table-column
-            label="操作"
-            fixed="right"
-            width="100"
-          >
-            <template #default="scope">
-              <text-btn @handle-click="showEditForm(scope.row.id)">
-                编辑
-              </text-btn>
-            </template>
-          </el-table-column>
-        </el-table>
-
-        <base-pagination
-          :length="$store.state.system.calculationRuleListLength"
-          :current-page="currentPage"
-          :page-num="pageSize"
-          @change-size="changePageSize"
-          @change-page="changeCurrentPage"
-        />
-      </div>
+      <base-table
+        v-loading="$store.state.system.calculationRuleListLoading"
+        :operation-width="100"
+        :table-data="calculationRuleList"
+        :pagination="pagination"
+        :length="$store.state.system.calculationRuleListLength"
+        :table-column="tableColumn"
+        @change-pagination="changePagination"
+      >
+        <template #default="slotProps">
+          <text-btn @handle-click="getDetail(slotProps.row.id)">
+            编辑
+          </text-btn>
+        </template>
+      </base-table>
     </div>
-
+    <!-- 编辑弹窗 -->
     <el-dialog
       v-model="editVisible"
       width="40%"
@@ -266,7 +243,11 @@
 </template>
 
 <script>
-import { formatterTime } from '../../../utils';
+import {
+  formatterTime,
+  resetFormFields,
+  resetPagination
+} from '../../../utils';
 export default {
   data() {
     return {
@@ -341,8 +322,16 @@ export default {
           }
         ]
       },
-      currentPage: 1,
-      pageSize: 10
+      pagination: JSON.parse(JSON.stringify(this.$global.pagination)),
+      tableColumn: [
+        { prop: 'id', label: 'ID', width: 80, fixed: 'left' },
+        {
+          prop: 'name',
+          label: '数据名称',
+          fixed: 'left'
+        },
+        { prop: 'update_time', label: '最新更新时间', width: 200 }
+      ]
     };
   },
   mounted() {
@@ -367,8 +356,8 @@ export default {
     async getCalculationRuleList() {
       this.$store.commit('system/setCalculationRuleListLoading', true);
       let params = {
-        current_page: this.currentPage,
-        page_size: this.pageSize,
+        current_page: this.pagination.current_page,
+        page_size: this.pagination.page_size,
         market: this.selectedMarket,
         platform: this.selectedPlatform
       };
@@ -400,6 +389,7 @@ export default {
         });
         this.calculationRuleForm =
           this.$store.state.system.calculationRuleDetail;
+        this.editVisible = true;
       } catch (err) {
         return;
       }
@@ -415,13 +405,13 @@ export default {
         return;
       }
     },
-    showEditForm(id) {
-      this.editVisible = true;
+    getDetail(id) {
       this.editId = id;
       this.getCategoryList();
       this.getCalculationRuleDetail(id);
     },
     closeForm() {
+      resetFormFields(this.$refs.calculationRuleForm);
       this.editVisible = false;
     },
     submitCalculationRule() {
@@ -431,18 +421,18 @@ export default {
         }
       });
     },
-    changePageSize(val) {
-      this.pageSize = val;
-      this.currentPage = 1;
-      this.getCalculationRuleList();
-    },
-    changeCurrentPage(val) {
-      this.currentPage = val;
+    changePagination(pagination) {
+      this.pagination = pagination;
       this.getCalculationRuleList();
     },
     searchCalculationRules() {
-      this.currentPage = 1;
-      this.pageSize = 10;
+      this.pagination.current_page = 1;
+      this.getCalculationRuleList();
+    },
+    resetForm() {
+      this.selectedPlatform = '';
+      this.selectedMarket = '';
+      resetPagination(this.pagination, 1, 10);
       this.getCalculationRuleList();
     }
   }

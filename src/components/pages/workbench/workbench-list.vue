@@ -104,7 +104,7 @@ import {
   getTask,
   formatterTime,
   resetPagination,
-  setTaskStateColor
+  setStateColor
 } from '../../../utils';
 
 export default {
@@ -132,7 +132,7 @@ export default {
           label: '状态',
           width: 150,
           formatter: (row) => {
-            return setTaskStateColor(row.state);
+            return setStateColor(row.state);
           },
           getSpecialProp: (row) => {
             return row.state_desc;

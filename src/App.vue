@@ -82,8 +82,9 @@ body {
 }
 
 .el-pagination {
-  margin: 10px 0;
-  float: right;
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .el-input-group__append,
@@ -428,5 +429,14 @@ body {
 
 .el-tabs--card > .el-tabs__header {
   border-bottom: 1px solid #d9d9d9 !important;
+}
+
+.reason,
+.icon-click,
+.toggle-btn,
+.delete-item,
+.pass-form_span,
+.pass-form_span_sub {
+  cursor: pointer;
 }
 </style>
