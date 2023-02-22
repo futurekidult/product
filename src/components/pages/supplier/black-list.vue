@@ -11,7 +11,7 @@
       <base-table
         :table-column="$global.supplierTableColumn"
         :table-data="blackList"
-        :pagination="blackListPagination"
+        :pagination="pagination"
         :length="$store.state.supplier.blackListLength"
         @change-pagination="changeBlackListPagination"
       >
@@ -53,10 +53,7 @@ export default {
       blackList: [],
       whiteDialogVisible: false,
       supplierWhiteId: 0,
-      blackListPagination: {
-        current_page: 1,
-        page_size: 10
-      }
+      pagination: this.$global.pagination
     };
   },
   mounted() {
@@ -65,10 +62,7 @@ export default {
   methods: {
     async getBlackList() {
       this.$store.commit('supplier/setBlackLoading', true);
-      let params = {
-        current_page: this.blackListPagination.current_page,
-        page_size: this.blackListPagination.page_size
-      };
+      let params = this.pagination
       try {
         await this.$store.dispatch('supplier/getBlackList', { params });
         this.blackList = this.$store.state.supplier.blackList;

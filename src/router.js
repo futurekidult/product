@@ -119,7 +119,7 @@ const router = createRouter({
               props: true
             },
             {
-              path: '/supplist-list/supplier-update/:id',
+              path: '/supplier-list/supplier-update/:id',
               name: 'supplier update',
               component: SupplierUpdate,
               meta: {

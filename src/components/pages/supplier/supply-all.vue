@@ -15,6 +15,7 @@
               v-model="chooseForm.name"
               clearable
               placeholder="请输入供应商名称"
+              @keyup.enter.native="searchSupplier"
               @clear="searchSupplier"
             />
           </el-form-item>
@@ -25,6 +26,7 @@
               clearable
               filterable
               :props="defaultProps"
+              @change="searchSupplier"
               @clear="searchSupplier"
             />
           </el-form-item>
@@ -33,6 +35,7 @@
               v-model="chooseForm.state"
               clearable
               placeholder="请选择"
+              @change="searchSupplier"
               @clear="searchSupplier"
             >
               <el-option
@@ -45,12 +48,6 @@
           </el-form-item>
         </el-form>
         <div>
-          <el-button
-            type="primary"
-            @click="searchSupplier"
-          >
-            查询
-          </el-button>
           <el-button
             class="close-btn"
             @click="resetForm"
@@ -84,7 +81,7 @@
       <base-table
         :table-column="$global.supplierTableColumn"
         :table-data="supplierList"
-        :pagination="supplierPagination"
+        :pagination="pagination"
         :length="$store.state.supplier.supplierListLength"
         @change-pagination="changeSupplierPagination"
       >
@@ -180,10 +177,7 @@ export default {
         label: 'name',
         disabled: 'disabled'
       },
-      supplierPagination: {
-        current_page: 1,
-        page_size: 10
-      },
+      pagination: this.$global.pagination,
       deleteDialogVisible: false,
       deleteId: 0
     };
@@ -213,8 +207,8 @@ export default {
     async getSupplierList() {
       this.$store.commit('supplier/setSupplierLoading', true);
       let params = this.chooseForm;
-      params['current_page'] = this.supplierPagination.current_page;
-      params['page_size'] = this.supplierPagination.page_size;
+      params['current_page'] = this.pagination.current_page;
+      params['page_size'] = this.pagination.page_size;
       try {
         await this.$store.dispatch('supplier/getSupplierList', { params });
         this.supplierList = this.$store.state.supplier.supplierList;
@@ -231,7 +225,7 @@ export default {
       this.$router.push('/supplier-create');
     },
     toUpdate(id) {
-      this.$router.push(`/supplist-list/supplier-update/${id}`);
+      this.$router.push(`/supplier-list/supplier-update/${id}`);
     },
     toDetail(id, type) {
       this.$router.push(`/supplier-list/${id}`);
