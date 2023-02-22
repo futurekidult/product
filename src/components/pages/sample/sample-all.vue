@@ -16,6 +16,7 @@
               v-model="chooseForm.product_name"
               placeholder="请输入内容"
               clearable
+              @keyup.enter.native="searchSample"
               @clear="searchSample"
             />
           </el-form-item>
@@ -24,7 +25,7 @@
               v-model="chooseForm.product_category"
               placeholder="请选择"
               clearable
-              @clear="searchSample"
+              @change="searchSample"
             >
               <el-option
                 v-for="item in categoryList"
@@ -39,7 +40,7 @@
               v-model="chooseForm.state"
               placeholder="请选择"
               clearable
-              @clear="searchSample"
+              @change="searchSample"
             >
               <el-option
                 v-for="item in sampleState"
@@ -51,12 +52,6 @@
           </el-form-item>
         </el-form>
         <div>
-          <el-button
-            type="primary"
-            @click="searchSample"
-          >
-            查询
-          </el-button>
           <el-button
             class="reset-btn"
             @click="resetForm"
