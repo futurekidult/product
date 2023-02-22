@@ -242,3 +242,10 @@ export const resetPagination = (pagination, page, size) => {
   pagination.current_page = page;
   pagination.page_size = size;
 };
+
+//表单项重置，并移除校验结果
+export const resetFormFields = (form) => {
+  setTimeout(() => {
+    form.resetFields();
+  }, 100);
+};

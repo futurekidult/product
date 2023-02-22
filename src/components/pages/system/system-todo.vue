@@ -9,14 +9,9 @@
             placeholder="待办名称搜索"
             clearable
             class="icon-click"
+            @keyup.enter.native="searchTodo"
             @clear="searchTodo"
-          >
-            <template #append>
-              <el-icon @click="searchTodo">
-                <Search />
-              </el-icon>
-            </template>
-          </el-input>
+          />
           <span class="operator">执行人</span>
           <el-tree-select
             v-model="operator"
@@ -24,16 +19,12 @@
             clearable
             filterable
             :props="defaultProps"
-            @clear="searchTodo"
+            @change="searchTodo"
           />
           <el-button
-            type="primary"
-            style="margin-left: 12px"
-            @click="searchTodo"
+            class="select-element_margin"
+            @click="resetForm"
           >
-            查询
-          </el-button>
-          <el-button @click="resetForm">
             重置
           </el-button>
         </div>
@@ -109,13 +100,13 @@
 </template>
 
 <script>
-import { getOrganizationList, formatterTime } from '../../../utils';
-import { Search } from '@element-plus/icons-vue';
+import {
+  getOrganizationList,
+  formatterTime,
+  resetFormFields
+} from '../../../utils';
 
 export default {
-  components: {
-    Search
-  },
   data() {
     return {
       todoList: [],
@@ -141,24 +132,20 @@ export default {
         { prop: 'create_time', label: '接收时间', width: 200 },
         { prop: 'user_name', label: '执行人', width: 150 }
       ],
-      pagination: {
-        current_page: 1,
-        page_size: 10
-      }
+      pagination: this.$global.pagination
     };
   },
   mounted() {
-    this.getTodoList(this.pagination);
+    this.getTodoList();
     getOrganizationList().then((res) => {
       this.memberList = res;
     });
   },
   methods: {
-    async getTodoList(pagination) {
+    async getTodoList() {
       this.$store.commit('system/setTodoLoading', true);
       let params = {
-        current_page: pagination.current_page,
-        page_size: pagination.page_size,
+        ...this.pagination,
         keyword: this.keyword,
         operator: this.operator
       };
@@ -178,8 +165,8 @@ export default {
       try {
         await this.$store.dispatch('system/transferTodo', body);
         this.operatorVisible = false;
-        this.$refs.operatorForm.resetFields();
-        this.getTodoList(this.pagination);
+        resetFormFields(this.$refs.operatorForm);
+        this.getTodoList();
       } catch (err) {
         return;
       }
@@ -203,16 +190,16 @@ export default {
       this.searchTodo();
     },
     closeForm() {
-      this.$refs.operatorForm.resetFields();
       this.operatorVisible = false;
+      resetFormFields(this.$refs.operatorForm);
     },
     searchTodo() {
       this.pagination.current_page = 1;
-      this.getTodoList(this.pagination);
+      this.getTodoList();
     },
     changePagination(pagination) {
       this.pagination = pagination;
-      this.getTodoList(this.pagination);
+      this.getTodoList();
     }
   }
 };
