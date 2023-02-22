@@ -15,7 +15,8 @@
               v-model="chooseForm.product_name"
               placeholder="请输入内容"
               clearable
-              @clear="searchPrincing"
+              @keyup.enter.native="searchPricing"
+              @clear="searchPricing"
             />
           </el-form-item>
           <el-form-item label="品类">
@@ -23,7 +24,7 @@
               v-model="chooseForm.category"
               placeholder="请选择品类"
               clearable
-              @clear="searchPrincing"
+              @change="searchPricing"
             >
               <el-option
                 v-for="item in categoryList"
@@ -38,7 +39,7 @@
               v-model="chooseForm.state"
               placeholder="请选择状态"
               clearable
-              @clear="searchPrincing"
+              @change="searchPricing"
             >
               <el-option
                 v-for="item in pricingEnum"
@@ -50,12 +51,6 @@
           </el-form-item>
         </el-form>
         <div>
-          <el-button
-            type="primary"
-            @click="searchPrincing"
-          >
-            查询
-          </el-button>
           <el-button
             class="close-btn"
             @click="resetForm"
@@ -228,7 +223,7 @@ export default {
     resetForm() {
       this.chooseForm = {};
       this.pageSize = 10;
-      this.searchPrincing();
+      this.searchPricing();
     },
     changeCellColor(val) {
       if (val >= 30) {
@@ -249,7 +244,7 @@ export default {
       this.currentPage = 1;
       this.getPriceList();
     },
-    searchPrincing() {
+    searchPricing() {
       this.currentPage = 1;
       this.getPriceList();
     }
