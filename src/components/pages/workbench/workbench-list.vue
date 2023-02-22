@@ -23,13 +23,8 @@
                   placeholder="待办名称搜索"
                   clearable
                   @clear="searchTodo"
-                >
-                  <template #append>
-                    <el-icon @click="searchTodo">
-                      <Search />
-                    </el-icon>
-                  </template>
-                </el-input>
+                  @keyup.enter.native="searchTodo"
+                />
                 <el-select
                   v-model="chooseForm.state"
                   placeholder="请选择任务状态"
@@ -44,6 +39,12 @@
                     :value="item.key"
                   />
                 </el-select>
+                <el-button
+                  class="select-element_margin"
+                  @click="resetForm"
+                >
+                  重置
+                </el-button>
               </div>
             </div>
             <base-table
@@ -98,7 +99,6 @@
 </template>
 
 <script>
-import { Search } from '@element-plus/icons-vue';
 import { getDemandDetail } from '../../../utils/demand';
 import {
   getTask,
@@ -108,9 +108,6 @@ import {
 } from '../../../utils';
 
 export default {
-  components: {
-    Search
-  },
   data() {
     return {
       activeName: 'todo-list',
@@ -293,6 +290,11 @@ export default {
     },
     setContentColor(state) {
       return state === 0 ? 'is-read' : '';
+    },
+    resetForm() {
+      this.chooseForm = {};
+      this.todoPagination.page_size = 10;
+      this.searchTodo();
     }
   }
 };
