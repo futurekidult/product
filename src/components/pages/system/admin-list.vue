@@ -183,7 +183,7 @@ export default {
           value: 3
         }
       ],
-      pagination: this.$global.pagination,
+      pagination: JSON.parse(JSON.stringify(this.$global.pagination)),
       tableColumn: [
         { prop: 'name', label: '姓名', width: 200 },
         { prop: 'department', label: '所属部门' },

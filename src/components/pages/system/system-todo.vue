@@ -132,7 +132,7 @@ export default {
         { prop: 'create_time', label: '接收时间', width: 200 },
         { prop: 'user_name', label: '执行人', width: 150 }
       ],
-      pagination: this.$global.pagination
+      pagination: JSON.parse(JSON.stringify(this.$global.pagination))
     };
   },
   mounted() {

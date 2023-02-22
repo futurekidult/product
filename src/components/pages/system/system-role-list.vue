@@ -129,7 +129,7 @@ export default {
       deleteId: 0,
       roleList: [],
       memberList: [],
-      pagination: this.$global.pagination,
+      pagination: JSON.parse(JSON.stringify(this.$global.pagination)),
       tableColumn: [
         {
           label: '姓名',

@@ -322,7 +322,7 @@ export default {
           }
         ]
       },
-      pagination: this.$global.pagination,
+      pagination: JSON.parse(JSON.stringify(this.$global.pagination)),
       tableColumn: [
         { prop: 'id', label: 'ID', width: 80, fixed: 'left' },
         {
