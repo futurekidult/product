@@ -56,16 +56,18 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-      v-if="total > listPagination.page_size"
-      :total="total"
-      :page-size="listPagination.page_size"
-      :current-page="listPagination.current_page"
-      :page-sizes="[10, 20, 30, 50]"
-      layout="total, sizes, prev, pager, next, jumper"
-      @current-change="handleCurrentChange"
-      @size-change="handleSizeChange"
-    />
+    <div v-if="paginationVisible">
+      <el-pagination
+        v-if="total > listPagination.page_size"
+        :total="total"
+        :page-size="listPagination.page_size"
+        :current-page="listPagination.current_page"
+        :page-sizes="[10, 20, 30, 50]"
+        layout="total, sizes, prev, pager, next, jumper"
+        @current-change="handleCurrentChange"
+        @size-change="handleSizeChange"
+      />
+    </div>
   </main>
 </template>
 
@@ -87,6 +89,10 @@ export default {
     tableData: {
       type: Array,
       default: null
+    },
+    paginationVisible: {
+      type: Boolean,
+      default: true
     },
     operationVisible: {
       type: Boolean,
