@@ -1,5 +1,9 @@
 <script>
-import { setApproveStateColor } from '../../utils/index.js';
+import {
+  setApproveStateColor,
+  setProductStateColor,
+  setDemandReviewStateColor
+} from '../../utils/index.js';
 
 const reviewOptions = [
   {
@@ -88,6 +92,53 @@ const supplierTableColumn = [
   }
 ];
 
+const demandTableColumn = [
+  { prop: 'id', label: '需求ID', width: 100, fixed: 'left' },
+  { prop: 'name', label: '产品名称', fixed: 'left', min_width: 150 },
+  { prop: 'product_id', label: '关联产品ID', width: 100, 'is-link': true },
+  { prop: 'creator_desc', label: '创建人' },
+  { prop: 'ding_dept_desc', label: '所属部门', min_width: 150 },
+  { prop: 'create_time', label: '创建时间', width: 200 },
+  { prop: 'review_finish_time', label: '评审完成时间', width: 200 },
+  {
+    prop: 'state',
+    label: '状态',
+    width: 100,
+    formatter: (row) => {
+      return setDemandReviewStateColor(row.state);
+    },
+    getSpecialProp: (row) => {
+      return row.state_desc;
+    }
+  },
+  {
+    prop: 'review_failed_reason',
+    label: '不通过原因',
+    width: 100,
+    'is-reason': true
+  }
+];
+const productTableColumn = [
+  { prop: 'id', label: '产品ID', width: 100, fixed: 'left' },
+  { prop: 'name', label: '产品名称', fixed: 'left', min_width: 150 },
+  { prop: 'demand_id', label: '关联需求ID', width: 100, 'is-link': true },
+  { prop: 'category', label: '品类' },
+  { prop: 'positioning_desc', label: '产品定位', min_width: 100 },
+  { prop: 'project_administrator', label: '项目管理员', width: 200 },
+  { prop: 'create_time', label: '创建时间', width: 200 },
+  {
+    prop: 'state',
+    label: '状态',
+    width: 100,
+    formatter: (row) => {
+      return setProductStateColor(row.state);
+    },
+    getSpecialProp: (row) => {
+      return row.state_desc;
+    }
+  }
+];
+
 const pagination = Object.freeze({
   current_page: 1,
   page_size: 10
@@ -101,6 +152,8 @@ export default {
   defaultTime,
   unterminatedStateCode,
   categoryProductMap,
+  demandTableColumn,
+  productTableColumn,
   supplierTableColumn
 };
 </script>

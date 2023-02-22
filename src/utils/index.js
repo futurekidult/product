@@ -241,6 +241,30 @@ export const setStateColor = (state) => {
   return className;
 };
 
+//设置需求评审状态颜色
+export const setDemandReviewStateColor = (state) => {
+  if (state === 20) {
+    return 'result-ing';
+  } else if (state === 30) {
+    return 'result-pass';
+  } else if (state === 40) {
+    return 'result-fail';
+  } else {
+    return '';
+  }
+};
+
+//设置产品所处阶段颜色
+export const setProductStateColor = (state) => {
+  if (state === 30 || state === 90) {
+    return 'result-fail';
+  } else if (state === 80) {
+    return 'result-pass';
+  } else {
+    return 'result-ing';
+  }
+};
+
 //页码重置
 export const resetPagination = (pagination, page, size) => {
   pagination.current_page = page;
