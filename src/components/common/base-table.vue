@@ -48,7 +48,7 @@
       <el-table-column
         v-if="operationVisible"
         label="操作"
-        width="200"
+        :width="operationWidth"
         fixed="right"
       >
         <template #default="scope">
@@ -99,6 +99,10 @@ export default {
     pagination: {
       type: Object,
       default: null
+    },
+    operationWidth: {
+      type: Number,
+      default: 150
     }
   },
   emits: ['change-pagination'],

@@ -918,13 +918,11 @@ export default {
   font-size: 14px;
   margin: 15px 0px 0px 0px;
   color: #409eff;
-  cursor: pointer;
 }
 
 .pass-form_span_sub {
   font-size: 14px;
   color: #409eff;
-  cursor: pointer;
   margin: 15px 0px;
 }
 

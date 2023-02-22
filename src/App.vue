@@ -82,7 +82,8 @@ body {
 }
 
 .el-pagination {
-  margin: 10px 0;
+  margin-top: 10px;
+  display: flex;
   justify-content: flex-end;
 }
 
@@ -197,7 +198,8 @@ body {
   color: #fff !important;
 }
 
-.header-right_divider {
+.header-right_divider,
+.select-element_margin {
   margin-left: 15px !important;
 }
 
@@ -427,5 +429,14 @@ body {
 
 .el-tabs--card > .el-tabs__header {
   border-bottom: 1px solid #d9d9d9 !important;
+}
+
+.reason,
+.icon-click,
+.toggle-btn,
+.delete-item,
+.pass-form_span,
+.pass-form_span_sub {
+  cursor: pointer;
 }
 </style>
