@@ -16,6 +16,8 @@
               v-model="chooseForm.name"
               placeholder="请输入姓名"
               clearable
+              @keyup.enter.native="searchAdmin"
+              @clear="searchAdmin"
             />
           </el-form-item>
           <el-form-item label="部门">
@@ -32,6 +34,7 @@
               @change="getCheckedNodes"
               @remove-tag="removeTag"
               @check-change="getCheckedNodes"
+              @visible-change="handleVisibleChange"
             />
           </el-form-item>
           <el-form-item label="状态">
@@ -39,6 +42,7 @@
               v-model="chooseForm.state"
               placeholder="请选择状态"
               clearable
+              @change="searchAdmin"
             >
               <el-option
                 v-for="item in state"
@@ -49,20 +53,12 @@
             </el-select>
           </el-form-item>
         </el-form>
-        <div>
-          <el-button
-            type="primary"
-            @click="searchAdmin"
-          >
-            查询
-          </el-button>
-          <el-button
-            class="reset-btn"
-            @click="resetForm"
-          >
-            重置
-          </el-button>
-        </div>
+        <el-button
+          class="reset-btn"
+          @click="resetForm"
+        >
+          重置
+        </el-button>
       </div>
     </div>
 
@@ -70,68 +66,43 @@
       <div class="nav-title">
         <span class="line">|</span> 用户列表
       </div>
-
-      <div v-loading="$store.state.system.adminLoading">
-        <el-table
-          stripe
-          border
-          :data="adminList"
-          empty-text="无数据"
-          :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        >
-          <el-table-column
-            label="姓名"
-            prop="name"
-          />
-          <el-table-column
-            label="所属部门"
-            prop="department"
-          />
-          <el-table-column label="状态">
-            <template #default="scope">
-              <div :style="{ color: adminStateColor(scope.row.state) }">
-                {{ scope.row.state_desc }}
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作">
-            <template #default="scope">
-              <el-button
-                :disabled="scope.row.state === 3"
-                :type="scope.row.state === 1 ? 'danger' : 'primary'"
-                @click="
-                  scope.row.state === 1
-                    ? blockAdmin(scope.row.id)
-                    : unblockAdmin(scope.row.id)
-                "
-              >
-                {{ scope.row.state === 1 ? '封禁账号' : '解除封禁' }}
-              </el-button>
-              <el-button
-                type="warning"
-                :disabled="scope.row.state !== 1"
-                @click="showRoleForm(scope.row.id)"
-              >
-                配置角色
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-
-        <base-pagination
-          :length="$store.state.system.adminListLength"
-          :current-page="currentPage"
-          :page-num="pageSize"
-          @change-size="changePageSize"
-          @change-page="changeCurrentPage"
-        />
-      </div>
+      <base-table
+        v-loading="$store.state.system.adminLoading"
+        :table-data="adminList"
+        :operation-width="230"
+        :pagination="pagination"
+        :length="$store.state.system.adminListLength"
+        :table-column="tableColumn"
+        @change-pagination="changePagination"
+      >
+        <template #default="slotProps">
+          <el-button
+            :disabled="slotProps.row.state === 3"
+            :type="slotProps.row.state === 1 ? 'danger' : 'primary'"
+            @click="
+              slotProps.row.state === 1
+                ? blockAdmin(slotProps.row.id)
+                : unblockAdmin(slotProps.row.id)
+            "
+          >
+            {{ slotProps.row.state === 1 ? '封禁账号' : '解除封禁' }}
+          </el-button>
+          <el-button
+            type="warning"
+            :disabled="slotProps.row.state !== 1"
+            @click="showRoleForm(slotProps.row.id)"
+          >
+            配置角色
+          </el-button>
+        </template>
+      </base-table>
     </div>
     <el-dialog
       v-model="roleVisible"
       title="配置用户角色"
       width="30%"
       :close-on-click-modal="false"
+      @close="closeRoleForm"
     >
       <el-form
         ref="roleForm"
@@ -182,7 +153,7 @@
 </template>
 
 <script>
-import { adminStateColor } from '../../../utils/index.js';
+import { setStateColor, resetFormFields } from '../../../utils/index.js';
 
 export default {
   data() {
@@ -198,8 +169,6 @@ export default {
         label: 'name',
         disabled: 'disabled'
       },
-      currentPage: 1,
-      pageSize: 10,
       state: [
         {
           label: '启用状态',
@@ -213,6 +182,22 @@ export default {
           label: '离职状态',
           value: 3
         }
+      ],
+      pagination: this.$global.pagination,
+      tableColumn: [
+        { prop: 'name', label: '姓名', width: 200 },
+        { prop: 'department', label: '所属部门' },
+        {
+          prop: 'state',
+          label: '状态',
+          width: 100,
+          formatter: (row) => {
+            return setStateColor(row.state);
+          },
+          getSpecialProp: (row) => {
+            return row.state_desc;
+          }
+        }
       ]
     };
   },
@@ -221,7 +206,6 @@ export default {
     this.getOrganizationList();
   },
   methods: {
-    adminStateColor,
     async getOrganizationList() {
       this.$store.commit('system/setOrganizationLoading', true);
       try {
@@ -233,8 +217,8 @@ export default {
     },
     async getAdminList() {
       let params = {
-        current_page: this.currentPage,
-        page_size: this.pageSize,
+        current_page: this.pagination.current_page,
+        page_size: this.pagination.page_size,
         name: this.chooseForm.name,
         dept_ids: !this.chooseForm.dept_ids
           ? []
@@ -281,6 +265,7 @@ export default {
     },
     closeRoleForm() {
       this.roleVisible = false;
+      resetFormFields(this.$refs.roleForm);
     },
     submitRoleForm() {
       this.$refs.roleForm.validate((valid) => {
@@ -309,20 +294,11 @@ export default {
     },
     resetForm() {
       this.chooseForm = {};
-      this.pageSize = 10;
+      this.pagination.page_size = 10;
       this.searchAdmin();
     },
-    changeCurrentPage(val) {
-      this.currentPage = val;
-      this.getAdminList();
-    },
-    changePageSize(val) {
-      this.pageSize = val;
-      this.currentPage = 1;
-      this.getAdminList();
-    },
     searchAdmin() {
-      this.currentPage = 1;
+      this.pagination.current_page = 1;
       this.getAdminList();
     },
     getCheckedNodes(nodeData) {
@@ -360,6 +336,15 @@ export default {
     },
     removeTag(val) {
       this.$refs.tree.setChecked(val, false, true);
+    },
+    handleVisibleChange(val) {
+      if (!val) {
+        this.searchAdmin();
+      }
+    },
+    changePagination(pagination) {
+      this.pagination = pagination;
+      this.getAdminList();
     }
   }
 };
