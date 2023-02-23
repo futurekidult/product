@@ -82,7 +82,7 @@
         :length="$store.state.sample.sampleListLength"
         @change-pagination="changeSupplierPagination"
       >
-        <template #operation="slotProps">
+        <template #link="slotProps">
           <text-btn @handle-click="toRelatedProduct(slotProps.row.product_id)">
             {{ slotProps.row.product_id }}
           </text-btn>

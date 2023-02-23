@@ -275,6 +275,24 @@ export const setMouldStateColor = (val) => {
   }
 };
 
+export const setPriceStateColor = (val) => {
+  if (val >= 30) {
+    return 'result-pass';
+  } else {
+    return 'result-ing';
+  }
+};
+
+export const setQuotationStateColor = (val) => {
+  if (val === 20 || val === 30) {
+    return 'result-pass';
+  } else if (val === 10) {
+    return 'result-ignore';
+  } else {
+    return 'result-fail';
+  }
+};
+
 //表单项重置，并移除校验结果
 export const resetFormFields = (form) => {
   setTimeout(() => {

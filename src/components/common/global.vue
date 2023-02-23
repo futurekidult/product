@@ -2,7 +2,9 @@
 import {
   setApproveStateColor,
   setSampleStateColor,
-  setMouldStateColor
+  setMouldStateColor,
+  setQuotationStateColor,
+  setPriceStateColor
 } from '../../utils/index.js';
 
 const reviewOptions = [
@@ -100,7 +102,7 @@ const sampleAllTableColumn = [
     fixed: 'left',
     min_width: 150
   },
-  { prop: 'product_id', label: '关联产品ID', width: 110, is_operation: true },
+  { prop: 'product_id', label: '关联产品ID', width: 110, is_link: true },
   { prop: 'pricing_id', label: '关联定价ID', width: 110 },
   { prop: 'estimated_finish_time', label: '计划完成时间' },
   { prop: 'actual_finish_time', label: '实际完成时间', width: 200 },
@@ -218,6 +220,69 @@ const mouldAllTableColumn = [
   }
 ];
 
+const priceAllTableColumn = [
+  { prop: 'id', label: '定价ID', width: 100, fixed: 'left' },
+  {
+    prop: 'related_product_name',
+    label: '关联产品名称',
+    fixed: 'left',
+    min_width: 150
+  },
+  {
+    prop: 'related_product_id',
+    label: '关联产品ID',
+    width: 110,
+    is_operation: true
+  },
+  { prop: 'market_desc', label: '市场' },
+  { prop: 'platform', label: '平台', min_width: 150 },
+  { prop: 'purchase_principal', label: '采购负责人', min_width: 100 },
+  { prop: 'estimated_finish_time', label: '计划完成时间', width: 200 },
+  { prop: 'first_submit_time', label: '首次报价时间', width: 200 },
+  { prop: 'current_quote_count', label: '当前已有报价', min_width: 120 },
+  {
+    prop: 'state',
+    label: '状态',
+    formatter: (row) => {
+      return setPriceStateColor(row.state);
+    },
+    getSpecialProp: (row) => {
+      return row.state_desc;
+    }
+  }
+];
+
+const quotationListTableColumn = [
+  { prop: 'id', label: '报价ID', width: 100, fixed: 'left' },
+  {
+    prop: 'supplier_name',
+    label: '供应商名称',
+    fixed: 'left',
+    min_width: 200,
+    is_link: true
+  },
+  {
+    prop: 'purchase_specialist',
+    label: '采购员'
+  },
+  { prop: 'create_time', label: '报价时间', width: 200 },
+  { prop: 'quote_amount_rmb', label: '报价', min_width: 150 },
+  { prop: 'target_price', label: '采购目标价', width: 100, is_operation: true },
+  { prop: 'quote_validity', label: '报价有效期', width: 200 },
+  {
+    prop: 'state',
+    label: '状态',
+    fixed: 'right',
+    formatter: (row) => {
+      return setQuotationStateColor(row.state);
+    },
+    getSpecialProp: (row) => {
+      return row.state_desc;
+    }
+  },
+  { prop: 'confirm_time', label: '最终确定定价时间', width: 200 }
+];
+
 const pagination = Object.freeze({
   current_page: 1,
   page_size: 10
@@ -235,6 +300,8 @@ export default {
   sampleAllTableColumn,
   userTestTableColumn,
   userTemplateTableColumn,
-  mouldAllTableColumn
+  mouldAllTableColumn,
+  priceAllTableColumn,
+  quotationListTableColumn
 };
 </script>
