@@ -90,9 +90,11 @@
         :table-column="$global.demandTableColumn"
         @change-pagination="changePagination"
       >
-        <template #link="linkProps">
-          <text-btn @handle-click="toProductDetail(linkProps.row.product_id)">
-            {{ linkProps.row.product_id }}
+        <template #operation="operationProps">
+          <text-btn
+            @handle-click="toProductDetail(operationProps.row.product_id)"
+          >
+            {{ operationProps.row.product_id }}
           </text-btn>
         </template>
         <template #reason="reasonProps">

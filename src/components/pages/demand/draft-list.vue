@@ -8,11 +8,6 @@
         :table-column="draftTableColumn"
         @change-pagination="changePagination"
       >
-        <template #link="linkProps">
-          <text-btn @handle-click="toDemand(linkProps.row.demand_id)">
-            {{ linkProps.row.demand_id }}
-          </text-btn>
-        </template>
         <template #default="slotProps">
           <text-btn @handle-click="toForm(slotProps.row.id)">
             编辑

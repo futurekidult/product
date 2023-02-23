@@ -95,7 +95,7 @@ const supplierTableColumn = [
 const demandTableColumn = [
   { prop: 'id', label: '需求ID', width: 100, fixed: 'left' },
   { prop: 'name', label: '产品名称', fixed: 'left', min_width: 150 },
-  { prop: 'product_id', label: '关联产品ID', width: 100, 'is-link': true },
+  { prop: 'product_id', label: '关联产品ID', width: 100, is_operation: true },
   { prop: 'creator_desc', label: '创建人' },
   { prop: 'ding_dept_desc', label: '所属部门', min_width: 150 },
   { prop: 'create_time', label: '创建时间', width: 200 },
@@ -115,13 +115,13 @@ const demandTableColumn = [
     prop: 'review_failed_reason',
     label: '不通过原因',
     width: 100,
-    'is-reason': true
+    is_reason: true
   }
 ];
 const productTableColumn = [
   { prop: 'id', label: '产品ID', width: 100, fixed: 'left' },
   { prop: 'name', label: '产品名称', fixed: 'left', min_width: 150 },
-  { prop: 'demand_id', label: '关联需求ID', width: 100, 'is-link': true },
+  { prop: 'demand_id', label: '关联需求ID', width: 100, is_operation: true },
   { prop: 'category', label: '品类' },
   { prop: 'positioning_desc', label: '产品定位', min_width: 100 },
   { prop: 'project_administrator', label: '项目管理员', width: 200 },
