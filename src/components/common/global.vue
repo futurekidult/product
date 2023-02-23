@@ -1,7 +1,8 @@
 <script>
 import {
   setApproveStateColor,
-  setSampleStateColor
+  setSampleStateColor,
+  setMouldStateColor
 } from '../../utils/index.js';
 
 const reviewOptions = [
@@ -187,6 +188,36 @@ const userTemplateTableColumn = [
   }
 ];
 
+const mouldAllTableColumn = [
+  { prop: 'id', label: '模具ID', width: 100, fixed: 'left' },
+  {
+    prop: 'name',
+    label: '模具名称',
+    fixed: 'left',
+    min_width: 150
+  },
+  {
+    prop: 'mould_factory',
+    label: '开模工厂名称',
+    min_width: 150
+  },
+  { prop: 'create_time', label: '创建时间', width: 200 },
+  { prop: 'creator', label: '创建人' },
+  { prop: 'estimated_finish_time', label: '计划完成时间', width: 200 },
+  { prop: 'actual_finish_time', label: '实际完成时间', width: 200 },
+  {
+    prop: 'state',
+    label: '状态',
+    width: 150,
+    formatter: (row) => {
+      return setMouldStateColor(row.state);
+    },
+    getSpecialProp: (row) => {
+      return row.state_desc;
+    }
+  }
+];
+
 const pagination = Object.freeze({
   current_page: 1,
   page_size: 10
@@ -203,6 +234,7 @@ export default {
   supplierTableColumn,
   sampleAllTableColumn,
   userTestTableColumn,
-  userTemplateTableColumn
+  userTemplateTableColumn,
+  mouldAllTableColumn
 };
 </script>

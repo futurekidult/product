@@ -75,81 +75,20 @@
           创建模具
         </el-button>
       </div>
-
-      <el-table
-        border
-        stripe
-        empty-text="无数据"
-        :data="mouldList"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      >
-        <el-table-column
-          fixed
-          label="模具ID"
-          prop="id"
-          width="100"
-        />
-        <el-table-column
-          fixed
-          label="模具名称"
-          prop="name"
-          min-width="150"
-        />
-        <el-table-column
-          label="开模工厂名称"
-          prop="mould_factory"
-          min-width="150"
-        />
-        <el-table-column
-          label="创建时间"
-          prop="create_time"
-          width="200"
-        />
-        <el-table-column
-          label="创建人"
-          prop="creator"
-        />
-        <el-table-column
-          label="计划完成时间"
-          prop="estimated_finish_time"
-          width="200"
-        />
-        <el-table-column
-          label="实际完成时间"
-          prop="actual_finish_time"
-          width="200"
-        />
-        <el-table-column
-          label="状态"
-          width="150"
-          fixed="right"
-        >
-          <template #default="scope">
-            <div :class="changeCellColor(scope.row.state)">
-              {{ scope.row.state_desc }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          fixed="right"
-          width="100"
-        >
-          <template #default="scope">
-            <text-btn @handle-click="toDetail(scope.row.id)">
-              查看详情
-            </text-btn>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <base-pagination
+      <base-table
+        :table-column="$global.mouldAllTableColumn"
+        :table-data="mouldList"
+        :operation-width="100"
+        :pagination="pagination"
         :length="$store.state.mould.mouldListLength"
-        :current-page="currentPage"
-        :page-num="pageSize"
-        @change-size="changePageSize"
-        @change-page="changeCurrentPage"
-      />
+        @change-pagination="changeMouldPagination"
+      >
+        <template #default="scope">
+          <text-btn @handle-click="toDetail(scope.row.id)">
+            查看详情
+          </text-btn>
+        </template>
+      </base-table>
 
       <el-dialog
         v-if="mouldFormVisible"
@@ -244,8 +183,7 @@ export default {
         label: 'name',
         disabled: 'disabled'
       },
-      currentPage: 1,
-      pageSize: 10
+      pagination: JSON.parse(JSON.stringify(this.$global.pagination))
     };
   },
   mounted() {
@@ -274,8 +212,8 @@ export default {
     async getMouldList() {
       this.$store.commit('mould/setListLoading', true);
       let params = this.chooseForm;
-      params['current_page'] = this.currentPage;
-      params['page_size'] = this.pageSize;
+      params['current_page'] = this.pagination.current_page;
+      params['page_size'] = this.pagination.page_size;
       try {
         await this.$store.dispatch('mould/getMouldList', { params });
         this.mouldList = this.$store.state.mould.mouldList;
@@ -324,7 +262,7 @@ export default {
     },
     resetForm() {
       this.chooseForm = {};
-      this.pageSize = 10;
+      this.pagination.page_size = 10;
       this.searchMould();
     },
     submitMouldForm() {
@@ -334,17 +272,12 @@ export default {
         }
       });
     },
-    changeCurrentPage(val) {
-      this.currentPage = val;
-      this.getMouldList();
-    },
-    changePageSize(val) {
-      this.pageSize = val;
-      this.currentPage = 1;
+    changeMouldPagination(pagination) {
+      this.pagination = pagination;
       this.getMouldList();
     },
     searchMould() {
-      this.currentPage = 1;
+      this.pagination.current_page = 1;
       this.getMouldList();
     }
   }

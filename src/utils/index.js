@@ -267,6 +267,14 @@ export const setSampleStateColor = (val) => {
   }
 };
 
+export const setMouldStateColor = (val) => {
+  if (val === 40) {
+    return 'result-pass';
+  } else {
+    return 'result-ing';
+  }
+};
+
 //表单项重置，并移除校验结果
 export const resetFormFields = (form) => {
   setTimeout(() => {
