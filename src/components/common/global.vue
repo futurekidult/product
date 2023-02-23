@@ -4,7 +4,8 @@ import {
   setSampleStateColor,
   setMouldStateColor,
   setQuotationStateColor,
-  setPriceStateColor
+  setPriceStateColor,
+  setStateColor
 } from '../../utils/index.js';
 
 const reviewOptions = [
@@ -104,7 +105,7 @@ const sampleAllTableColumn = [
   },
   { prop: 'product_id', label: '关联产品ID', width: 110, is_link: true },
   { prop: 'pricing_id', label: '关联定价ID', width: 110 },
-  { prop: 'estimated_finish_time', label: '计划完成时间' },
+  { prop: 'estimated_finish_time', label: '计划完成时间', width: 200 },
   { prop: 'actual_finish_time', label: '实际完成时间', width: 200 },
   { prop: 'purchase_specialist', label: '采购员', width: 200 },
   {
@@ -123,7 +124,7 @@ const sampleAllTableColumn = [
     label: '测试结果',
     min_width: 100,
     formatter: (row) => {
-      return setSampleStateColor(row.test_result);
+      return setStateColor(row.test_result);
     },
     getSpecialProp: (row) => {
       return row.test_result_desc;
@@ -231,8 +232,7 @@ const priceAllTableColumn = [
   {
     prop: 'related_product_id',
     label: '关联产品ID',
-    width: 110,
-    is_operation: true
+    width: 110
   },
   { prop: 'market_desc', label: '市场' },
   { prop: 'platform', label: '平台', min_width: 150 },

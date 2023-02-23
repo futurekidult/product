@@ -227,6 +227,7 @@ export const setStateColor = (state) => {
     case 2:
     case 30:
     case 50:
+    case 0:
       className = 'result-fail';
       break;
     case 1:
