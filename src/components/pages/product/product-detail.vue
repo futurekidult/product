@@ -96,10 +96,8 @@
           >
             <related-member
               :project-member="projectMember"
-              :current-page="memberCurrentPage"
-              :page-size="memberPageSize"
-              @change-page="(val) => changeCurrentPage(val, 'member')"
-              @change-size="(val) => changePageSize(val, 'member')"
+              :member-pagination="memberPagination"
+              @change-page="(val) => changePagination(val, 'member')"
             />
           </el-tab-pane>
           <el-tab-pane
@@ -138,10 +136,7 @@
             label="定价信息"
             name="price"
           >
-            <product-price
-              :change-color="changeCellColor"
-              :pricing-list="pricingList"
-            />
+            <product-price :pricing-list="pricingList" />
           </el-tab-pane>
           <el-tab-pane
             v-if="getState || unterminated & 0b00100000000"
@@ -162,10 +157,8 @@
           >
             <mould-message
               :mould-list="mouldList"
-              :current-page="mouldCurrentPage"
-              :page-size="mouldPageSize"
-              @change-page="(val) => changeCurrentPage(val, 'mould')"
-              @change-size="(val) => changePageSize(val, 'mould')"
+              :mould-pagination="mouldPagination"
+              @change-page="(val) => changePagination(val, 'mould')"
             />
           </el-tab-pane>
           <el-tab-pane
@@ -175,10 +168,8 @@
           >
             <sample-message
               :sample-list="sampleList"
-              :current-page="sampleCurrentPage"
-              :page-size="samplePageSize"
-              @change-page="(val) => changeCurrentPage(val, 'sample')"
-              @change-size="(val) => changePageSize(val, 'sample')"
+              :sample-pagination="samplePagination"
+              @change-page="(val) => changePagination(val, 'sample')"
             />
           </el-tab-pane>
           <el-tab-pane
@@ -188,10 +179,8 @@
           >
             <question-all
               :question-list="questionList"
-              :current-page="questionCurrentPage"
-              :page-size="questionPageSize"
-              @change-page="changeCurrentPage"
-              @change-size="changePageSize"
+              :question-pagination="questionPagination"
+              @change-page="(val) => changePagination(val, 'question')"
             />
           </el-tab-pane>
           <el-tab-pane
@@ -201,10 +190,8 @@
           >
             <product-order
               :order-list="orderList"
-              :current-page="orderCurrentPage"
-              :page-size="orderPageSize"
-              @change-page="(val) => changeCurrentPage(val, 'order')"
-              @change-size="(val) => changePageSize(val, 'order')"
+              :order-pagination="orderPagination"
+              @change-page="(val) => changePagination(val, 'order')"
             />
           </el-tab-pane>
           <el-tab-pane
@@ -213,12 +200,9 @@
             name="package"
           >
             <product-package
-              :change-color="changeCellColor"
               :package-list="packageList"
-              :current-page="packageCurrentPage"
-              :page-size="packagePageSize"
-              @change-page="(val) => changeCurrentPage(val, 'package')"
-              @change-size="(val) => changePageSize(val, 'package')"
+              :package-pagination="packagePagination"
+              @change-page="(val) => changePagination(val, 'package')"
             />
           </el-tab-pane>
         </el-tabs>
@@ -266,7 +250,7 @@ import MouldMessage from './process/mould-message.vue';
 import QuestionAll from './process/question-all.vue';
 import ProductOrder from './process/product-order.vue';
 import ProductPackage from './process/product-package.vue';
-import { changeTimestamp } from '../../../utils';
+import { changeTimestamp, resetPagination } from '../../../utils';
 import { getDemandDetail } from '../../../utils/demand';
 import TerminateForm from './common/terminate-form.vue';
 
@@ -294,7 +278,7 @@ export default {
       getQuestion: this.getQuestionList,
       getPackage: this.getPackageList,
       getOrder: this.getOrderList,
-      getProfitCalcaulation: this.getProfit,
+      getProfitCalculation: this.getProfit,
       getProcessTable: this.getSchedule,
       getContract: this.getContract,
       getPatent: this.getPatent,
@@ -308,6 +292,7 @@ export default {
   },
   props: ['productId', 'orderId'],
   data() {
+    const pagination = JSON.parse(JSON.stringify(this.$global.pagination));
     return {
       id: 0,
       productBase: {},
@@ -340,18 +325,12 @@ export default {
       platformAttachment: {},
       isGetData: false,
       isGetProjectData: false,
-      memberCurrentPage: 1,
-      memberPageSize: 10,
-      mouldCurrentPage: 1,
-      mouldPageSize: 10,
-      sampleCurrentPage: 1,
-      samplePageSize: 10,
-      questionCurrentPage: 1,
-      questionPageSize: 10,
-      orderCurrentPage: 1,
-      orderPageSize: 10,
-      packageCurrentPage: 1,
-      packagePageSize: 10,
+      memberPagination: pagination,
+      mouldPagination: pagination,
+      samplePagination: pagination,
+      questionPagination: pagination,
+      orderPagination: pagination,
+      packagePagination: pagination,
       confirmDialogVisible: false,
       unterminated: 0,
       surveyCondition: null
@@ -375,6 +354,12 @@ export default {
     this.getRequest(this.$store.state.activeTab);
   },
   methods: {
+    getRequestParams(pagination, prop) {
+      return {
+        ...pagination,
+        [prop]: +this.$route.params.productId
+      };
+    },
     async getProductBase() {
       this.$store.commit('product/setBaseLoading', true);
       try {
@@ -426,12 +411,9 @@ export default {
     async getProjectMember() {
       this.$store.commit('product/setMemberLoading', true);
       try {
+        let params = this.getRequestParams(this.memberPagination, 'id');
         await this.$store.dispatch('product/getProjectMember', {
-          params: {
-            id: +this.$route.params.productId,
-            page_size: this.memberPageSize,
-            current_page: this.memberCurrentPage
-          }
+          params
         });
         this.projectMember = this.$store.state.product.projectMember;
         this.projectMember.forEach((item) => {
@@ -462,11 +444,7 @@ export default {
     },
     async getMouldList() {
       this.$store.commit('product/setMouldLoading', true);
-      let params = {
-        page_size: this.mouldPageSize,
-        current_page: this.mouldCurrentPage,
-        product_id: +this.$route.params.productId
-      };
+      let params = this.getRequestParams(this.mouldPagination, 'product_id');
       try {
         await this.$store.dispatch('product/getMouldList', { params });
         this.mouldList = this.$store.state.product.mouldList;
@@ -480,11 +458,7 @@ export default {
     },
     async getSampleList() {
       this.$store.commit('product/setSampleLoading', true);
-      let params = {
-        product_id: +this.$route.params.productId,
-        current_page: this.sampleCurrentPage,
-        page_size: this.samplePageSize
-      };
+      let params = this.getRequestParams(this.samplePagination, 'product_id');
       try {
         await this.$store.dispatch('product/getSampleList', { params });
         this.sampleList = this.$store.state.product.sampleList;
@@ -500,11 +474,7 @@ export default {
     },
     async getQuestionList() {
       this.$store.commit('product/setQuestionLoading', true);
-      let params = {
-        product_id: +this.$route.params.productId,
-        current_page: this.questionCurrentPage,
-        page_size: this.questionPageSize
-      };
+      let params = this.getRequestParams(this.questionPagination, 'product_id');
       try {
         await this.$store.dispatch('product/getQuestionList', { params });
         this.questionList = this.$store.state.product.questionList;
@@ -519,11 +489,7 @@ export default {
     },
     async getPackageList() {
       this.$store.commit('product/setPackageLoading', true);
-      let params = {
-        product_id: +this.$route.params.productId,
-        current_page: this.packageCurrentPage,
-        page_size: this.packagePageSize
-      };
+      let params = this.getRequestParams(this.packagePagination, 'product_id');
       try {
         await this.$store.dispatch('product/getPackageList', { params });
         this.packageList = this.$store.state.product.packageList;
@@ -541,9 +507,8 @@ export default {
       try {
         await this.$store.dispatch('product/order/getOrderList', {
           params: {
-            product_id: +this.$route.params.productId,
-            current_page: this.orderCurrentPage,
-            page_size: this.orderPageSize
+            ...this.orderPagination,
+            product_id: +this.$route.params.productId
           }
         });
         this.orderList = this.$store.state.product.order.orderList;
@@ -663,21 +628,13 @@ export default {
         return;
       }
     },
-    changeCellColor(val) {
-      if (val <= 20) {
-        return 'result-ing';
-      } else {
-        return 'result-pass';
-      }
-    },
     getRequest(val) {
       switch (val) {
         case 'basic':
           this.getProductDetail();
           break;
         case 'member':
-          this.memberCurrentPage = 1;
-          this.memberPageSize = 10;
+          resetPagination(this.memberPagination, 1, 10);
           this.getProjectMember();
           break;
         case 'price':
@@ -685,32 +642,27 @@ export default {
           this.getProductBase();
           break;
         case 'mould':
-          this.mouldCurrentPage = 1;
-          this.mouldPageSize = 10;
+          resetPagination(this.mouldPagination, 1, 10);
           this.getMouldList();
           this.getProductBase();
           break;
         case 'sample':
-          this.sampleCurrentPage = 1;
-          this.samplePageSize = 10;
+          resetPagination(this.samplePagination, 1, 10);
           this.getSampleList();
           this.getProductBase();
           break;
         case 'question':
-          this.questionCurrentPage = 1;
-          this.questionPageSize = 10;
+          resetPagination(this.questionPagination, 1, 10);
           this.getQuestionList();
           this.getProductBase();
           break;
         case 'package':
-          this.packageCurrentPage = 1;
-          this.packagePageSize = 10;
+          resetPagination(this.packagePagination, 1, 10);
           this.getPackageList();
           this.getProductBase();
           break;
         case 'order':
-          this.orderCurrentPage = 1;
-          this.orderPageSize = 10;
+          resetPagination(this.orderPagination, 1, 10);
           this.getOrderList();
           this.getProductBase();
           break;
@@ -772,22 +724,22 @@ export default {
     closeViewReasonForm() {
       this.viewReasonVisible = false;
     },
-    changeCurrentPage(val, type) {
+    changePagination(val, type) {
       switch (type) {
         case 'member':
-          this.memberCurrentPage = val;
+          this.memberPagination = val;
           this.getProjectMember();
           break;
         case 'mould':
-          this.mouldCurrentPage = val;
+          this.mouldPagination = val;
           this.getMouldList();
           break;
         case 'sample':
-          this.sampleCurrentPage = val;
+          this.samplePagination = val;
           this.getSampleList();
           break;
         case 'question':
-          this.questionCurrentPage = val;
+          this.questionPagination = val;
           this.getQuestionList();
           break;
         case 'order':
@@ -796,41 +748,6 @@ export default {
           break;
         case 'package':
           this.packageCurrentPage = val;
-          this.getPackageList();
-          break;
-        default:
-      }
-    },
-    changePageSize(val, type) {
-      switch (type) {
-        case 'member':
-          this.memberPageSize = val;
-          this.memberCurrentPage = 1;
-          this.getProjectMember();
-          break;
-        case 'mould':
-          this.mouldPageSize = val;
-          this.mouldCurrentPage = 1;
-          this.getMouldList();
-          break;
-        case 'sample':
-          this.samplePageSize = val;
-          this.sampleCurrentPage = 1;
-          this.getSampleList();
-          break;
-        case 'question':
-          this.questionPageSize = val;
-          this.questionCurrentPage = 1;
-          this.getQuestionList();
-          break;
-        case 'order':
-          this.orderPageSize = val;
-          this.orderCurrentPage = 1;
-          this.getOrderList();
-          break;
-        case 'package':
-          this.packagePageSize = val;
-          this.packageCurrentPage = 1;
           this.getPackageList();
           break;
         default:

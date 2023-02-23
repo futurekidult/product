@@ -3,100 +3,34 @@
     <div class="select-title">
       <span class="line">|</span> 下单信息
     </div>
-
-    <el-table
-      border
-      stripe
-      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      :data="orderList"
-    >
-      >
-      <el-table-column
-        fixed
-        label="订单ID"
-        width="100"
-        prop="id"
-      />
-      <el-table-column
-        fixed
-        label="关联定价ID"
-        prop="pricing_id"
-        width="110"
-      />
-      <el-table-column
-        label="最终定价"
-        prop="final_price"
-      />
-      <el-table-column
-        label="供应商ID"
-        prop="supplier_id"
-        width="100"
-      />
-      <el-table-column
-        label="计划完成时间"
-        prop="estimated_finish_time"
-        width="200"
-      />
-      <el-table-column
-        label="实际完成时间"
-        prop="actual_finish_time"
-        width="200"
-      />
-      <el-table-column
-        label="大货样套数"
-        prop="pre_production_sample_quantity"
-      />
-      <el-table-column
-        label="状态"
-        fixed="right"
-      >
-        <template #default="scope">
-          <div :class="changeCellColor(scope.row.state)">
-            {{ scope.row.state_desc }}
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="操作"
-        fixed="right"
-        width="100"
-      >
-        <template #default="scope">
-          <text-btn @handle-click="toDetail(scope.row.id)">
-            下单详情
-          </text-btn>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <base-pagination
+    <base-table
+      :table-data="orderList"
+      :pagination="pagination"
       :length="$store.state.product.order.orderListLength"
-      :current-page="page"
-      :page-num="pageNum"
-      @change-size="changePageSize"
-      @change-page="changeCurrentPage"
-    />
+      :table-column="$global.orderTableColumn"
+      @change-pagination="changePagination"
+    >
+      <template #default="slotProps">
+        <text-btn @handle-click="toDetail(slotProps.row.id)">
+          下单详情
+        </text-btn>
+      </template>
+    </base-table>
   </div>
 </template>
 
 <script>
 export default {
   inject: ['getOrder'],
-  props: ['orderList', 'currentPage', 'pageSize'],
-  emits: ['change-page', 'change-size'],
+  props: ['orderList', 'orderPagination'],
   data() {
     return {
-      page: this.currentPage,
-      pageNum: this.pageSize
+      pagination: this.orderPagination
     };
   },
   watch: {
-    currentPage(val) {
-      this.page = val;
-    },
-    pageSize(val) {
-      this.pageNum = val;
-      this.page = 1;
+    orderPagination(val) {
+      this.pagination = val;
     }
   },
   methods: {
@@ -110,21 +44,9 @@ export default {
         this.$message.error('无权限访问');
       }
     },
-    changeCellColor(val) {
-      if (val <= 30) {
-        return 'result-ing';
-      } else {
-        return 'result-pass';
-      }
-    },
-    changeCurrentPage(val) {
-      this.page = val;
-      this.$emit('change-page', this.page);
-    },
-    changePageSize(val) {
-      this.pageNum = val;
-      this.page = 1;
-      this.$emit('change-size', this.pageNum);
+    changePagination(pagination) {
+      this.pagination = pagination;
+      this.$emit('change-page', this.pagination);
     }
   }
 };

@@ -265,6 +265,68 @@ export const setProductStateColor = (state) => {
   }
 };
 
+//设置评审状态颜色
+export const setReviewStateColor = (state) => {
+  if (state === 10) {
+    return 'result-ing';
+  } else if (state === 30) {
+    return 'result-pass';
+  } else {
+    return 'result-fail';
+  }
+};
+
+//设置项目进度计划表状态颜色
+export const setProductScheduleStateColor = (state) => {
+  if (state === 10) {
+    return 'result-ing';
+  } else if (state === 20) {
+    return 'result-pass';
+  } else {
+    return 'result-fail';
+  }
+};
+
+//设置定价/包材状态颜色
+export const setPricingPackageStateColor = (state) => {
+  if (state <= 20) {
+    return 'result-ing';
+  } else {
+    return 'result-pass';
+  }
+};
+
+//设置样品状态颜色
+export const setSampleStateColor = (state) => {
+  if (state <= 25) {
+    return 'result-ing';
+  } else if (state === 30) {
+    return 'result-pass';
+  } else {
+    return 'result-fail';
+  }
+};
+
+//设置测试问题状态颜色
+export const setQuestionStateColor = (state) => {
+  if (state === 10) {
+    return 'result-ing';
+  } else if (state === 20) {
+    return 'result-pass';
+  } else {
+    return 'result-ignore';
+  }
+};
+
+//设置下单状态颜色
+export const setOrderStateColor = (state) => {
+  if (state <= 30) {
+    return 'result-ing';
+  } else {
+    return 'result-pass';
+  }
+};
+
 //页码重置
 export const resetPagination = (pagination, page, size) => {
   pagination.current_page = page;
