@@ -1,5 +1,8 @@
 <script>
-import { setApproveStateColor } from '../../utils/index.js';
+import {
+  setApproveStateColor,
+  setSampleStateColor
+} from '../../utils/index.js';
 
 const reviewOptions = [
   {
@@ -88,6 +91,102 @@ const supplierTableColumn = [
   }
 ];
 
+const sampleAllTableColumn = [
+  { prop: 'id', label: '样品ID', width: 100, fixed: 'left' },
+  {
+    prop: 'product_name',
+    label: '关联产品名称',
+    fixed: 'left',
+    min_width: 150
+  },
+  { prop: 'product_id', label: '关联产品ID', width: 110, is_operation: true },
+  { prop: 'pricing_id', label: '关联定价ID', width: 110 },
+  { prop: 'estimated_finish_time', label: '计划完成时间' },
+  { prop: 'actual_finish_time', label: '实际完成时间', width: 200 },
+  { prop: 'purchase_specialist', label: '采购员', width: 200 },
+  {
+    prop: 'state',
+    label: '状态',
+    min_width: 150,
+    formatter: (row) => {
+      return setSampleStateColor(row.state);
+    },
+    getSpecialProp: (row) => {
+      return row.state_desc;
+    }
+  },
+  {
+    prop: 'test_result',
+    label: '测试结果',
+    min_width: 100,
+    formatter: (row) => {
+      return setSampleStateColor(row.test_result);
+    },
+    getSpecialProp: (row) => {
+      return row.test_result_desc;
+    }
+  }
+];
+
+const userTestTableColumn = [
+  { prop: 'id', label: '用户测试申请ID', min_width: 150, fixed: 'left' },
+  {
+    prop: 'creator',
+    label: '申请人',
+    fixed: 'left',
+    min_width: 100
+  },
+  { prop: 'submit_time', label: '提交时间', width: 200 },
+  { prop: 'user_experience_duration', label: '用户体验时长', min_width: 200 },
+  { prop: 'estimated_finish_time', label: '期望完成日期', width: 200 },
+  { prop: 'sample_demand_quantity', label: '样品需求数', min_width: 150 },
+  { prop: 'review_finish_time', label: '评审完成时间', width: 200 },
+  {
+    prop: 'review_state',
+    label: '评审状态',
+    min_width: 150,
+    fixed: 'right',
+    formatter: (row) => {
+      return setApproveStateColor(row.review_state);
+    },
+    getSpecialProp: (row) => {
+      return row.review_state_desc;
+    }
+  }
+];
+
+const userTemplateTableColumn = [
+  { prop: 'id', label: '测试用户ID', min_width: 150, fixed: 'left' },
+  {
+    prop: 'creator',
+    label: '创建人',
+    fixed: 'left',
+    min_width: 100
+  },
+  { prop: 'create_time', label: '创建时间', width: 200 },
+  { prop: 'delivery_time', label: '寄样完成时间', width: 200 },
+  { prop: 'upload_time', label: '结果上传时间', width: 200 },
+  { prop: 'username', label: '用户姓名', min_width: 120 },
+  { prop: 'is_delivered_desc', label: '是否已寄样', min_width: 120 },
+  {
+    prop: 'state',
+    label: '测试状态',
+    min_width: 120,
+    formatter: (row) => {
+      return setSampleStateColor(row.state);
+    },
+    getSpecialProp: (row) => {
+      return row.state_desc;
+    }
+  },
+  {
+    prop: 'test_result_file',
+    label: '测试结果文件',
+    width: 150,
+    is_operation: true
+  }
+];
+
 const pagination = Object.freeze({
   current_page: 1,
   page_size: 10
@@ -101,6 +200,9 @@ export default {
   defaultTime,
   unterminatedStateCode,
   categoryProductMap,
-  supplierTableColumn
+  supplierTableColumn,
+  sampleAllTableColumn,
+  userTestTableColumn,
+  userTemplateTableColumn
 };
 </script>

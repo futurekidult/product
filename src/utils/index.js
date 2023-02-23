@@ -257,6 +257,16 @@ export const setApproveStateColor = (val) => {
   }
 };
 
+export const setSampleStateColor = (val) => {
+  if (val === 30 || val === 1) {
+    return 'result-pass';
+  } else if (val === 20 || val === 10) {
+    return 'result-ing';
+  } else {
+    return 'result-fail';
+  }
+};
+
 //表单项重置，并移除校验结果
 export const resetFormFields = (form) => {
   setTimeout(() => {

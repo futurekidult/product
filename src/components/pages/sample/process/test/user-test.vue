@@ -12,116 +12,59 @@
           申请用户测试
         </el-button>
       </div>
-
-      <el-table
-        border
-        stripe
-        empty-text="无数据"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        :data="applyList"
+      <base-table
+        :table-column="$global.userTestTableColumn"
+        :table-data="applyList"
+        :operation-width="250"
+        :pagination-visible="false"
       >
-        <el-table-column
-          fixed
-          label="用户测试申请ID"
-          prop="id"
-          min-width="150"
-        />
-        <el-table-column
-          fixed
-          label="申请人"
-          prop="creator"
-          min-width="100"
-        />
-        <el-table-column
-          label="提交时间"
-          prop="submit_time"
-          width="200"
-        />
-        <el-table-column
-          label="用户体验时长"
-          prop="user_experience_duration"
-          min-width="200"
-        />
-        <el-table-column
-          label="期望完成日期"
-          prop="estimated_finish_time"
-          width="200"
-        />
-        <el-table-column
-          label="样品需求数"
-          prop="sample_demand_quantity"
-          min-width="150"
-        />
-        <el-table-column
-          label="评审完成时间"
-          prop="review_finish_time"
-          width="200"
-        />
-        <el-table-column
-          label="评审状态"
-          min-width="150"
-          fixed="right"
-        >
-          <template #default="scope">
-            <div :class="changeReiviewColor(scope.row.review_state)">
-              {{ scope.row.review_state_desc }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          width="200"
-          fixed="right"
-        >
-          <template #default="scope">
-            <text-btn
-              v-if="scope.row.review_state === 10"
-              @handle-click="showReviewForm(scope.row.id)"
-            >
-              用户测试需求评审
-            </text-btn>
-            <text-btn
-              v-if="scope.row.review_state !== 10"
-              @handle-click="showViewForm(scope.row.id)"
-            >
-              查看
-            </text-btn>
-            <span
-              v-if="scope.row.review_state === 30"
-              class="table-btn"
-            >|</span>
-            <text-btn
-              v-if="scope.row.review_state === 30"
-              @handle-click="showEditForm(scope.row.id)"
-            >
-              编辑
-            </text-btn>
-            <span
-              v-if="scope.row.review_state === 30"
-              class="table-btn"
-            >|</span>
-            <text-btn
-              v-if="
-                scope.row.review_state === 30 &&
-                  scope.row.test_template_state === 0
-              "
-              @handle-click="showUploadForm(scope.row.id)"
-            >
-              上传测试模板
-            </text-btn>
-            <text-btn
-              v-if="
-                scope.row.review_state === 30 &&
-                  scope.row.test_template_state === 1
-              "
-              @handle-click="showViewTemplateForm(scope.row.id)"
-            >
-              查看测试模板
-            </text-btn>
-          </template>
-        </el-table-column>
-      </el-table>
-
+        <template #default="slotProps">
+          <text-btn
+            v-if="slotProps.row.review_state === 10"
+            @handle-click="showReviewForm(slotProps.row.id)"
+          >
+            用户测试需求评审
+          </text-btn>
+          <text-btn
+            v-if="slotProps.row.review_state !== 10"
+            @handle-click="showViewForm(slotProps.row.id)"
+          >
+            查看
+          </text-btn>
+          <span
+            v-if="slotProps.row.review_state === 30"
+            class="table-btn"
+          >|</span>
+          <text-btn
+            v-if="slotProps.row.review_state === 30"
+            @handle-click="showEditForm(slotProps.row.id)"
+          >
+            编辑
+          </text-btn>
+          <span
+            v-if="slotProps.row.review_state === 30"
+            class="table-btn"
+          >|</span>
+          <text-btn
+            v-if="
+              slotProps.row.review_state === 30 &&
+                slotProps.row.test_template_state === 0
+            "
+            @handle-click="showUploadForm(slotProps.row.id)"
+          >
+            上传测试模板
+          </text-btn>
+          <text-btn
+            v-if="
+              slotProps.row.review_state === 30 &&
+                slotProps.row.test_template_state === 1
+            "
+            @handle-click="showViewTemplateForm(slotProps.row.id)"
+          >
+            查看测试模板
+          </text-btn>
+        </template>
+      </base-table>
       <div class="test-title">
         测试用户表
       </div>
@@ -537,15 +480,6 @@ export default {
           this.submitTestResult(this.fileForm.test_result_file);
         }
       });
-    },
-    changeReiviewColor(val) {
-      if (val === 10) {
-        return 'result-ing';
-      } else if (val === 20) {
-        return 'result-fail';
-      } else {
-        return 'result-pass';
-      }
     },
     getUploadFile(e) {
       this.file = e;
