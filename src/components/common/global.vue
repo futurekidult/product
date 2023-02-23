@@ -6,7 +6,8 @@ import {
   setReviewStateColor,
   setSampleStateColor,
   setQuestionStateColor,
-  setPricingPackageStateColor,
+  setPricingStateColor,
+  setPackageStateColor,
   setDemandReviewStateColor
 } from '../../utils/index.js';
 
@@ -139,7 +140,7 @@ const pricingTableColumn = [
     width: 100,
     fixed: 'right',
     formatter: (row) => {
-      return setPricingPackageStateColor(row.state);
+      return setPricingStateColor(row.state);
     },
     getSpecialProp: (row) => {
       return row.state_desc;
@@ -177,14 +178,14 @@ const sampleMessageTableColumn = [
   {
     prop: 'purchase_specialist',
     label: '采购员',
-    min_width: 100
+    min_width: 150
   },
   { prop: 'estimated_finish_time', label: '计划完成时间', width: 200 },
   { prop: 'actual_finish_time', label: '实际完成时间', width: 200 },
   {
     prop: 'state',
     label: '状态',
-    min_width: 100,
+    min_width: 200,
     formatter: (row) => {
       return setSampleStateColor(row.state);
     },
@@ -283,7 +284,7 @@ const packageTableColumn = [
     label: '状态',
     fixed: 'right',
     formatter: (row) => {
-      return setPricingPackageStateColor(row.state);
+      return setPackageStateColor(row.state);
     },
     getSpecialProp: (row) => {
       return row.state_desc;

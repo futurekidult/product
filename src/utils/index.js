@@ -287,9 +287,17 @@ export const setProductScheduleStateColor = (state) => {
   }
 };
 
-//设置定价/包材状态颜色
-export const setPricingPackageStateColor = (state) => {
+//设置定价状态颜色
+export const setPricingStateColor = (state) => {
   if (state <= 20) {
+    return 'result-ing';
+  } else {
+    return 'result-pass';
+  }
+};
+//设置包材状态颜色
+export const setPackageStateColor = (state) => {
+  if (state === 10) {
     return 'result-ing';
   } else {
     return 'result-pass';
