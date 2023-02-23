@@ -246,13 +246,6 @@ export default {
       this.$router.push(`/mould-list/${id}`);
       this.$store.commit('setEntry', 'detail');
     },
-    changeCellColor(val) {
-      if (val === 40) {
-        return 'result-pass';
-      } else {
-        return 'result-ing';
-      }
-    },
     showMouldForm() {
       this.mouldFormVisible = true;
       this.mouldForm = {};

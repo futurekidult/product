@@ -211,13 +211,6 @@ export default {
     closeViewUserForm() {
       this.viewUserVisible = false;
     },
-    changeCellColor(val) {
-      if (val === 30) {
-        return 'result-pass';
-      } else {
-        return 'result-ing';
-      }
-    },
     changeUserTemplatePagination(pagination) {
       this.pagination = pagination;
       this.getUserList();

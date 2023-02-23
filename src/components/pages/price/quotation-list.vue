@@ -578,15 +578,6 @@ export default {
         return;
       }
     },
-    changeCellColor(val) {
-      if (val === 20 || val === 30) {
-        return 'result-pass';
-      } else if (val === 10) {
-        return 'result-ignore';
-      } else {
-        return 'result-fail';
-      }
-    },
     showReferencePriceForm() {
       this.referenceFormVisible = true;
     },
