@@ -80,9 +80,9 @@
         :table-column="$global.productTableColumn"
         @change-pagination="changePagination"
       >
-        <template #operation="operationProps">
-          <text-btn @handle-click="toDemand(operationProps.row.demand_id)">
-            {{ operationProps.row.demand_id }}
+        <template #link="linkProps">
+          <text-btn @handle-click="toDemand(linkProps.row.demand_id)">
+            {{ linkProps.row.demand_id }}
           </text-btn>
         </template>
         <template #default="slotProps">

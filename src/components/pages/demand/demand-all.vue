@@ -90,18 +90,16 @@
         :table-column="$global.demandTableColumn"
         @change-pagination="changePagination"
       >
-        <template #operation="operationProps">
-          <text-btn
-            @handle-click="toProductDetail(operationProps.row.product_id)"
-          >
-            {{ operationProps.row.product_id }}
+        <template #link="linkProps">
+          <text-btn @handle-click="toProductDetail(linkProps.row.product_id)">
+            {{ linkProps.row.product_id }}
           </text-btn>
         </template>
-        <template #reason="reasonProps">
+        <template #operation="operationProps">
           <div
-            v-if="reasonProps.row.state === 40"
+            v-if="operationProps.row.state === 40"
             class="reason"
-            @click="reasonDialog(reasonProps.row.review_failed_reason)"
+            @click="reasonDialog(operationProps.row.review_failed_reason)"
           >
             查看原因
           </div>

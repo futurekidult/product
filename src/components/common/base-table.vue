@@ -46,9 +46,9 @@
               :row="scope.row"
             />
           </section>
-          <section v-else-if="column.is_reason">
+          <section v-else-if="column.is_link">
             <slot
-              name="reason"
+              name="link"
               :row="scope.row"
             />
           </section>
