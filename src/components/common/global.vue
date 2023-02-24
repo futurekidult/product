@@ -173,7 +173,7 @@ const patentTableColumn = [
 const sampleMessageTableColumn = [
   { prop: 'id', label: '样品ID', width: 100, fixed: 'left' },
   { prop: 'pricing_id', label: '关联定价ID', width: 110, fixed: 'left' },
-  { prop: 'platform', label: '平台', min_width: 100 },
+  { prop: 'platform', label: '平台', min_width: 200 },
   { prop: 'demand_quantity', label: '需求数量', min_width: 100 },
   { prop: 'demand_time', label: '需求日期', width: 200 },
   { prop: 'has_verify', label: '有无认证', min_width: 100 },
@@ -250,8 +250,8 @@ const orderTableColumn = [
   { prop: 'pricing_id', label: '关联定价ID', width: 110, fixed: 'left' },
   { prop: 'final_price', label: '最终定价' },
   {
-    prop: '供应商ID',
-    label: 'supplier_id',
+    prop: 'supplier_id',
+    label: '供应商ID',
     width: 100
   },
   { prop: 'estimated_finish_time', label: '计划完成时间', width: 200 },
@@ -273,7 +273,7 @@ const orderTableColumn = [
 const packageTableColumn = [
   { prop: 'id', label: '包材ID', width: 100, fixed: 'left' },
   { prop: 'pricing_id', label: '关联定价ID', width: 110, fixed: 'left' },
-  { prop: 'operations_specialist', label: '运营专业', width: 200 },
+  { prop: 'operations_specialist', label: '运营专员', width: 200 },
   { prop: 'estimated_finish_time', label: '计划完成时间', width: 200 },
   { prop: 'actual_finish_time', label: '实际完成时间', width: 200 },
   {
