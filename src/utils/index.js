@@ -227,6 +227,7 @@ export const setStateColor = (state) => {
     case 2:
     case 30:
     case 50:
+    case 0:
       className = 'result-fail';
       break;
     case 1:
@@ -247,13 +248,54 @@ export const resetPagination = (pagination, page, size) => {
   pagination.page_size = size;
 };
 
-export const setApproveStateColor = (val) => {
-  if (val === 10) {
+//设置审批状态颜色
+export const setApproveStateColor = (state) => {
+  if (state === 10) {
     return 'result-ing';
-  } else if (val === 20) {
+  } else if (state === 20) {
     return 'result-fail';
   } else {
     return 'result-pass';
+  }
+};
+
+//设置样品状态颜色
+export const setSampleStateColor = (state) => {
+  if (state <= 25) {
+    return 'result-ing';
+  } else if (state === 30) {
+    return 'result-pass';
+  } else {
+    return 'result-fail';
+  }
+};
+
+//设置模具状态颜色
+export const setMouldStateColor = (state) => {
+  if (state === 40) {
+    return 'result-pass';
+  } else {
+    return 'result-ing';
+  }
+};
+
+//设置定价状态颜色
+export const setPriceStateColor = (state) => {
+  if (state >= 30) {
+    return 'result-pass';
+  } else {
+    return 'result-ing';
+  }
+};
+
+//设置调价页面总状态颜色
+export const setQuotationStateColor = (state) => {
+  if (state === 20 || state === 30) {
+    return 'result-pass';
+  } else if (state === 10) {
+    return 'result-ignore';
+  } else {
+    return 'result-fail';
   }
 };
 

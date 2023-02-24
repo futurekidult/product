@@ -217,8 +217,7 @@ export default {
     },
     async getAdminList() {
       let params = {
-        current_page: this.pagination.current_page,
-        page_size: this.pagination.page_size,
+        ...this.pagination,
         name: this.chooseForm.name,
         dept_ids: !this.chooseForm.dept_ids
           ? []

@@ -80,6 +80,7 @@
         :table-column="$global.supplierTableColumn"
         :table-data="supplierList"
         :pagination="pagination"
+        :operation-width="200"
         :length="$store.state.supplier.supplierListLength"
         @change-pagination="changeSupplierPagination"
       >
@@ -204,9 +205,7 @@ export default {
     },
     async getSupplierList() {
       this.$store.commit('supplier/setSupplierLoading', true);
-      let params = this.chooseForm;
-      params['current_page'] = this.pagination.current_page;
-      params['page_size'] = this.pagination.page_size;
+      let params = { ...this.chooseForm, ...this.pagination };
       try {
         await this.$store.dispatch('supplier/getSupplierList', { params });
         this.supplierList = this.$store.state.supplier.supplierList;

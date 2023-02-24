@@ -40,6 +40,18 @@
               :class="scope.row.is_overdue !== 0 ? 'overdue' : ''"
             >【{{ scope.row.overdue_desc }}】</span>
           </section>
+          <section v-else-if="column.is_link">
+            <slot
+              name="link"
+              :row="scope.row"
+            />
+          </section>
+          <section v-else-if="column.is_operation">
+            <slot
+              name="operation"
+              :row="scope.row"
+            />
+          </section>
           <section v-else>
             {{ scope.row[column.prop] }}
           </section>
