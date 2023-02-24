@@ -209,7 +209,7 @@ export default {
     changeCellColor(val) {
       if (val === 30 || val === 1) {
         return 'result-pass';
-      } else if (val === 20 || val === 10) {
+      } else if (val <= 25 && val !== 0) {
         return 'result-ing';
       } else {
         return 'result-fail';

@@ -162,7 +162,7 @@
 import TestForm from '../common/test-form.vue';
 import {
   getOrganizationList,
-  setSampleStateColor
+  setReviewStateColor
 } from '../../../../utils/index';
 import TestSupply from '../../../common/supply-dialog.vue';
 
@@ -213,7 +213,7 @@ export default {
           prop: 'review_state',
           label: '状态',
           formatter: (row) => {
-            return setSampleStateColor(row.review_state);
+            return setReviewStateColor(row.review_state);
           },
           getSpecialProp: (row) => {
             return row.review_state_desc;

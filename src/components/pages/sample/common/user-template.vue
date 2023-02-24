@@ -3,7 +3,7 @@
     <base-table
       :table-column="$global.userTemplateTableColumn"
       :table-data="userList"
-      :operation-width="250"
+      :operation-width="350"
       :pagination="pagination"
       :length="$store.state.sample.user.total"
       @change-pagination="changeUserTemplatePagination"
