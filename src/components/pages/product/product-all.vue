@@ -267,9 +267,7 @@ export default {
     },
     async getProductList() {
       this.$store.commit('product/setListLoading', true);
-      let params = this.chooseForm;
-      params['current_page'] = this.pagination.current_page;
-      params['page_size'] = this.pagination.page_size;
+      let params = { ...this.chooseForm, ...this.pagination };
       try {
         await this.$store.dispatch('product/getProductList', { params });
         this.productList = this.$store.state.product.productList;

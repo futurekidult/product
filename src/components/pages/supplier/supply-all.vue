@@ -204,9 +204,7 @@ export default {
     },
     async getSupplierList() {
       this.$store.commit('supplier/setSupplierLoading', true);
-      let params = this.chooseForm;
-      params['current_page'] = this.pagination.current_page;
-      params['page_size'] = this.pagination.page_size;
+      let params = { ...this.chooseForm, ...this.pagination };
       try {
         await this.$store.dispatch('supplier/getSupplierList', { params });
         this.supplierList = this.$store.state.supplier.supplierList;

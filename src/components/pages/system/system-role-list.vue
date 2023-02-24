@@ -203,9 +203,8 @@ export default {
     async getRoleRelatedMemberList(id, showDialog) {
       try {
         let params = {
-          role_id: id,
-          current_page: this.pagination.current_page,
-          page_size: this.pagination.page_size
+          ...this.pagination,
+          role_id: id
         };
         await this.$store.dispatch('system/getRoleRelatedMemberList', {
           params

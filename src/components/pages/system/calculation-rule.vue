@@ -356,8 +356,7 @@ export default {
     async getCalculationRuleList() {
       this.$store.commit('system/setCalculationRuleListLoading', true);
       let params = {
-        current_page: this.pagination.current_page,
-        page_size: this.pagination.page_size,
+        ...this.pagination,
         market: this.selectedMarket,
         platform: this.selectedPlatform
       };

@@ -193,9 +193,7 @@ export default {
     },
     async getDemandList() {
       this.$store.commit('demand/setDemandLoading', true);
-      let params = this.chooseForm;
-      params['current_page'] = this.pagination.current_page;
-      params['page_size'] = this.pagination.page_size;
+      let params = { ...this.chooseForm, ...this.pagination };
       try {
         await this.$store.dispatch('demand/getDemandList', {
           params
