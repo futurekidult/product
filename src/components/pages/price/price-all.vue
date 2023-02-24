@@ -15,7 +15,7 @@
               v-model="chooseForm.product_name"
               placeholder="请输入内容"
               clearable
-              @keyup.enter.native="searchMould"
+              @keyup.enter.native="searchPricing"
               @clear="searchPricing"
             />
           </el-form-item>
@@ -24,7 +24,7 @@
               v-model="chooseForm.category"
               placeholder="请选择品类"
               clearable
-              @change="searchMould"
+              @change="searchPricing"
             >
               <el-option
                 v-for="item in categoryList"
@@ -39,7 +39,7 @@
               v-model="chooseForm.state"
               placeholder="请选择状态"
               clearable
-              @change="searchMould"
+              @change="searchPricing"
             >
               <el-option
                 v-for="item in pricingEnum"
@@ -132,7 +132,7 @@ export default {
     },
     async getPriceList() {
       this.$store.commit('price/setPriceLoading', true);
-      let params = {...this.chooseForm, ...this.pagination};
+      let params = { ...this.chooseForm, ...this.pagination };
       try {
         await this.$store.dispatch('price/getPriceList', { params });
         this.priceList = this.$store.state.price.priceList;
