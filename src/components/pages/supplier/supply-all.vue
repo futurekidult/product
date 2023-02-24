@@ -80,6 +80,7 @@
         :table-column="$global.supplierTableColumn"
         :table-data="supplierList"
         :pagination="pagination"
+        :operation-width="200"
         :length="$store.state.supplier.supplierListLength"
         @change-pagination="changeSupplierPagination"
       >
