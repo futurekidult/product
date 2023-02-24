@@ -15,6 +15,7 @@
               v-model="chooseForm.name"
               placeholder="请输入内容"
               clearable
+              @keyup.enter.native="searchProduct"
               @clear="searchProduct"
             />
           </el-form-item>
@@ -23,7 +24,7 @@
               v-model="chooseForm.category_id"
               placeholder="请选择"
               clearable
-              @clear="searchProduct"
+              @change="searchProduct"
             >
               <el-option
                 v-for="item in categoryList"
@@ -38,7 +39,7 @@
               v-model="chooseForm.state"
               clearable
               placeholder="请选择状态"
-              @clear="searchProduct"
+              @change="searchProduct"
             >
               <el-option
                 v-for="item in productState"
@@ -50,12 +51,6 @@
           </el-form-item>
         </el-form>
         <div>
-          <el-button
-            type="primary"
-            @click="searchProduct"
-          >
-            查询
-          </el-button>
           <el-button
             class="close-btn"
             @click="resetForm"
@@ -214,12 +209,12 @@ export default {
     };
   },
   mounted() {
-    this.getPorductState();
+    this.getProductState();
     this.getCategoryList();
     this.getProductList();
   },
   methods: {
-    async getPorductState() {
+    async getProductState() {
       if (localStorage.getItem('params')) {
         this.productState = JSON.parse(
           localStorage.getItem('params')
@@ -227,7 +222,7 @@ export default {
       } else {
         try {
           await this.$store.dispatch('getSystemParameters');
-          this.getPorductState();
+          this.getProductState();
         } catch (err) {
           return;
         }

@@ -16,6 +16,7 @@
               v-model="chooseForm.name"
               clearable
               placeholder="请输入产品名称"
+              @keyup.enter.native="searchDemand"
               @clear="searchDemand"
             />
           </el-form-item>
@@ -26,7 +27,7 @@
               clearable
               filterable
               :props="defaultProps"
-              @clear="searchDemand"
+              @change="searchDemand"
             />
           </el-form-item>
           <el-form-item label="状态">
@@ -34,7 +35,7 @@
               v-model="chooseForm.state"
               clearable
               placeholder="请选择需求状态"
-              @clear="searchDemand"
+              @change="searchDemand"
             >
               <el-option
                 v-for="item in demandState"
@@ -46,12 +47,6 @@
           </el-form-item>
         </el-form>
         <div>
-          <el-button
-            type="primary"
-            @click="searchDemand"
-          >
-            查询
-          </el-button>
           <el-button
             class="close-btn"
             @click="resetForm"
