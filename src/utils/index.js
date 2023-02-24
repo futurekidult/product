@@ -353,29 +353,9 @@ export const setApproveStateColor = (state) => {
   }
 };
 
-//设置样品状态颜色
-export const setSampleStateColor = (state) => {
-  if (state <= 25) {
-    return 'result-ing';
-  } else if (state === 30) {
-    return 'result-pass';
-  } else {
-    return 'result-fail';
-  }
-};
-
 //设置模具状态颜色
 export const setMouldStateColor = (state) => {
   if (state === 40) {
-    return 'result-pass';
-  } else {
-    return 'result-ing';
-  }
-};
-
-//设置定价状态颜色
-export const setPriceStateColor = (state) => {
-  if (state >= 30) {
     return 'result-pass';
   } else {
     return 'result-ing';
