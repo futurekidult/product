@@ -20,12 +20,12 @@
         {{ progress.actual_finish_time }}
       </el-descriptions-item>
       <el-descriptions-item label="评审状态">
-        <div :class="changeCellColor(progress.review_state)">
+        <div :class="setReviewStateColor(progress.review_state)">
           {{ progress.review_state_desc }}
         </div>
       </el-descriptions-item>
       <el-descriptions-item label="状态">
-        <div :class="changeColor(progress.state)">
+        <div :class="setStateColor(progress.state)">
           {{ progress.state_desc }}
         </div>
       </el-descriptions-item>
@@ -109,10 +109,7 @@
       </el-form-item>
       <div v-if="form.review_result === 1">
         <profit-calculation :get-profit="profit" />
-        <process-table
-          :get-schedule="schedule"
-          :change-color="changeColor"
-        />
+        <process-table :get-schedule="schedule" />
 
         <div class="profit-plan_title">
           销售计划表
@@ -159,13 +156,14 @@
 <script>
 import ProfitCalculation from '../common/profit-calculation.vue';
 import ProcessTable from '../common/process-table.vue';
+import { setReviewStateColor, setStateColor } from '../../../../utils/index.js';
 
 export default {
   components: {
     ProfitCalculation,
     ProcessTable
   },
-  inject: ['getProject', 'getProfitCalcaulation', 'getProcessTable', 'getBase'],
+  inject: ['getProject', 'getProfitCalculation', 'getProcessTable', 'getBase'],
   props: [
     'progress',
     'attachment',
@@ -219,13 +217,15 @@ export default {
     }
   },
   methods: {
+    setStateColor,
+    setReviewStateColor,
     async reviewProject(val) {
       let body = val;
       body['product_id'] = +this.$route.params.productId;
       try {
         await this.$store.dispatch('product/project/reviewProject', body);
         this.getProject();
-        this.getProfitCalcaulation();
+        this.getProfitCalculation();
         this.getProcessTable();
       } catch (err) {
         return;
@@ -247,24 +247,6 @@ export default {
     closeProjectForm() {
       this.addVisible = false;
     },
-    changeCellColor(val) {
-      if (val === 10) {
-        return 'result-ing';
-      } else if (val === 30) {
-        return 'result-pass';
-      } else {
-        return 'result-fail';
-      }
-    },
-    changeColor(val) {
-      if (val === 10 || val === 20) {
-        return 'result-ing';
-      } else if (val === 40) {
-        return 'result-pass';
-      } else {
-        return 'result-fail';
-      }
-    },
     async approvalProject(val) {
       let body = {
         product_id: +this.$route.params.productId,
@@ -274,7 +256,7 @@ export default {
         await this.$store.dispatch('product/project/approvalProject', body);
         this.getProject();
         this.getBase();
-        this.getProfitCalcaulation();
+        this.getProfitCalculation();
         this.getProcessTable();
       } catch (err) {
         return;
@@ -282,7 +264,7 @@ export default {
     },
     refresh(val) {
       if (val === 1) {
-        this.getProfitCalcaulation();
+        this.getProfitCalculation();
         this.getProcessTable();
       }
     },

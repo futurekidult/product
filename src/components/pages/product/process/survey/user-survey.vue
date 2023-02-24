@@ -12,66 +12,26 @@
           用户调研申请
         </el-button>
       </div>
-
-      <el-table
-        border
-        stripe
-        empty-text="无数据"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        :data="surveyApply"
+      <base-table
+        :table-data="surveyApply"
+        :pagination-visible="false"
+        :table-column="tableColumn"
       >
-        <el-table-column
-          fixed
-          label="调研申请ID"
-          prop="id"
-          width="100"
-        />
-        <el-table-column
-          label="申请人"
-          prop="applicant_desc"
-        />
-        <el-table-column
-          label="提交时间"
-          prop="create_time"
-          width="200"
-        />
-        <el-table-column
-          label="评审完成时间"
-          prop="review_finish_time"
-          width="200"
-        />
-        <el-table-column
-          label="评审状态"
-          prop="state_desc"
-          fixed="right"
-        >
-          <template #default="scope">
-            <div :class="changeCellColor(scope.row.state)">
-              {{ scope.row.state_desc }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          fixed="right"
-        >
-          <template #default="scope">
-            <text-btn
-              v-if="scope.row.state === 10"
-              @handle-click="showReviewForm(scope.row.id)"
-            >
-              用户调研需求评审
-            </text-btn>
-            <text-btn
-              v-else
-              @handle-click="showViewReviewForm(scope.row.id)"
-            >
-              查看用户调研需求
-            </text-btn>
-          </template>
-        </el-table-column>
-      </el-table>
-
+        <template #default="slotProps">
+          <text-btn
+            v-if="slotProps.row.state === 10"
+            @handle-click="showReviewForm(slotProps.row.id)"
+          >
+            用户调研需求评审
+          </text-btn>
+          <text-btn
+            v-else
+            @handle-click="showViewReviewForm(slotProps.row.id)"
+          >
+            查看用户调研需求
+          </text-btn>
+        </template>
+      </base-table>
       <div v-if="buttonState.apply === 0">
         <div class="survey-title">
           调研进度表
@@ -631,11 +591,12 @@
 
 <script>
 import {
-  previewOrDownloadFile,
   getFile,
-  getOrganizationList,
   timestamp,
-  setDisabledDate
+  setDisabledDate,
+  getOrganizationList,
+  setReviewStateColor,
+  previewOrDownloadFile
 } from '../../../../../utils';
 import SurveyForm from '../../common/survey-form.vue';
 import SurveySuggestion from '../../common/survey-suggestion.vue';
@@ -694,7 +655,40 @@ export default {
           estimated_finish_time: [{ required: true, message: '请选择日期' }]
         },
         planList: this.planList
-      }
+      },
+      tableColumn: [
+        {
+          label: '调研申请ID',
+          prop: 'id',
+          width: 100,
+          fixed: 'left'
+        },
+        {
+          label: '申请人',
+          prop: 'applicant_desc'
+        },
+        {
+          label: '提交时间',
+          prop: 'review_finish_time',
+          width: 200
+        },
+        {
+          label: '评审完成时间',
+          prop: 'create_time',
+          width: 200
+        },
+        {
+          label: '评审状态',
+          prop: 'state',
+          fixed: 'right',
+          formatter: (row) => {
+            return setReviewStateColor(row.state);
+          },
+          getSpecialProp: (row) => {
+            return row.state_desc;
+          }
+        }
+      ]
     };
   },
   watch: {
@@ -991,15 +985,6 @@ export default {
     },
     approvalItemFail(id) {
       this.approvalSurveyItem(id, 0);
-    },
-    changeCellColor(val) {
-      if (val === 10) {
-        return 'result-ing';
-      } else if (val === 30) {
-        return 'result-pass';
-      } else {
-        return 'result-fail';
-      }
     },
     clearDetail(id) {
       this.form.planList.map((item) => {

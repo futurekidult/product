@@ -4,64 +4,38 @@
       项目进度计划表
     </div>
     <div class="profit-plan_title">
-      <el-table
-        border
-        stripe
-        empty-text="无数据"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        :data="getSchedule.list"
+      <base-table
+        :index-visible="true"
+        :table-data="getSchedule.list"
+        :pagination-visible="false"
+        :operation-width="200"
+        :table-column="tableColumn"
       >
-        <el-table-column
-          label="序号"
-          width="60px"
-          type="index"
-        />
-        <el-table-column
-          label="阶段名称"
-          prop="stage_desc"
-        />
-        <el-table-column
-          label="计划完成时间"
-          prop="estimated_finish_time"
-        />
-        <el-table-column
-          label="实际完成时间"
-          prop="actual_finish_time"
-        />
-        <el-table-column label="状态">
-          <template #default="scope">
-            <div :class="changeColor(scope.row.state)">
-              {{ scope.row.state_desc }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <template #default="scope">
-            <text-btn
-              v-if="isDisabled"
-              @handle-click="
-                editStage(
-                  scope.row.stage_desc,
-                  scope.row.id,
-                  scope.row.estimated_finish_time
-                )
-              "
-            >
-              编辑
-            </text-btn>
-            <text-btn
-              v-if="
-                show &&
-                  (scope.row.stage === 60 || scope.row.stage === 70) &&
-                  scope.row.actual_finish_time === ''
-              "
-              @handle-click="showActualTimeForm(scope.row.id)"
-            >
-              填写实际完成时间
-            </text-btn>
-          </template>
-        </el-table-column>
-      </el-table>
+        <template #default="slotProps">
+          <text-btn
+            v-if="isDisabled"
+            @handle-click="
+              editStage(
+                slotProps.row.stage_desc,
+                slotProps.row.id,
+                slotProps.row.estimated_finish_time
+              )
+            "
+          >
+            编辑
+          </text-btn>
+          <text-btn
+            v-if="
+              show &&
+                (slotProps.row.stage === 60 || slotProps.row.stage === 70) &&
+                slotProps.row.actual_finish_time === ''
+            "
+            @handle-click="showActualTimeForm(slotProps.row.id)"
+          >
+            填写实际完成时间
+          </text-btn>
+        </template>
+      </base-table>
       <el-button
         :disabled="getSchedule.list.length !== 0"
         class="profit-plan_btn"
@@ -287,10 +261,14 @@
 </template>
 
 <script>
-import { timestamp, setDisabledDate } from '../../../../utils';
+import {
+  timestamp,
+  setDisabledDate,
+  setProductScheduleStateColor
+} from '../../../../utils';
 export default {
   inject: ['getProcessTable'],
-  props: ['getSchedule', 'changeColor'],
+  props: ['getSchedule'],
   data() {
     return {
       editStageVisible: false,
@@ -352,7 +330,30 @@ export default {
       },
       actualTimeVisible: false,
       timeForm: {},
-      projectScheduleId: 0
+      projectScheduleId: 0,
+      tableColumn: [
+        {
+          label: '阶段名称',
+          prop: 'stage_desc'
+        },
+        {
+          label: '计划完成时间',
+          prop: 'estimated_finish_time'
+        },
+        {
+          label: '实际完成时间',
+          prop: 'actual_finish_time'
+        },
+        {
+          label: '状态',
+          formatter: (row) => {
+            return setProductScheduleStateColor(row.state);
+          },
+          getSpecialProp: (row) => {
+            return row.state_desc;
+          }
+        }
+      ]
     };
   },
   computed: {

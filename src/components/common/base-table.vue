@@ -6,6 +6,7 @@
       empty-text="无数据"
       :data="data"
       :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+      @selection-change="handleSelectionChange"
     >
       <el-table-column
         v-if="selectionVisible"
@@ -15,7 +16,8 @@
       <el-table-column
         v-if="indexVisible"
         type="index"
-        width="50"
+        width="60"
+        label="序号"
       />
       <el-table-column
         v-for="(column, index) in tableColumn"
@@ -25,6 +27,7 @@
         :width="column.width"
         :min-width="column.min_width"
         :fixed="column.fixed"
+        :show-overflow-tooltip="column.tooltip"
       >
         <template #default="scope">
           <section
@@ -40,15 +43,21 @@
               :class="scope.row.is_overdue !== 0 ? 'overdue' : ''"
             >【{{ scope.row.overdue_desc }}】</span>
           </section>
+          <section v-else-if="column.is_operation">
+            <slot
+              name="operation"
+              :row="scope.row"
+            />
+          </section>
           <section v-else-if="column.is_link">
             <slot
               name="link"
               :row="scope.row"
             />
           </section>
-          <section v-else-if="column.is_operation">
+          <section v-else-if="column.is_description">
             <slot
-              name="operation"
+              name="description"
               :row="scope.row"
             />
           </section>
@@ -123,7 +132,7 @@ export default {
       default: 150
     }
   },
-  emits: ['change-pagination'],
+  emits: ['change-pagination', 'handle-selection'],
   data() {
     return {
       data: this.tableData,
@@ -150,6 +159,9 @@ export default {
     handleSizeChange(pageSize) {
       this.listPagination.page_size = pageSize;
       this.handleCurrentChange(1);
+    },
+    handleSelectionChange(val) {
+      this.$emit('handle-selection', val);
     }
   }
 };

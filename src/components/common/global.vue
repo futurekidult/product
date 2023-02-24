@@ -1,10 +1,16 @@
 <script>
 import {
+  setOrderStateColor,
   setApproveStateColor,
+  setProductStateColor,
+  setReviewStateColor,
+  setQuestionStateColor,
+  setPricingStateColor,
+  setPackageStateColor,
+  setDemandReviewStateColor,
   setSampleStateColor,
   setMouldStateColor,
   setQuotationStateColor,
-  setPriceStateColor,
   setStateColor
 } from '../../utils/index.js';
 
@@ -88,6 +94,221 @@ const supplierTableColumn = [
     width: 100,
     formatter: (row) => {
       return setApproveStateColor(row.state);
+    },
+    getSpecialProp: (row) => {
+      return row.state_desc;
+    }
+  }
+];
+
+const demandTableColumn = [
+  { prop: 'id', label: '需求ID', width: 100, fixed: 'left' },
+  { prop: 'name', label: '产品名称', fixed: 'left', min_width: 150 },
+  { prop: 'product_id', label: '关联产品ID', width: 100, is_link: true },
+  { prop: 'creator_desc', label: '创建人' },
+  { prop: 'ding_dept_desc', label: '所属部门', min_width: 150 },
+  { prop: 'create_time', label: '创建时间', width: 200 },
+  { prop: 'review_finish_time', label: '评审完成时间', width: 200 },
+  {
+    prop: 'state',
+    label: '状态',
+    width: 100,
+    formatter: (row) => {
+      return setDemandReviewStateColor(row.state);
+    },
+    getSpecialProp: (row) => {
+      return row.state_desc;
+    }
+  },
+  {
+    prop: 'review_failed_reason',
+    label: '不通过原因',
+    width: 100,
+    is_operation: true
+  }
+];
+
+const pricingTableColumn = [
+  { prop: 'id', label: '定价ID', width: 100, fixed: 'left' },
+  { prop: 'market_desc', label: '市场', min_width: 100 },
+  { prop: 'platform', label: '平台', min_width: 100 },
+  { prop: 'final_confirmed_price', label: '最终确认定价', min_width: 150 },
+  { prop: 'estimated_finish_time', label: '计划完成时间', width: 200 },
+  { prop: 'first_submit_time', label: '首次提交报价时间', width: 200 },
+  { prop: 'confirm_time', label: '最终确认定价时间', width: 200 },
+  { prop: 'related_sample_count', label: '关联样品流程数', min_width: 150 },
+  {
+    prop: 'state',
+    label: '状态',
+    width: 100,
+    fixed: 'right',
+    formatter: (row) => {
+      return setPricingStateColor(row.state);
+    },
+    getSpecialProp: (row) => {
+      return row.state_desc;
+    }
+  }
+];
+
+const patentTableColumn = [
+  { prop: 'id', label: '专利申请ID', width: 100, fixed: 'left' },
+  { prop: 'applicant', label: '申请人' },
+  { prop: 'submit_time', label: '提交时间', width: 200 },
+  { prop: 'review_time', label: '评审完成时间', width: 200 },
+  { prop: 'patent_types', label: '专利类型' },
+  {
+    prop: 'review_state',
+    label: '评审状态',
+    width: 200,
+    formatter: (row) => {
+      return setReviewStateColor(row.review_state);
+    },
+    getSpecialProp: (row) => {
+      return row.review_state_desc;
+    }
+  }
+];
+
+const sampleMessageTableColumn = [
+  { prop: 'id', label: '样品ID', width: 100, fixed: 'left' },
+  { prop: 'pricing_id', label: '关联定价ID', width: 110, fixed: 'left' },
+  { prop: 'platform', label: '平台', min_width: 100 },
+  { prop: 'demand_quantity', label: '需求数量', min_width: 100 },
+  { prop: 'demand_time', label: '需求日期', width: 200 },
+  { prop: 'has_verify', label: '有无认证', min_width: 100 },
+  { prop: 'supplier_id', label: '供应商ID', width: 100 },
+  {
+    prop: 'purchase_specialist',
+    label: '采购员',
+    min_width: 150
+  },
+  { prop: 'estimated_finish_time', label: '计划完成时间', width: 200 },
+  { prop: 'actual_finish_time', label: '实际完成时间', width: 200 },
+  {
+    prop: 'state',
+    label: '状态',
+    min_width: 200,
+    formatter: (row) => {
+      return setSampleStateColor(row.state);
+    },
+    getSpecialProp: (row) => {
+      return row.state_desc;
+    }
+  }
+];
+
+const questionTableColumn = [
+  { prop: 'id', label: '问题ID', width: 100, fixed: 'left' },
+  {
+    prop: 'sample_id',
+    label: '关联样品ID',
+    width: 110,
+    fixed: 'left',
+    is_link: true
+  },
+  { prop: 'pricing_id', label: '关联定价ID', width: 110, fixed: 'left' },
+  { prop: 'name', label: '问题名称', min_width: 150 },
+  {
+    prop: 'consequence',
+    label: '后果描述',
+    min_width: 250,
+    is_description: true
+  },
+  { prop: 'record_time', label: '记录时间', width: 200 },
+  { prop: 'source', label: '问题来源', min_width: 150 },
+  { prop: 'purchase_specialist', label: '采购员', min_width: 100 },
+  { prop: 'resolve_time', label: '解決时间', width: 200 },
+  {
+    prop: 'state',
+    label: '状态',
+    min_width: 100,
+    formatter: (row) => {
+      return setQuestionStateColor(row.state);
+    },
+    getSpecialProp: (row) => {
+      return row.state_desc;
+    }
+  },
+  {
+    prop: 'ignore_reason_id',
+    label: '原因',
+    min_width: 100,
+    is_operation: true
+  }
+];
+
+const orderTableColumn = [
+  { prop: 'id', label: '订单ID', width: 100, fixed: 'left' },
+  {
+    prop: 'sample_id',
+    label: '关联样品ID',
+    width: 110,
+    fixed: 'left',
+    is_link: true
+  },
+  { prop: 'pricing_id', label: '关联定价ID', width: 110, fixed: 'left' },
+  { prop: 'final_price', label: '最终定价' },
+  {
+    prop: '供应商ID',
+    label: 'supplier_id',
+    width: 100
+  },
+  { prop: 'estimated_finish_time', label: '计划完成时间', width: 200 },
+  { prop: 'actual_finish_time', label: '实际完成时间', width: 200 },
+  { prop: 'pre_production_sample_quantity', label: '大货样套数' },
+  {
+    prop: 'state',
+    label: '状态',
+    fixed: 'right',
+    formatter: (row) => {
+      return setOrderStateColor(row.state);
+    },
+    getSpecialProp: (row) => {
+      return row.state_desc;
+    }
+  }
+];
+
+const packageTableColumn = [
+  { prop: 'id', label: '包材ID', width: 100, fixed: 'left' },
+  { prop: 'pricing_id', label: '关联定价ID', width: 110, fixed: 'left' },
+  { prop: 'operations_specialist', label: '运营专业', width: 200 },
+  { prop: 'estimated_finish_time', label: '计划完成时间', width: 200 },
+  { prop: 'actual_finish_time', label: '实际完成时间', width: 200 },
+  {
+    prop: 'result_path',
+    label: '结果文件地址',
+    min_width: 150,
+    tooltip: true
+  },
+  {
+    prop: 'state',
+    label: '状态',
+    fixed: 'right',
+    formatter: (row) => {
+      return setPackageStateColor(row.state);
+    },
+    getSpecialProp: (row) => {
+      return row.state_desc;
+    }
+  }
+];
+
+const productTableColumn = [
+  { prop: 'id', label: '产品ID', width: 100, fixed: 'left' },
+  { prop: 'name', label: '产品名称', fixed: 'left', min_width: 150 },
+  { prop: 'demand_id', label: '关联需求ID', width: 100, is_link: true },
+  { prop: 'category', label: '品类' },
+  { prop: 'positioning_desc', label: '产品定位', min_width: 100 },
+  { prop: 'project_administrator', label: '项目管理员', width: 200 },
+  { prop: 'create_time', label: '创建时间', width: 200 },
+  {
+    prop: 'state',
+    label: '状态',
+    width: 100,
+    formatter: (row) => {
+      return setProductStateColor(row.state);
     },
     getSpecialProp: (row) => {
       return row.state_desc;
@@ -244,7 +465,7 @@ const priceAllTableColumn = [
     prop: 'state',
     label: '状态',
     formatter: (row) => {
-      return setPriceStateColor(row.state);
+      return setPricingStateColor(row.state);
     },
     getSpecialProp: (row) => {
       return row.state_desc;
@@ -296,12 +517,20 @@ export default {
   defaultTime,
   unterminatedStateCode,
   categoryProductMap,
+  orderTableColumn,
+  pricingTableColumn,
+  patentTableColumn,
+  demandTableColumn,
+  packageTableColumn,
+  questionTableColumn,
+  productTableColumn,
   supplierTableColumn,
   sampleAllTableColumn,
   userTestTableColumn,
   userTemplateTableColumn,
   mouldAllTableColumn,
   priceAllTableColumn,
-  quotationListTableColumn
+  quotationListTableColumn,
+  sampleMessageTableColumn
 };
 </script>

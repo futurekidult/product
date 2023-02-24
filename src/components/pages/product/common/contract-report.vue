@@ -160,7 +160,7 @@
 import { previewOrDownloadFile, getFile } from '../../../../utils';
 export default {
   inject: ['getContract'],
-  props: ['data', 'type', 'getReport'],
+  props: ['data', 'type', 'getReport', 'changeColor'],
   data() {
     return {
       progress: this.data,
@@ -241,13 +241,6 @@ export default {
         this.upload('contract', 'Contract');
       } else {
         this.upload('report', 'Report');
-      }
-    },
-    changeColor(val) {
-      if (val === 10) {
-        return 'result-ing';
-      } else {
-        return 'result-pass';
       }
     },
     deleteFile() {

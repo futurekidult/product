@@ -3,81 +3,22 @@
     <div class="select-title">
       <span class="line">|</span> 包材设计
     </div>
-
-    <el-table
-      border
-      stripe
-      empty-text="无数据"
-      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      :data="packageList"
-    >
-      <el-table-column
-        fixed
-        label="包材ID"
-        prop="id"
-        width="100"
-      />
-      <el-table-column
-        fixed
-        label="关联定价ID"
-        prop="pricing_id"
-        width="110"
-      />
-      <el-table-column
-        label="运营专员"
-        prop="operations_specialist"
-        width="200"
-      />
-      <el-table-column
-        label="计划完成时间"
-        prop="estimated_finish_time"
-        width="200"
-      />
-      <el-table-column
-        label="实际完成时间"
-        prop="actual_finish_time"
-        width="200"
-      />
-      <el-table-column
-        label="结果文件地址"
-        prop="result_path"
-        show-overflow-tooltip
-        min-width="150"
-      />
-      <el-table-column
-        label="状态"
-        width="200"
-        fixed="right"
-      >
-        <template #default="scope">
-          <div :class="changeColor(scope.row.state)">
-            {{ scope.row.state_desc }}
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="操作"
-        width="150"
-        fixed="right"
-      >
-        <template #default="scope">
-          <text-btn
-            :disabled="scope.row.result_path !== ''"
-            @handle-click="showResultForm(scope.row.id)"
-          >
-            上传结果
-          </text-btn>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <base-pagination
+    <base-table
+      :table-data="packageList"
+      :pagination="pagination"
       :length="$store.state.product.packageListLength"
-      :current-page="page"
-      :page-num="pageNum"
-      @change-size="changePageSize"
-      @change-page="changeCurrentPage"
-    />
+      :table-column="$global.packageTableColumn"
+      @change-pagination="changePagination"
+    >
+      <template #default="slotProps">
+        <text-btn
+          :disabled="slotProps.row.result_path !== ''"
+          @handle-click="showResultForm(slotProps.row.id)"
+        >
+          上传结果
+        </text-btn>
+      </template>
+    </base-table>
 
     <el-dialog
       v-model="resultFormVisible"
@@ -133,24 +74,18 @@
 <script>
 export default {
   inject: ['getPackage'],
-  props: ['changeColor', 'packageList', 'currentPage', 'pageSize'],
-  emits: ['change-page', 'change-size'],
+  props: ['packageList', 'packagePagination'],
   data() {
     return {
       packageId: 0,
       resultForm: {},
       resultFormVisible: false,
-      page: this.currentPage,
-      pageNum: this.pageSize
+      pagination: this.packagePagination
     };
   },
   watch: {
-    currentPage(val) {
-      this.page = val;
-    },
-    pageSize(val) {
-      this.pageNum = val;
-      this.page = 1;
+    packagePagination(val) {
+      this.pagination = val;
     }
   },
   methods: {
@@ -179,14 +114,9 @@ export default {
         }
       });
     },
-    changeCurrentPage(val) {
-      this.page = val;
-      this.$emit('change-page', this.page);
-    },
-    changePageSize(val) {
-      this.pageNum = val;
-      this.page = 1;
-      this.$emit('change-size', this.pageNum);
+    changePagination(pagination) {
+      this.pagination = pagination;
+      this.$emit('change-page', this.pagination);
     }
   }
 };

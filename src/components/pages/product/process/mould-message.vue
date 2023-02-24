@@ -11,63 +11,24 @@
         选择模具
       </el-button>
     </div>
-
-    <el-table
-      border
-      stripe
-      empty-text="无数据"
-      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      :data="mouldList"
-    >
-      <el-table-column
-        fixed
-        label="模具ID"
-        prop="mould_id"
-        width="100"
-      />
-      <el-table-column
-        fixed
-        label="模具名称"
-        prop="name"
-        min-width="150"
-      />
-      <el-table-column
-        label="开模工厂"
-        prop="mould_factory"
-        min-width="150"
-      />
-      <el-table-column
-        label="创建时间"
-        prop="create_time"
-        width="200"
-      />
-      <el-table-column
-        label="创建人"
-        prop="creator"
-      />
-      <el-table-column
-        label="操作"
-        fixed="right"
-      >
-        <template #default="scope">
-          <text-btn @handle-click="showDeleteDialog(scope.row.id)">
-            删除
-          </text-btn>
-          <span class="table-btn">|</span>
-          <text-btn @handle-click="toDetail(scope.row.mould_id)">
-            查看
-          </text-btn>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <base-pagination
+    <base-table
+      :table-data="mouldList"
+      :pagination="pagination"
+      :operation-width="150"
       :length="$store.state.product.mouldListLength"
-      :current-page="page"
-      :page-num="pageNum"
-      @change-size="changePageSize"
-      @change-page="changeCurrentPage"
-    />
+      :table-column="tableColumn"
+      @change-pagination="changePagination"
+    >
+      <template #default="scope">
+        <text-btn @handle-click="showDeleteDialog(scope.row.id)">
+          删除
+        </text-btn>
+        <span class="table-btn">|</span>
+        <text-btn @handle-click="toDetail(scope.row.mould_id)">
+          查看
+        </text-btn>
+      </template>
+    </base-table>
 
     <el-dialog
       v-model="deleteDialog"
@@ -101,55 +62,16 @@
       width="50%"
       :close-on-click-modal="false"
     >
-      <el-table
-        border
-        stripe
-        empty-text="无数据"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        :data="allMouldList"
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column
-          type="selection"
-          width="55"
-        />
-        <el-table-column
-          fixed
-          label="模具ID"
-          prop="id"
-          width="100"
-        />
-        <el-table-column
-          fixed
-          label="模具名称"
-          prop="name"
-          min-width="150"
-        />
-        <el-table-column
-          label="开模工厂"
-          prop="mould_factory"
-          min-width="150"
-        />
-        <el-table-column
-          label="创建时间"
-          prop="create_time"
-          width="200"
-        />
-        <el-table-column
-          label="创建人"
-          prop="creator"
-          fixed="right"
-        />
-      </el-table>
-
-      <base-pagination
+      <base-table
+        :table-data="allMouldList"
+        :pagination="AllMouldPagination"
         :length="$store.state.product.selectedMouldListLength"
-        :current-page="allCurrentPage"
-        :page-num="allPageSize"
-        @change-size="changeAllPageSize"
-        @change-page="changeAllCurrentPage"
+        :table-column="AllMouldTableColumn"
+        :operation-visible="false"
+        :selection-visible="true"
+        @change-pagination="changeAllMouldPagination"
+        @handle-selection="handleSelectionChange"
       />
-
       <el-divider style="margin: 68px 0px 20px" />
       <div style="text-align: right">
         <el-button
@@ -170,10 +92,11 @@
 </template>
 
 <script>
-import { changeTimestamp } from '../../../../utils';
+import { changeTimestamp, resetPagination } from '../../../../utils';
+
 export default {
   inject: ['getMould'],
-  props: ['mouldList', 'currentPage', 'pageSize'],
+  props: ['mouldList', 'mouldPagination'],
   emits: ['change-page', 'change-size'],
   data() {
     return {
@@ -183,27 +106,41 @@ export default {
       deleteDialog: false,
       mouldId: 0,
       allMouldList: [],
-      page: this.currentPage,
-      pageNum: this.pageSize,
-      allCurrentPage: 1,
-      allPageSize: 10
+      pagination: this.mouldPagination,
+      AllMouldPagination: JSON.parse(JSON.stringify(this.$global.pagination)),
+      commonTableColumn: [
+        {
+          prop: 'name',
+          label: '模具名称',
+          min_width: 150,
+          fixed: 'left'
+        },
+        { prop: 'mould_factory', label: '开模工厂', min_width: '150' },
+        { prop: 'create_time', label: '创建时间', width: 200 },
+        { prop: 'creator', label: '创建人' }
+      ]
     };
   },
-  watch: {
-    currentPage(val) {
-      this.page = val;
+  computed: {
+    tableColumn() {
+      return [
+        { prop: 'mould_id', label: '模具ID', width: 100, fixed: 'left' }
+      ].concat(this.commonTableColumn);
     },
-    pageSize(val) {
-      this.pageNum = val;
-      this.page = 1;
+    AllMouldTableColumn() {
+      return [
+        { prop: 'id', label: '模具ID', width: 100, fixed: 'left' }
+      ].concat(this.commonTableColumn);
+    }
+  },
+  watch: {
+    mouldPagination(val) {
+      this.pagination = val;
     }
   },
   methods: {
     async getAllMouldList() {
-      let params = {
-        page_size: this.allPageSize,
-        current_page: this.allCurrentPage
-      };
+      let params = this.AllMouldPagination;
       try {
         await this.$store.dispatch('product/getSelectedMouldList', { params });
         this.allMouldList = this.$store.state.product.selectedMouldList;
@@ -216,6 +153,7 @@ export default {
       }
     },
     showMouldSelectedForm() {
+      resetPagination(this.AllMouldPagination, 1, 10);
       this.getAllMouldList();
     },
     closeMouldSelectedForm() {
@@ -265,22 +203,12 @@ export default {
         this.$message.error('无权限访问');
       }
     },
-    changeCurrentPage(val) {
-      this.page = val;
-      this.$emit('change-page', this.page);
+    changePagination(pagination) {
+      this.pagination = pagination;
+      this.$emit('change-page', this.pagination);
     },
-    changePageSize(val) {
-      this.pageNum = val;
-      this.page = 1;
-      this.$emit('change-size', this.pageNum);
-    },
-    changeAllCurrentPage(val) {
-      this.allCurrentPage = val;
-      this.getAllMouldList();
-    },
-    changeAllPageSize(val) {
-      this.allPageSize = val;
-      this.allCurrentPage = 1;
+    changeAllMouldPagination(pagination) {
+      this.AllMouldPagination = pagination;
       this.getAllMouldList();
     }
   }
