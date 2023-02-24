@@ -16,6 +16,7 @@
               v-model="chooseForm.product_name"
               placeholder="请输入内容"
               clearable
+              @keyup.enter.native="searchSample"
               @clear="searchSample"
             />
           </el-form-item>
@@ -24,7 +25,7 @@
               v-model="chooseForm.product_category"
               placeholder="请选择"
               clearable
-              @clear="searchSample"
+              @change="searchSample"
             >
               <el-option
                 v-for="item in categoryList"
@@ -39,7 +40,7 @@
               v-model="chooseForm.state"
               placeholder="请选择"
               clearable
-              @clear="searchSample"
+              @change="searchSample"
             >
               <el-option
                 v-for="item in sampleState"
@@ -51,12 +52,6 @@
           </el-form-item>
         </el-form>
         <div>
-          <el-button
-            type="primary"
-            @click="searchSample"
-          >
-            查询
-          </el-button>
           <el-button
             class="reset-btn"
             @click="resetForm"
@@ -82,9 +77,9 @@
         :length="$store.state.sample.sampleListLength"
         @change-pagination="changeSupplierPagination"
       >
-        <template #link="slotProps">
-          <text-btn @handle-click="toRelatedProduct(slotProps.row.product_id)">
-            {{ slotProps.row.product_id }}
+        <template #link="linkProps">
+          <text-btn @handle-click="toRelatedProduct(linkProps.row.product_id)">
+            {{ linkProps.row.product_id }}
           </text-btn>
         </template>
         <template #default="slotProps">
@@ -139,9 +134,7 @@ export default {
     },
     async getSampleList() {
       this.$store.commit('sample/setListLoading', true);
-      let params = this.chooseForm;
-      params['current_page'] = this.pagination.current_page;
-      params['page_size'] = this.pagination.page_size;
+      let params = { ...this.chooseForm, ...this.pagination };
       try {
         await this.$store.dispatch('sample/getSampleList', { params });
         this.sampleList = this.$store.state.sample.sampleList;

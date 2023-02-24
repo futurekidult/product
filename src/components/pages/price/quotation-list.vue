@@ -57,13 +57,15 @@
           :length="quotationList.total"
           @change-pagination="changeQuotationListPagination"
         >
-          <template #link="slotProps">
-            <text-btn @handle-click="toDetail(slotProps.row.supplier_id)">
-              {{ slotProps.row.supplier_name }}
+          <template #link="linkProps">
+            <text-btn @handle-click="toDetail(linkProps.row.supplier_id)">
+              {{ linkProps.row.supplier_name }}
             </text-btn>
           </template>
-          <template #operation="slotProps">
-            <text-btn @handle-click="showTargetPriceForm(slotProps.row.id)">
+          <template #operation="operationProps">
+            <text-btn
+              @handle-click="showTargetPriceForm(operationProps.row.id)"
+            >
               查看内容
             </text-btn>
           </template>
@@ -505,9 +507,8 @@ export default {
     async getQuotationList() {
       this.$store.commit('price/setQuotationLoading', true);
       let params = {
-        pricing_id: +this.$route.params.id,
-        current_page: this.pagination.current_page,
-        page_size: this.pagination.page_size
+        ...this.pagination,
+        pricing_id: +this.$route.params.id
       };
       try {
         await this.$store.dispatch('price/getQuotationList', { params });

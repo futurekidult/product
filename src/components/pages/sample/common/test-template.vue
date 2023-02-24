@@ -104,9 +104,8 @@ export default {
   methods: {
     async getTestQuestion() {
       let params = {
-        sample_id: +this.$route.params.id,
-        current_page: this.pagination.current_page,
-        page_size: this.pagination.page_size
+        ...this.pagination,
+        sample_id: +this.$route.params.id
       };
       try {
         await this.$store.dispatch(`sample/${this.type}/getTestQuestion`, {

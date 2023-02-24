@@ -15,6 +15,7 @@
               v-model="chooseForm.name"
               placeholder="请输入内容"
               clearable
+              @keyup.enter.native="searchMould"
               @clear="searchMould"
             />
           </el-form-item>
@@ -25,7 +26,7 @@
               clearable
               filterable
               :props="defaultProps"
-              @clear="searchMould"
+              @change="searchMould"
             />
           </el-form-item>
           <el-form-item label="状态">
@@ -33,7 +34,7 @@
               v-model="chooseForm.state"
               clearable
               placeholder="请选择状态"
-              @clear="searchMould"
+              @change="searchMould"
             >
               <el-option
                 v-for="item in mouldState"
@@ -45,12 +46,6 @@
           </el-form-item>
         </el-form>
         <div>
-          <el-button
-            type="primary"
-            @click="searchMould"
-          >
-            查询
-          </el-button>
           <el-button
             class="close-btn"
             @click="resetForm"
@@ -83,8 +78,8 @@
         :length="$store.state.mould.mouldListLength"
         @change-pagination="changeMouldPagination"
       >
-        <template #default="scope">
-          <text-btn @handle-click="toDetail(scope.row.id)">
+        <template #default="slotProps">
+          <text-btn @handle-click="toDetail(slotProps.row.id)">
             查看详情
           </text-btn>
         </template>
@@ -211,9 +206,7 @@ export default {
     },
     async getMouldList() {
       this.$store.commit('mould/setListLoading', true);
-      let params = this.chooseForm;
-      params['current_page'] = this.pagination.current_page;
-      params['page_size'] = this.pagination.page_size;
+      let params = { ...this.chooseForm, ...this.pagination };
       try {
         await this.$store.dispatch('mould/getMouldList', { params });
         this.mouldList = this.$store.state.mould.mouldList;

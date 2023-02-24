@@ -8,19 +8,19 @@
       :length="$store.state.sample.user.total"
       @change-pagination="changeUserTemplatePagination"
     >
-      <template #operation="slotProps">
+      <template #operation="operationProps">
         <div style="display: flex">
           <div
             v-if="
-              JSON.stringify(slotProps.row.test_result_file) !== '{}' &&
-                slotProps.row.test_result_file.type === 12860
+              JSON.stringify(operationProps.row.test_result_file) !== '{}' &&
+                operationProps.row.test_result_file.type === 12860
             "
           >
             <text-btn
               @handle-click="
                 previewOrDownload(
-                  slotProps.row.test_result_file.id,
-                  slotProps.row.test_result_file.name,
+                  operationProps.row.test_result_file.id,
+                  operationProps.row.test_result_file.name,
                   'preview'
                 )
               "
@@ -28,16 +28,16 @@
               预览
             </text-btn>
           </div>
-          <div v-if="slotProps.row.button_state.is_upload === 1">
+          <div v-if="operationProps.row.button_state.is_upload === 1">
             <span
-              v-if="slotProps.row.test_result_file.type === 12860"
+              v-if="operationProps.row.test_result_file.type === 12860"
               class="table-btn"
             >|</span>
             <text-btn
               @handle-click="
                 previewOrDownload(
-                  slotProps.row.test_result_file.id,
-                  slotProps.row.test_result_file.name,
+                  operationProps.row.test_result_file.id,
+                  operationProps.row.test_result_file.name,
                   'download'
                 )
               "
@@ -147,9 +147,8 @@ export default {
       try {
         await this.$store.dispatch('sample/user/getUserList', {
           params: {
-            sample_id: +this.$route.params.id,
-            current_page: this.pagination.current_page,
-            page_size: this.pagination.page_size
+            ...this.pagination,
+            sample_id: +this.$route.params.id
           }
         });
         this.userList = this.$store.state.sample.user.userList;
