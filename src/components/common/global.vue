@@ -240,13 +240,6 @@ const questionTableColumn = [
 
 const orderTableColumn = [
   { prop: 'id', label: '订单ID', width: 100, fixed: 'left' },
-  {
-    prop: 'sample_id',
-    label: '关联样品ID',
-    width: 110,
-    fixed: 'left',
-    is_link: true
-  },
   { prop: 'pricing_id', label: '关联定价ID', width: 110, fixed: 'left' },
   { prop: 'final_price', label: '最终定价' },
   {
