@@ -285,7 +285,7 @@ export default {
   components: {
     ProfitParams
   },
-  inject: ['getProfitCalcaulation'],
+  inject: ['getProfitCalculation'],
   props: ['dialogVisible', 'title', 'type', 'id'],
   emits: ['hide-dialog'],
   data() {
@@ -474,7 +474,7 @@ export default {
       try {
         await this.$store.dispatch('product/project/createProfit', body);
         this.visible = false;
-        this.getProfitCalcaulation();
+        this.getProfitCalculation();
       } catch (err) {
         return;
       }
@@ -485,7 +485,7 @@ export default {
       try {
         await this.$store.dispatch('product/project/updateProfit', body);
         this.visible = false;
-        this.getProfitCalcaulation();
+        this.getProfitCalculation();
       } catch (err) {
         return;
       }
@@ -547,7 +547,7 @@ export default {
           body
         );
         this.visible = false;
-        this.getProfitCalcaulation();
+        this.getProfitCalculation();
       } catch (err) {
         return;
       }

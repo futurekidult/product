@@ -68,90 +68,20 @@
       <div class="select-title">
         <span class="line">|</span> 定价列表
       </div>
-      <el-table
-        border
-        stripe
-        empty-text="无数据"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        :data="priceList"
-      >
-        <el-table-column
-          fixed
-          label="定价ID"
-          prop="id"
-          width="100"
-        />
-        <el-table-column
-          fixed
-          label="关联产品名称"
-          prop="related_product_name"
-          min-width="150"
-        />
-        <el-table-column
-          fixed
-          label="关联产品ID"
-          prop="related_product_id"
-          width="110"
-        />
-        <el-table-column
-          label="市场"
-          prop="market_desc"
-        />
-        <el-table-column
-          label="平台"
-          prop="platform"
-          min-width="150"
-        />
-        <el-table-column
-          label="采购负责人"
-          prop="purchase_principal"
-          min-width="100"
-        />
-        <el-table-column
-          label="计划完成时间"
-          prop="estimated_finish_time"
-          width="200"
-        />
-        <el-table-column
-          label="首次报价时间"
-          prop="first_submit_time"
-          width="200"
-        />
-        <el-table-column
-          label="当前已有报价"
-          prop="current_quote_count"
-          min-width="120"
-        />
-        <el-table-column
-          label="状态"
-          fixed="right"
-        >
-          <template #default="scope">
-            <div :class="changeCellColor(scope.row.state)">
-              {{ scope.row.state_desc }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          fixed="right"
-          width="100"
-        >
-          <template #default="scope">
-            <text-btn @handle-click="toQuotation(scope.row.id)">
-              报价列表
-            </text-btn>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <base-pagination
+      <base-table
+        :table-column="$global.priceAllTableColumn"
+        :table-data="priceList"
+        :operation-width="100"
+        :pagination="pagination"
         :length="$store.state.price.priceListLength"
-        :current-page="currentPage"
-        :page-num="pageSize"
-        @change-size="changePageSize"
-        @change-page="changeCurrentPage"
-      />
+        @change-pagination="changePricePagination"
+      >
+        <template #default="slotProps">
+          <text-btn @handle-click="toQuotation(slotProps.row.id)">
+            报价列表
+          </text-btn>
+        </template>
+      </base-table>
     </div>
   </div>
 </template>
@@ -169,8 +99,7 @@ export default {
       priceList: [],
       pricingEnum: [],
       categoryList: [],
-      currentPage: 1,
-      pageSize: 10
+      pagination: JSON.parse(JSON.stringify(this.$global.pagination))
     };
   },
   mounted() {
@@ -203,9 +132,7 @@ export default {
     },
     async getPriceList() {
       this.$store.commit('price/setPriceLoading', true);
-      let params = this.chooseForm;
-      params['current_page'] = this.currentPage;
-      params['page_size'] = this.pageSize;
+      let params = { ...this.chooseForm, ...this.pagination };
       try {
         await this.$store.dispatch('price/getPriceList', { params });
         this.priceList = this.$store.state.price.priceList;
@@ -222,30 +149,18 @@ export default {
     },
     resetForm() {
       this.chooseForm = {};
-      this.pageSize = 10;
+      this.pagination.page_size = 10;
       this.searchPricing();
-    },
-    changeCellColor(val) {
-      if (val >= 30) {
-        return 'result-pass';
-      } else {
-        return 'result-ing';
-      }
     },
     toQuotation(id) {
       this.$router.push(`/price-list/${id}`);
     },
-    changeCurrentPage(val) {
-      this.currentPage = val;
-      this.getPriceList();
-    },
-    changePageSize(val) {
-      this.pageSize = val;
-      this.currentPage = 1;
+    changePricePagination(pagination) {
+      this.pagination = pagination;
       this.getPriceList();
     },
     searchPricing() {
-      this.currentPage = 1;
+      this.pagination.current_page = 1;
       this.getPriceList();
     }
   }

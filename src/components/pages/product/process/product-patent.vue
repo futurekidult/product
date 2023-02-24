@@ -15,68 +15,27 @@
         专利排查申请
       </el-button>
     </div>
-
-    <el-table
-      border
-      stripe
-      empty-text="无数据"
-      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      :data="patent.patent_list"
+    <base-table
+      :table-data="patent.patent_list"
+      :pagination-visible="false"
+      :operation-width="200"
+      :table-column="$global.patentTableColumn"
     >
-      <el-table-column
-        fixed
-        label="专利申请ID"
-        prop="id"
-        width="100"
-      />
-      <el-table-column
-        label="申请人"
-        prop="applicant"
-      />
-      <el-table-column
-        label="提交时间"
-        prop="submit_time"
-        width="200"
-      />
-      <el-table-column
-        label="评审完成时间"
-        prop="review_time"
-        width="200"
-      />
-      <el-table-column
-        label="专利类型"
-        prop="patent_types"
-      />
-      <el-table-column
-        label="评审状态"
-        fixed="right"
-      >
-        <template #default="scope">
-          <div :class="changeColor(scope.row.review_state)">
-            {{ scope.row.review_state_desc }}
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="操作"
-        fixed="right"
-      >
-        <template #default="scope">
-          <text-btn
-            v-if="scope.row.review_state === 10"
-            @handle-click="showPatentReview(scope.row.id)"
-          >
-            专利排查需求评审
-          </text-btn>
-          <text-btn
-            v-else
-            @handle-click="showViewReview(scope.row.id)"
-          >
-            查看
-          </text-btn>
-        </template>
-      </el-table-column>
-    </el-table>
+      <template #default="slotProps">
+        <text-btn
+          v-if="slotProps.row.review_state === 10"
+          @handle-click="showPatentReview(slotProps.row.id)"
+        >
+          专利排查需求评审
+        </text-btn>
+        <text-btn
+          v-else
+          @handle-click="showViewReview(slotProps.row.id)"
+        >
+          查看
+        </text-btn>
+      </template>
+    </base-table>
 
     <div v-if="JSON.stringify(progress) !== '{}'">
       <div class="project-title">

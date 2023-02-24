@@ -68,97 +68,36 @@
       <div class="select-title">
         <span class="line">|</span> 新品列表
       </div>
-      <el-table
-        border
-        stripe
-        empty-text="无数据"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        :data="productList"
-      >
-        <el-table-column
-          fixed
-          label="产品ID"
-          prop="id"
-          width="100"
-        />
-        <el-table-column
-          fixed
-          label="产品名称"
-          prop="name"
-          min-width="150"
-        />
-        <el-table-column
-          fixed
-          label="关联需求ID"
-          width="110"
-        >
-          <template #default="scope">
-            <text-btn @handle-click="toDemand(scope.row.demand_id)">
-              {{ scope.row.demand_id }}
-            </text-btn>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="品类"
-          prop="category"
-        />
-        <el-table-column
-          label="产品定位"
-          prop="positioning_desc"
-          min-width="100"
-        />
-        <el-table-column
-          label="项目管理员"
-          prop="project_administrator"
-        />
-        <el-table-column
-          label="创建时间"
-          prop="create_time"
-          width="200"
-        />
-        <el-table-column
-          label="状态"
-          prop="state_desc"
-          fixed="right"
-        >
-          <template #default="scope">
-            <div :class="changeCellColor(scope.row.state)">
-              {{ scope.row.state_desc }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          fixed="right"
-          width="150"
-        >
-          <template #default="scope">
-            <div style="display: flex">
-              <text-btn @handle-click="toDetail(scope.row.id)">
-                查看详情
-              </text-btn>
-              <div v-if="scope.row.state !== 90">
-                <span class="table-btn">|</span>
-                <text-btn
-                  @handle-click="
-                    showEditForm(scope.row.id, scope.row.category_id)
-                  "
-                >
-                  编辑
-                </text-btn>
-              </div>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <base-pagination
+      <base-table
+        :table-data="productList"
+        :pagination="pagination"
         :length="$store.state.product.productListLength"
-        :current-page="currentPage"
-        :page-num="pageSize"
-        @change-size="changePageSize"
-        @change-page="changeCurrentPage"
-      />
+        :table-column="$global.productTableColumn"
+        @change-pagination="changePagination"
+      >
+        <template #link="linkProps">
+          <text-btn @handle-click="toDemand(linkProps.row.demand_id)">
+            {{ linkProps.row.demand_id }}
+          </text-btn>
+        </template>
+        <template #default="slotProps">
+          <div style="display: flex">
+            <text-btn @handle-click="toDetail(slotProps.row.id)">
+              查看详情
+            </text-btn>
+            <div v-if="slotProps.row.state !== 90">
+              <span class="table-btn">|</span>
+              <text-btn
+                @handle-click="
+                  showEditForm(slotProps.row.id, slotProps.row.category_id)
+                "
+              >
+                编辑
+              </text-btn>
+            </div>
+          </div>
+        </template>
+      </base-table>
 
       <el-dialog
         v-model="editVisible"
@@ -265,9 +204,8 @@ export default {
       productList: [],
       categoryList: [],
       productState: [],
-      currentPage: 1,
-      pageSize: 10,
-      smallCategoryList: []
+      smallCategoryList: [],
+      pagination: JSON.parse(JSON.stringify(this.$global.pagination))
     };
   },
   mounted() {
@@ -329,9 +267,7 @@ export default {
     },
     async getProductList() {
       this.$store.commit('product/setListLoading', true);
-      let params = this.chooseForm;
-      params['current_page'] = this.currentPage;
-      params['page_size'] = this.pageSize;
+      let params = { ...this.chooseForm, ...this.pagination };
       try {
         await this.$store.dispatch('product/getProductList', { params });
         this.productList = this.$store.state.product.productList;
@@ -373,39 +309,25 @@ export default {
         this.$message.error('无权限访问');
       }
     },
-    changeCellColor(val) {
-      if (val === 30 || val === 90) {
-        return 'result-fail';
-      } else if (val === 80) {
-        return 'result-pass';
-      } else {
-        return 'result-ing';
-      }
-    },
     resetForm() {
       this.chooseForm = {};
-      this.pageSize = 10;
+      this.pagination.page_size = 10;
       this.searchProduct();
     },
     closeViewDialog() {
       this.viewImgDialog = false;
       this.editVisible = true;
     },
-    changeCurrentPage(val) {
-      this.currentPage = val;
-      this.getProductList();
-    },
-    changePageSize(val) {
-      this.pageSize = val;
-      this.currentPage = 1;
-      this.getProductList();
-    },
     searchProduct() {
-      this.currentPage = 1;
+      this.pagination.current_page = 1;
       this.getProductList();
     },
     getUploadFile(e) {
       this.imgList = e;
+    },
+    changePagination(pagination) {
+      this.pagination = pagination;
+      this.getProductList();
     }
   }
 };

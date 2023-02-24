@@ -3,125 +3,50 @@
     <div class="select-title">
       <span class="line">|</span> 测试问题
     </div>
-
-    <el-table
-      border
-      stripe
-      empty-text="无数据"
-      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      :data="questionList"
-    >
-      <el-table-column
-        fixed
-        label="问题id"
-        prop="id"
-        width="100"
-      />
-      <el-table-column
-        fixed
-        label="关联样品ID"
-        width="110"
-      >
-        <template #default="scope">
-          <text-btn @handle-click="toSampleDetail(scope.row.sample_id)">
-            {{ scope.row.sample_id }}
-          </text-btn>
-        </template>
-      </el-table-column>
-      <el-table-column
-        fixed
-        label="关联定价ID"
-        prop="pricing_id"
-        width="110"
-      />
-      <el-table-column
-        label="问题名称"
-        prop="name"
-        min-width="150"
-      />
-      <el-table-column
-        label="后果描述"
-        min-width="150"
-      >
-        <template #default="scope">
-          <text-btn @handle-click="showConsequenceForm(scope.row.consequence)">
-            查看内容
-          </text-btn>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="记录时间"
-        prop="record_time"
-        width="200"
-      />
-      <el-table-column
-        label="问题来源"
-        prop="source"
-        min-width="150"
-      />
-      <el-table-column
-        label="采购员"
-        prop="purchase_specialist"
-        min-width="100"
-      />
-      <el-table-column
-        label="解決时间"
-        prop="resolve_time"
-        width="200"
-      />
-      <el-table-column
-        label="状态"
-        min-width="100"
-      >
-        <template #default="scope">
-          <div :class="changeCellColor(scope.row.state)">
-            {{ scope.row.state_desc }}
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="原因"
-        min-width="100"
-      >
-        <template #default="scope">
-          <text-btn
-            v-if="scope.row.state === 30"
-            @handle-click="showReasonForm(scope.row.ignore_reason_id)"
-          >
-            查看内容
-          </text-btn>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="操作"
-        width="300"
-        fixed="right"
-      >
-        <template #default="scope">
-          <el-button
-            :disabled="scope.row.state !== 10"
-            @click="showIgnoreForm(scope.row.id)"
-          >
-            可忽略
-          </el-button>
-          <el-button
-            type="success"
-            :disabled="scope.row.state !== 10"
-            @click="showResolveDialog(scope.row.id)"
-          >
-            已解决
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <base-pagination
+    <base-table
+      :table-data="questionList"
+      :pagination="pagination"
+      :operation-width="250"
       :length="$store.state.product.questionListLength"
-      :current-page="page"
-      :page-num="pageNum"
-      @change-size="changePageSize"
-      @change-page="changeCurrentPage"
-    />
+      :table-column="$global.questionTableColumn"
+      @change-pagination="changePagination"
+    >
+      <template #link="linkProps">
+        <text-btn @handle-click="toSampleDetail(linkProps.row.sample_id)">
+          {{ linkProps.row.sample_id }}
+        </text-btn>
+      </template>
+      <template #description="descriptionProps">
+        <text-btn
+          @handle-click="showConsequenceForm(descriptionProps.row.consequence)"
+        >
+          查看内容
+        </text-btn>
+      </template>
+      <template #operation="operationProps">
+        <text-btn
+          v-if="operationProps.row.state === 30"
+          @handle-click="showReasonForm(operationProps.row.ignore_reason_id)"
+        >
+          查看内容
+        </text-btn>
+      </template>
+      <template #default="slotProps">
+        <el-button
+          :disabled="slotProps.row.state !== 10"
+          @click="showIgnoreForm(slotProps.row.id)"
+        >
+          可忽略
+        </el-button>
+        <el-button
+          type="success"
+          :disabled="slotProps.row.state !== 10"
+          @click="showResolveDialog(slotProps.row.id)"
+        >
+          已解决
+        </el-button>
+      </template>
+    </base-table>
 
     <reason-form
       v-if="ignoreFormVisible"
@@ -133,6 +58,7 @@
       :close-on-click-modal="false"
       @hide-dialog="closeIgnoreForm"
     />
+
     <reason-form
       v-if="reasonFormVisible"
       :id="reasonId"
@@ -142,6 +68,7 @@
       :close-on-click-modal="false"
       @hide-dialog="closeReasonForm"
     />
+
     <reason-form
       v-if="consequenceFormVisible"
       :content="consequence"
@@ -187,8 +114,7 @@ export default {
     ReasonForm
   },
   inject: ['getQuestion'],
-  props: ['questionList', 'currentPage', 'pageSize'],
-  emits: ['change-page', 'change-size'],
+  props: ['questionList', 'questionPagination'],
   data() {
     return {
       ignoreFormVisible: false,
@@ -199,17 +125,12 @@ export default {
       reasonId: 0,
       resolveDialog: false,
       resolveId: 0,
-      page: this.currentPage,
-      pageNum: this.pageSize
+      pagination: this.questionPagination
     };
   },
   watch: {
-    currentPage(val) {
-      this.page = val;
-    },
-    pageSize(val) {
-      this.pageNum = val;
-      this.page = 1;
+    questionPagination(val) {
+      this.pagination = val;
     }
   },
   methods: {
@@ -260,15 +181,6 @@ export default {
       this.submitQuestionResult(this.resolveId, 1);
       this.resolveDialog = false;
     },
-    changeCellColor(val) {
-      if (val === 10) {
-        return 'result-ing';
-      } else if (val === 20) {
-        return 'result-pass';
-      } else {
-        return 'result-ignore';
-      }
-    },
     toSampleDetail(id) {
       if (this.$store.state.menuData.links.indexOf('/sample-list') > -1) {
         this.$router.push(`/sample-list/${id}`);
@@ -277,14 +189,9 @@ export default {
         this.$message.error('无权限访问');
       }
     },
-    changeCurrentPage(val) {
-      this.page = val;
-      this.$emit('change-page', this.page);
-    },
-    changePageSize(val) {
-      this.pageNum = val;
-      this.page = 1;
-      this.$emit('change-size', this.pageNum);
+    changePagination(pagination) {
+      this.pagination = pagination;
+      this.$emit('change-page', this.pagination);
     }
   }
 };

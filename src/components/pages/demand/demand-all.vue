@@ -77,109 +77,44 @@
           创建需求
         </el-button>
       </div>
-      <el-table
-        border
-        stripe
-        empty-text="无数据"
-        :data="demandList"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      >
-        <el-table-column
-          fixed
-          prop="id"
-          label="需求ID"
-          width="100"
-        />
-        <el-table-column
-          fixed
-          prop="name"
-          label="产品名称"
-          min-width="150"
-        />
-        <el-table-column
-          fixed
-          label="关联产品ID"
-          width="110"
-        >
-          <template #default="scope">
-            <text-btn @handle-click="toProductDetail(scope.row.product_id)">
-              {{ scope.row.product_id }}
-            </text-btn>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="creator_desc"
-          label="创建人"
-        />
-        <el-table-column
-          prop="ding_dept_desc"
-          label="所属部门"
-          min-width="150"
-        />
-        <el-table-column
-          prop="create_time"
-          label="创建时间"
-          width="200"
-        />
-        <el-table-column
-          prop="review_finish_time"
-          label="评审完成时间"
-          width="200"
-        />
-        <el-table-column
-          label="状态"
-          width="100"
-        >
-          <template #default="scope">
-            <div :class="changeCellColor(scope.row.state)">
-              {{ scope.row.state_desc }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="不通过原因"
-          width="100"
-        >
-          <template #default="scope">
-            <div
-              v-if="scope.row.state === 40"
-              class="reason"
-              @click="reasonDialog(scope.row.review_failed_reason)"
-            >
-              查看原因
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          fixed="right"
-          width="170"
-        >
-          <template #default="scope">
-            <text-btn @handle-click="toDetail(scope.row.id)">
-              查看详情
-            </text-btn>
-            <span
-              v-if="scope.row.state === 20"
-              class="table-btn"
-            >|</span>
-            <text-btn
-              v-if="scope.row.state === 20"
-              @handle-click="toReview(scope.row.id)"
-            >
-              需求评审
-            </text-btn>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <base-pagination
+      <base-table
+        :table-data="demandList"
+        :pagination="pagination"
+        :operation-width="170"
         :length="$store.state.demand.demandListLength"
-        :current-page="currentPage"
-        :page-num="pageSize"
-        @change-size="changePageSize"
-        @change-page="changeCurrentPage"
-      />
+        :table-column="$global.demandTableColumn"
+        @change-pagination="changePagination"
+      >
+        <template #link="linkProps">
+          <text-btn @handle-click="toProductDetail(linkProps.row.product_id)">
+            {{ linkProps.row.product_id }}
+          </text-btn>
+        </template>
+        <template #operation="operationProps">
+          <div
+            v-if="operationProps.row.state === 40"
+            class="reason"
+            @click="reasonDialog(operationProps.row.review_failed_reason)"
+          >
+            查看原因
+          </div>
+        </template>
+        <template #default="slotProps">
+          <text-btn @handle-click="toDetail(slotProps.row.id)">
+            查看详情
+          </text-btn>
+          <span
+            v-if="slotProps.row.state === 20"
+            class="table-btn"
+          >|</span>
+          <text-btn
+            v-if="slotProps.row.state === 20"
+            @handle-click="toReview(slotProps.row.id)"
+          >
+            需求评审
+          </text-btn>
+        </template>
+      </base-table>
     </div>
 
     <el-dialog
@@ -222,8 +157,7 @@ export default {
         label: 'name',
         disabled: 'disabled'
       },
-      currentPage: 1,
-      pageSize: 10,
+      pagination: JSON.parse(JSON.stringify(this.$global.pagination)),
       show: true
     };
   },
@@ -259,9 +193,7 @@ export default {
     },
     async getDemandList() {
       this.$store.commit('demand/setDemandLoading', true);
-      let params = this.chooseForm;
-      params['current_page'] = this.currentPage;
-      params['page_size'] = this.pageSize;
+      let params = { ...this.chooseForm, ...this.pagination };
       try {
         await this.$store.dispatch('demand/getDemandList', {
           params
@@ -304,31 +236,11 @@ export default {
     },
     resetForm() {
       this.chooseForm = {};
-      this.pageSize = 10;
+      this.pagination.page_size = 10;
       this.searchDemand();
     },
-    changeCellColor(val) {
-      if (val === 20) {
-        return 'result-ing';
-      } else if (val === 30) {
-        return 'result-pass';
-      } else if (val === 40) {
-        return 'result-fail';
-      } else {
-        return '';
-      }
-    },
-    changeCurrentPage(val) {
-      this.currentPage = val;
-      this.getDemandList();
-    },
-    changePageSize(val) {
-      this.pageSize = val;
-      this.currentPage = 1;
-      this.getDemandList();
-    },
     searchDemand() {
-      this.currentPage = 1;
+      this.pagination.current_page = 1;
       this.getDemandList();
     },
     toDraft() {
@@ -336,6 +248,10 @@ export default {
     },
     async toReview(id) {
       getDemandDetail(id, 'review');
+    },
+    changePagination(pagination) {
+      this.pagination = pagination;
+      this.getDemandList();
     }
   }
 };

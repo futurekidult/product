@@ -184,6 +184,10 @@ export default {
     async getPricingList(context, payload) {
       await axios.get('/pricing/product/list', payload).then((res) => {
         if (res.code === 200) {
+          res.data.list.forEach((item) => {
+            item.final_confirmed_price =
+              item.final_confirmed_price && `￥${item.final_confirmed_price}`;
+          });
           context.commit('setPricingList', res.data.list);
           context.commit('setPricingLoading', false);
         }
