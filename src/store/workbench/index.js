@@ -50,7 +50,7 @@ export default {
         }
       });
     },
-    async noticationRead(_, payload) {
+    async notificationRead(_, payload) {
       await axios.post('/workbench/notification/read', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);

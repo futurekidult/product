@@ -212,26 +212,170 @@ export const changeDemandColor = (val) => {
   }
 };
 
-export const changeApprovalColor = (val) => {
-  if (val <= 20) {
+export const setDisabledDate = (time) => {
+  return time.getTime() < Date.now() - 1000 * 60 * 60 * 24;
+};
+
+//设置状态颜色
+export const setStateColor = (state) => {
+  let className = '';
+  switch (state) {
+    case 10:
+    case 20:
+      className = 'result-ing';
+      break;
+    case 2:
+    case 30:
+    case 50:
+    case 0:
+      className = 'result-fail';
+      break;
+    case 1:
+    case 40:
+      className = 'result-pass';
+      break;
+    case 3:
+      className = 'result-ignore';
+      break;
+    default:
+  }
+  return className;
+};
+
+//设置需求评审状态颜色
+export const setDemandReviewStateColor = (state) => {
+  if (state === 20) {
     return 'result-ing';
-  } else if (val === 30) {
+  } else if (state === 30) {
+    return 'result-pass';
+  } else if (state === 40) {
+    return 'result-fail';
+  } else {
+    return '';
+  }
+};
+
+//设置产品所处阶段颜色
+export const setProductStateColor = (state) => {
+  if (state === 30 || state === 90) {
+    return 'result-fail';
+  } else if (state === 80) {
+    return 'result-pass';
+  } else {
+    return 'result-ing';
+  }
+};
+
+//设置评审状态颜色
+export const setReviewStateColor = (state) => {
+  if (state === 10) {
+    return 'result-ing';
+  } else if (state === 30) {
+    return 'result-pass';
+  } else {
+    return 'result-fail';
+  }
+};
+
+//设置项目进度计划表状态颜色
+export const setProductScheduleStateColor = (state) => {
+  if (state === 10) {
+    return 'result-ing';
+  } else if (state === 20) {
+    return 'result-pass';
+  } else {
+    return 'result-fail';
+  }
+};
+
+//设置定价状态颜色
+export const setPricingStateColor = (state) => {
+  if (state <= 20) {
+    return 'result-ing';
+  } else {
+    return 'result-pass';
+  }
+};
+//设置包材状态颜色
+export const setPackageStateColor = (state) => {
+  if (state === 10) {
+    return 'result-ing';
+  } else {
+    return 'result-pass';
+  }
+};
+
+//设置样品状态颜色
+export const setSampleStateColor = (state) => {
+  if (state <= 25) {
+    return 'result-ing';
+  } else if (state === 30) {
+    return 'result-pass';
+  } else {
+    return 'result-fail';
+  }
+};
+
+//设置测试问题状态颜色
+export const setQuestionStateColor = (state) => {
+  if (state === 10) {
+    return 'result-ing';
+  } else if (state === 20) {
+    return 'result-pass';
+  } else {
+    return 'result-ignore';
+  }
+};
+
+//设置下单状态颜色
+export const setOrderStateColor = (state) => {
+  if (state <= 30) {
+    return 'result-ing';
+  } else {
+    return 'result-pass';
+  }
+};
+
+//页码重置
+export const resetPagination = (pagination, page, size) => {
+  pagination.current_page = page;
+  pagination.page_size = size;
+};
+
+//设置审批状态颜色
+export const setApproveStateColor = (state) => {
+  if (state === 10) {
+    return 'result-ing';
+  } else if (state === 20) {
     return 'result-fail';
   } else {
     return 'result-pass';
   }
 };
 
-export const adminStateColor = (key) => {
-  if (key === 1) {
-    return '#379f0d';
-  } else if (key === 2) {
-    return '#ea1d1d';
+//设置模具状态颜色
+export const setMouldStateColor = (state) => {
+  if (state === 40) {
+    return 'result-pass';
   } else {
-    return '#999999';
+    return 'result-ing';
   }
 };
 
-export const setDisabledDate = (time) => {
-  return time.getTime() < Date.now() - 1000 * 60 * 60 * 24;
+//设置调价页面总状态颜色
+export const setQuotationStateColor = (state) => {
+  if (state === 20 || state === 30) {
+    return 'result-pass';
+  } else if (state === 10) {
+    return 'result-ignore';
+  } else {
+    return 'result-fail';
+  }
+};
+
+//表单项重置，并移除校验结果
+export const resetFormFields = (form) => {
+  setTimeout(() => {
+    form.resetFields();
+  }, 100);
 };

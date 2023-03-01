@@ -1,6 +1,5 @@
 <template>
   <section>
-    <base-breadcrumb />
     <router-view />
     <supply-all v-if="isParent" />
   </section>

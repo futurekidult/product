@@ -100,17 +100,19 @@
           prop="file"
           :rules="[{ required: true, message: '请上传附件' }]"
         >
-          <el-upload
-            action
-            :show-file-list="false"
-            :http-request="handleFileSuccess"
-          >
-            <el-button type="primary">
-              点击上传
-            </el-button>
-          </el-upload>
-          <div class="attachment">
-            支持office文档格式,文件不能超过5MB
+          <div style="display: flex">
+            <el-upload
+              action
+              :show-file-list="false"
+              :http-request="handleFileSuccess"
+            >
+              <el-button type="primary">
+                点击上传
+              </el-button>
+            </el-upload>
+            <div class="attachment">
+              支持office文档格式,文件不能超过5MB
+            </div>
           </div>
         </el-form-item>
         <el-form-item>
@@ -160,7 +162,7 @@
 import { previewOrDownloadFile, getFile } from '../../../../utils';
 export default {
   inject: ['getContract'],
-  props: ['data', 'type', 'getReport'],
+  props: ['data', 'type', 'getReport', 'changeColor'],
   data() {
     return {
       progress: this.data,
@@ -241,13 +243,6 @@ export default {
         this.upload('contract', 'Contract');
       } else {
         this.upload('report', 'Report');
-      }
-    },
-    changeColor(val) {
-      if (val === 10) {
-        return 'result-ing';
-      } else {
-        return 'result-pass';
       }
     },
     deleteFile() {

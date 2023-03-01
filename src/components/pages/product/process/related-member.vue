@@ -11,59 +11,31 @@
         新增成员
       </el-button>
     </div>
-    <el-table
-      border
-      stripe
-      empty-text="无数据"
-      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      :data="projectMember"
-    >
-      <el-table-column
-        fixed
-        label="成员ID"
-        width="100"
-        prop="id"
-      />
-      <el-table-column
-        label="成员名称"
-        prop="name"
-      />
-      <el-table-column
-        label="成员角色"
-        prop="role"
-      />
-      <el-table-column
-        label="创建时间"
-        prop="create_time"
-        width="200"
-      />
-      <el-table-column
-        fixed="right"
-        label="操作"
-        width="150"
-      >
-        <template #default="scope">
-          <text-btn
-            @handle-click="
-              showEditForm(scope.row.id, scope.row.user_id, scope.row.role_id)
-            "
-          >
-            修改
-          </text-btn>
-          <span class="table-btn">|</span>
-          <text-btn @handle-click="showDeleteDialog(scope.row.id)">
-            删除
-          </text-btn>
-        </template>
-      </el-table-column>
-    </el-table>
-    <base-pagination
+    <base-table
+      :table-data="projectMember"
+      :pagination="pagination"
       :length="$store.state.product.memberListLength"
-      :current-page="page"
-      :page-num="pageNum"
-      @change-size="changePageSize"
-      @change-page="changeCurrentPage"
-    />
+      :table-column="tableColumn"
+      @change-pagination="changePagination"
+    >
+      <template #default="slotProps">
+        <text-btn
+          @handle-click="
+            showEditForm(
+              slotProps.row.id,
+              slotProps.row.user_id,
+              slotProps.row.role_id
+            )
+          "
+        >
+          修改
+        </text-btn>
+        <span class="table-btn">|</span>
+        <text-btn @handle-click="showDeleteDialog(slotProps.row.id)">
+          删除
+        </text-btn>
+      </template>
+    </base-table>
 
     <member-form
       v-if="addDialog"
@@ -104,7 +76,7 @@
         <el-button
           type="primary"
           class="member-btn"
-          @click="submitDeteleResult"
+          @click="submitDeleteResult"
         >
           提交
         </el-button>
@@ -115,16 +87,14 @@
 
 <script>
 import MemberForm from '../common/member-form.vue';
-import BasePagination from '../../../common/base-pagination.vue';
 
 export default {
   components: {
-    MemberForm,
-    BasePagination
+    MemberForm
   },
   inject: ['getMember'],
-  props: ['projectMember', 'pageSize', 'currentPage'],
-  emits: ['change-page', 'change-size'],
+  props: ['projectMember', 'memberPagination'],
+  emits: ['change-page'],
   data() {
     return {
       addDialog: false,
@@ -133,17 +103,21 @@ export default {
       userMsg: {},
       editId: 0,
       deleteId: 0,
-      page: this.currentPage,
-      pageNum: this.pageSize
+      pagination: this.memberPagination,
+      tableColumn: [
+        { prop: 'id', label: '成员ID', width: 100, fixed: 'left' },
+        {
+          prop: 'name',
+          label: '成员名称'
+        },
+        { prop: 'role', label: '成员角色' },
+        { prop: 'create_time', label: '创建时间', width: 200 }
+      ]
     };
   },
   watch: {
-    currentPage(val) {
-      this.page = val;
-    },
-    pageSize(val) {
-      this.pageNum = val;
-      this.page = 1;
+    memberPagination(val) {
+      this.pagination = val;
     }
   },
   methods: {
@@ -183,17 +157,12 @@ export default {
     closeDeleteDialog() {
       this.deleteDialog = false;
     },
-    submitDeteleResult() {
+    submitDeleteResult() {
       this.deleteProjectMember();
     },
-    changeCurrentPage(val) {
-      this.page = val;
-      this.$emit('change-page', this.page);
-    },
-    changePageSize(val) {
-      this.pageNum = val;
-      this.page = 1;
-      this.$emit('change-size', this.pageNum);
+    changePagination(pagination) {
+      this.pagination = pagination;
+      this.$emit('change-page', this.pagination);
     }
   }
 };

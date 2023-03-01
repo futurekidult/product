@@ -12,66 +12,37 @@
         {{ btnContent }}
       </el-button>
     </div>
-    <el-table
-      border
-      stripe
-      empty-text="无数据"
-      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      :data="applyList"
+    <base-table
+      :table-column="sampleTestTableColumn"
+      :table-data="applyList"
+      :operation-width="200"
+      :pagination-visible="false"
     >
-      <el-table-column
-        :label="label"
-        width="100"
-        prop="id"
-      />
-      <el-table-column
-        label="创建人"
-        prop="creator"
-      />
-      <el-table-column
-        label="提交时间"
-        prop="submit_time"
-        width="200"
-      />
-      <el-table-column
-        label="评审完成时间"
-        prop="review_finish_time"
-        width="200"
-      />
-      <el-table-column label="状态">
-        <template #default="scope">
-          <div :class="changeCellColor(scope.row.review_state)">
-            {{ scope.row.review_state_desc }}
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作">
-        <template #default="scope">
-          <text-btn
-            v-if="scope.row.review_state === 10"
-            @handle-click="showReviewForm(scope.row.id)"
-          >
-            {{ reviewBtnContent }}
-          </text-btn>
-          <text-btn
-            v-if="scope.row.review_state === 30 && type === 'apply'"
-            @handle-click="showEditForm(scope.row.id)"
-          >
-            编辑
-          </text-btn>
-          <span
-            v-if="scope.row.review_state === 30 && type === 'apply'"
-            class="table-btn"
-          >|</span>
-          <text-btn
-            v-if="scope.row.review_state !== 10"
-            @handle-click="showViewForm(scope.row.id)"
-          >
-            查看
-          </text-btn>
-        </template>
-      </el-table-column>
-    </el-table>
+      <template #default="slotProps">
+        <text-btn
+          v-if="slotProps.row.review_state === 10"
+          @handle-click="showReviewForm(slotProps.row.id)"
+        >
+          {{ reviewBtnContent }}
+        </text-btn>
+        <text-btn
+          v-if="slotProps.row.review_state === 30 && type === 'apply'"
+          @handle-click="showEditForm(slotProps.row.id)"
+        >
+          编辑
+        </text-btn>
+        <span
+          v-if="slotProps.row.review_state === 30 && type === 'apply'"
+          class="table-btn"
+        >|</span>
+        <text-btn
+          v-if="slotProps.row.review_state !== 10"
+          @handle-click="showViewForm(slotProps.row.id)"
+        >
+          查看
+        </text-btn>
+      </template>
+    </base-table>
 
     <test-form
       v-if="testApplyVisible"
@@ -189,7 +160,10 @@
 
 <script>
 import TestForm from '../common/test-form.vue';
-import { getOrganizationList } from '../../../../utils/index';
+import {
+  getOrganizationList,
+  setReviewStateColor
+} from '../../../../utils/index';
 import TestSupply from '../../../common/supply-dialog.vue';
 
 export default {
@@ -225,7 +199,27 @@ export default {
       testSupplyReviewVisible: false,
       testSupplyViewVisible: false,
       supplyId: 0,
-      supplyItemValue: ''
+      supplyItemValue: '',
+      sampleTestTableColumn: [
+        { prop: 'id', label: this.label, width: 100 },
+        {
+          prop: 'creator',
+          label: '创建人',
+          width: 400
+        },
+        { prop: 'submit_time', label: '提交时间', width: 200 },
+        { prop: 'review_finish_time', label: '评审完成时间', width: 200 },
+        {
+          prop: 'review_state',
+          label: '状态',
+          formatter: (row) => {
+            return setReviewStateColor(row.review_state);
+          },
+          getSpecialProp: (row) => {
+            return row.review_state_desc;
+          }
+        }
+      ]
     };
   },
   mounted() {
@@ -331,15 +325,6 @@ export default {
     },
     submitQualitySpecialist() {
       this.updateQualitySpecialist(this.editForm);
-    },
-    changeCellColor(val) {
-      if (val === 30) {
-        return 'result-pass';
-      } else if (val === 10) {
-        return 'result-ing';
-      } else {
-        return 'result-fail';
-      }
     }
   }
 };

@@ -5,82 +5,64 @@
     </div>
 
     <div class="profit-plan_title">
-      <el-table
-        border
-        stripe
-        empty-text="无数据"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        class="profit-plan_table"
-        :data="getProfit.list"
+      <base-table
+        :index-visible="true"
+        :table-data="getProfit.list"
+        :pagination-visible="false"
+        :operation-width="200"
+        :table-column="tableColumn"
       >
-        <el-table-column
-          label="序号"
-          type="index"
-          width="60px"
-        />
-        <el-table-column
-          label="市场"
-          prop="market_desc"
-        />
-        <el-table-column
-          label="平台"
-          prop="platform"
-        />
-        <el-table-column
-          label="是否开模"
-          prop="is_mould_making"
-        />
-        <el-table-column label="调价记录">
-          <template #default="scope">
-            <div v-if="!isShow">
-              <text-btn @handle-click="showPricingList(scope.row.market)">
-                记录
-              </text-btn>
-              <span class="table-btn">|</span>
-              <text-btn @handle-click="showAdjustPrice(scope.row.market)">
-                调价
-              </text-btn>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <template #default="scope">
+        <template #operation="operationProps">
+          <div v-if="!isShow">
             <text-btn
-              v-if="isShow"
-              @handle-click="showEditProfit(scope.row.market)"
+              @handle-click="showPricingList(operationProps.row.market)"
             >
-              编辑
+              记录
             </text-btn>
-            <span
-              v-if="isShow"
-              class="table-btn"
-            >|</span>
+            <span class="table-btn">|</span>
             <text-btn
-              v-if="!isShow"
-              @handle-click="ShowConfirmParamsDialog(scope.row.market)"
+              @handle-click="showAdjustPrice(operationProps.row.market)"
             >
-              参数修改确认
+              调价
             </text-btn>
-            <span
-              v-if="!isShow"
-              class="table-btn"
-            >|</span>
-            <text-btn
-              v-if="isShow"
-              @handle-click="showDeleteDialog(scope.row.market)"
-            >
-              删除
-            </text-btn>
-            <span
-              v-if="isShow"
-              class="table-btn"
-            >|</span>
-            <text-btn @handle-click="showViewProfit(scope.row.market)">
-              查看
-            </text-btn>
-          </template>
-        </el-table-column>
-      </el-table>
+          </div>
+        </template>
+        <template #default="slotProps">
+          <text-btn
+            v-if="isShow"
+            @handle-click="showEditProfit(slotProps.row.market)"
+          >
+            编辑
+          </text-btn>
+          <span
+            v-if="isShow"
+            class="table-btn"
+          >|</span>
+          <text-btn
+            v-if="!isShow"
+            @handle-click="ShowConfirmParamsDialog(slotProps.row.market)"
+          >
+            参数修改确认
+          </text-btn>
+          <span
+            v-if="!isShow"
+            class="table-btn"
+          >|</span>
+          <text-btn
+            v-if="isShow"
+            @handle-click="showDeleteDialog(slotProps.row.market)"
+          >
+            删除
+          </text-btn>
+          <span
+            v-if="isShow"
+            class="table-btn"
+          >|</span>
+          <text-btn @handle-click="showViewProfit(slotProps.row.market)">
+            查看
+          </text-btn>
+        </template>
+      </base-table>
 
       <el-button
         :disabled="!isShow"
@@ -206,7 +188,7 @@ export default {
     PricingAdjust,
     PricingLog
   },
-  inject: ['getProfitCalcaulation'],
+  inject: ['getProfitCalculation'],
   props: ['getProfit'],
   data() {
     return {
@@ -222,7 +204,25 @@ export default {
       noAdjustmentVisible: false,
       confirmDialog: false,
       deleteDialog: false,
-      deleteId: 0
+      deleteId: 0,
+      tableColumn: [
+        {
+          label: '市场',
+          prop: 'market_desc'
+        },
+        {
+          label: '平台',
+          prop: 'platform'
+        },
+        {
+          label: '是否开模',
+          prop: 'is_mould_making'
+        },
+        {
+          label: '调价记录',
+          is_operation: true
+        }
+      ]
     };
   },
   computed: {
@@ -316,7 +316,7 @@ export default {
       try {
         await this.$store.dispatch('product/project/deleteProfitItem', val);
         this.deleteDialog = false;
-        this.getProfitCalcaulation();
+        this.getProfitCalculation();
       } catch (err) {
         return;
       }

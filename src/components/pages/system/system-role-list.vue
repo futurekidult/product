@@ -1,6 +1,5 @@
 <template>
   <div>
-    <base-breadcrumb />
     <div class="border">
       <div class="system-item">
         <div class="nav-title">
@@ -13,42 +12,33 @@
           新增角色
         </el-button>
       </div>
-
-      <div v-loading="$store.state.system.systemRoleLoading">
-        <el-table
-          stripe
-          border
-          :data="roleList"
-          empty-text="无数据"
-          :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        >
-          <el-table-column
-            label="角色名称"
-            prop="name"
-          />
-          <el-table-column label="操作">
-            <template #default="scope">
-              <el-button
-                type="danger"
-                class="close-btn"
-                @click="showDeleteRole(scope.row.id)"
-              >
-                删除
-              </el-button>
-              <el-button @click="showViewDialog(scope.row.id, true)">
-                查看成员
-              </el-button>
-              <el-button
-                type="primary"
-                @click="showEditDialog(scope.row.id)"
-              >
-                编辑角色
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-
+      <base-table
+        v-loading="$store.state.system.systemRoleLoading"
+        :operation-width="340"
+        :table-data="roleList"
+        :pagination-visible="false"
+        :table-column="[{ label: '角色名称', prop: 'name' }]"
+      >
+        <template #default="slotProps">
+          <el-button
+            type="danger"
+            class="close-btn"
+            @click="showDeleteRole(slotProps.row.id)"
+          >
+            删除
+          </el-button>
+          <el-button @click="showViewDialog(slotProps.row.id, true)">
+            查看成员
+          </el-button>
+          <el-button
+            type="primary"
+            @click="showEditDialog(slotProps.row.id)"
+          >
+            编辑角色
+          </el-button>
+        </template>
+      </base-table>
+      <!-- 新增角色弹窗 -->
       <role-form
         v-if="createVisible"
         title="新增角色"
@@ -58,7 +48,7 @@
         :close-on-click-modal="false"
         @hide-dialog="closeCreateDialog"
       />
-
+      <!-- 编辑角色弹窗 -->
       <role-form
         v-if="editVisible"
         :id="roleId"
@@ -69,7 +59,7 @@
         :close-on-click-modal="false"
         @hide-dialog="closeEditDialog"
       />
-
+      <!-- 删除角色弹窗 -->
       <el-dialog
         v-model="confirmDialog"
         title="提示"
@@ -95,6 +85,7 @@
         </div>
       </el-dialog>
     </div>
+    <!-- 查看成员弹窗 -->
     <el-dialog
       v-model="viewMemberDialogVisible"
       title="查看成员"
@@ -102,49 +93,27 @@
       :close-on-click-modal="false"
       @close="closeViewDialog"
     >
-      <el-table
-        :data="memberList"
-        border
-        stripe
-        empty-text="无数据"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      >
-        <el-table-column
-          prop="name"
-          label="姓名"
-          width="100"
-        />
-        <el-table-column
-          prop="department"
-          label="所属部门"
-        />
-        <el-table-column
-          label="状态"
-          width="100"
-          fixed="right"
-        >
-          <template #default="scope">
-            <div :style="{ color: adminStateColor(scope.row.state) }">
-              {{ scope.row.state_desc }}
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <base-pagination
+      <base-table
+        :operation-visible="false"
+        :table-data="memberList"
+        :pagination="pagination"
         :length="$store.state.system.roleRelatedMemberListLength"
-        :current-page="currentPage"
-        :page-num="pageSize"
-        @change-size="changePageSize"
-        @change-page="changeCurrentPage"
-      />
+        :table-column="tableColumn"
+        @change-pagination="changePagination"
+      >
+        <template #default="slotProps">
+          <text-btn @handle-click="getDetail(slotProps.row.id)">
+            编辑
+          </text-btn>
+        </template>
+      </base-table>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import RoleForm from './common/role-form.vue';
-import { adminStateColor } from '../../../utils/index.js';
+import { setStateColor, resetPagination } from '../../../utils/index.js';
 
 export default {
   components: {
@@ -159,16 +128,37 @@ export default {
       roleId: 0,
       deleteId: 0,
       roleList: [],
-      currentPage: 1,
-      pageSize: 10,
-      memberList: []
+      memberList: [],
+      pagination: JSON.parse(JSON.stringify(this.$global.pagination)),
+      tableColumn: [
+        {
+          label: '姓名',
+          prop: 'name',
+          width: 100
+        },
+        {
+          label: '所属部门',
+          prop: 'department'
+        },
+        {
+          label: '状态',
+          prop: 'state',
+          fixed: 'right',
+          width: 100,
+          formatter: (row) => {
+            return setStateColor(row.state);
+          },
+          getSpecialProp: (row) => {
+            return row.state_desc;
+          }
+        }
+      ]
     };
   },
   mounted() {
     this.getRoleList();
   },
   methods: {
-    adminStateColor,
     async getRoleList() {
       this.$store.commit('system/setSystemRoleLoading', true);
       try {
@@ -213,9 +203,8 @@ export default {
     async getRoleRelatedMemberList(id, showDialog) {
       try {
         let params = {
-          role_id: id,
-          current_page: this.currentPage,
-          page_size: this.pageSize
+          ...this.pagination,
+          role_id: id
         };
         await this.$store.dispatch('system/getRoleRelatedMemberList', {
           params
@@ -230,20 +219,14 @@ export default {
     },
     showViewDialog(id, showDialog) {
       this.roleId = id;
-      this.currentPage = 1;
-      this.pageSize = 10;
+      resetPagination(this.pagination, 1, 10);
       this.getRoleRelatedMemberList(id, showDialog);
     },
     closeViewDialog() {
       this.viewMemberDialogVisible = false;
     },
-    changePageSize(val) {
-      this.pageSize = val;
-      this.currentPage = 1;
-      this.getRoleRelatedMemberList(this.roleId, false);
-    },
-    changeCurrentPage(val) {
-      this.currentPage = val;
+    changePagination(pagination) {
+      this.pagination = pagination;
       this.getRoleRelatedMemberList(this.roleId, false);
     }
   }

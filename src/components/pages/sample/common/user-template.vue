@@ -1,139 +1,80 @@
 <template>
   <div>
-    <el-table
-      border
-      stripe
-      empty-text="无数据"
-      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      :data="userList"
+    <base-table
+      :table-column="$global.userTemplateTableColumn"
+      :table-data="userList"
+      :operation-width="350"
+      :pagination="pagination"
+      :length="$store.state.sample.user.total"
+      @change-pagination="changeUserTemplatePagination"
     >
-      <el-table-column
-        fixed
-        label="测试用户ID"
-        prop="id"
-        min-width="150"
-      />
-      <el-table-column
-        fixed
-        label="创建人"
-        prop="creator"
-        min-width="100"
-      />
-      <el-table-column
-        label="创建时间"
-        prop="create_time"
-        width="200"
-      />
-      <el-table-column
-        label="寄样完成时间"
-        prop="delivery_time"
-        width="200"
-      />
-      <el-table-column
-        label="结果上传时间"
-        prop="upload_time"
-        width="200"
-      />
-      <el-table-column
-        label="用户姓名"
-        prop="username"
-        min-width="120"
-      />
-      <el-table-column
-        label="是否已寄样"
-        prop="is_delivered_desc"
-        min-width="120"
-      />
-      <el-table-column
-        label="测试状态"
-        min-width="120"
-      >
-        <template #default="scope">
-          <div :class="changeCellColor(scope.row.state)">
-            {{ scope.row.state_desc }}
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="测试结果文件"
-        prop="test_result_file"
-        width="150"
-      >
-        <template #default="scope">
-          <div style="display: flex">
-            <div
-              v-if="
-                JSON.stringify(scope.row.test_result_file) !== '{}' &&
-                  scope.row.test_result_file.type === 12860
+      <template #operation="operationProps">
+        <div style="display: flex">
+          <div
+            v-if="
+              JSON.stringify(operationProps.row.test_result_file) !== '{}' &&
+                operationProps.row.test_result_file.type === 12860
+            "
+          >
+            <text-btn
+              @handle-click="
+                previewOrDownload(
+                  operationProps.row.test_result_file.id,
+                  operationProps.row.test_result_file.name,
+                  'preview'
+                )
               "
             >
-              <text-btn
-                @handle-click="
-                  previewOrDownload(
-                    scope.row.test_result_file.id,
-                    scope.row.test_result_file.name,
-                    'preview'
-                  )
-                "
-              >
-                预览
-              </text-btn>
-            </div>
-            <div v-if="scope.row.button_state.is_upload === 1">
-              <span
-                v-if="scope.row.test_result_file.type === 12860"
-                class="table-btn"
-              >|</span>
-              <text-btn
-                @handle-click="
-                  previewOrDownload(
-                    scope.row.test_result_file.id,
-                    scope.row.test_result_file.name,
-                    'download'
-                  )
-                "
-              >
-                下载
-              </text-btn>
-            </div>
+              预览
+            </text-btn>
           </div>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="操作"
-        width="250"
-        fixed="right"
-      >
-        <template #default="scope">
-          <text-btn
-            :disabled="scope.row.is_delivered_desc === '是'"
-            @handle-click="
-              deliverSample(scope.row.user_test_apply_id, scope.row.id)
-            "
-          >
-            样品已寄送
-          </text-btn>
-          <span class="table-btn">|</span>
-          <text-btn
-            :disabled="JSON.stringify(scope.row.test_result_file) !== '{}'"
-            @handle-click="
-              showResultForm(scope.row.user_test_apply_id, scope.row.id)
-            "
-          >
-            {{
-              JSON.stringify(scope.row.test_result_file) === '{}'
-                ? '上传结果'
-                : '已上传'
-            }}
-          </text-btn>
-          <span class="table-btn">|</span>
-          <text-btn @handle-click="showViewUserForm(scope.row.id)">
-            查看信息
-          </text-btn>
-        </template>
-      </el-table-column>
-    </el-table>
-
+          <div v-if="operationProps.row.button_state.is_upload === 1">
+            <span
+              v-if="operationProps.row.test_result_file.type === 12860"
+              class="table-btn"
+            >|</span>
+            <text-btn
+              @handle-click="
+                previewOrDownload(
+                  operationProps.row.test_result_file.id,
+                  operationProps.row.test_result_file.name,
+                  'download'
+                )
+              "
+            >
+              下载
+            </text-btn>
+          </div>
+        </div>
+      </template>
+      <template #default="slotProps">
+        <text-btn
+          :disabled="slotProps.row.is_delivered_desc === '是'"
+          @handle-click="
+            deliverSample(slotProps.row.user_test_apply_id, slotProps.row.id)
+          "
+        >
+          样品已寄送
+        </text-btn>
+        <span class="table-btn">|</span>
+        <text-btn
+          :disabled="JSON.stringify(slotProps.row.test_result_file) !== '{}'"
+          @handle-click="
+            showResultForm(slotProps.row.user_test_apply_id, slotProps.row.id)
+          "
+        >
+          {{
+            JSON.stringify(slotProps.row.test_result_file) === '{}'
+              ? '上传结果'
+              : '已上传'
+          }}
+        </text-btn>
+        <span class="table-btn">|</span>
+        <text-btn @handle-click="showViewUserForm(slotProps.row.id)">
+          查看信息
+        </text-btn>
+      </template>
+    </base-table>
     <div class="user-item">
       <el-button
         style="margin: 15px 0"
@@ -141,14 +82,6 @@
       >
         + 新增测试用户
       </el-button>
-
-      <base-pagination
-        :length="$store.state.sample.user.total"
-        :current-page="currentPage"
-        :page-num="pageSize"
-        @change-size="changePageSize"
-        @change-page="changeCurrentPage"
-      />
     </div>
     <user-form
       v-if="userVisible"
@@ -169,7 +102,7 @@
 
     <view-user
       v-if="viewUserVisible"
-      :id="viewUserid"
+      :id="viewUserId"
       :dialog-visible="viewUserVisible"
       :close-on-click-modal="false"
       @hide-dialog="closeViewUserForm"
@@ -200,11 +133,10 @@ export default {
       resultFormVisible: false,
       testUserId: 0,
       viewUserVisible: false,
-      viewUserid: 0,
+      viewUserId: 0,
       userId: 0,
       userList: [],
-      currentPage: 1,
-      pageSize: 10
+      pagination: JSON.parse(JSON.stringify(this.$global.pagination))
     };
   },
   mounted() {
@@ -215,9 +147,8 @@ export default {
       try {
         await this.$store.dispatch('sample/user/getUserList', {
           params: {
-            sample_id: +this.$route.params.id,
-            current_page: this.currentPage,
-            page_size: this.pageSize
+            ...this.pagination,
+            sample_id: +this.$route.params.id
           }
         });
         this.userList = this.$store.state.sample.user.userList;
@@ -274,25 +205,13 @@ export default {
     },
     showViewUserForm(id) {
       this.viewUserVisible = true;
-      this.viewUserid = id;
+      this.viewUserId = id;
     },
     closeViewUserForm() {
       this.viewUserVisible = false;
     },
-    changeCellColor(val) {
-      if (val === 30) {
-        return 'result-pass';
-      } else {
-        return 'result-ing';
-      }
-    },
-    changeCurrentPage(val) {
-      this.currentPage = val;
-      this.getUserList();
-    },
-    changePageSize(val) {
-      this.pageSize = val;
-      this.currentPage = 1;
+    changeUserTemplatePagination(pagination) {
+      this.pagination = pagination;
       this.getUserList();
     }
   }

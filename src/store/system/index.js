@@ -269,13 +269,6 @@ export default {
         }
       });
     },
-    async deleteRate(_, payload) {
-      await axios.post('/system/exchange/rate/delete', payload).then((res) => {
-        if (res.code === 200) {
-          ElMessage.success(res.message);
-        }
-      });
-    },
     async blockAdmin(_, payload) {
       await axios.post('/system/admin/block', payload).then((res) => {
         if (res.code === 200) {

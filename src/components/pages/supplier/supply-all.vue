@@ -15,6 +15,7 @@
               v-model="chooseForm.name"
               clearable
               placeholder="请输入供应商名称"
+              @keyup.enter.native="searchSupplier"
               @clear="searchSupplier"
             />
           </el-form-item>
@@ -25,7 +26,7 @@
               clearable
               filterable
               :props="defaultProps"
-              @clear="searchSupplier"
+              @change="searchSupplier"
             />
           </el-form-item>
           <el-form-item label="状态">
@@ -33,7 +34,7 @@
               v-model="chooseForm.state"
               clearable
               placeholder="请选择"
-              @clear="searchSupplier"
+              @change="searchSupplier"
             >
               <el-option
                 v-for="item in supplierState"
@@ -45,12 +46,6 @@
           </el-form-item>
         </el-form>
         <div>
-          <el-button
-            type="primary"
-            @click="searchSupplier"
-          >
-            查询
-          </el-button>
           <el-button
             class="close-btn"
             @click="resetForm"
@@ -81,109 +76,49 @@
         </el-button>
       </div>
 
-      <el-table
-        border
-        stripe
-        empty-text="无数据"
-        :data="supplierList"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      >
-        <el-table-column
-          label="供应商ID"
-          prop="id"
-          width="100"
-          fixed="left"
-        />
-        <el-table-column
-          label="供应商名称"
-          prop="name"
-          fixed="left"
-          min-width="150"
-        />
-        <el-table-column
-          label="供应商类型"
-          prop="type"
-          min-width="100"
-        />
-        <el-table-column
-          label="合作等级"
-          prop="cooperation_level"
-          min-width="150"
-        />
-        <el-table-column
-          label="采购员"
-          prop="purchase_specialist"
-        />
-        <el-table-column
-          label="创建时间"
-          prop="create_time"
-          width="200"
-        />
-        <el-table-column
-          label="审批完成时间"
-          prop="approval_time"
-          width="200"
-        />
-        <el-table-column
-          label="状态"
-          width="100"
-          fixed="right"
-        >
-          <template #default="scope">
-            <div :class="changeColor(scope.row.state)">
-              {{ scope.row.state_desc }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          width="250"
-          fixed="right"
-        >
-          <template #default="scope">
-            <div style="display: flex">
-              <text-btn @handle-click="toDetail(scope.row.id, 'view')">
-                查看
-              </text-btn>
-              <div v-if="scope.row.state === 10">
-                <span class="table-btn">|</span>
-                <text-btn @handle-click="showDeleteDialog(scope.row.id)">
-                  删除
-                </text-btn>
-                <span class="table-btn">|</span>
-                <text-btn @handle-click="toDetail(scope.row.id, 'approval')">
-                  供应商审批
-                </text-btn>
-              </div>
-              <div
-                v-else
-                style="display: flex"
-              >
-                <div v-if="scope.row.state === 30">
-                  <span class="table-btn">|</span>
-                  <text-btn @handle-click="toUpdate(scope.row.id)">
-                    编辑
-                  </text-btn>
-                </div>
-                <div>
-                  <span class="table-btn">|</span>
-                  <text-btn @handle-click="showBlackDialog(scope.row.id)">
-                    加入黑名单
-                  </text-btn>
-                </div>
-              </div>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <base-pagination
+      <base-table
+        :table-column="$global.supplierTableColumn"
+        :table-data="supplierList"
+        :pagination="pagination"
+        :operation-width="200"
         :length="$store.state.supplier.supplierListLength"
-        :current-page="currentPage"
-        :page-num="pageSize"
-        @change-size="changePageSize"
-        @change-page="changeCurrentPage"
-      />
+        @change-pagination="changeSupplierPagination"
+      >
+        <template #default="slotProps">
+          <div style="display: flex">
+            <text-btn @handle-click="toDetail(slotProps.row.id, 'view')">
+              查看
+            </text-btn>
+            <div v-if="slotProps.row.state === 10">
+              <span class="table-btn">|</span>
+              <text-btn @handle-click="showDeleteDialog(slotProps.row.id)">
+                删除
+              </text-btn>
+              <span class="table-btn">|</span>
+              <text-btn @handle-click="toDetail(slotProps.row.id, 'approval')">
+                供应商审批
+              </text-btn>
+            </div>
+            <div
+              v-else
+              style="display: flex"
+            >
+              <div v-if="slotProps.row.state === 30">
+                <span class="table-btn">|</span>
+                <text-btn @handle-click="toUpdate(slotProps.row.id)">
+                  编辑
+                </text-btn>
+              </div>
+              <div>
+                <span class="table-btn">|</span>
+                <text-btn @handle-click="showBlackDialog(slotProps.row.id)">
+                  加入黑名单
+                </text-btn>
+              </div>
+            </div>
+          </div>
+        </template>
+      </base-table>
     </div>
 
     <confirm-dialog
@@ -241,10 +176,9 @@ export default {
         label: 'name',
         disabled: 'disabled'
       },
+      pagination: JSON.parse(JSON.stringify(this.$global.pagination)),
       deleteDialogVisible: false,
-      deleteId: 0,
-      currentPage: 1,
-      pageSize: 10
+      deleteId: 0
     };
   },
   mounted() {
@@ -271,9 +205,7 @@ export default {
     },
     async getSupplierList() {
       this.$store.commit('supplier/setSupplierLoading', true);
-      let params = this.chooseForm;
-      params['current_page'] = this.currentPage;
-      params['page_size'] = this.pageSize;
+      let params = { ...this.chooseForm, ...this.pagination };
       try {
         await this.$store.dispatch('supplier/getSupplierList', { params });
         this.supplierList = this.$store.state.supplier.supplierList;
@@ -290,24 +222,15 @@ export default {
       this.$router.push('/supplier-create');
     },
     toUpdate(id) {
-      this.$router.push(`/supplist-list/supplier-update/${id}`);
+      this.$router.push(`/supplier-list/supplier-update/${id}`);
     },
     toDetail(id, type) {
       this.$router.push(`/supplier-list/${id}`);
       this.$store.commit('supplier/setActionType', type);
     },
-    changeColor(val) {
-      if (val === 10) {
-        return 'result-ing';
-      } else if (val === 20) {
-        return 'result-fail';
-      } else {
-        return 'result-pass';
-      }
-    },
     resetForm() {
       this.chooseForm = {};
-      this.pageSize = 10;
+      this.pagination.page_size = 10;
       this.searchSupplier();
     },
     showDeleteDialog(id) {
@@ -338,17 +261,12 @@ export default {
     closeBlackDialog() {
       this.blackDialogVisible = false;
     },
-    changeCurrentPage(val) {
-      this.currentPage = val;
-      this.getSupplierList();
-    },
-    changePageSize(val) {
-      this.pageSize = val;
-      this.currentPage = 1;
+    changeSupplierPagination(pagination) {
+      this.pagination = pagination;
       this.getSupplierList();
     },
     searchSupplier() {
-      this.currentPage = 1;
+      this.pagination.current_page = 1;
       this.getSupplierList();
     }
   }

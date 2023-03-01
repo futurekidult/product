@@ -6,6 +6,7 @@ import RiskSurvey from './risk/index.js';
 import UserSurvey from './user-survey/index.js';
 import axios from '../../../utils/axios';
 import { ElMessage } from 'element-plus';
+import { formatterTime } from '../../../utils/index.js';
 
 export default {
   namespaced: true,
@@ -37,6 +38,9 @@ export default {
         .get(`/survey/suggestion/list/${payload.type}`, payload)
         .then((res) => {
           if (res.code === 200) {
+            res.data.list.forEach((item) => {
+              item.create_time = formatterTime(item.create_time);
+            });
             context.commit('setSuggestion', res.data);
           }
         });
