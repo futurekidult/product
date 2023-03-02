@@ -736,6 +736,19 @@ export default {
           this.smallCategoryList = item.children;
         }
       });
+    },
+    demandForm: {
+      handler() {
+        if (this.type === 'review') {
+          if (this.$store.state.demand.formWatchCount !== 1) {
+            this.$store.commit('demand/setUpdateState', true);
+          } else {
+            this.$store.commit('demand/setUpdateState', false);
+          }
+          this.$store.commit('demand/setFormWatchCount');
+        }
+      },
+      deep: true
     }
   },
   mounted() {
@@ -746,6 +759,7 @@ export default {
     } else {
       this.getCategoryList();
     }
+    this.$store.commit('demand/setFormWatchCount', 1);
   },
   methods: {
     async getDetail() {
@@ -918,6 +932,7 @@ export default {
     },
     async updateReviewDemand(body) {
       await this.$store.dispatch('demand/updateDemandForm', body);
+      this.$store.commit('demand/setUpdateState', false);
     },
     updateDemandForm() {
       this.getProductImages();
