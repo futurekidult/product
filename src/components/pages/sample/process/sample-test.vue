@@ -34,7 +34,7 @@
         <span class="line">|</span> 测试详情
       </div>
       <el-tabs
-        v-model="activeName"
+        v-model="$store.state.activeSubTab"
         type="card"
         @tab-click="handleClick"
       >
@@ -43,7 +43,7 @@
           name="quality"
         >
           <quality-test
-            v-if="activeName === 'quality'"
+            v-if="$store.state.activeSubTab === 'quality'"
             :id="qualityId"
             :test-id="qualityTestId"
             :progress="qualityProgress"
@@ -58,7 +58,7 @@
           name="agency"
         >
           <agency-test
-            v-if="activeName === 'agency' && isGetData"
+            v-if="$store.state.activeSubTab === 'agency' && isGetData"
             :id="agencyId"
             :test-id="agencyTestId"
             :progress="agencyProgress"
@@ -75,7 +75,7 @@
           name="user"
         >
           <user-test
-            v-if="activeName === 'user'"
+            v-if="$store.state.activeSubTab === 'user'"
             :id="userId"
             :test-id="userTestId"
             :progress="userProgress"
@@ -96,7 +96,7 @@
 import QualityTest from './test/quality-test.vue';
 import AgencyTest from './test/agency-test.vue';
 import UserTest from './test/user-test.vue';
-import { changeTimestamp } from '../../../../utils';
+import { changeTimestamp, setEntry } from '../../../../utils';
 import TestApplyTable from '../common/sample-test-table.vue';
 
 export default {
@@ -124,7 +124,6 @@ export default {
   ],
   data() {
     return {
-      activeName: 'quality',
       agencyProgress: {},
       agencyAttachment: {},
       agencySubmitState: 0,
@@ -146,6 +145,10 @@ export default {
     supply() {
       return this.getTestSupply().supply;
     }
+  },
+  mounted() {
+    setEntry('setActiveSubTab', 'quality');
+    this.getRequest(this.$store.state.activeSubTab);
   },
   methods: {
     async getAgencyTest() {
@@ -205,15 +208,18 @@ export default {
         return 'result-pass';
       }
     },
-    handleClick(tab) {
-      if (tab.props.name === 'quality') {
+    getRequest(val) {
+      if (val === 'quality') {
         this.getQualityDetail();
-      } else if (tab.props.name === 'agency') {
+      } else if (val === 'agency') {
         this.getAgencyTest();
       } else {
         this.getUserTest();
       }
-      this.activeName = tab.props.name;
+    },
+    handleClick(tab) {
+      this.getRequest(tab.props.name);
+      this.$store.commit('setActiveSubTab', tab.props.name);
     }
   }
 };
