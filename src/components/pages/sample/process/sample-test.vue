@@ -43,7 +43,7 @@
           name="quality"
         >
           <quality-test
-            v-if="$store.state.activeSubTab === 'quality'"
+            v-if="activeTab === 'quality'"
             :id="qualityId"
             :test-id="qualityTestId"
             :progress="qualityProgress"
@@ -58,7 +58,7 @@
           name="agency"
         >
           <agency-test
-            v-if="$store.state.activeSubTab === 'agency' && isGetData"
+            v-if="activeTab === 'agency' && isGetData"
             :id="agencyId"
             :test-id="agencyTestId"
             :progress="agencyProgress"
@@ -75,7 +75,7 @@
           name="user"
         >
           <user-test
-            v-if="$store.state.activeSubTab === 'user'"
+            v-if="activeTab === 'user'"
             :id="userId"
             :test-id="userTestId"
             :progress="userProgress"
@@ -144,6 +144,9 @@ export default {
   computed: {
     supply() {
       return this.getTestSupply().supply;
+    },
+    activeTab() {
+      return this.$store.state.activeSubTab;
     }
   },
   mounted() {
