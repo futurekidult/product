@@ -52,33 +52,30 @@
           v-if="JSON.stringify(purchaseContract) !== '{}'"
           style="display: flex"
         >
-          <el-upload
-            action
-            :show-file-list="false"
-            :http-request="(e) => handleFileSuccess(e, 'manual')"
+          <text-btn
+            v-if="JSON.stringify(manualFile) === '{}'"
+            @handle-click="showUploadDialog(manualFile, 'manual')"
           >
-            <text-btn v-if="JSON.stringify(manualFile) === '{}'">
-              上传
-            </text-btn>
-          </el-upload>
-          <div v-if="manualFile !== undefined && manualFile.type === 12860">
-            <text-btn
-              @handle-click="
-                previewOrDownload(
-                  manualFile.id,
-                  manualFile.name,
-                  'manual-file',
-                  'preview'
-                )
-              "
-            >
-              预览
-            </text-btn>
-          </div>
+            上传附件
+          </text-btn>
           <div
             v-if="purchaseContract.state !== 10"
             :class="purchaseContract.state === undefined ? 'hide' : ''"
           >
+            <div v-if="manualFile !== undefined && manualFile.type === 12860">
+              <text-btn
+                @handle-click="
+                  previewOrDownload(
+                    manualFile.id,
+                    manualFile.name,
+                    'manual-file',
+                    'preview'
+                  )
+                "
+              >
+                预览
+              </text-btn>
+            </div>
             <span
               v-if="manualFile !== undefined && manualFile.type === 12860"
               class="table-btn"
@@ -102,12 +99,8 @@
                 purchaseContract.state === 10
             "
           >
-            <span
-              v-if="manualFile !== undefined && manualFile.type === 12860"
-              class="table-btn"
-            >|</span>
-            <text-btn @handle-click="deleteFile('manual')">
-              删除
+            <text-btn @handle-click="showUploadDialog(manualFile, 'manual')">
+              编辑附件
             </text-btn>
           </div>
         </div>
@@ -117,33 +110,30 @@
           v-if="JSON.stringify(purchaseContract) !== '{}'"
           style="display: flex"
         >
-          <el-upload
-            action
-            :show-file-list="false"
-            :http-request="(e) => handleFileSuccess(e, 'diecuts')"
+          <text-btn
+            v-if="JSON.stringify(diecutsFile) === '{}'"
+            @handle-click="showUploadDialog(diecutsFile, 'diecuts')"
           >
-            <text-btn v-if="JSON.stringify(diecutsFile) === '{}'">
-              上传
-            </text-btn>
-          </el-upload>
-          <div v-if="diecutsFile !== undefined && diecutsFile.type === 12860">
-            <text-btn
-              @handle-click="
-                previewOrDownload(
-                  diecutsFile.id,
-                  diecutsFile.name,
-                  'diecuts-file',
-                  'preview'
-                )
-              "
-            >
-              预览
-            </text-btn>
-          </div>
+            上传附件
+          </text-btn>
           <div
             v-if="purchaseContract.state !== 10"
             :class="purchaseContract.state === undefined ? 'hide' : ''"
           >
+            <div v-if="diecutsFile !== undefined && diecutsFile.type === 12860">
+              <text-btn
+                @handle-click="
+                  previewOrDownload(
+                    diecutsFile.id,
+                    diecutsFile.name,
+                    'diecuts-file',
+                    'preview'
+                  )
+                "
+              >
+                预览
+              </text-btn>
+            </div>
             <span
               v-if="diecutsFile !== undefined && diecutsFile.type === 12860"
               class="table-btn"
@@ -167,12 +157,8 @@
                 purchaseContract.state === 10
             "
           >
-            <span
-              v-if="diecutsFile !== undefined && diecutsFile.type === 12860"
-              class="table-btn"
-            >|</span>
-            <text-btn @handle-click="deleteFile('diecuts')">
-              删除
+            <text-btn @handle-click="showUploadDialog(diecutsFile, 'diecuts')">
+              编辑附件
             </text-btn>
           </div>
         </div>
@@ -188,11 +174,19 @@
         </text-btn>
       </el-descriptions-item>
     </el-descriptions>
+    <file-upload-dialog
+      v-if="uploadVisible"
+      :upload-visible="uploadVisible"
+      :label="type === 'manual' ? '产品说明书' : '刀模附件  '"
+      :file="type === 'manual' ? manualFile : diecutsFile"
+      @get-upload-file="getContractFile"
+      @get-upload-file-visible="getUploadVisible"
+    />
   </div>
 </template>
 
 <script>
-import { previewOrDownloadFile, getFile } from '../../../../../utils';
+import { previewOrDownloadFile } from '../../../../../utils';
 export default {
   inject: ['getContract', 'changeColor', 'getProgress'],
   props: [
@@ -205,7 +199,9 @@ export default {
   data() {
     return {
       manualFile: this.manual,
-      diecutsFile: this.diecuts
+      diecutsFile: this.diecuts,
+      type: 'manual',
+      uploadVisible: false
     };
   },
   watch: {
@@ -217,6 +213,21 @@ export default {
     }
   },
   methods: {
+    async upload(val, url, file) {
+      let type = val;
+      let params = {
+        id: +this.purchaseContract.id,
+        [`${type}_file`]: this[`${file}`].id
+      };
+      try {
+        await this.$store.dispatch(`product/order/upload${url}`, params);
+        this.uploadVisible = false;
+        this.getContract();
+        this.getProgress();
+      } catch (err) {
+        return;
+      }
+    },
     async confirmExportContract(id) {
       try {
         await this.$store.dispatch('product/order/confirmExportContract', {
@@ -230,9 +241,7 @@ export default {
     async confirmPurchaseContract(id) {
       try {
         await this.$store.dispatch('product/order/confirmPurchaseContract', {
-          id,
-          product_manual_file: this.manualFile.id,
-          diecuts_file: this.diecutsFile.id
+          id
         });
         this.getContract();
         this.getProgress();
@@ -240,42 +249,11 @@ export default {
         return;
       }
     },
-    async handleFileSuccess(e, val) {
-      if (e.file.size > 5 * 1024 * 1024) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if (
-        e.file.type.indexOf('application') > -1 ||
-        e.file.type === 'text/csv'
-      ) {
-        this.$store.commit('setUploadState', false);
-        let form = getFile(e);
-        try {
-          await this.$store.dispatch('uploadFile', form);
-          if (this.$store.state.uploadState) {
-            let file = {
-              id: this.$store.state.fileRes.id,
-              name: this.$store.state.fileRes.file_name,
-              type: this.$store.state.fileRes.type
-            };
-            this.show = true;
-            if (val === 'manual') {
-              this.manualFile = file;
-            } else {
-              this.diecutsFile = file;
-            }
-          }
-        } catch (err) {
-          return;
-        }
+    uploadAttachment() {
+      if (this.type === 'manual') {
+        this.upload('product_manual', 'Manual', 'manualFile');
       } else {
-        this.$message.warning('上传的附件格式有误！');
-      }
-    },
-    deleteFile(val) {
-      if (val === 'manual') {
-        this.manualFile = {};
-      } else {
-        this.diecutsFile = {};
+        this.upload('diecuts', 'Diecuts', 'diecutsFile');
       }
     },
     async previewOrDownload(id, name, str, type) {
@@ -295,6 +273,26 @@ export default {
       } catch (err) {
         return;
       }
+    },
+    showUploadDialog(file, type) {
+      this.uploadVisible = true;
+      if (type === 'manual') {
+        this.manualFile = file;
+      } else {
+        this.discutsFile = file;
+      }
+      this.type = type;
+    },
+    getContractFile(val) {
+      if (this.type === 'manual') {
+        this.manualFile = val;
+      } else {
+        this.diecutsFile = val;
+      }
+      this.uploadAttachment();
+    },
+    getUploadVisible(val) {
+      this.uploadVisible = val;
     }
   }
 };

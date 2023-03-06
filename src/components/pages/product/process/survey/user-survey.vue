@@ -300,20 +300,13 @@
                   style="display: flex"
                 >
                   <div v-if="JSON.stringify(scope.row.attachment) === '{}'">
-                    <el-upload
-                      action
-                      :show-file-list="false"
-                      :http-request="
-                        (e) =>
-                          handleFileSuccess(
-                            e,
-                            scope.row.attachment,
-                            scope.row.id
-                          )
+                    <text-btn
+                      @click="
+                        showUploadDialog(scope.row.attachment, scope.row.id)
                       "
                     >
-                      <text-btn> 上传 </text-btn>
-                    </el-upload>
+                      上传附件
+                    </text-btn>
                   </div>
                   <div
                     v-if="
@@ -340,28 +333,20 @@
                         (scope.row.state === 10 || scope.row.state === 30)
                     "
                   >
-                    <text-btn @handle-click="deleteFile(scope.row.id)">
-                      删除
-                    </text-btn>
-                    <span class="table-btn">|</span>
                     <text-btn
-                      v-if="scope.row.attachment.type === 12860"
-                      @handle-click="
-                        previewOrDownload(
-                          scope.row.attachment.id,
-                          scope.row.attachment.name,
-                          'preview'
-                        )
+                      @click="
+                        showUploadDialog(scope.row.attachment, scope.row.id)
                       "
                     >
-                      预览
+                      编辑附件
                     </text-btn>
-                    <span
-                      v-if="scope.row.attachment.type === 12860"
-                      class="table-btn"
-                    >|</span>
                   </div>
-                  <div v-if="JSON.stringify(scope.row.attachment) !== '{}'">
+                  <div
+                    v-if="
+                      JSON.stringify(scope.row.attachment) !== '{}' &&
+                        (scope.row.state >= 40 || scope.row.state === 20)
+                    "
+                  >
                     <text-btn
                       @handle-click="
                         previewOrDownload(
@@ -450,6 +435,15 @@
             </el-table-column>
           </el-table>
         </el-form>
+
+        <file-upload-dialog
+          v-if="uploadVisible"
+          :upload-visible="uploadVisible"
+          label="附件上传"
+          :file="file"
+          @get-upload-file="getUploadFile"
+          @get-upload-file-visible="getUploadVisible"
+        />
 
         <el-button
           style="margin: 15px 0"
@@ -591,7 +585,6 @@
 
 <script>
 import {
-  getFile,
   timestamp,
   setDisabledDate,
   getOrganizationList,
@@ -600,11 +593,13 @@ import {
 } from '../../../../../utils';
 import SurveyForm from '../../common/survey-form.vue';
 import SurveySuggestion from '../../common/survey-suggestion.vue';
+import FileUploadDialog from '../../../../common/file-upload-dialog.vue';
 
 export default {
   components: {
     SurveyForm,
-    SurveySuggestion
+    SurveySuggestion,
+    FileUploadDialog
   },
   inject: ['getBase'],
   props: [
@@ -618,6 +613,8 @@ export default {
   ],
   data() {
     return {
+      uploadVisible: false,
+      file: {},
       isVisible: false,
       isReviewVisible: false,
       isViewReviewVisible: false,
@@ -993,34 +990,6 @@ export default {
         }
       });
     },
-    async handleFileSuccess(e, attachment, id) {
-      if (e.file.size > 5 * 1024 * 1024) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if (
-        e.file.type.indexOf('application') > -1 ||
-        e.file.type === 'text/csv'
-      ) {
-        this.$store.commit('setUploadState', false);
-        let form = getFile(e);
-        try {
-          await this.$store.dispatch('uploadFile', form);
-          if (this.$store.state.uploadState) {
-            attachment['id'] = this.$store.state.fileRes.id;
-            attachment['name'] = this.$store.state.fileRes.file_name;
-            attachment['type'] = this.$store.state.fileRes.type;
-            await this.$store.dispatch(
-              'product/survey/user/updatePlanResultAttachment',
-              { plan_id: id, attachment: this.$store.state.fileRes.id }
-            );
-            this.getList();
-          }
-        } catch (err) {
-          return;
-        }
-      } else {
-        this.$message.warning('上传的附件格式有误！');
-      }
-    },
     async previewOrDownload(id, name, type) {
       this.$store.commit('setAttachmentState', false);
       try {
@@ -1035,17 +1004,6 @@ export default {
             previewOrDownloadFile(this.$store.state.viewLink, name, 'preview');
           }
         }
-      } catch (err) {
-        return;
-      }
-    },
-    async deleteFile(id) {
-      try {
-        await this.$store.dispatch(
-          'product/survey/user/updatePlanResultAttachment',
-          { plan_id: id }
-        );
-        this.getList();
       } catch (err) {
         return;
       }
@@ -1072,6 +1030,22 @@ export default {
       if (val === 0 || val === '') {
         this.$message.warning('请选择事项！');
       }
+    },
+    showUploadDialog(attachment, id) {
+      this.uploadVisible = true;
+      this.file = attachment;
+      this.planId = id;
+    },
+    async getUploadFile(val) {
+      this.attachment = val;
+      await this.$store.dispatch(
+        'product/survey/user/updatePlanResultAttachment',
+        { plan_id: this.planId, attachment: val.id }
+      );
+      this.getList();
+    },
+    getUploadVisible(val) {
+      this.uploadVisible = val;
     }
   }
 };
