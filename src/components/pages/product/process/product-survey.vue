@@ -5,7 +5,7 @@
     </div>
 
     <el-tabs
-      v-model="activeName"
+      v-model="$store.state.activeSubTab"
       type="card"
       @tab-click="handleClick"
     >
@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { changeTimestamp } from '../../../../utils';
+import { changeTimestamp, setEntry } from '../../../../utils';
 import MarketSurvey from './survey/market-survey.vue';
 import PlatformSurvey from './survey/platform-survey.vue';
 import UserAnalysis from './survey/user-analysis.vue';
@@ -130,7 +130,6 @@ export default {
   ],
   data() {
     return {
-      activeName: 'platform',
       marketAttachment: {},
       marketProgress: {},
       analysisProgress: {},
@@ -156,6 +155,10 @@ export default {
       scenarioVisible: false,
       planScenarioVisible: false
     };
+  },
+  mounted() {
+    setEntry('setActiveSubTab', 'platform');
+    this.getRequest(this.$store.state.activeSubTab);
   },
   methods: {
     async getMarket() {
@@ -306,8 +309,8 @@ export default {
         return 'result-fail';
       }
     },
-    handleClick(tab) {
-      switch (tab.props.name) {
+    getRequest(val) {
+      switch (val) {
         case 'platform':
           this.getPlatform();
           break;
@@ -328,6 +331,9 @@ export default {
           break;
         default:
       }
+    },
+    handleClick(tab) {
+      this.getRequest(tab.props.name);
     }
   }
 };

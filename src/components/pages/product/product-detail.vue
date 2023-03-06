@@ -144,6 +144,7 @@
             name="patent"
           >
             <product-patent
+              v-if="isGetPatentData"
               :patent="patent"
               :progress="patentProgress"
               :contract="patentContract"
@@ -250,7 +251,7 @@ import MouldMessage from './process/mould-message.vue';
 import QuestionAll from './process/question-all.vue';
 import ProductOrder from './process/product-order.vue';
 import ProductPackage from './process/product-package.vue';
-import { changeTimestamp, resetPagination } from '../../../utils';
+import { changeTimestamp, resetPagination, setEntry } from '../../../utils';
 import { getDemandDetail } from '../../../utils/demand';
 import TerminateForm from './common/terminate-form.vue';
 
@@ -333,7 +334,8 @@ export default {
       packagePagination: pagination,
       confirmDialogVisible: false,
       unterminated: 0,
-      surveyCondition: null
+      surveyCondition: null,
+      isGetPatentData: false
     };
   },
   computed: {
@@ -346,11 +348,10 @@ export default {
   },
   mounted() {
     this.getProductBase();
-    if (this.$store.state.entry !== 'workbench') {
-      this.$store.commit('setActiveTab', 'basic');
-    } else {
+    if (this.$store.state.entry === 'workbench') {
       this.getProductDetail();
     }
+    setEntry('setActiveTab', 'basic');
     this.getRequest(this.$store.state.activeTab);
   },
   methods: {
@@ -576,6 +577,7 @@ export default {
           changeTimestamp(item, 'review_time');
         });
         this.applyForm.product_name_cn = this.patent.product_name_cn;
+        this.isGetPatentData = true;
       } catch (err) {
         this.$store.commit('product/patent/setPatentLoading', false);
         return;
@@ -622,13 +624,13 @@ export default {
         this.platformAttachment = this.platformForm.attachment || {};
         changeTimestamp(this.platformProgress, 'estimated_finish_time');
         changeTimestamp(this.platformProgress, 'actual_finish_time');
-        this.isGetData = true;
       } catch (err) {
         this.$store.commit('product/survey/platform/setPlatformLoading', false);
         return;
       }
     },
     getRequest(val) {
+      this.$store.commit('product/setDetailLoading', false);
       switch (val) {
         case 'basic':
           this.getProductDetail();
@@ -674,11 +676,9 @@ export default {
         case 'patent':
           this.getPatent();
           this.getPatentProgress();
-          this.getContract();
           this.getProductBase();
           break;
         case 'survey':
-          this.getPlatform();
           this.getSurveySchedule();
           break;
         default:
@@ -697,6 +697,7 @@ export default {
             currentSurvey.current_survey
           ]
         );
+        this.isGetData = true;
       } catch (err) {
         return;
       }
