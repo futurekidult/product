@@ -641,19 +641,24 @@ export default {
         product_id: +this.$route.params.productId
       };
       let funcName = '';
-      body.state = type;
       switch (this.progress.state) {
         case 5:
+          body.state = type;
           body.id = this.$store.state.product.survey.plan.plan.survey_id;
           body['survey_schedule_id'] = this.progress.id;
           funcName = 'product/survey/plan/submitPlan';
           break;
         case 10:
+          body.state = type;
           body['survey_schedule_id'] = this.progress.id;
           funcName = 'product/survey/plan/submitPlan';
           break;
         case 30:
+          body.state = val === 5 ? 35 : 20;
+          body.id = this.productForm.id;
+          funcName = 'product/survey/plan/updatePlan';
         case 35:
+          body.state = val === 5 ? 35 : 20;
           body.id = this.productForm.id;
           funcName = 'product/survey/plan/updatePlan';
           break;
