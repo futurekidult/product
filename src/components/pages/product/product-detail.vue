@@ -279,7 +279,7 @@ export default {
       getQuestion: this.getQuestionList,
       getPackage: this.getPackageList,
       getOrder: this.getOrderList,
-      getProfitCalculation: this.getProfit,
+      getProfitList: this.getProfitList,
       getProcessTable: this.getSchedule,
       getContract: this.getContract,
       getPatent: this.getPatent,
@@ -541,7 +541,7 @@ export default {
         return;
       }
     },
-    async getProfit() {
+    async getProfitList() {
       try {
         await this.$store.dispatch('product/project/getProfit', {
           params: { product_id: this.$route.params.productId }
@@ -669,7 +669,7 @@ export default {
           this.getProductBase();
           break;
         case 'project':
-          this.getProfit();
+          this.getProfitList();
           this.getSchedule();
           this.getProject();
           break;

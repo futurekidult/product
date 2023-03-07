@@ -163,7 +163,7 @@ export default {
     ProfitCalculation,
     ProcessTable
   },
-  inject: ['getProject', 'getProfitCalculation', 'getProcessTable', 'getBase'],
+  inject: ['getProject', 'getProfitList', 'getProcessTable', 'getBase'],
   props: [
     'progress',
     'attachment',
@@ -225,7 +225,7 @@ export default {
       try {
         await this.$store.dispatch('product/project/reviewProject', body);
         this.getProject();
-        this.getProfitCalculation();
+        this.getProfitList();
         this.getProcessTable();
       } catch (err) {
         return;
@@ -256,7 +256,7 @@ export default {
         await this.$store.dispatch('product/project/approvalProject', body);
         this.getProject();
         this.getBase();
-        this.getProfitCalculation();
+        this.getProfitList();
         this.getProcessTable();
       } catch (err) {
         return;
@@ -264,7 +264,7 @@ export default {
     },
     refresh(val) {
       if (val === 1) {
-        this.getProfitCalculation();
+        this.getProfitList();
         this.getProcessTable();
       }
     },

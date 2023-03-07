@@ -188,7 +188,7 @@ export default {
     PricingAdjust,
     PricingLog
   },
-  inject: ['getProfitCalculation'],
+  inject: ['getProfitList'],
   props: ['getProfit'],
   data() {
     return {
@@ -316,7 +316,7 @@ export default {
       try {
         await this.$store.dispatch('product/project/deleteProfitItem', val);
         this.deleteDialog = false;
-        this.getProfitCalculation();
+        this.getProfitList();
       } catch (err) {
         return;
       }
