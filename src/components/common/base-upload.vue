@@ -17,13 +17,13 @@
         v-if="type === 'image' || type === 'imageSingle'"
         class="attachment"
       >
-        请上传 jpg/png/jepg等图片格式, 单个文件不超过 5MB
+        请上传 jpg/png/jepg等图片格式, 单个文件不超过 2MB
       </div>
       <div
         v-else
         class="attachment"
       >
-        支持office文档格式,文件不能超过5MB
+        可上传office格式文件(不超过5M)，pdf文件和压缩包文件(不超过15M)
       </div>
     </el-upload>
     <div
@@ -205,13 +205,24 @@ export default {
       return emitFile;
     },
     async handleFileSuccess(e) {
+      const warningMessage = '附件大小超过限制，请重新上传！';
       let condition =
         this.type === 'file' || this.type === 'file-list'
           ? e.file.type.indexOf('application') > -1 ||
             e.file.type === 'text/csv'
           : e.file.type.indexOf('image') > -1 && e.file.type !== 'image/gif';
-      if (e.file.size > 5 * 1024 * 1024) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
+      if (e.file.size > 15 * 1024 * 1024) {
+        this.$message.warning(warningMessage);
+      } else if (
+        e.file.type.indexOf('office') > -1 &&
+        e.file.size > 5 * 1024 * 1024
+      ) {
+        this.$message.warning(warningMessage);
+      } else if (
+        e.file.type.indexOf('image') > -1 &&
+        e.file.size > 2 * 1024 * 1024
+      ) {
+        this.$message.warning(warningMessage);
       } else if (condition) {
         if (
           (this.type === 'image' && this.imgList.length > this.count) ||

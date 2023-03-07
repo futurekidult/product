@@ -27,7 +27,7 @@
             </el-button>
           </el-upload>
           <div class="attachment">
-            支持office文档格式,文件不能超过5MB
+            可上传office格式文件(不超过5M)，pdf文件和压缩包文件(不超过15M)
           </div>
         </div>
       </el-form-item>
@@ -90,8 +90,19 @@ export default {
 
   methods: {
     async handleFileSuccess(e) {
-      if (e.file.size > 5 * 1024 * 1024) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
+      const warningMessage = '附件大小超过限制，请重新上传！';
+      if (e.file.size > 15 * 1024 * 1024) {
+        this.$message.warning(warningMessage);
+      } else if (
+        e.file.type.indexOf('office') > -1 &&
+        e.file.size > 5 * 1024 * 1024
+      ) {
+        this.$message.warning(warningMessage);
+      } else if (
+        e.file.type.indexOf('image') > -1 &&
+        e.file.size > 2 * 1024 * 1024
+      ) {
+        this.$message.warning(warningMessage);
       } else if (
         e.file.type.indexOf('application') > -1 ||
         e.file.type === 'text/csv'
@@ -151,3 +162,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.el-form-item {
+  margin-bottom: 0px !important;
+}
+</style>

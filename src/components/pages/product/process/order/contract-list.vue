@@ -58,24 +58,24 @@
           >
             上传附件
           </text-btn>
+          <div v-if="manualFile !== undefined && manualFile.type === 12860">
+            <text-btn
+              @handle-click="
+                previewOrDownload(
+                  manualFile.id,
+                  manualFile.name,
+                  'manual-file',
+                  'preview'
+                )
+              "
+            >
+              预览
+            </text-btn>
+          </div>
           <div
             v-if="purchaseContract.state !== 10"
             :class="purchaseContract.state === undefined ? 'hide' : ''"
           >
-            <div v-if="manualFile !== undefined && manualFile.type === 12860">
-              <text-btn
-                @handle-click="
-                  previewOrDownload(
-                    manualFile.id,
-                    manualFile.name,
-                    'manual-file',
-                    'preview'
-                  )
-                "
-              >
-                预览
-              </text-btn>
-            </div>
             <span
               v-if="manualFile !== undefined && manualFile.type === 12860"
               class="table-btn"
@@ -116,24 +116,24 @@
           >
             上传附件
           </text-btn>
+          <div v-if="diecutsFile !== undefined && diecutsFile.type === 12860">
+            <text-btn
+              @handle-click="
+                previewOrDownload(
+                  diecutsFile.id,
+                  diecutsFile.name,
+                  'diecuts-file',
+                  'preview'
+                )
+              "
+            >
+              预览
+            </text-btn>
+          </div>
           <div
             v-if="purchaseContract.state !== 10"
             :class="purchaseContract.state === undefined ? 'hide' : ''"
           >
-            <div v-if="diecutsFile !== undefined && diecutsFile.type === 12860">
-              <text-btn
-                @handle-click="
-                  previewOrDownload(
-                    diecutsFile.id,
-                    diecutsFile.name,
-                    'diecuts-file',
-                    'preview'
-                  )
-                "
-              >
-                预览
-              </text-btn>
-            </div>
             <span
               v-if="diecutsFile !== undefined && diecutsFile.type === 12860"
               class="table-btn"
@@ -187,7 +187,10 @@
 
 <script>
 import { previewOrDownloadFile } from '../../../../../utils';
+import FileUploadDialog from '../../../../common/file-upload-dialog.vue';
+
 export default {
+  components: { FileUploadDialog },
   inject: ['getContract', 'changeColor', 'getProgress'],
   props: [
     'contract',
