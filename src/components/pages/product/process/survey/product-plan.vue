@@ -593,7 +593,6 @@ export default {
   },
   computed: {
     getState() {
-      console.log(1);
       return (
         this.progress.state === 5 ||
         this.progress.state === 10 ||
@@ -654,12 +653,12 @@ export default {
           funcName = 'product/survey/plan/submitPlan';
           break;
         case 30:
-          body.state = val === 5 ? 35 : 20;
+          body.state = type === 5 ? 35 : 20;
           body.id = this.productForm.id;
           funcName = 'product/survey/plan/updatePlan';
           break;
         case 35:
-          body.state = val === 5 ? 35 : 20;
+          body.state = type === 5 ? 35 : 20;
           body.id = this.productForm.id;
           funcName = 'product/survey/plan/updatePlan';
           break;
