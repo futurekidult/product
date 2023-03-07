@@ -251,7 +251,12 @@ import MouldMessage from './process/mould-message.vue';
 import QuestionAll from './process/question-all.vue';
 import ProductOrder from './process/product-order.vue';
 import ProductPackage from './process/product-package.vue';
-import { changeTimestamp, resetPagination, setEntry } from '../../../utils';
+import {
+  changeTimestamp,
+  resetPagination,
+  setEntry,
+  handleExceptionData
+} from '../../../utils';
 import { getDemandDetail } from '../../../utils/demand';
 import TerminateForm from './common/terminate-form.vue';
 
@@ -620,6 +625,20 @@ export default {
         let { platform } = this.$store.state.product.survey.platform;
         this.platformProgress = platform.progress || {};
         this.platformForm = platform.report || {};
+        handleExceptionData(
+          [
+            'peak_season_start',
+            'peak_season_end',
+            'competitive_degree',
+            'is_nosedive_category',
+            'precise_price_range',
+            'traffic_richness',
+            'is_nosedive_keyword',
+            'keyword_bidding_degree',
+            'is_benchmarking'
+          ],
+          this.platformForm
+        );
         this.productImages = this.platformForm.images || [];
         this.platformAttachment = this.platformForm.attachment || {};
         changeTimestamp(this.platformProgress, 'estimated_finish_time');

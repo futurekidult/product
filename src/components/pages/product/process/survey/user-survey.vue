@@ -80,7 +80,7 @@
             label="状态"
             width="200px"
           >
-            <div :class="changeColor(progress.state)">
+            <div :class="setSurveyScheduleStateColor(progress.state)">
               {{ progress.state_desc }}
             </div>
           </el-descriptions-item>
@@ -596,7 +596,8 @@ import {
   setDisabledDate,
   getOrganizationList,
   setReviewStateColor,
-  previewOrDownloadFile
+  previewOrDownloadFile,
+  setSurveyScheduleStateColor
 } from '../../../../../utils';
 import SurveyForm from '../../common/survey-form.vue';
 import SurveySuggestion from '../../common/survey-suggestion.vue';
@@ -704,6 +705,7 @@ export default {
   },
   methods: {
     setDisabledDate,
+    setSurveyScheduleStateColor,
     async getParams() {
       if (localStorage.getItem('params')) {
         this.planOptions = JSON.parse(
@@ -1048,15 +1050,6 @@ export default {
         this.getList();
       } catch (err) {
         return;
-      }
-    },
-    changeColor(val) {
-      if (val === 10 || val === 20) {
-        return 'result-ing';
-      } else if (val >= 40) {
-        return 'result-pass';
-      } else {
-        return 'result-fail';
       }
     },
     changeTableCellColor(val) {

@@ -1,5 +1,6 @@
 import axios from '../../../../utils/axios.js';
 import { ElMessage } from 'element-plus';
+import { deleteEmptyValue } from '../../../../utils/index';
 
 export default {
   namespaced: true,
@@ -32,6 +33,7 @@ export default {
       });
     },
     async submitPlatform(_, payload) {
+      deleteEmptyValue(payload);
       await axios.post('/survey/platform/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
