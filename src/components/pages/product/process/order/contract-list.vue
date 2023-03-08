@@ -58,7 +58,13 @@
           >
             上传附件
           </text-btn>
-          <div v-if="manualFile !== undefined && manualFile.type === 12860">
+          <div
+            v-if="
+              purchaseContract.state !== 10 &&
+                manualFile !== undefined &&
+                manualFile.type === 12860
+            "
+          >
             <text-btn
               @handle-click="
                 previewOrDownload(
@@ -116,7 +122,13 @@
           >
             上传附件
           </text-btn>
-          <div v-if="diecutsFile !== undefined && diecutsFile.type === 12860">
+          <div
+            v-if="
+              purchaseContract.state !== 10 &&
+                diecutsFile !== undefined &&
+                diecutsFile.type === 12860
+            "
+          >
             <text-btn
               @handle-click="
                 previewOrDownload(
@@ -177,8 +189,9 @@
     <file-upload-dialog
       v-if="uploadVisible"
       :upload-visible="uploadVisible"
-      :label="type === 'manual' ? '产品说明书' : '刀模附件  '"
+      :label="type === 'manual' ? '产品说明书' : '刀模附件'"
       :file="type === 'manual' ? manualFile : diecutsFile"
+      :url="type === 'manual' ? 'product-manual' : 'diecuts'"
       @get-upload-file="getContractFile"
       @get-upload-file-visible="getUploadVisible"
     />

@@ -78,7 +78,7 @@
 <script>
 import { previewOrDownloadFile, getFile } from '../../utils';
 export default {
-  props: ['uploadVisible', 'label', 'file'],
+  props: ['uploadVisible', 'label', 'file', 'url'],
   emits: ['get-upload-file', 'get-upload-file-visible'],
   data() {
     return {
@@ -87,7 +87,6 @@ export default {
       uploadForm: {}
     };
   },
-
   methods: {
     async handleFileSuccess(e) {
       const warningMessage = '附件大小超过限制，请重新上传！';
@@ -112,10 +111,11 @@ export default {
         try {
           await this.$store.dispatch('uploadFile', form);
           if (this.$store.state.uploadState) {
+            let { fileRes } = this.$store.state;
             this.uploadFile = {
-              id: this.$store.state.fileRes.id,
-              name: this.$store.state.fileRes.file_name,
-              type: this.$store.state.fileRes.type
+              id: fileRes.id,
+              name: fileRes.file_name,
+              type: fileRes.type
             };
           }
         } catch (err) {
@@ -130,7 +130,7 @@ export default {
       try {
         await this.$store.dispatch('getViewLink', {
           params: { id },
-          url: this.type === 'contract' ? 'patent-contract' : 'patent-report'
+          url: this.url
         });
         if (this.$store.state.attachmentState) {
           if (type === 'download') {

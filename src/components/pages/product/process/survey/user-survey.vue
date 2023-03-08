@@ -301,7 +301,7 @@
                 >
                   <div v-if="JSON.stringify(scope.row.attachment) === '{}'">
                     <text-btn
-                      @click="
+                      @handle-click="
                         showUploadDialog(scope.row.attachment, scope.row.id)
                       "
                     >
@@ -334,7 +334,7 @@
                     "
                   >
                     <text-btn
-                      @click="
+                      @handle-click="
                         showUploadDialog(scope.row.attachment, scope.row.id)
                       "
                     >
@@ -441,6 +441,7 @@
           :upload-visible="uploadVisible"
           label="附件上传"
           :file="file"
+          :url="'user-survey-report'"
           @get-upload-file="getUploadFile"
           @get-upload-file-visible="getUploadVisible"
         />
@@ -1037,12 +1038,16 @@ export default {
       this.planId = id;
     },
     async getUploadFile(val) {
-      this.attachment = val;
-      await this.$store.dispatch(
-        'product/survey/user/updatePlanResultAttachment',
-        { plan_id: this.planId, attachment: val.id }
-      );
-      this.getList();
+      try {
+        this.attachment = val;
+        await this.$store.dispatch(
+          'product/survey/user/updatePlanResultAttachment',
+          { plan_id: this.planId, attachment: val.id }
+        );
+        this.getList();
+      } catch (err) {
+        return;
+      }
     },
     getUploadVisible(val) {
       this.uploadVisible = val;

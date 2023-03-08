@@ -76,9 +76,10 @@
     <file-upload-dialog
       v-if="uploadVisible"
       :upload-visible="uploadVisible"
-      :label="type === 'contract' ? '合同附件' : '专利报告  '"
+      :label="type === 'contract' ? '合同附件' : '专利报告'"
       :file="confirmFile"
       :type="type"
+      :url="'contract' ? 'patent-contract' : 'patent-report'"
       @get-upload-file="getConfirmFile"
       @get-upload-file-visible="getUploadVisible"
     />
