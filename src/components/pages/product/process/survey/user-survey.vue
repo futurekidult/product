@@ -441,7 +441,7 @@
           :upload-visible="uploadVisible"
           label="附件上传"
           :file="file"
-          :url="'user-survey-report'"
+          url="user-survey-report"
           @get-upload-file="getUploadFile"
           @get-upload-file-visible="getUploadVisible"
         />

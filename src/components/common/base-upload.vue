@@ -234,10 +234,11 @@ export default {
           let form = getFile(e);
           try {
             await this.$store.dispatch('uploadFile', form);
+            let {fileRes} = this.$store.state;
             let result = {
-              id: this.$store.state.fileRes.id,
-              name: this.$store.state.fileRes.file_name,
-              type: this.$store.state.fileRes.type
+              id: fileRes.id,
+              name: fileRes.file_name,
+              type: fileRes.type
             };
             if (this.$store.state.uploadState) {
               if (this.type === 'file' || this.type === 'imageSingle') {
