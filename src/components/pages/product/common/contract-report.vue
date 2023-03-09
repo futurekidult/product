@@ -22,9 +22,9 @@
           <div v-if="JSON.stringify(data) !== '{}'">
             <text-btn
               v-if="data.state === 10 && JSON.stringify(file) === '{}'"
-              @handle-click="showFileDialog"
+              @handle-click="showUploadDialog(file)"
             >
-              上传
+              上传附件
             </text-btn>
             <div
               v-if="data.state === 40"
@@ -52,18 +52,8 @@
               v-if="data.state === 10 && JSON.stringify(file) !== '{}'"
               style="display: flex"
             >
-              <div v-if="data.result_file.type === 12860">
-                <text-btn
-                  @handle-click="
-                    previewOrDownload(file.id, file.name, 'preview')
-                  "
-                >
-                  预览
-                </text-btn>
-                <span class="table-btn">|</span>
-              </div>
-              <text-btn @handle-click="deleteFile">
-                删除
+              <text-btn @handle-click="showUploadDialog(file)">
+                编辑附件
               </text-btn>
             </div>
           </div>
@@ -77,98 +67,41 @@
           v-if="data.state !== 40 && data.state !== undefined"
           label="操作"
         >
-          <text-btn @handle-click="uploadAttachment">
+          <text-btn @handle-click="confirm">
             完成
           </text-btn>
         </el-descriptions-item>
       </el-descriptions>
     </div>
-
-    <el-dialog
-      v-model="uploadVisible"
-      title="上传"
-      width="35%"
-      :close-on-click-modal="false"
-    >
-      <el-form
-        ref="uploadForm"
-        :model="uploadForm"
-        label-width="100px"
-      >
-        <el-form-item
-          :label="type === 'contract' ? '合同附件' : '专利报告  '"
-          prop="file"
-          :rules="[{ required: true, message: '请上传附件' }]"
-        >
-          <div style="display: flex">
-            <el-upload
-              action
-              :show-file-list="false"
-              :http-request="handleFileSuccess"
-            >
-              <el-button type="primary">
-                点击上传
-              </el-button>
-            </el-upload>
-            <div class="attachment">
-              支持office文档格式,文件不能超过5MB
-            </div>
-          </div>
-        </el-form-item>
-        <el-form-item>
-          <div
-            v-if="JSON.stringify(file) !== '{}'"
-            class="attachment-list"
-          >
-            <div>{{ file.name }}</div>
-            <div style="display: flex">
-              <text-btn @handle-click="deleteFile">
-                删除
-              </text-btn>
-              <span
-                v-if="file.type === 12860"
-                class="table-btn"
-              >|</span>
-              <text-btn
-                v-if="file.type === 12860"
-                @handle-click="previewOrDownload(file.id, file.name, 'preview')"
-              >
-                预览
-              </text-btn>
-            </div>
-          </div>
-        </el-form-item>
-        <el-divider />
-        <div style="text-align: right">
-          <el-button
-            class="close-btn"
-            @click="closeFileDialog"
-          >
-            取消
-          </el-button>
-          <el-button
-            type="primary"
-            @click="submitFileDialog"
-          >
-            提交
-          </el-button>
-        </div>
-      </el-form>
-    </el-dialog>
+    <file-upload-dialog
+      v-if="uploadVisible"
+      :upload-visible="uploadVisible"
+      :label="type === 'contract' ? '合同附件' : '专利报告'"
+      :file="confirmFile"
+      :type="type"
+      :url="'contract' ? 'patent-contract' : 'patent-report'"
+      @get-upload-file="getConfirmFile"
+      @get-upload-file-visible="getUploadVisible"
+    />
   </div>
 </template>
 
 <script>
-import { previewOrDownloadFile, getFile } from '../../../../utils';
+import { previewOrDownloadFile } from '../../../../utils';
+import FileUploadDialog from '../../../common/file-upload-dialog.vue';
+
 export default {
+  components: { FileUploadDialog },
   inject: ['getContract'],
   props: ['data', 'type', 'getReport', 'changeColor'],
+  emits: ['get-contract-confirm-file', 'get-upload-file'],
   data() {
     return {
       progress: this.data,
       file: {},
       uploadVisible: false,
-      uploadForm: {}
+      operationType: 'upload',
+      confirmFile: {}
     };
   },
   watch: {
@@ -195,29 +128,25 @@ export default {
         return;
       }
     },
-    async handleFileSuccess(e) {
-      if (e.file.size > 5 * 1024 * 1024) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if (
-        e.file.type.indexOf('application') > -1 ||
-        e.file.type === 'text/csv'
-      ) {
-        this.$store.commit('setUploadState', false);
-        let form = getFile(e);
-        try {
-          await this.$store.dispatch('uploadFile', form);
-          if (this.$store.state.uploadState) {
-            this.file = {
-              id: this.$store.state.fileRes.id,
-              name: this.$store.state.fileRes.file_name,
-              type: this.$store.state.fileRes.type
-            };
-          }
-        } catch (err) {
-          return;
+    async confirm() {
+      let params = {
+        product_id: +this.$route.params.productId
+      };
+      try {
+        await this.$store.dispatch(
+          `product/patent/confirm${this.type.replace(
+            this.type[0],
+            this.type[0].toUpperCase()
+          )}`,
+          params
+        );
+        if (this.type === 'contract') {
+          this.getContract();
+        } else {
+          this.getReport();
         }
-      } else {
-        this.$message.warning('上传的附件格式有误！');
+      } catch (err) {
+        return;
       }
     },
     async previewOrDownload(id, name, type) {
@@ -245,27 +174,16 @@ export default {
         this.upload('report', 'Report');
       }
     },
-    deleteFile() {
-      this.file = {};
-      if (this.type === 'contract') {
-        this.getContract();
-      } else {
-        this.getReport();
-      }
-    },
-    showFileDialog() {
+    showUploadDialog(file) {
       this.uploadVisible = true;
+      this.confirmFile = file;
     },
-    closeFileDialog() {
-      this.uploadVisible = false;
+    getConfirmFile(val) {
+      this.file = val;
+      this.uploadAttachment();
     },
-    submitFileDialog() {
-      this.uploadForm.file = this.file.id;
-      this.$refs.uploadForm.validate((valid) => {
-        if (valid) {
-          this.uploadVisible = false;
-        }
-      });
+    getUploadVisible(val) {
+      this.uploadVisible = val;
     }
   }
 };
