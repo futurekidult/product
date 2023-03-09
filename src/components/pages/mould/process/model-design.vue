@@ -21,7 +21,7 @@
         {{ progress.product_design_path }}
       </el-descriptions-item>
       <el-descriptions-item label="状态">
-        <div :class="changeColor(progress.state)">
+        <div :class="setStateColor(progress.state)">
           {{ progress.state_desc }}
         </div>
       </el-descriptions-item>
@@ -90,8 +90,10 @@
 </template>
 
 <script>
+import { setStateColor } from '../../../../utils/index.js';
+
 export default {
-  props: ['changeColor', 'progress', 'getList'],
+  props: ['progress', 'getList'],
   data() {
     return {
       designFormVisible: false,
@@ -99,6 +101,7 @@ export default {
     };
   },
   methods: {
+    setStateColor,
     async createProductDesign(val) {
       let body = val;
       body['mould_id'] = +this.$route.params.id;

@@ -82,7 +82,7 @@
       <el-descriptions-item label="状态">
         <div
           :class="
-            changeColor(progress.state !== undefined ? progress.state : '')
+            setStateColor(progress.state !== undefined ? progress.state : '')
           "
         >
           {{ progress.state_desc }}
@@ -154,14 +154,14 @@
 
 <script>
 import MouldForm from '../common/mould-form.vue';
-import { previewOrDownloadFile } from '../../../../utils';
+import { previewOrDownloadFile, setStateColor } from '../../../../utils';
 
 export default {
   components: {
     MouldForm
   },
   inject: ['getMould'],
-  props: ['progress', 'changeColor', 'getList', 'buttonState', 'attachment'],
+  props: ['progress', 'getList', 'buttonState', 'attachment'],
   data() {
     return {
       applyFormVisible: false,
@@ -184,6 +184,7 @@ export default {
     }
   },
   methods: {
+    setStateColor,
     showApplyForm() {
       this.applyFormVisible = true;
     },
