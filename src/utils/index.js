@@ -431,20 +431,25 @@ export const checkPlanValueAllEmpty = (form) => {
   return isEmpty;
 };
 
-//草稿状态下将数据为-1的处理为空
+//草稿状态下将数据为-1, 0的处理为空
 export const handleExceptionData = (arr, obj) => {
   arr.forEach((item) => {
-    if (obj[item] === -1) {
+    if (obj[item] === -1 || obj[item] === 0) {
       obj[item] = '';
     }
   });
 };
 
-//删除平台调研和产品方案草稿状态下数据为空值的属性
-export const deleteEmptyValue = (obj) => {
-  for (let item in obj) {
+//(平台调研和产品方案)将数据为空值的属性变成0, -1传递给后端
+export const changeRequestValue = (negativeArr, zeroArr, obj) => {
+  negativeArr.forEach((item) => {
     if (obj[item] === '') {
-      delete obj[item];
+      obj[item] = -1;
     }
-  }
+  });
+  zeroArr.forEach((item) => {
+    if (obj[item] === '') {
+      obj[item] = 0;
+    }
+  });
 };

@@ -1,6 +1,6 @@
 import axios from '../../../../utils/axios.js';
 import { ElMessage } from 'element-plus';
-import { deleteEmptyValue } from '../../../../utils/index.js';
+import { changeRequestValue } from '../../../../utils/index.js';
 
 export default {
   namespaced: true,
@@ -33,7 +33,7 @@ export default {
       });
     },
     async submitPlan(_, payload) {
-      deleteEmptyValue(payload);
+      changeRequestValue([], [], payload);
       await axios.post('/survey/solutions/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
@@ -41,6 +41,11 @@ export default {
       });
     },
     async updatePlan(_, payload) {
+      changeRequestValue(
+        [],
+        ['head_cost_currency', 'tail_cost_currency', 'sea_freight_currency'],
+        payload
+      );
       await axios.post('/survey/solutions/update', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);

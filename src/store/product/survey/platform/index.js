@@ -1,6 +1,6 @@
 import axios from '../../../../utils/axios.js';
 import { ElMessage } from 'element-plus';
-import { deleteEmptyValue } from '../../../../utils/index';
+import { changeRequestValue } from '../../../../utils/index';
 
 export default {
   namespaced: true,
@@ -33,7 +33,19 @@ export default {
       });
     },
     async submitPlatform(_, payload) {
-      deleteEmptyValue(payload);
+      changeRequestValue(
+        ['is_nosedive_category', 'is_nosedive_keyword', 'is_benchmarking'],
+        [
+          'peak_season_start',
+          'peak_season_end',
+          'competitive_degree',
+          'precise_price_range',
+          'traffic_richness',
+          'keyword_bidding_degree',
+          'annual_sales'
+        ],
+        payload
+      );
       await axios.post('/survey/platform/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
