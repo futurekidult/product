@@ -372,6 +372,19 @@ export const setQuotationStateColor = (state) => {
   }
 };
 
+//设置调研进度颜色
+export const setSurveyScheduleStateColor = (state) => {
+  if (state === 10 || state === 20) {
+    return 'result-ing';
+  } else if (state >= 40) {
+    return 'result-pass';
+  } else if (state === 30 || state === 35) {
+    return 'result-fail';
+  } else {
+    return '';
+  }
+};
+
 //表单项重置，并移除校验结果
 export const resetFormFields = (form) => {
   setTimeout(() => {
@@ -384,4 +397,59 @@ export const setEntry = (name, tab) => {
   if (store.state.entry !== 'workbench') {
     store.commit(name, tab);
   }
+};
+
+//判断草稿状态下，平台调研表单所有属性值是否为空值
+export const checkPlatformValueAllEmpty = (form) => {
+  let isEmpty = true;
+  for (let item in form) {
+    if (item === 'images' && form[item].length > 0) {
+      isEmpty = false;
+    } else if (item !== 'images' && form[item]) {
+      isEmpty = false;
+    }
+  }
+  return isEmpty;
+};
+
+//判断草稿状态下，产品方案表单所有属性值是否为空值
+export const checkPlanValueAllEmpty = (form) => {
+  let isEmpty = true;
+  for (let item in form) {
+    if (item === 'attachment' && form[item].length > 0) {
+      isEmpty = false;
+    } else if (item === 'usage_scenario' && form[item][0].length !== 0) {
+      isEmpty = false;
+    } else if (
+      item !== 'attachment' &&
+      item !== 'usage_scenario' &&
+      form[item]
+    ) {
+      isEmpty = false;
+    }
+  }
+  return isEmpty;
+};
+
+//草稿状态下将数据为-1, 0的处理为空
+export const handleExceptionData = (arr, obj) => {
+  arr.forEach((item) => {
+    if (obj[item] === -1 || obj[item] === 0) {
+      obj[item] = '';
+    }
+  });
+};
+
+//(平台调研和产品方案)将数据为空值的属性变成0, -1传递给后端
+export const changeRequestValue = (negativeArr, zeroArr, obj) => {
+  negativeArr.forEach((item) => {
+    if (obj[item] === '') {
+      obj[item] = -1;
+    }
+  });
+  zeroArr.forEach((item) => {
+    if (obj[item] === '') {
+      obj[item] = 0;
+    }
+  });
 };

@@ -14,7 +14,6 @@
         name="platform"
       >
         <platform-survey
-          :change-color="changeColor"
           :progress="platformProgress"
           :survey-form="platformForm"
           :attachment="platformAttachment"
@@ -29,7 +28,6 @@
       >
         <market-survey
           v-if="isGetMarketData"
-          :change-color="changeColor"
           :get-list="getMarket"
           :progress="marketProgress"
           :attachment="marketAttachment"
@@ -97,7 +95,11 @@
 </template>
 
 <script>
-import { changeTimestamp, setEntry } from '../../../../utils';
+import {
+  changeTimestamp,
+  setEntry,
+  handleExceptionData
+} from '../../../../utils';
 import MarketSurvey from './survey/market-survey.vue';
 import PlatformSurvey from './survey/platform-survey.vue';
 import UserAnalysis from './survey/user-analysis.vue';
@@ -235,6 +237,10 @@ export default {
         changeTimestamp(this.planProgress, 'estimated_finish_time');
         changeTimestamp(this.planProgress, 'actual_finish_time');
         this.planForm = plan.report || {};
+        handleExceptionData(
+          ['tail_cost_currency', 'sea_freight_currency', 'head_cost_currency'],
+          this.planForm
+        );
         this.planAttachment = this.planForm.attachment || [];
         this.planForm.usage_scenario = this.planForm.usage_scenario || [];
         if (this.planForm.usage_scenario.length === 0) {
@@ -298,15 +304,6 @@ export default {
       } catch (err) {
         this.$store.commit('product/survey/user/setUserLoading', false);
         return;
-      }
-    },
-    changeColor(val) {
-      if (val === 10 || val === 20) {
-        return 'result-ing';
-      } else if (val === 50) {
-        return 'result-pass';
-      } else {
-        return 'result-fail';
       }
     },
     getRequest(val) {
