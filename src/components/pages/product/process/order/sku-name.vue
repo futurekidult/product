@@ -94,6 +94,8 @@
               placeholder="请输入SKU名"
               :disabled="isDisabled"
               clearable
+              maxlength="30"
+              show-word-limit
             />
           </el-form-item>
         </div>

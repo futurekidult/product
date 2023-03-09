@@ -11,12 +11,7 @@
       label="产品名称"
       prop="name"
       :rules="
-        type === 'detail'
-          ? []
-          : [
-            { required: true, message: '请输入产品名称' },
-            { max: 15, message: '长度不超过 15个字符' }
-          ]
+        type === 'detail' ? [] : [{ required: true, message: '请输入产品名称' }]
       "
     >
       <el-input

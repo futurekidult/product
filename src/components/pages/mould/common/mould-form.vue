@@ -2,7 +2,7 @@
   <el-dialog
     v-model="visible"
     :title="title"
-    width="30%"
+    width="40%"
     :close-on-click-modal="false"
     @close="cancel"
   >
@@ -17,7 +17,7 @@
         prop="cost"
       >
         <el-input
-          v-model="form.cost"
+          v-model.number="form.cost"
           placeholder="请输入开模费用"
           clearable
         >
@@ -34,6 +34,8 @@
           v-model="form.mould_factory"
           placeholder="请输入开模工厂"
           clearable
+          maxlength="15"
+          show-word-limit
         />
       </el-form-item>
       <el-form-item
@@ -119,6 +121,10 @@ export default {
           {
             required: true,
             message: '请输入开模费用'
+          },
+          {
+            type: 'number',
+            message: '请输入数字'
           }
         ],
         mould_factory: [
@@ -175,13 +181,9 @@ export default {
       this.form.agreement_file = this.file.id;
       this.$refs.form.validate((valid) => {
         if (valid) {
-          let val = {
-            cost: +this.form.cost,
-            mould_factory: this.form.mould_factory,
-            estimated_finish_time: timestamp(this.form.estimated_finish_time),
-            illustration_text: this.form.illustration_text,
-            agreement_file: this.form.agreement_file
-          };
+          let form = JSON.parse(JSON.stringify(this.form));
+          form.estimated_finish_time = timestamp(form.estimated_finish_time);
+          let val = form;
           if (this.type === 'create') {
             val['mould_id'] = +this.$route.params.id;
             this.createMakingMould(val);

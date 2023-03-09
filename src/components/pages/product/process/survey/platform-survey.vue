@@ -144,7 +144,7 @@
             placeholder="请输入同比增长率"
             :disabled="isDisabled"
             clearable
-            maxlength="15"
+            maxlength="10"
             show-word-limit
             :validate-event="false"
           />
