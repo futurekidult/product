@@ -33,7 +33,11 @@ export default {
       });
     },
     async submitPlan(_, payload) {
-      changeRequestValue([], [], payload);
+      changeRequestValue(
+        [],
+        ['head_cost_currency', 'tail_cost_currency', 'sea_freight_currency'],
+        payload
+      );
       await axios.post('/survey/solutions/create', payload).then((res) => {
         if (res.code === 200) {
           ElMessage.success(res.message);
