@@ -542,7 +542,7 @@ export default {
       }
     },
     async getTargetPrice(id, val) {
-      let price = val;
+      let price = val.substring(1);
       try {
         await this.$store.dispatch('price/getTargetPrice', {
           params: {

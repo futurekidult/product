@@ -10,7 +10,6 @@
         name="design"
       >
         <mould-design
-          :change-color="changeColor"
           :progress="designProgress"
           :get-list="getProductDesign"
         />
@@ -20,7 +19,6 @@
         name="prototype"
       >
         <sample-mould
-          :change-color="changeColor"
           :progress="prototypeProgress"
           :get-list="getPrototype"
           :attachment="attachment"
@@ -31,7 +29,6 @@
         name="mould-open"
       >
         <mould-open
-          :change-color="changeColor"
           :progress="makingMould"
           :get-list="getMakingMould"
           :button-state="buttonState"
@@ -43,7 +40,6 @@
         name="mould-test"
       >
         <mould-test
-          :change-color="changeColor"
           :progress="testingMould"
           :get-list="getTestingMould"
         />
@@ -66,7 +62,6 @@ export default {
     MouldOpen,
     MouldTest
   },
-  props: ['changeColor'],
   data() {
     return {
       designProgress: {},
