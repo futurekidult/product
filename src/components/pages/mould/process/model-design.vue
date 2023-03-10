@@ -60,7 +60,7 @@
             :rows="6"
             placeholder="请输入文件路径"
             clearable
-            maxlength="200"
+            maxlength="120"
             show-word-limit
           />
         </el-form-item>

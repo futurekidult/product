@@ -119,6 +119,8 @@
               v-model="editForm.name"
               clearable
               placeholder="请输入产品名称"
+              maxlength="15"
+              show-word-limit
             />
           </el-form-item>
           <el-form-item
