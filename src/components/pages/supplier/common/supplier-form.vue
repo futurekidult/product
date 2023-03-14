@@ -936,7 +936,7 @@ export default {
         'business_license_file'
       ];
       imgProp.forEach((item) => {
-        if (!form[item].length === 0) {
+        if (form[item].length !== 0) {
           form[item] = this.handleImgArr(item);
         }
       });
@@ -956,14 +956,18 @@ export default {
       return imgArr;
     },
     submitForm() {
-      this.$refs.supplierForm.validate((valid) => {
+      let form = JSON.parse(JSON.stringify(this.supplierForm));
+      this.$refs.baseForm.validate((valid) => {
         if (valid) {
-          let form = JSON.parse(JSON.stringify(this.supplierForm));
           this.handleFormFile(form);
           if (this.type === 'create') {
             this.createSupplier(form);
-          } else if (this.type === 'update') {
-            this.updateSupplier(form);
+          } else {
+            this.$refs.qualificationForm.validate((valid) => {
+              if (valid) {
+                this.updateSupplier(form);
+              }
+            });
           }
         }
       });
