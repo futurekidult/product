@@ -1016,7 +1016,7 @@ export default {
             if (this.$store.state.supplier.updateState) {
               this.updateQualification(form, state);
             } else {
-              this.$message.warning('保存失败，保存内容不可为空');
+              this.$message.warning('保存失败，保存内容未修改');
             }
           }
         } else {

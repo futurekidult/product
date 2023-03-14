@@ -103,6 +103,12 @@
               v-else
               style="display: flex"
             >
+              <div>
+                <span class="table-btn">|</span>
+                <text-btn @handle-click="showDeleteDialog(slotProps.row.id)">
+                  删除
+                </text-btn>
+              </div>
               <div
                 v-if="slotProps.row.state === 5 || slotProps.row.state === 20"
               >
@@ -119,12 +125,6 @@
                   @handle-click="toDetail(slotProps.row.id, 'approval')"
                 >
                   供应商审批
-                </text-btn>
-              </div>
-              <div>
-                <span class="table-btn">|</span>
-                <text-btn @handle-click="showDeleteDialog(slotProps.row.id)">
-                  删除
                 </text-btn>
               </div>
             </div>

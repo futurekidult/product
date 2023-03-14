@@ -1,9 +1,6 @@
 import { ElMessage } from 'element-plus';
 import axios from '../../utils/axios.js';
-import {
-  changeQualificationRequestValue,
-  handleExceptionData
-} from '../../utils/index.js';
+import { changeRequestValue, handleExceptionData } from '../../utils/index.js';
 
 const qualificationZeroArr = [
   'cooperation_level',
@@ -137,7 +134,7 @@ export default {
       });
     },
     async updateQualification(_, payload) {
-      changeQualificationRequestValue(qualificationZeroArr, payload);
+      changeRequestValue([], qualificationZeroArr, payload);
       await axios
         .post('/supplier/qualification/update', payload)
         .then((res) => {
