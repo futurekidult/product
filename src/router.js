@@ -12,6 +12,7 @@ import SupplierCreate from './components/pages/supplier/supplier-create.vue';
 import SupplierDetail from './components/pages/supplier/supplier-detail.vue';
 import BlackList from './components/pages/supplier/black-list.vue';
 import SupplierUpdate from './components/pages/supplier/supplier-update.vue';
+import SupplierQualificationUpdate from './components/pages/supplier/supplier-qualification-update.vue';
 import PriceList from './components/pages/price/price-list.vue';
 import QuotationList from './components/pages/price/quotation-list.vue';
 import MouldList from './components/pages/mould/mould-list.vue';
@@ -22,7 +23,7 @@ import ProductList from './components/pages/product/product-list.vue';
 import ProductDetail from './components/pages/product/product-detail.vue';
 import OrderDetail from './components/pages/product/process/order-detail.vue';
 import NotFound from './components/pages/not-found.vue';
-import OrganziationList from './components/pages/system/organization-list.vue';
+import OrganizationList from './components/pages/system/organization-list.vue';
 import AdminList from './components/pages/system/admin-list.vue';
 import SystemRoleList from './components/pages/system/system-role-list.vue';
 import ProductRoleList from './components/pages/system/product-role-list.vue';
@@ -124,6 +125,15 @@ const router = createRouter({
               component: SupplierUpdate,
               meta: {
                 title: '编辑供应商'
+              },
+              props: true
+            },
+            {
+              path: '/supplier-list/supplier-qualification-update/:id',
+              name: 'supplier qualification update',
+              component: SupplierQualificationUpdate,
+              meta: {
+                title: '编辑资质信息'
               },
               props: true
             }
@@ -235,7 +245,7 @@ const router = createRouter({
         {
           path: '/system-list/organization-list',
           name: 'organization',
-          component: OrganziationList,
+          component: OrganizationList,
           meta: {
             title: '组织管理'
           }

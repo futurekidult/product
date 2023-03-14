@@ -151,6 +151,7 @@ export const getTask = (val) => {
     730: 'mould_mouldopen',
     740: 'mould_mouldtest',
     750: 'mould_mouldtest',
+    755: 'supplier_supplier-qualification-update',
     760: 'supplier'
   };
   let value = task[val].split('_');
@@ -344,7 +345,7 @@ export const resetPagination = (pagination, page, size) => {
 
 //设置审批状态颜色
 export const setApproveStateColor = (state) => {
-  if (state === 10) {
+  if (state === 10 || state === 5) {
     return 'result-ing';
   } else if (state === 20) {
     return 'result-fail';
@@ -378,4 +379,50 @@ export const resetFormFields = (form) => {
   setTimeout(() => {
     form.resetFields();
   }, 100);
+};
+
+//判断保存资质信息时，表单所有属性值是否为空值
+export const checkQualificationValueAllEmpty = (form) => {
+  let isEmpty = true;
+  for (let item in form) {
+    if (
+      (item === 'vat_invoice_file' ||
+        item === 'account_opening_license_file' ||
+        item === 'business_license_file') &&
+      form[item].length > 0
+    ) {
+      isEmpty = false;
+    } else if (
+      item !== 'vat_invoice_file' &&
+      item !== 'account_opening_license_file' &&
+      item !== 'business_license_file' &&
+      item !== 'addresses' &&
+      item !== 'contacts' &&
+      item !== 'name' &&
+      item !== 'type' &&
+      item !== 'purchase_specialist_id' &&
+      form[item]
+    ) {
+      isEmpty = false;
+    }
+  }
+  return isEmpty;
+};
+
+//资质信息将数据为空值的属性处理为0
+export const changeRequestValue = (zeroArr, obj) => {
+  zeroArr.forEach((item) => {
+    if (obj[item] === '') {
+      obj[item] = 0;
+    }
+  });
+};
+
+//获取资质信息时将数据为0的处理为空
+export const handleExceptionData = (arr, obj) => {
+  arr.forEach((item) => {
+    if (obj[item] === 0) {
+      obj[item] = '';
+    }
+  });
 };

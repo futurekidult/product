@@ -80,7 +80,7 @@
         :table-column="$global.supplierTableColumn"
         :table-data="supplierList"
         :pagination="pagination"
-        :operation-width="200"
+        :operation-width="255"
         :length="$store.state.supplier.supplierListLength"
         @change-pagination="changeSupplierPagination"
       >
@@ -103,6 +103,16 @@
               v-else
               style="display: flex"
             >
+              <div
+                v-if="slotProps.row.state === 5 || slotProps.row.state === 20"
+              >
+                <span class="table-btn">|</span>
+                <text-btn
+                  @handle-click="toQualificationUpdate(slotProps.row.id)"
+                >
+                  编辑资质信息
+                </text-btn>
+              </div>
               <div v-if="slotProps.row.state === 30">
                 <span class="table-btn">|</span>
                 <text-btn @handle-click="toUpdate(slotProps.row.id)">
@@ -223,6 +233,9 @@ export default {
     },
     toUpdate(id) {
       this.$router.push(`/supplier-list/supplier-update/${id}`);
+    },
+    toQualificationUpdate(id) {
+      this.$router.push(`/supplier-list/supplier-qualification-update/${id}`);
     },
     toDetail(id, type) {
       this.$router.push(`/supplier-list/${id}`);

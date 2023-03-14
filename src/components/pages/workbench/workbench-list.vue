@@ -251,7 +251,9 @@ export default {
           this.$message.error('无权限访问');
         }
       } else {
-        if (
+        if (taskId === 755) {
+          this.$router.push(`/${taskArr[0]}-list/${taskArr[1]}/${id}`);
+        } else if (
           this.$store.state.menuData.links.indexOf(`/${taskArr[0]}-list`) > -1
         ) {
           this.$router.push(`/${taskArr[0]}-list/${id}`);

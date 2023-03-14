@@ -16,7 +16,8 @@ export default {
     isParent() {
       return (
         this.$route.name !== 'supplier detail' &&
-        this.$route.name !== 'supplier update'
+        this.$route.name !== 'supplier update' &&
+        this.$route.name !== 'supplier qualification update'
       );
     }
   }
