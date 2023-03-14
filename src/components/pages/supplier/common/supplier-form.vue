@@ -44,7 +44,7 @@
             v-model="supplierForm.name"
             placeholder="请输入供应商名称"
             clearable
-            :disabled="type !== 'create' && type !== 'qualificationUpdate'"
+            :disabled="isIdentifierDisabled"
             maxlength="100"
             show-word-limit
             :validate-event="false"
@@ -296,7 +296,7 @@
             v-model="supplierForm.tax_id"
             placeholder="请输入供应商税号"
             clearable
-            :disabled="type !== 'create' && type !== 'qualificationUpdate'"
+            :disabled="isIdentifierDisabled"
             maxlength="20"
             show-word-limit
             :validate-event="false"
@@ -639,10 +639,7 @@
 </template>
 
 <script>
-import {
-  getOrganizationList,
-  checkQualificationValueAllEmpty
-} from '../../../../utils';
+import { getOrganizationList } from '../../../../utils';
 export default {
   props: ['type'],
   data() {
@@ -830,11 +827,29 @@ export default {
   },
   computed: {
     isDisabled() {
-      return this.type === 'create' ||
-        this.type === 'update' ||
-        this.type === 'qualificationUpdate'
+      return !this.isIdentifierDisabled || this.type === 'update'
         ? false
         : true;
+    },
+    isIdentifierDisabled() {
+      return this.type === 'create' || this.type === 'qualificationUpdate'
+        ? false
+        : true;
+    }
+  },
+  watch: {
+    supplierForm: {
+      handler() {
+        if (this.type === 'qualificationUpdate') {
+          if (this.$store.state.supplier.formWatchCount !== 1) {
+            this.$store.commit('supplier/setUpdateState', true);
+          } else {
+            this.$store.commit('supplier/setUpdateState', false);
+          }
+          this.$store.commit('supplier/setFormWatchCount');
+        }
+      },
+      deep: true
     }
   },
   mounted() {
@@ -846,6 +861,7 @@ export default {
     if (this.type !== 'create') {
       this.getSupplierDetail();
     }
+    this.$store.commit('supplier/setFormWatchCount', 1);
   },
   methods: {
     async getParams() {
@@ -902,6 +918,7 @@ export default {
       body.id = +this.$route.params.id;
       try {
         await this.$store.dispatch('supplier/updateSupplier', body);
+        this.$store.commit('supplier/setUpdateState', false);
         this.$router.push('/supplier-list');
       } catch (err) {
         return;
@@ -996,11 +1013,10 @@ export default {
               }
             });
           } else {
-            let isAllEmpty = checkQualificationValueAllEmpty(form);
-            if (isAllEmpty) {
-              this.$message.warning('保存失败，保存内容不可为空');
-            } else {
+            if (this.$store.state.supplier.updateState) {
               this.updateQualification(form, state);
+            } else {
+              this.$message.warning('保存失败，保存内容不可为空');
             }
           }
         } else {

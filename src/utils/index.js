@@ -381,36 +381,8 @@ export const resetFormFields = (form) => {
   }, 100);
 };
 
-//判断保存资质信息时，表单所有属性值是否为空值
-export const checkQualificationValueAllEmpty = (form) => {
-  let isEmpty = true;
-  for (let item in form) {
-    if (
-      (item === 'vat_invoice_file' ||
-        item === 'account_opening_license_file' ||
-        item === 'business_license_file') &&
-      form[item].length > 0
-    ) {
-      isEmpty = false;
-    } else if (
-      item !== 'vat_invoice_file' &&
-      item !== 'account_opening_license_file' &&
-      item !== 'business_license_file' &&
-      item !== 'addresses' &&
-      item !== 'contacts' &&
-      item !== 'name' &&
-      item !== 'type' &&
-      item !== 'purchase_specialist_id' &&
-      form[item]
-    ) {
-      isEmpty = false;
-    }
-  }
-  return isEmpty;
-};
-
 //资质信息将数据为空值的属性处理为0
-export const changeRequestValue = (zeroArr, obj) => {
+export const changeQualificationRequestValue = (zeroArr, obj) => {
   zeroArr.forEach((item) => {
     if (obj[item] === '') {
       obj[item] = 0;

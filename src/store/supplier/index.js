@@ -1,6 +1,9 @@
 import { ElMessage } from 'element-plus';
 import axios from '../../utils/axios.js';
-import { changeRequestValue, handleExceptionData } from '../../utils/index.js';
+import {
+  changeQualificationRequestValue,
+  handleExceptionData
+} from '../../utils/index.js';
 
 const qualificationZeroArr = [
   'cooperation_level',
@@ -29,7 +32,9 @@ export default {
       cityOption: [],
       supplierListLength: 0,
       blackListLength: 0,
-      type: ''
+      type: '',
+      formWatchCount: 1,
+      updateState: false
     };
   },
   mutations: {
@@ -56,6 +61,16 @@ export default {
     },
     setActionType(state, payload) {
       state.type = payload;
+    },
+    setFormWatchCount(state, payload) {
+      if (payload) {
+        state.formWatchCount = payload;
+      } else {
+        state.formWatchCount++;
+      }
+    },
+    setUpdateState(state, payload) {
+      state.updateState = payload;
     }
   },
   actions: {
@@ -122,7 +137,7 @@ export default {
       });
     },
     async updateQualification(_, payload) {
-      changeRequestValue(qualificationZeroArr, payload);
+      changeQualificationRequestValue(qualificationZeroArr, payload);
       await axios
         .post('/supplier/qualification/update', payload)
         .then((res) => {
