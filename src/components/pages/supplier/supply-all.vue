@@ -80,7 +80,7 @@
         :table-column="$global.supplierTableColumn"
         :table-data="supplierList"
         :pagination="pagination"
-        :operation-width="200"
+        :operation-width="215"
         :length="$store.state.supplier.supplierListLength"
         @change-pagination="changeSupplierPagination"
       >
@@ -89,30 +89,42 @@
             <text-btn @handle-click="toDetail(slotProps.row.id, 'view')">
               查看
             </text-btn>
-            <div v-if="slotProps.row.state === 10">
+            <div v-if="slotProps.row.state === 30">
               <span class="table-btn">|</span>
-              <text-btn @handle-click="showDeleteDialog(slotProps.row.id)">
-                删除
+              <text-btn @handle-click="toUpdate(slotProps.row.id)">
+                编辑
               </text-btn>
               <span class="table-btn">|</span>
-              <text-btn @handle-click="toDetail(slotProps.row.id, 'approval')">
-                供应商审批
+              <text-btn @handle-click="showBlackDialog(slotProps.row.id)">
+                加入黑名单
               </text-btn>
             </div>
             <div
               v-else
               style="display: flex"
             >
-              <div v-if="slotProps.row.state === 30">
-                <span class="table-btn">|</span>
-                <text-btn @handle-click="toUpdate(slotProps.row.id)">
-                  编辑
-                </text-btn>
-              </div>
               <div>
                 <span class="table-btn">|</span>
-                <text-btn @handle-click="showBlackDialog(slotProps.row.id)">
-                  加入黑名单
+                <text-btn @handle-click="showDeleteDialog(slotProps.row.id)">
+                  删除
+                </text-btn>
+              </div>
+              <div
+                v-if="slotProps.row.state === 5 || slotProps.row.state === 20"
+              >
+                <span class="table-btn">|</span>
+                <text-btn
+                  @handle-click="toQualificationUpdate(slotProps.row.id)"
+                >
+                  编辑资质信息
+                </text-btn>
+              </div>
+              <div v-if="slotProps.row.state === 10">
+                <span class="table-btn">|</span>
+                <text-btn
+                  @handle-click="toDetail(slotProps.row.id, 'approval')"
+                >
+                  供应商审批
                 </text-btn>
               </div>
             </div>
@@ -223,6 +235,9 @@ export default {
     },
     toUpdate(id) {
       this.$router.push(`/supplier-list/supplier-update/${id}`);
+    },
+    toQualificationUpdate(id) {
+      this.$router.push(`/supplier-list/supplier-qualification-update/${id}`);
     },
     toDetail(id, type) {
       this.$router.push(`/supplier-list/${id}`);

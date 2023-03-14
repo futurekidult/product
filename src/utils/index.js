@@ -150,6 +150,7 @@ export const getTask = (val) => {
     730: 'mould_mould-open',
     740: 'mould_mould-test',
     750: 'mould_mould-test',
+    755: 'supplier_supplier-qualification-update',
     760: 'supplier'
   };
   let value = task[val].split('_');
@@ -343,7 +344,7 @@ export const resetPagination = (pagination, page, size) => {
 
 //设置审批状态颜色
 export const setApproveStateColor = (state) => {
-  if (state === 10) {
+  if (state === 10 || state === 5) {
     return 'result-ing';
   } else if (state === 20) {
     return 'result-fail';
@@ -440,7 +441,7 @@ export const handleExceptionData = (arr, obj) => {
   });
 };
 
-//(平台调研和产品方案)将数据为空值的属性变成0, -1传递给后端
+//(平台调研，产品方案，供应商)将数据为空值的属性变成0, -1传递给后端
 export const changeRequestValue = (negativeArr, zeroArr, obj) => {
   negativeArr.forEach((item) => {
     if (obj[item] === '') {
