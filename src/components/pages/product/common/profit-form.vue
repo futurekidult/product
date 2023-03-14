@@ -185,12 +185,13 @@
                   v-if="calculationResult[item.platform]"
                   style="margin: 10px"
                 >
-                  {{ calculationResult[item.platform].coef_selling }}*销售价 -
+                  ({{ calculationResult[item.platform].coef_selling }}*销售价 -
                   {{
                     calculationResult[item.platform].coef_volume
                   }}*体积*海运单价 -
                   {{ calculationResult[item.platform].coef_head }}*头程附加 -
-                  {{ calculationResult[item.platform].coef_tail }}*尾程
+                  {{ calculationResult[item.platform].coef_tail }}*尾程) *
+                  {{ calculationResult[item.platform].chinese_vat_rate }}
                 </div>
               </el-collapse-item>
             </el-collapse>
