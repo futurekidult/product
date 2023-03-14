@@ -20,6 +20,8 @@
           v-model="questionForm.name"
           placeholder="请输入问题"
           clearable
+          maxlength="15"
+          show-word-limit
         />
       </el-form-item>
       <el-form-item
@@ -32,7 +34,7 @@
           type="textarea"
           :rows="6"
           clearable
-          maxlength="200"
+          maxlength="100"
           show-word-limit
         />
       </el-form-item>

@@ -21,7 +21,7 @@
       <el-descriptions-item label="状态">
         <div
           :class="
-            changeColor(progress.state !== undefined ? progress.state : '')
+            setStateColor(progress.state !== undefined ? progress.state : '')
           "
         >
           {{ progress.state_desc }}
@@ -87,9 +87,11 @@
 </template>
 
 <script>
+import { setStateColor } from '../../../../utils';
+
 export default {
   inject: ['getMould'],
-  props: ['changeColor', 'progress', 'getList', 'attachment'],
+  props: ['progress', 'getList', 'attachment'],
   data() {
     return {
       prototypeForm: {},
@@ -109,6 +111,7 @@ export default {
     }
   },
   methods: {
+    setStateColor,
     async createPrototype(val) {
       let body = {
         mould_id: +this.$route.params.id,

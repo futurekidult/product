@@ -61,7 +61,8 @@
                     toDetail(
                       slotProps.row.task_id,
                       slotProps.row.related_id,
-                      slotProps.row.state
+                      slotProps.row.state,
+                      slotProps.row.biz_id
                     )
                   "
                 >
@@ -231,7 +232,7 @@ export default {
       this.todoPagination.current_page = 1;
       this.getTodoList();
     },
-    toDetail(taskId, id, state) {
+    toDetail(taskId, id, state, bizId) {
       let taskArr = getTask(taskId);
       if (taskArr.length === 1) {
         if (taskId === 760) {
@@ -256,8 +257,15 @@ export default {
         } else if (
           this.$store.state.menuData.links.indexOf(`/${taskArr[0]}-list`) > -1
         ) {
-          this.$router.push(`/${taskArr[0]}-list/${id}`);
+          if (taskId >= 600 && taskId <= 660) {
+            this.$router.push(`/${taskArr[0]}-list/${id}/${bizId}`);
+          } else {
+            this.$router.push(`/${taskArr[0]}-list/${id}`);
+          }
           this.$store.commit('setActiveTab', taskArr[1]);
+          if (taskArr[2]) {
+            this.$store.commit('setActiveSubTab', taskArr[2]);
+          }
           this.$store.commit('setEntry', 'workbench');
         } else {
           this.$message.error('无权限访问');

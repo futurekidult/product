@@ -106,6 +106,8 @@
               v-model="mouldForm.name"
               placeholder="请输入模具名称"
               clearable
+              maxlength="15"
+              show-word-limit
             />
           </el-form-item>
           <el-form-item

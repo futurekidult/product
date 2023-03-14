@@ -81,7 +81,7 @@
             placeholder="请输入手机号"
             clearable
             :disabled="isDisabled"
-            maxlength="15"
+            maxlength="20"
             show-word-limit
             :validate-event="false"
           />
@@ -102,7 +102,7 @@
             placeholder="请输入微信"
             clearable
             :disabled="isDisabled"
-            maxlength="15"
+            maxlength="20"
             show-word-limit
           />
         </el-form-item>
@@ -122,7 +122,7 @@
             placeholder="请输入电子邮件"
             clearable
             :disabled="isDisabled"
-            maxlength="30"
+            maxlength="50"
             show-word-limit
             @change="checkEmail('email', item.email, index + 1)"
           />
@@ -174,7 +174,7 @@
             placeholder="请输入详细地址"
             clearable
             :disabled="isDisabled"
-            maxlength="30"
+            maxlength="50"
             show-word-limit
             :validate-event="false"
           />

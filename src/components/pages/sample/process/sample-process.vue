@@ -41,7 +41,7 @@
 import SampleBasic from './samplie-basic.vue';
 import ProofingList from './proofing-list.vue';
 import SampleTest from './sample-test.vue';
-import { changeTimestamp } from '../../../../utils/index.js';
+import { changeTimestamp, setEntry } from '../../../../utils/index.js';
 
 export default {
   components: {
@@ -87,9 +87,7 @@ export default {
     };
   },
   mounted() {
-    if (this.$store.state.entry !== 'workbench') {
-      this.$store.commit('setActiveTab', 'base');
-    }
+    setEntry('setActiveTab', 'base');
     this.getRequest(this.$store.state.activeTab);
   },
   methods: {

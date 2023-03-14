@@ -22,6 +22,8 @@
           placeholder="请输入产品链接"
           :disabled="isDisabled"
           clearable
+          maxlength="50"
+          show-word-limit
         />
       </el-form-item>
       <el-form-item

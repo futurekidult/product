@@ -17,7 +17,7 @@
         prop="user_experience_duration"
       >
         <el-input
-          v-model="demandForm.user_experience_duration"
+          v-model.number="demandForm.user_experience_duration"
           placeholder="请输入天数"
           :disabled="isDisabled"
           clearable
@@ -92,7 +92,7 @@
           prop="sample_demand_quantity"
         >
           <el-input
-            v-model="demandForm.sample_demand_quantity"
+            v-model.number="demandForm.sample_demand_quantity"
             placeholder="请输入需求数"
             :disabled="isViewDisabled"
             clearable
@@ -167,6 +167,10 @@ export default {
           {
             required: true,
             message: '请输入天数'
+          },
+          {
+            type: 'number',
+            message: '请输入数字'
           }
         ],
         estimated_finish_time: [
@@ -193,6 +197,10 @@ export default {
           {
             required: true,
             message: '请输入需求数'
+          },
+          {
+            type: 'number',
+            message: '请输入数字'
           }
         ],
         user_requirement_file: [
@@ -257,12 +265,11 @@ export default {
   methods: {
     setDisabledDate,
     async createTestApply(val) {
+      let form = JSON.parse(JSON.stringify(val));
+      form.estimated_finish_time = timestamp(val.estimated_finish_time);
       let body = {
-        sample_id: +this.$route.params.id,
-        user_experience_duration: +val.user_experience_duration,
-        estimated_finish_time: timestamp(val.estimated_finish_time),
-        illustrate_text: val.illustrate_text,
-        demand_list_file: val.demand_list_file
+        ...form,
+        sample_id: +this.$route.params.id
       };
       try {
         await this.$store.dispatch('sample/user/createTestApply', body);
@@ -284,6 +291,9 @@ export default {
         if (!this.demandForm.user_survey_specialist_id) {
           this.demandForm.user_survey_specialist_id = '';
         }
+        this.demandForm.estimated_finish_time = formatterTime(
+          this.demandForm.estimated_finish_time
+        );
       } catch (err) {
         return;
       }
@@ -332,7 +342,7 @@ export default {
           } else {
             this.reviewTestApply({
               review_result: this.demandForm.review_result,
-              sample_demand_quantity: +this.demandForm.sample_demand_quantity,
+              sample_demand_quantity: this.demandForm.sample_demand_quantity,
               user_requirement_file: this.demandForm.user_requirement_file,
               user_survey_specialist_id:
                 this.demandForm.user_survey_specialist_id

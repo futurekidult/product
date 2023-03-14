@@ -144,6 +144,7 @@
             name="patent"
           >
             <product-patent
+              v-if="isGetPatentData"
               :patent="patent"
               :progress="patentProgress"
               :contract="patentContract"
@@ -250,7 +251,12 @@ import MouldMessage from './process/mould-message.vue';
 import QuestionAll from './process/question-all.vue';
 import ProductOrder from './process/product-order.vue';
 import ProductPackage from './process/product-package.vue';
-import { changeTimestamp, resetPagination } from '../../../utils';
+import {
+  changeTimestamp,
+  resetPagination,
+  setEntry,
+  handleExceptionData
+} from '../../../utils';
 import { getDemandDetail } from '../../../utils/demand';
 import TerminateForm from './common/terminate-form.vue';
 
@@ -278,7 +284,7 @@ export default {
       getQuestion: this.getQuestionList,
       getPackage: this.getPackageList,
       getOrder: this.getOrderList,
-      getProfitCalculation: this.getProfit,
+      getProfitList: this.getProfitList,
       getProcessTable: this.getSchedule,
       getContract: this.getContract,
       getPatent: this.getPatent,
@@ -333,7 +339,8 @@ export default {
       packagePagination: pagination,
       confirmDialogVisible: false,
       unterminated: 0,
-      surveyCondition: null
+      surveyCondition: null,
+      isGetPatentData: false
     };
   },
   computed: {
@@ -346,11 +353,10 @@ export default {
   },
   mounted() {
     this.getProductBase();
-    if (this.$store.state.entry !== 'workbench') {
-      this.$store.commit('setActiveTab', 'basic');
-    } else {
+    if (this.$store.state.entry === 'workbench') {
       this.getProductDetail();
     }
+    setEntry('setActiveTab', 'basic');
     this.getRequest(this.$store.state.activeTab);
   },
   methods: {
@@ -540,7 +546,7 @@ export default {
         return;
       }
     },
-    async getProfit() {
+    async getProfitList() {
       try {
         await this.$store.dispatch('product/project/getProfit', {
           params: { product_id: this.$route.params.productId }
@@ -576,6 +582,7 @@ export default {
           changeTimestamp(item, 'review_time');
         });
         this.applyForm.product_name_cn = this.patent.product_name_cn;
+        this.isGetPatentData = true;
       } catch (err) {
         this.$store.commit('product/patent/setPatentLoading', false);
         return;
@@ -618,17 +625,31 @@ export default {
         let { platform } = this.$store.state.product.survey.platform;
         this.platformProgress = platform.progress || {};
         this.platformForm = platform.report || {};
+        handleExceptionData(
+          [
+            'peak_season_start',
+            'peak_season_end',
+            'competitive_degree',
+            'is_nosedive_category',
+            'precise_price_range',
+            'traffic_richness',
+            'is_nosedive_keyword',
+            'keyword_bidding_degree',
+            'is_benchmarking'
+          ],
+          this.platformForm
+        );
         this.productImages = this.platformForm.images || [];
         this.platformAttachment = this.platformForm.attachment || {};
         changeTimestamp(this.platformProgress, 'estimated_finish_time');
         changeTimestamp(this.platformProgress, 'actual_finish_time');
-        this.isGetData = true;
       } catch (err) {
         this.$store.commit('product/survey/platform/setPlatformLoading', false);
         return;
       }
     },
     getRequest(val) {
+      this.$store.commit('product/setDetailLoading', false);
       switch (val) {
         case 'basic':
           this.getProductDetail();
@@ -667,18 +688,16 @@ export default {
           this.getProductBase();
           break;
         case 'project':
-          this.getProfit();
+          this.getProfitList();
           this.getSchedule();
           this.getProject();
           break;
         case 'patent':
           this.getPatent();
           this.getPatentProgress();
-          this.getContract();
           this.getProductBase();
           break;
         case 'survey':
-          this.getPlatform();
           this.getSurveySchedule();
           break;
         default:
@@ -697,6 +716,7 @@ export default {
             currentSurvey.current_survey
           ]
         );
+        this.isGetData = true;
       } catch (err) {
         return;
       }

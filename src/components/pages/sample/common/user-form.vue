@@ -26,6 +26,8 @@
               v-model="item.username"
               placeholder="请输入用户姓名"
               clearable
+              maxlength="15"
+              show-word-limit
             />
           </el-form-item>
           <el-form-item
@@ -37,6 +39,8 @@
               v-model="item.address"
               placeholder="请输入用户地址"
               clearable
+              maxlength="30"
+              show-word-limit
             />
           </el-form-item>
           <el-form-item
@@ -48,6 +52,8 @@
               v-model="item.postcode"
               placeholder="请输入邮编"
               clearable
+              maxlength="15"
+              show-word-limit
             />
           </el-form-item>
           <el-form-item
@@ -59,6 +65,8 @@
               v-model="item.tel"
               placeholder="请输入联系方式"
               clearable
+              maxlength="20"
+              show-word-limit
             />
           </el-form-item>
           <el-form-item
@@ -70,6 +78,8 @@
               v-model="item.email"
               placeholder="请输入邮箱"
               clearable
+              maxlength="50"
+              show-word-limit
             />
           </el-form-item>
           <base-delete

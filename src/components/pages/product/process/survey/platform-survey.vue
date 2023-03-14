@@ -25,7 +25,7 @@
         {{ progress.actual_finish_time }}
       </el-descriptions-item>
       <el-descriptions-item label="状态">
-        <div :class="changeColor(progress.state)">
+        <div :class="setSurveyScheduleStateColor(progress.state)">
           {{ progress.state_desc }}
         </div>
       </el-descriptions-item>
@@ -69,6 +69,7 @@
           :disabled="isDisabled"
           clearable
           :rows="6"
+          :validate-event="false"
         />
       </el-form-item>
       <el-form-item
@@ -84,6 +85,7 @@
           :disabled="isDisabled"
           clearable
           :rows="6"
+          :validate-event="false"
         />
       </el-form-item>
       <el-form-item
@@ -99,6 +101,7 @@
           :disabled="isDisabled"
           clearable
           :rows="6"
+          :validate-event="false"
         />
       </el-form-item>
       <el-form-item
@@ -114,6 +117,7 @@
           :disabled="isDisabled"
           clearable
           :rows="6"
+          :validate-event="false"
         />
       </el-form-item>
       <div class="form-item">
@@ -128,6 +132,7 @@
             clearable
             maxlength="15"
             show-word-limit
+            :validate-event="false"
           />
         </el-form-item>
         <el-form-item
@@ -139,8 +144,9 @@
             placeholder="请输入同比增长率"
             :disabled="isDisabled"
             clearable
-            maxlength="15"
+            maxlength="10"
             show-word-limit
+            :validate-event="false"
           />
         </el-form-item>
       </div>
@@ -154,6 +160,7 @@
             placeholder="请选择淡旺季系数"
             :disabled="isDisabled"
             clearable
+            :validate-event="false"
           >
             <el-option
               v-for="item in 12"
@@ -172,6 +179,7 @@
             placeholder="请选择淡旺季系数"
             :disabled="isDisabled"
             clearable
+            :validate-event="false"
           >
             <el-option
               v-for="item in 12"
@@ -192,6 +200,7 @@
             placeholder="请选择竞争度/垄断性"
             :disabled="isDisabled"
             clearable
+            :validate-event="false"
           >
             <el-option
               v-for="item in competitiveDegree"
@@ -210,6 +219,7 @@
             placeholder="请选择类目是否跳水"
             :disabled="isDisabled"
             clearable
+            :validate-event="false"
           >
             <el-option
               v-for="item in options"
@@ -229,6 +239,7 @@
         "
             :disabled="isDisabled"
             clearable
+            :validate-event="false"
           >
             <el-option
               v-for="item in precisePriceRange"
@@ -247,6 +258,7 @@
             placeholder="请选择流量丰富度"
             :disabled="isDisabled"
             clearable
+            :validate-event="false"
           >
             <el-option
               v-for="item in trafficRichness"
@@ -265,6 +277,7 @@
             placeholder="请选择关键词是否跳水"
             :disabled="isDisabled"
             clearable
+            :validate-event="false"
           >
             <el-option
               v-for="item in options"
@@ -283,6 +296,7 @@
             placeholder="请选择关键词竞价"
             :disabled="isDisabled"
             clearable
+            :validate-event="false"
           >
             <el-option
               v-for="item in keywordDegree"
@@ -303,6 +317,7 @@
           placeholder="请选择竞品是否对标"
           :disabled="isDisabled"
           clearable
+          :validate-event="false"
         >
           <el-option
             v-for="item in options"
@@ -328,9 +343,15 @@
       <el-form-item v-if="!isDisabled">
         <el-button
           type="primary"
-          @click="submitSurveyForm"
+          @click="submitSurveyForm(10)"
         >
           提交
+        </el-button>
+        <el-button
+          class="draft-btn"
+          @click="submitSurveyForm(5)"
+        >
+          草稿
         </el-button>
       </el-form-item>
     </el-form>
@@ -345,20 +366,17 @@
 
 <script>
 import SurveySuggestion from '../../common/survey-suggestion.vue';
+import {
+  setSurveyScheduleStateColor,
+  checkPlatformValueAllEmpty
+} from '../../../../../utils/index.js';
 
 export default {
   components: {
     SurveySuggestion
   },
   inject: ['getBase', 'getSurveySchedule'],
-  props: [
-    'changeColor',
-    'progress',
-    'surveyForm',
-    'attachment',
-    'productImages',
-    'getList'
-  ],
+  props: ['progress', 'surveyForm', 'attachment', 'productImages', 'getList'],
   data() {
     return {
       surveyRules: {
@@ -487,13 +505,25 @@ export default {
   },
   computed: {
     isDisabled() {
-      return this.progress.state === 10 ? false : true;
+      return this.progress.state <= 10 ? false : true;
+    }
+  },
+  watch: {
+    surveyForm(val) {
+      this.form = val;
+    },
+    productImages(val) {
+      this.imgList = val;
+    },
+    attachment(val) {
+      this.file = val;
     }
   },
   mounted() {
     this.getParams();
   },
   methods: {
+    setSurveyScheduleStateColor,
     async getParams() {
       if (localStorage.getItem('params')) {
         let platform = JSON.parse(
@@ -512,11 +542,18 @@ export default {
         }
       }
     },
-    async updatePlatform(val) {
-      let body = val;
-      body['attachment'] = this.file.id;
-      body['survey_schedule_id'] = this.progress.id;
-      body['product_id'] = +this.$route.params.productId;
+    async updatePlatform(val, type) {
+      let body = {
+        ...val,
+        state: type,
+        attachment: this.file.id || null,
+        survey_schedule_id: this.progress.id,
+        product_id: +this.$route.params.productId
+      };
+      //若之前有草稿，提交或保存需带上 id：platform_survey_id
+      if (this.progress.state === 5) {
+        body.id = this.$store.state.product.survey.platform.platform.survey_id;
+      }
       try {
         await this.$store.dispatch(
           'product/survey/platform/submitPlatform',
@@ -529,7 +566,7 @@ export default {
         return;
       }
     },
-    submitSurveyForm() {
+    submitSurveyForm(type) {
       let imgArr = [];
       this.imgList.forEach((item) => {
         let { id } = item;
@@ -537,12 +574,26 @@ export default {
       });
       this.form.images = imgArr;
       this.form.attachment = this.file.id;
-      this.$refs.form.validate((valid) => {
-        if (valid) {
-          this.form.annual_sales = +this.form.annual_sales;
-          this.updatePlatform(this.form);
+      let form = JSON.parse(JSON.stringify(this.form));
+      let inputType = typeof form.annual_sales;
+      if (form.annual_sales && inputType === 'string') {
+        form.annual_sales = +form.annual_sales;
+      }
+      if (type === 10) {
+        this.$refs.form.validate((valid) => {
+          if (valid) {
+            this.updatePlatform(form, type);
+          }
+        });
+      } else {
+        this.$refs.form.clearValidate();
+        let isAllEmpty = checkPlatformValueAllEmpty(form);
+        if (isAllEmpty) {
+          this.$message.warning('保存失败，保存内容不可为空');
+        } else {
+          this.updatePlatform(form, type);
         }
-      });
+      }
     },
     getUploadFile(e, str) {
       if (str === 'image') {

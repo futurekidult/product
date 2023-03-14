@@ -380,6 +380,14 @@ export default {
       return this.progress.state === 10 ? false : true;
     }
   },
+  watch: {
+    analysisForm(val) {
+      this.form = val;
+    },
+    attachment(val) {
+      this.file = val;
+    }
+  },
   mounted() {
     this.getParams();
     this.getCountryList();

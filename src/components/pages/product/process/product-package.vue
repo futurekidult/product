@@ -42,7 +42,7 @@
             :rows="6"
             clearable
             placeholder="请输入内容"
-            maxlength="200"
+            maxlength="120"
             show-word-limit
           />
         </el-form-item>

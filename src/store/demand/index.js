@@ -16,7 +16,9 @@ export default {
       demandListLength: 0,
       draftList: [],
       draftListLength: 0,
-      defaultMember: {}
+      defaultMember: {},
+      formWatchCount: 1,
+      updateState: false
     };
   },
   mutations: {
@@ -46,6 +48,16 @@ export default {
     },
     setDefaultMember(state, payload) {
       state.defaultMember = payload;
+    },
+    setFormWatchCount(state, payload) {
+      if (payload) {
+        state.formWatchCount = payload;
+      } else {
+        state.formWatchCount++;
+      }
+    },
+    setUpdateState(state, payload) {
+      state.updateState = payload;
     }
   },
   actions: {
