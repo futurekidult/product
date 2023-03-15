@@ -351,7 +351,7 @@
           class="draft-btn"
           @click="submitSurveyForm(5)"
         >
-          草稿
+          保存
         </el-button>
       </el-form-item>
     </el-form>
