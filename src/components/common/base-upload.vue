@@ -23,7 +23,7 @@
         v-else
         class="attachment"
       >
-        可上传office格式文件(不超过5M)，pdf文件和压缩包文件(不超过15M)
+        可上传office格式文件(不超过5MB)，pdf文件和压缩包文件(不超过15MB)
       </div>
     </el-upload>
     <div
