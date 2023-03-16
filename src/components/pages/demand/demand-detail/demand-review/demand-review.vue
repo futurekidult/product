@@ -837,18 +837,22 @@ export default {
       }
     },
     submitDemandForm() {
-      this.reviewForm.meeting_summary_file = this.attachment.id;
-      let timeForm = JSON.parse(JSON.stringify(this.reviewForm));
-      for (let item of Object.keys(timeForm)) {
-        if (item.indexOf('time') !== -1) {
-          timeForm[item] = timestamp(timeForm[item]);
+      if (this.$store.state.demand.updateState) {
+        this.$message.warning('需求信息有修改，请先点击保存');
+      } else {
+        this.reviewForm.meeting_summary_file = this.attachment.id;
+        let timeForm = JSON.parse(JSON.stringify(this.reviewForm));
+        for (let item of Object.keys(timeForm)) {
+          if (item.indexOf('time') !== -1) {
+            timeForm[item] = timestamp(timeForm[item]);
+          }
         }
+        this.$refs.reviewForm.validate((valid) => {
+          if (valid) {
+            this.reviewDemandForm(timeForm);
+          }
+        });
       }
-      this.$refs.reviewForm.validate((valid) => {
-        if (valid) {
-          this.reviewDemandForm(timeForm);
-        }
-      });
     },
     addRow() {
       this.reviewForm.market.push({});

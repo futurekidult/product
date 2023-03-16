@@ -76,7 +76,7 @@
           type="textarea"
           :disabled="isDisabled"
           clearable
-          maxlength="200"
+          maxlength="50"
           show-word-limit
           :rows="6"
         />

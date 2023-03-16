@@ -38,6 +38,7 @@
             show-word-limit
             clearable
             :disabled="isDisabled"
+            :validate-event="false"
           />
           <base-delete
             :id="index"
@@ -72,6 +73,7 @@
           :disabled="isDisabled"
           clearable
           :rows="6"
+          :validate-event="false"
         />
       </el-form-item>
       <el-form-item
@@ -88,6 +90,7 @@
           :disabled="isDisabled"
           clearable
           :rows="6"
+          :validate-event="false"
         />
       </el-form-item>
       <el-form-item
@@ -104,6 +107,7 @@
           :disabled="isDisabled"
           clearable
           :rows="6"
+          :validate-event="false"
         />
       </el-form-item>
       <competitive-table
@@ -135,6 +139,7 @@
                   clearable
                   maxlength="15"
                   show-word-limit
+                  :validate-event="false"
                 />
               </el-form-item>
               <el-form-item prop="inner_box_dimension_w">
@@ -146,6 +151,7 @@
                   clearable
                   maxlength="15"
                   show-word-limit
+                  :validate-event="false"
                 />
               </el-form-item>
               <el-form-item prop="inner_box_dimension_h">
@@ -156,6 +162,7 @@
                   clearable
                   maxlength="15"
                   show-word-limit
+                  :validate-event="false"
                 />
               </el-form-item>
             </div>
@@ -174,6 +181,7 @@
                   clearable
                   maxlength="15"
                   show-word-limit
+                  :validate-event="false"
                 />
               </el-form-item>
               <el-form-item prop="outer_box_dimension_w">
@@ -185,6 +193,7 @@
                   clearable
                   maxlength="15"
                   show-word-limit
+                  :validate-event="false"
                 />
               </el-form-item>
               <el-form-item prop="outer_box_dimension_h">
@@ -195,6 +204,7 @@
                   clearable
                   maxlength="15"
                   show-word-limit
+                  :validate-event="false"
                 />
               </el-form-item>
             </div>
@@ -211,6 +221,7 @@
               clearable
               maxlength="15"
               show-word-limit
+              :validate-event="false"
             />
           </el-form-item>
           <el-form-item
@@ -225,6 +236,7 @@
               clearable
               maxlength="15"
               show-word-limit
+              :validate-event="false"
             />
           </el-form-item>
           <div
@@ -273,6 +285,7 @@
                   placeholder="请选择货币"
                   :disabled="isDisabled"
                   clearable
+                  :validate-event="false"
                   @clear="clearCurrency('head')"
                 >
                   <el-option
@@ -290,6 +303,7 @@
                   placeholder="请输入金额"
                   :disabled="isDisabled"
                   clearable
+                  :validate-event="false"
                 />
               </el-form-item>
             </div>
@@ -313,6 +327,7 @@
                   placeholder="请选择货币"
                   :disabled="isDisabled"
                   clearable
+                  :validate-event="false"
                   @clear="clearCurrency('tail')"
                 >
                   <el-option
@@ -330,6 +345,7 @@
                   placeholder="请输入金额"
                   :disabled="isDisabled"
                   clearable
+                  :validate-event="false"
                 />
               </el-form-item>
             </div>
@@ -353,6 +369,7 @@
                   placeholder="请选择货币"
                   :disabled="isDisabled"
                   clearable
+                  :validate-event="false"
                   @clear="clearCurrency('sea_freight')"
                 >
                   <el-option
@@ -370,6 +387,7 @@
                   placeholder="请输入金额"
                   :disabled="isDisabled"
                   clearable
+                  :validate-event="false"
                 />
               </el-form-item>
             </div>
@@ -399,9 +417,15 @@
       <el-form-item v-if="!isDisabled">
         <el-button
           type="primary"
-          @click="submitProductForm"
+          @click="submitProductForm(10)"
         >
           提交
+        </el-button>
+        <el-button
+          class="draft-btn"
+          @click="submitProductForm(5)"
+        >
+          保存
         </el-button>
       </el-form-item>
     </el-form>
@@ -417,7 +441,7 @@
 <script>
 import SurveySchedule from '../../common/survey-schedule.vue';
 import CompetitiveTable from '../../common/competitive-table.vue';
-import { checkValid } from '../../../../../utils';
+import { checkValid, checkPlanValueAllEmpty } from '../../../../../utils';
 import SurveySuggestion from '../../common/survey-suggestion.vue';
 
 export default {
@@ -568,16 +592,27 @@ export default {
     };
   },
   computed: {
+    getState() {
+      return (
+        this.progress.state === 5 ||
+        this.progress.state === 10 ||
+        this.progress.state === 30 ||
+        this.progress.state === 35
+      );
+    },
     isDisabled() {
-      return this.progress.state === 10 || this.progress.state === 30
-        ? false
-        : true;
+      return this.getState ? false : true;
     },
     showDelete() {
-      return (
-        this.form.usage_scenario.length > 1 &&
-        (this.progress.state === 10 || this.progress.state === 30)
-      );
+      return this.form.usage_scenario.length > 1 && this.getState;
+    }
+  },
+  watch: {
+    productForm(val) {
+      this.form = val;
+    },
+    attachment(val) {
+      this.file = val;
     }
   },
   mounted() {
@@ -599,16 +634,35 @@ export default {
         }
       }
     },
-    async updatePlan(val) {
-      let body = val;
+    async updatePlan(val, type) {
+      let body = {
+        ...val,
+        product_id: +this.$route.params.productId
+      };
       let funcName = '';
-      body['product_id'] = +this.$route.params.productId;
-      if (this.progress.state === 10) {
-        body['survey_schedule_id'] = this.progress.id;
-        funcName = 'product/survey/plan/submitPlan';
-      } else if (this.progress.state === 30) {
-        body['id'] = this.productForm.id;
-        funcName = 'product/survey/plan/updatePlan';
+      switch (this.progress.state) {
+        case 5:
+          body.state = type;
+          body.id = this.$store.state.product.survey.plan.plan.survey_id;
+          body['survey_schedule_id'] = this.progress.id;
+          funcName = 'product/survey/plan/submitPlan';
+          break;
+        case 10:
+          body.state = type;
+          body['survey_schedule_id'] = this.progress.id;
+          funcName = 'product/survey/plan/submitPlan';
+          break;
+        case 30:
+          body.state = type === 5 ? 35 : 20;
+          body.id = this.productForm.id;
+          funcName = 'product/survey/plan/updatePlan';
+          break;
+        case 35:
+          body.state = type === 5 ? 35 : 20;
+          body.id = this.productForm.id;
+          funcName = 'product/survey/plan/updatePlan';
+          break;
+        default:
       }
       try {
         await this.$store.dispatch(funcName, body);
@@ -641,17 +695,30 @@ export default {
         1
       );
     },
-    submitProductForm() {
+    submitProductForm(type) {
       this.form.attachment = [];
-      this.file.forEach((item) => {
-        let { id } = item;
-        this.form.attachment.push(id);
-      });
-      this.$refs.productForm.validate((valid) => {
-        if (valid) {
-          this.updatePlan(this.form);
+      if (JSON.stringify(this.file) !== '{}') {
+        this.file.forEach((item) => {
+          let { id } = item;
+          this.form.attachment.push(id);
+        });
+      }
+      let form = JSON.parse(JSON.stringify(this.form));
+      if (type === 10) {
+        this.$refs.productForm.validate((valid) => {
+          if (valid) {
+            this.updatePlan(form, type);
+          }
+        });
+      } else {
+        this.$refs.productForm.clearValidate();
+        let isAllEmpty = checkPlanValueAllEmpty(this.form);
+        if (isAllEmpty) {
+          this.$message.warning('保存失败，保存内容不可为空');
+        } else {
+          this.updatePlan(form, type);
         }
-      });
+      }
     },
     getUploadFile(e) {
       this.file = e;

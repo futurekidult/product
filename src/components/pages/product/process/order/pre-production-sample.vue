@@ -94,7 +94,7 @@
           prop="pre_production_sample_quantity"
         >
           <el-input
-            v-model="followupForm.pre_production_sample_quantity"
+            v-model.number="followupForm.pre_production_sample_quantity"
             placeholder="请输入大货样套数"
             clearable
           />
@@ -142,6 +142,8 @@
             v-model="courierNumberForm.courier_number"
             placeholder="请输入快递单号"
             clearable
+            maxlength="30"
+            show-word-limit
           />
         </el-form-item>
         <el-form-item
@@ -166,7 +168,7 @@
           </el-button>
           <el-button
             type="primary"
-            @click="submitCourierNumbeForm"
+            @click="submitCourierNumberForm"
           >
             提交
           </el-button>
@@ -224,6 +226,10 @@ export default {
           {
             required: true,
             message: '请输入大货样套数'
+          },
+          {
+            type: 'number',
+            message: '请输入数字'
           }
         ]
       },
@@ -254,17 +260,14 @@ export default {
       this.followupSheetDialog = false;
     },
     async submitSheet() {
-      this.followupForm['id'] = this.preProductSample.id;
-      let val = {
-        pre_production_sample_quantity:
-          +this.followupForm.pre_production_sample_quantity,
-        estimated_arrival_time: timestamp(
-          this.followupForm.estimated_arrival_time
-        ),
+      let form = JSON.parse(JSON.stringify(this.followupForm));
+      form.estimated_arrival_time = timestamp(form.estimated_arrival_time);
+      let body = {
+        ...form,
         id: this.preProductSample.id
       };
       try {
-        await this.$store.dispatch('product/order/followupSheet', val);
+        await this.$store.dispatch('product/order/followupSheet', body);
         this.followupSheetDialog = false;
         this.getPreProductSample();
       } catch (err) {
@@ -300,7 +303,7 @@ export default {
     closeCourierNumber() {
       this.courierNumberDialog = false;
     },
-    submitCourierNumbeForm() {
+    submitCourierNumberForm() {
       this.$refs.courierNumberForm.validate((valid) => {
         if (valid) {
           this.submitReceipt();

@@ -72,7 +72,7 @@
       </el-descriptions>
 
       <el-tabs
-        v-model="activeName"
+        v-model="$store.state.activeSubTab"
         type="card"
         class="patent-tabs"
         @tab-click="handleClick"
@@ -138,7 +138,7 @@
 </template>
 
 <script>
-import { formatterTime } from '../../../../utils';
+import { formatterTime, setEntry } from '../../../../utils';
 import ContractReport from '../common/contract-report.vue';
 import PatentApply from '../common/patent-apply.vue';
 
@@ -151,7 +151,6 @@ export default {
   props: ['patent', 'progress', 'contract', 'applyForm'],
   data() {
     return {
-      activeName: 'contract',
       patentVisible: false,
       patentReviewVisible: false,
       viewReviewVisible: false,
@@ -166,6 +165,10 @@ export default {
     buttonState() {
       return this.patent.button_state;
     }
+  },
+  mounted() {
+    setEntry('setActiveSubTab', 'contract');
+    this.getRequest(this.$store.state.activeSubTab);
   },
   methods: {
     async getReport() {
@@ -246,12 +249,15 @@ export default {
         return 'result-fail';
       }
     },
-    handleClick(tab) {
-      if (tab.props.name === 'contract') {
+    getRequest(val) {
+      if (val === 'contract') {
         this.getContract();
       } else {
         this.getReport();
       }
+    },
+    handleClick(tab) {
+      this.getRequest(tab.props.name);
     }
   }
 };

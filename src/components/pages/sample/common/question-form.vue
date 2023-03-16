@@ -27,6 +27,8 @@
               v-model="item.name"
               placeholder="请输入问题"
               clearable
+              maxlength="15"
+              show-word-limit
             />
           </el-form-item>
           <el-form-item

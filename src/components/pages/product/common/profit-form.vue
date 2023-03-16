@@ -185,12 +185,13 @@
                   v-if="calculationResult[item.platform]"
                   style="margin: 10px"
                 >
-                  {{ calculationResult[item.platform].coef_selling }}*销售价 -
+                  ({{ calculationResult[item.platform].coef_selling }}*销售价 -
                   {{
                     calculationResult[item.platform].coef_volume
                   }}*体积*海运单价 -
                   {{ calculationResult[item.platform].coef_head }}*头程附加 -
-                  {{ calculationResult[item.platform].coef_tail }}*尾程
+                  {{ calculationResult[item.platform].coef_tail }}*尾程) *
+                  {{ calculationResult[item.platform].chinese_vat_rate }}
                 </div>
               </el-collapse-item>
             </el-collapse>
@@ -285,7 +286,7 @@ export default {
   components: {
     ProfitParams
   },
-  inject: ['getProfitCalculation'],
+  inject: ['getProfitList'],
   props: ['dialogVisible', 'title', 'type', 'id'],
   emits: ['hide-dialog'],
   data() {
@@ -474,7 +475,7 @@ export default {
       try {
         await this.$store.dispatch('product/project/createProfit', body);
         this.visible = false;
-        this.getProfitCalculation();
+        this.getProfitList();
       } catch (err) {
         return;
       }
@@ -485,7 +486,7 @@ export default {
       try {
         await this.$store.dispatch('product/project/updateProfit', body);
         this.visible = false;
-        this.getProfitCalculation();
+        this.getProfitList();
       } catch (err) {
         return;
       }
@@ -547,7 +548,7 @@ export default {
           body
         );
         this.visible = false;
-        this.getProfitCalculation();
+        this.getProfitList();
       } catch (err) {
         return;
       }

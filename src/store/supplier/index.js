@@ -1,5 +1,20 @@
 import { ElMessage } from 'element-plus';
 import axios from '../../utils/axios.js';
+import { changeRequestValue, handleExceptionData } from '../../utils/index.js';
+
+const qualificationZeroArr = [
+  'cooperation_level',
+  'currency',
+  'sea_freight_currency',
+  'inter_bank',
+  'payment_method',
+  'payment_terms',
+  'tax_eligibility',
+  'territory',
+  'factory_scale',
+  'registered_capital',
+  'deposit_ratio'
+];
 
 export default {
   namespaced: true,
@@ -14,7 +29,9 @@ export default {
       cityOption: [],
       supplierListLength: 0,
       blackListLength: 0,
-      type: ''
+      type: '',
+      formWatchCount: 1,
+      updateState: false
     };
   },
   mutations: {
@@ -41,6 +58,16 @@ export default {
     },
     setActionType(state, payload) {
       state.type = payload;
+    },
+    setFormWatchCount(state, payload) {
+      if (payload) {
+        state.formWatchCount = payload;
+      } else {
+        state.formWatchCount++;
+      }
+    },
+    setUpdateState(state, payload) {
+      state.updateState = payload;
     }
   },
   actions: {
@@ -93,6 +120,7 @@ export default {
     async getSupplierDetail(context, payload) {
       await axios.get('/supplier/detail/get', payload).then((res) => {
         if (res.code === 200) {
+          handleExceptionData(qualificationZeroArr, res.data);
           context.commit('setSupplierDetail', res.data);
           context.commit('setSupplierDetailLoading', false);
         }
@@ -104,6 +132,16 @@ export default {
           ElMessage.success(res.message);
         }
       });
+    },
+    async updateQualification(_, payload) {
+      changeRequestValue([], qualificationZeroArr, payload);
+      await axios
+        .post('/supplier/qualification/update', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(res.message);
+          }
+        });
     },
     async approvalSupplier(_, payload) {
       await axios.post('supplier/entry/approve', payload).then((res) => {

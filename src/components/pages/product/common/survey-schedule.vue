@@ -14,7 +14,7 @@
       {{ getProgress.actual_finish_time }}
     </el-descriptions-item>
     <el-descriptions-item label="状态">
-      <div :class="changeColor(getProgress.state)">
+      <div :class="setSurveyScheduleStateColor(getProgress.state)">
         {{ getProgress.state_desc }}
       </div>
     </el-descriptions-item>
@@ -40,19 +40,13 @@
 </template>
 
 <script>
+import { setSurveyScheduleStateColor } from '../../../../utils/index.js';
+
 export default {
   props: ['getProgress', 'type', 'id'],
   emits: ['refresh-plan'],
   methods: {
-    changeColor(val) {
-      if (val === 10 || val === 20) {
-        return 'result-ing';
-      } else if (val === 50) {
-        return 'result-pass';
-      } else {
-        return 'result-fail';
-      }
-    },
+    setSurveyScheduleStateColor,
     async approvalPlan(val) {
       let body = {
         id: this.id,
