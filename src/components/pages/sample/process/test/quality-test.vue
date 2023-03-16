@@ -61,7 +61,7 @@
         {{ formatterTime(testResultSchedule.actual_finish_time) }}
       </el-descriptions-item>
       <el-descriptions-item label="状态">
-        <div :class="changeApprovalColor(testResultSchedule.state)">
+        <div :class="setStateColor(testResultSchedule.state)">
           {{ testResultSchedule.state_desc }}
         </div>
       </el-descriptions-item>
@@ -167,7 +167,7 @@
 
 <script>
 import TestQuestions from '../../common/test-template.vue';
-import { formatterTime, changeApprovalColor } from '../../../../../utils/index';
+import { formatterTime, setStateColor } from '../../../../../utils/index';
 
 export default {
   components: {
@@ -208,7 +208,7 @@ export default {
   },
   methods: {
     formatterTime,
-    changeApprovalColor,
+    setStateColor,
     async confirmTestResult(val) {
       let body = val;
       body.id = this.testId;

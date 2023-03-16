@@ -38,19 +38,19 @@
           {{ progress.actual_finish_time }}
         </el-descriptions-item>
         <el-descriptions-item label="状态">
-          <div :class="changeColor(progress.state)">
+          <div :class="setMouldStateColor(progress.state)">
             {{ progress.state_desc }}
           </div>
         </el-descriptions-item>
       </el-descriptions>
 
-      <mould-process :change-color="changeColor" />
+      <mould-process />
     </div>
   </div>
 </template>
 
 <script>
-import { formatterTime } from '../../../utils';
+import { formatterTime, setMouldStateColor } from '../../../utils';
 import MouldProcess from './process/mould-process.vue';
 
 export default {
@@ -73,6 +73,7 @@ export default {
     this.getMould();
   },
   methods: {
+    setMouldStateColor,
     async getMould() {
       this.$store.commit('mould/setMouldLoading', true);
       try {
@@ -92,15 +93,6 @@ export default {
       } catch (err) {
         this.$store.commit('mould/setMouldLoading', false);
         return;
-      }
-    },
-    changeColor(val) {
-      if (val === 40) {
-        return 'result-pass';
-      } else if (val === 30) {
-        return 'result-fail';
-      } else {
-        return 'result-ing';
       }
     }
   }

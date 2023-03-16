@@ -36,7 +36,7 @@
     </el-descriptions>
 
     <el-tabs
-      v-model="activeName"
+      v-model="$store.state.activeSubTab"
       type="card"
       class="order-tabs"
       @tab-click="handleClick"
@@ -79,7 +79,7 @@
 import SkuName from './order/sku-name.vue';
 import ContractList from './order/contract-list.vue';
 import ProductionSample from './order/pre-production-sample.vue';
-import { changeTimestamp } from '../../../../utils';
+import { changeTimestamp, setEntry } from '../../../../utils';
 
 export default {
   components: {
@@ -99,7 +99,6 @@ export default {
   props: ['orderId'],
   data() {
     return {
-      activeName: 'sku',
       progress: {},
       schedule: {},
       skuForm: {},
@@ -118,6 +117,8 @@ export default {
   mounted() {
     this.getProgress();
     this.getSku();
+    setEntry('setActiveSubTab', 'sku');
+    this.getRequest(this.$store.state.activeSubTab);
   },
   methods: {
     async getProgress() {
@@ -207,14 +208,17 @@ export default {
         return;
       }
     },
-    handleClick(tab) {
-      if (tab.props.name === 'sku') {
+    getRequest(val) {
+      if (val === 'sku') {
         this.getSku();
-      } else if (tab.props.name === 'contract') {
+      } else if (val === 'contract') {
         this.getContract();
       } else {
         this.getPreProductSample();
       }
+    },
+    handleClick(tab) {
+      this.getRequest(tab.props.name);
     },
     changeColor(val) {
       if (val === 40) {

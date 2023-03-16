@@ -35,7 +35,7 @@
         prop="total"
       >
         <el-input
-          v-model="applyForm.total"
+          v-model.number="applyForm.total"
           placeholder="请输入样品总数"
           :disabled="disabled"
           clearable
@@ -180,6 +180,10 @@ export default {
           {
             required: true,
             message: '请输入样品总数'
+          },
+          {
+            type: 'number',
+            message: '请输入数字'
           }
         ],
         is_pre_production: [
@@ -280,15 +284,12 @@ export default {
       }
     },
     async createTestApply(val) {
+      let form = JSON.parse(JSON.stringify(val));
+      form.expected_finish_time = timestamp(form.expected_finish_time);
       let body = {
-        sample_id: +this.$route.params.id,
-        total: +val.total,
-        expected_finish_time: timestamp(val.expected_finish_time),
-        certificate_and_report: val.certificate_and_report,
-        is_pre_production: val.is_pre_production,
-        has_manual: val.has_manual
+        ...form,
+        sample_id: +this.$route.params.id
       };
-      body['sample_id'] = +this.$route.params.id;
       try {
         await this.$store.dispatch('sample/createTestApply', body);
         this.visible = false;

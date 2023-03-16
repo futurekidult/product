@@ -25,7 +25,7 @@
         {{ progress.actual_finish_time }}
       </el-descriptions-item>
       <el-descriptions-item label="状态">
-        <div :class="changeColor(progress.state)">
+        <div :class="setSurveyScheduleStateColor(progress.state)">
           {{ progress.state_desc }}
         </div>
       </el-descriptions-item>
@@ -76,13 +76,14 @@
 
 <script>
 import SurveySuggestion from '../../common/survey-suggestion.vue';
+import { setSurveyScheduleStateColor } from '../../../../../utils/index.js';
 
 export default {
   components: {
     SurveySuggestion
   },
   inject: ['getBase', 'getSurveySchedule'],
-  props: ['changeColor', 'progress', 'attachment', 'getList'],
+  props: ['progress', 'attachment', 'getList'],
   data() {
     return {
       marketForm: {},
@@ -102,7 +103,13 @@ export default {
       return this.progress.state === 10 ? false : true;
     }
   },
+  watch: {
+    attachment(val) {
+      this.file = val;
+    }
+  },
   methods: {
+    setSurveyScheduleStateColor,
     async submitRequest() {
       let params = {
         product_id: +this.$route.params.productId,

@@ -12,66 +12,26 @@
           用户调研申请
         </el-button>
       </div>
-
-      <el-table
-        border
-        stripe
-        empty-text="无数据"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        :data="surveyApply"
+      <base-table
+        :table-data="surveyApply"
+        :pagination-visible="false"
+        :table-column="tableColumn"
       >
-        <el-table-column
-          fixed
-          label="调研申请ID"
-          prop="id"
-          width="100"
-        />
-        <el-table-column
-          label="申请人"
-          prop="applicant_desc"
-        />
-        <el-table-column
-          label="提交时间"
-          prop="create_time"
-          width="200"
-        />
-        <el-table-column
-          label="评审完成时间"
-          prop="review_finish_time"
-          width="200"
-        />
-        <el-table-column
-          label="评审状态"
-          prop="state_desc"
-          fixed="right"
-        >
-          <template #default="scope">
-            <div :class="changeCellColor(scope.row.state)">
-              {{ scope.row.state_desc }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          fixed="right"
-        >
-          <template #default="scope">
-            <text-btn
-              v-if="scope.row.state === 10"
-              @handle-click="showReviewForm(scope.row.id)"
-            >
-              用户调研需求评审
-            </text-btn>
-            <text-btn
-              v-else
-              @handle-click="showViewReviewForm(scope.row.id)"
-            >
-              查看用户调研需求
-            </text-btn>
-          </template>
-        </el-table-column>
-      </el-table>
-
+        <template #default="slotProps">
+          <text-btn
+            v-if="slotProps.row.state === 10"
+            @handle-click="showReviewForm(slotProps.row.id)"
+          >
+            用户调研需求评审
+          </text-btn>
+          <text-btn
+            v-else
+            @handle-click="showViewReviewForm(slotProps.row.id)"
+          >
+            查看用户调研需求
+          </text-btn>
+        </template>
+      </base-table>
       <div v-if="buttonState.apply === 0">
         <div class="survey-title">
           调研进度表
@@ -120,7 +80,7 @@
             label="状态"
             width="200px"
           >
-            <div :class="changeColor(progress.state)">
+            <div :class="setSurveyScheduleStateColor(progress.state)">
               {{ progress.state_desc }}
             </div>
           </el-descriptions-item>
@@ -340,20 +300,13 @@
                   style="display: flex"
                 >
                   <div v-if="JSON.stringify(scope.row.attachment) === '{}'">
-                    <el-upload
-                      action
-                      :show-file-list="false"
-                      :http-request="
-                        (e) =>
-                          handleFileSuccess(
-                            e,
-                            scope.row.attachment,
-                            scope.row.id
-                          )
+                    <text-btn
+                      @handle-click="
+                        showUploadDialog(scope.row.attachment, scope.row.id)
                       "
                     >
-                      <text-btn> 上传 </text-btn>
-                    </el-upload>
+                      上传附件
+                    </text-btn>
                   </div>
                   <div
                     v-if="
@@ -380,28 +333,20 @@
                         (scope.row.state === 10 || scope.row.state === 30)
                     "
                   >
-                    <text-btn @handle-click="deleteFile(scope.row.id)">
-                      删除
-                    </text-btn>
-                    <span class="table-btn">|</span>
                     <text-btn
-                      v-if="scope.row.attachment.type === 12860"
                       @handle-click="
-                        previewOrDownload(
-                          scope.row.attachment.id,
-                          scope.row.attachment.name,
-                          'preview'
-                        )
+                        showUploadDialog(scope.row.attachment, scope.row.id)
                       "
                     >
-                      预览
+                      编辑附件
                     </text-btn>
-                    <span
-                      v-if="scope.row.attachment.type === 12860"
-                      class="table-btn"
-                    >|</span>
                   </div>
-                  <div v-if="JSON.stringify(scope.row.attachment) !== '{}'">
+                  <div
+                    v-if="
+                      JSON.stringify(scope.row.attachment) !== '{}' &&
+                        (scope.row.state >= 40 || scope.row.state === 20)
+                    "
+                  >
                     <text-btn
                       @handle-click="
                         previewOrDownload(
@@ -490,6 +435,16 @@
             </el-table-column>
           </el-table>
         </el-form>
+
+        <file-upload-dialog
+          v-if="uploadVisible"
+          :upload-visible="uploadVisible"
+          label="附件上传"
+          :file="file"
+          url="user-survey-report"
+          @get-upload-file="getUploadFile"
+          @get-upload-file-visible="getUploadVisible"
+        />
 
         <el-button
           style="margin: 15px 0"
@@ -631,19 +586,22 @@
 
 <script>
 import {
-  previewOrDownloadFile,
-  getFile,
-  getOrganizationList,
   timestamp,
-  setDisabledDate
+  setDisabledDate,
+  getOrganizationList,
+  setReviewStateColor,
+  previewOrDownloadFile,
+  setSurveyScheduleStateColor
 } from '../../../../../utils';
 import SurveyForm from '../../common/survey-form.vue';
 import SurveySuggestion from '../../common/survey-suggestion.vue';
+import FileUploadDialog from '../../../../common/file-upload-dialog.vue';
 
 export default {
   components: {
     SurveyForm,
-    SurveySuggestion
+    SurveySuggestion,
+    FileUploadDialog
   },
   inject: ['getBase'],
   props: [
@@ -657,6 +615,8 @@ export default {
   ],
   data() {
     return {
+      uploadVisible: false,
+      file: {},
       isVisible: false,
       isReviewVisible: false,
       isViewReviewVisible: false,
@@ -694,7 +654,40 @@ export default {
           estimated_finish_time: [{ required: true, message: '请选择日期' }]
         },
         planList: this.planList
-      }
+      },
+      tableColumn: [
+        {
+          label: '调研申请ID',
+          prop: 'id',
+          width: 100,
+          fixed: 'left'
+        },
+        {
+          label: '申请人',
+          prop: 'applicant_desc'
+        },
+        {
+          label: '提交时间',
+          prop: 'review_finish_time',
+          width: 200
+        },
+        {
+          label: '评审完成时间',
+          prop: 'create_time',
+          width: 200
+        },
+        {
+          label: '评审状态',
+          prop: 'state',
+          fixed: 'right',
+          formatter: (row) => {
+            return setReviewStateColor(row.state);
+          },
+          getSpecialProp: (row) => {
+            return row.state_desc;
+          }
+        }
+      ]
     };
   },
   watch: {
@@ -710,6 +703,7 @@ export default {
   },
   methods: {
     setDisabledDate,
+    setSurveyScheduleStateColor,
     async getParams() {
       if (localStorage.getItem('params')) {
         this.planOptions = JSON.parse(
@@ -992,49 +986,12 @@ export default {
     approvalItemFail(id) {
       this.approvalSurveyItem(id, 0);
     },
-    changeCellColor(val) {
-      if (val === 10) {
-        return 'result-ing';
-      } else if (val === 30) {
-        return 'result-pass';
-      } else {
-        return 'result-fail';
-      }
-    },
     clearDetail(id) {
       this.form.planList.map((item) => {
         if (item.proceeding === id) {
           item.detail = '';
         }
       });
-    },
-    async handleFileSuccess(e, attachment, id) {
-      if (e.file.size > 5 * 1024 * 1024) {
-        this.$message.warning('附件大小超过限制，请重新上传！');
-      } else if (
-        e.file.type.indexOf('application') > -1 ||
-        e.file.type === 'text/csv'
-      ) {
-        this.$store.commit('setUploadState', false);
-        let form = getFile(e);
-        try {
-          await this.$store.dispatch('uploadFile', form);
-          if (this.$store.state.uploadState) {
-            attachment['id'] = this.$store.state.fileRes.id;
-            attachment['name'] = this.$store.state.fileRes.file_name;
-            attachment['type'] = this.$store.state.fileRes.type;
-            await this.$store.dispatch(
-              'product/survey/user/updatePlanResultAttachment',
-              { plan_id: id, attachment: this.$store.state.fileRes.id }
-            );
-            this.getList();
-          }
-        } catch (err) {
-          return;
-        }
-      } else {
-        this.$message.warning('上传的附件格式有误！');
-      }
     },
     async previewOrDownload(id, name, type) {
       this.$store.commit('setAttachmentState', false);
@@ -1054,26 +1011,6 @@ export default {
         return;
       }
     },
-    async deleteFile(id) {
-      try {
-        await this.$store.dispatch(
-          'product/survey/user/updatePlanResultAttachment',
-          { plan_id: id }
-        );
-        this.getList();
-      } catch (err) {
-        return;
-      }
-    },
-    changeColor(val) {
-      if (val === 10 || val === 20) {
-        return 'result-ing';
-      } else if (val >= 40) {
-        return 'result-pass';
-      } else {
-        return 'result-fail';
-      }
-    },
     changeTableCellColor(val) {
       if (val <= 20) {
         return 'result-ing';
@@ -1087,6 +1024,26 @@ export default {
       if (val === 0 || val === '') {
         this.$message.warning('请选择事项！');
       }
+    },
+    showUploadDialog(attachment, id) {
+      this.uploadVisible = true;
+      this.file = attachment;
+      this.planId = id;
+    },
+    async getUploadFile(val) {
+      try {
+        this.attachment = val;
+        await this.$store.dispatch(
+          'product/survey/user/updatePlanResultAttachment',
+          { plan_id: this.planId, attachment: val.id }
+        );
+        this.getList();
+      } catch (err) {
+        return;
+      }
+    },
+    getUploadVisible(val) {
+      this.uploadVisible = val;
     }
   }
 };

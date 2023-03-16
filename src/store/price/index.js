@@ -74,6 +74,10 @@ export default {
     async getQuotationList(context, payload) {
       await axios.get('/pricing/quote/list', payload).then((res) => {
         if (res.code === 200) {
+          res.data.list.forEach((item) => {
+            item.quote_amount_rmb =
+              item.quote_amount_rmb && `￥${item.quote_amount_rmb}`;
+          });
           context.commit('setQuotationList', res.data);
           context.state.quotationLoading = false;
         }

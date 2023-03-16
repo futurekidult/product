@@ -88,15 +88,6 @@ export default {
           }
         });
     },
-    async confirmPurchaseContract(_, payload) {
-      await axios
-        .post('/order/purchase-contract/confirm', payload)
-        .then((res) => {
-          if (res.code === 200) {
-            ElMessage.success(res.message);
-          }
-        });
-    },
     async getPreProduct(context, payload) {
       await axios
         .get('/order/pre-production-sample/get', payload)
@@ -143,6 +134,29 @@ export default {
           ElMessage.success(res.message);
         }
       });
+    },
+    async uploadManual(_, payload) {
+      await axios.post('/order/product-manual/upload', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
+    },
+    async uploadDiecuts(_, payload) {
+      await axios.post('/order/diecuts/upload', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
+    },
+    async confirmPurchaseContract(_, payload) {
+      await axios
+        .post('/order/purchase-contract/confirm', payload)
+        .then((res) => {
+          if (res.code === 200) {
+            ElMessage.success(res.message);
+          }
+        });
     }
   }
 };

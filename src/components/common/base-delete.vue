@@ -43,19 +43,17 @@ export default {
 </script>
 
 <style scoped>
-.delete-item {
-  cursor: pointer;
-}
-
 .delete-item,
 .delete-btn,
-.delete-btn:hover {
+.delete-btn:hover,
+.el-button.is-link,
+.el-button.is-link:hover {
   color: red;
 }
 
 .delete-btn,
 .delete-icon {
-  height: 20px;
+  height: 30px;
 }
 
 .demand-btn {

@@ -21,6 +21,8 @@
           placeholder="请输入样品型号"
           :disabled="disabled"
           clearable
+          maxlength="15"
+          show-word-limit
         />
       </el-form-item>
       <el-form-item
@@ -28,7 +30,7 @@
         prop="demand_quantity"
       >
         <el-input
-          v-model="proofingForm.demand_quantity"
+          v-model.number="proofingForm.demand_quantity"
           placeholder="请输入需求数量"
           :disabled="disabled"
           clearable
@@ -153,6 +155,10 @@ export default {
           {
             required: true,
             message: '请输入需求数量'
+          },
+          {
+            type: 'number',
+            message: '请输入数字'
           }
         ],
         has_verify: [
@@ -255,14 +261,11 @@ export default {
     },
     submitProofingSheet() {
       this.proofingForm.proofing_sheet_file = this.attachment.id;
+      let form = JSON.parse(JSON.stringify(this.proofingForm));
+      form.demand_time = timestamp(form.demand_time);
       let val = {
-        sample_id: +this.$route.params.id,
-        sample_model: this.proofingForm.sample_model,
-        demand_quantity: +this.proofingForm.demand_quantity,
-        has_verify: +this.proofingForm.has_verify,
-        demand_time: timestamp(this.proofingForm.demand_time),
-        remark_text: this.proofingForm.remark_text,
-        proofing_sheet_file: this.proofingForm.proofing_sheet_file
+        ...form,
+        sample_id: +this.$route.params.id
       };
       this.$refs.proofingForm.validate((valid) => {
         if (valid) {

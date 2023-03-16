@@ -114,6 +114,20 @@ export default {
           ElMessage.success(res.message);
         }
       });
+    },
+    async confirmContract(_, payload) {
+      await axios.post('/patent/contract/confirm', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
+    },
+    async confirmReport(_, payload) {
+      await axios.post('/patent/report/confirm', payload).then((res) => {
+        if (res.code === 200) {
+          ElMessage.success(res.message);
+        }
+      });
     }
   }
 };

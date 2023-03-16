@@ -21,7 +21,7 @@
       <el-descriptions-item label="状态">
         <div
           :class="
-            changeColor(progress.state !== undefined ? progress.state : '')
+            setStateColor(progress.state !== undefined ? progress.state : '')
           "
         >
           {{ progress.state_desc }}
@@ -59,10 +59,13 @@
 </template>
 
 <script>
+import { setStateColor } from '../../../../utils';
+
 export default {
   inject: ['getMould'],
-  props: ['changeColor', 'progress', 'getList'],
+  props: ['progress', 'getList'],
   methods: {
+    setStateColor,
     async approvalTestingMould(id, result) {
       let body = {
         mould_id: id,

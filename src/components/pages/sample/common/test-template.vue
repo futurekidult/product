@@ -1,67 +1,35 @@
 <template>
   <section>
-    <el-table
-      border
-      stripe
-      empty-text="无数据"
-      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      :data="questionList"
+    <base-table
+      :table-column="testTemplateTableColumn"
+      :table-data="questionList"
+      :operation-width="100"
+      :pagination="pagination"
+      :length="total"
+      @change-pagination="changeTestTemplatePagination"
     >
-      <el-table-column
-        fixed
-        label="测试问题ID"
-        prop="id"
-        width="100"
-      />
-      <el-table-column
-        fixed
-        label="问题名称"
-        prop="name"
-        min-width="150"
-      />
-      <el-table-column
-        label="问题描述"
-        prop="consequence_text"
-        min-width="150"
-      />
-      <el-table-column
-        label="创建人"
-        prop="creator"
-      />
-      <el-table-column
-        label="创建时间"
-        prop="create_time"
-        width="200"
-      />
-      <el-table-column
-        label="操作"
-        fixed="right"
-        width="100"
-      >
-        <template #default="scope">
-          <text-btn
-            v-if="state !== 1"
-            @handle-click="
-              showEditQuestions(
-                scope.row.id,
-                scope.row.name,
-                scope.row.consequence_text
-              )
-            "
-          >
-            编辑
-          </text-btn>
-          <text-btn
-            v-else
-            :disabled="scope.row.is_record === 1"
-            @handle-click="recordProblem(scope.row.id)"
-          >
-            记录问题
-          </text-btn>
-        </template>
-      </el-table-column>
-    </el-table>
-
+      <template #default="slotProps">
+        <text-btn
+          v-if="state !== 1"
+          @handle-click="
+            showEditQuestions(
+              slotProps.row.id,
+              slotProps.row.name,
+              slotProps.row.consequence_text
+            )
+          "
+        >
+          编辑
+        </text-btn>
+        <text-btn
+          v-else
+          :disabled="slotProps.row.is_record === 1"
+          @handle-click="recordProblem(slotProps.row.id)"
+        >
+          记录问题
+        </text-btn>
+      </template>
+    </base-table>
     <div class="sample-item">
       <el-button
         style="margin: 15px 0"
@@ -70,14 +38,6 @@
       >
         + 新增测试问题
       </el-button>
-
-      <base-pagination
-        :length="total"
-        :current-page="currentPage"
-        :page-num="pageSize"
-        @change-size="changePageSize"
-        @change-page="changeCurrentPage"
-      />
     </div>
 
     <question-form
@@ -124,8 +84,18 @@ export default {
       questionId: 0,
       question: {},
       total: 0,
-      currentPage: 1,
-      pageSize: 10
+      testTemplateTableColumn: [
+        { prop: 'id', label: '测试问题ID', width: 100 },
+        {
+          prop: 'name',
+          label: '问题名称',
+          min_width: 150
+        },
+        { prop: 'consequence_text', label: '问题描述', min_width: 150 },
+        { prop: 'creator', label: '创建人', width: 200 },
+        { prop: 'create_time', label: '创建时间', width: 200 }
+      ],
+      pagination: JSON.parse(JSON.stringify(this.$global.pagination))
     };
   },
   mounted() {
@@ -134,9 +104,8 @@ export default {
   methods: {
     async getTestQuestion() {
       let params = {
-        sample_id: +this.$route.params.id,
-        current_page: this.currentPage,
-        page_size: this.pageSize
+        ...this.pagination,
+        sample_id: +this.$route.params.id
       };
       try {
         await this.$store.dispatch(`sample/${this.type}/getTestQuestion`, {
@@ -195,13 +164,8 @@ export default {
     recordProblem(id) {
       this.recordTestProblem(id);
     },
-    changeCurrentPage(val) {
-      this.currentPage = val;
-      this.getTestQuestion();
-    },
-    changePageSize(val) {
-      this.pageSize = val;
-      this.currentPage = 1;
+    changeTestTemplatePagination(pagination) {
+      this.pagination = pagination;
       this.getTestQuestion();
     }
   }

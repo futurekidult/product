@@ -6,22 +6,12 @@
     :close-on-click-modal="false"
     @close="cancel"
   >
-    <el-table
-      :data="priceList"
-      border
-      stripe
-      empty-text="无数据"
-      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-    >
-      <el-table-column
-        label="平台名称"
-        prop="platform_desc"
-      />
-      <el-table-column
-        :label="`对应采购${name}价`"
-        :prop="`${type}_price`"
-      />
-    </el-table>
+    <base-table
+      :table-column="purchaseFormTableColumn"
+      :table-data="priceList"
+      :pagination-visible="false"
+      :operation-visible="false"
+    />
   </el-dialog>
 </template>
 
@@ -39,7 +29,19 @@ export default {
   data() {
     return {
       visible: this.dialogVisible,
-      priceList: []
+      priceList: [],
+      purchaseFormTableColumn: [
+        {
+          prop: 'platform_desc',
+          label: '平台名称',
+          min_width: 150
+        },
+        {
+          label: `对应采购${this.name}价`,
+          prop: `${this.type}_price`,
+          min_width: 150
+        }
+      ]
     };
   },
   mounted() {

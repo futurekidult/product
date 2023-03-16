@@ -1,6 +1,5 @@
 <template>
   <div>
-    <base-breadcrumb />
     <router-view />
     <demand-all v-if="isParent" />
   </div>

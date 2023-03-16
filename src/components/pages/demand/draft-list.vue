@@ -1,62 +1,23 @@
 <template>
   <div>
-    <base-breadcrumb />
-
     <div class="border">
-      <el-table
-        border
-        stripe
-        empty-text="无数据"
-        :data="draftList"
-        :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-      >
-        <el-table-column
-          fixed
-          label="需求ID"
-          prop="id"
-          width="100"
-        />
-        <el-table-column
-          fixed
-          label="产品名称"
-          prop="name"
-        />
-        <el-table-column
-          label="创建时间"
-          prop="create_time"
-          width="200"
-        />
-        <el-table-column
-          label="状态"
-          prop="state_desc"
-          width="100"
-          fixed="right"
-        />
-        <el-table-column
-          label="操作"
-          width="150"
-          fixed="right"
-        >
-          <template #default="scope">
-            <text-btn @handle-click="toForm(scope.row.id)">
-              编辑
-            </text-btn>
-            <span class="table-btn">|</span>
-            <text-btn @handle-click="showDeleteDraftItem(scope.row.id)">
-              删除
-            </text-btn>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <base-pagination
-        v-if="$store.state.demand.draftListLength > pageSize"
+      <base-table
+        :table-data="draftList"
+        :pagination="pagination"
         :length="$store.state.demand.draftListLength"
-        :current-page="currentPage"
-        :page-num="pageSize"
-        @change-size="changePageSize"
-        @change-page="changeCurrentPage"
-      />
+        :table-column="draftTableColumn"
+        @change-pagination="changePagination"
+      >
+        <template #default="slotProps">
+          <text-btn @handle-click="toForm(slotProps.row.id)">
+            编辑
+          </text-btn>
+          <span class="table-btn">|</span>
+          <text-btn @handle-click="showDeleteDraftItem(slotProps.row.id)">
+            删除
+          </text-btn>
+        </template>
+      </base-table>
     </div>
 
     <confirm-dialog
@@ -79,10 +40,15 @@ import { getDemandDetail } from '../../../utils/demand';
 export default {
   data() {
     return {
-      currentPage: 1,
-      pageSize: 10,
       draftList: [],
-      deleteDialogVisible: false
+      deleteDialogVisible: false,
+      draftTableColumn: [
+        { prop: 'id', label: '需求ID', width: 100, fixed: 'left' },
+        { prop: 'name', label: '产品名称', fixed: 'left' },
+        { prop: 'create_time', label: '创建时间', width: 200 },
+        { prop: 'state_desc', label: '状态', width: 100, fixed: 'right' }
+      ],
+      pagination: JSON.parse(JSON.stringify(this.$global.pagination))
     };
   },
   mounted() {
@@ -90,10 +56,7 @@ export default {
   },
   methods: {
     async getDraftList() {
-      let params = {
-        current_page: this.currentPage,
-        page_size: this.pageSize
-      };
+      let params = this.pagination;
       try {
         await this.$store.dispatch('demand/getDraftList', { params });
         this.draftList = this.$store.state.demand.draftList;
@@ -107,21 +70,16 @@ export default {
     toForm(id) {
       getDemandDetail(id, 'edit');
     },
-    changePageSize(val) {
-      this.pageSize = val;
-      this.currentPage = 1;
-      this.getDraftList();
-    },
-    changeCurrentPage(val) {
-      this.currentPage = val;
-      this.getDraftList();
-    },
     showDeleteDraftItem(id) {
       this.deleteId = id;
       this.deleteDialogVisible = true;
     },
     closeDeleteDraftItem() {
       this.deleteDialogVisible = false;
+    },
+    changePagination(pagination) {
+      this.pagination = pagination;
+      this.getDraftList();
     }
   }
 };

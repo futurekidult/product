@@ -11,12 +11,7 @@
       label="产品名称"
       prop="name"
       :rules="
-        type === 'detail'
-          ? []
-          : [
-            { required: true, message: '请输入产品名称' },
-            { max: 15, message: '长度不超过 15个字符' }
-          ]
+        type === 'detail' ? [] : [{ required: true, message: '请输入产品名称' }]
       "
     >
       <el-input
@@ -26,6 +21,7 @@
         clearable
         maxlength="15"
         show-word-limit
+        :validate-event="false"
       />
     </el-form-item>
     <el-form-item
@@ -54,6 +50,7 @@
           placeholder="请选择大品类"
           :disabled="isDisabled"
           clearable
+          :validate-event="false"
           @change="clearSmallCategory"
         >
           <el-option
@@ -75,6 +72,7 @@
           placeholder="请选择小品类"
           :disabled="isDisabled"
           clearable
+          :validate-event="false"
         >
           <el-option
             v-for="item in smallCategoryList"
@@ -98,6 +96,7 @@
         clearable
         maxlength="15"
         show-word-limit
+        :validate-event="false"
       />
     </el-form-item>
     <el-collapse
@@ -141,6 +140,7 @@
               clearable
               maxlength="200"
               show-word-limit
+              :validate-event="false"
             />
           </el-form-item>
           <el-form-item
@@ -172,6 +172,7 @@
               clearable
               maxlength="200"
               show-word-limit
+              :validate-event="false"
             />
           </el-form-item>
           <base-delete
@@ -203,6 +204,7 @@
         clearable
         maxlength="50"
         show-word-limit
+        :validate-event="false"
       />
     </el-form-item>
     <div class="demand-form_item">
@@ -220,6 +222,7 @@
               clearable
               maxlength="15"
               show-word-limit
+              :validate-event="false"
             />
           </el-form-item>
           <el-form-item prop="product_dimension_w">
@@ -231,6 +234,7 @@
               clearable
               maxlength="15"
               show-word-limit
+              :validate-event="false"
             />
           </el-form-item>
           <el-form-item prop="product_dimension_h">
@@ -241,6 +245,7 @@
               clearable
               maxlength="15"
               show-word-limit
+              :validate-event="false"
             />
           </el-form-item>
         </div>
@@ -259,6 +264,7 @@
               clearable
               maxlength="15"
               show-word-limit
+              :validate-event="false"
             />
           </el-form-item>
           <el-form-item prop="packing_dimension_w">
@@ -270,6 +276,7 @@
               clearable
               maxlength="15"
               show-word-limit
+              :validate-event="false"
             />
           </el-form-item>
           <el-form-item prop="packing_dimension_h">
@@ -280,6 +287,7 @@
               clearable
               maxlength="15"
               show-word-limit
+              :validate-event="false"
             />
           </el-form-item>
         </div>
@@ -295,6 +303,7 @@
           clearable
           maxlength="15"
           show-word-limit
+          :validate-event="false"
         />
       </el-form-item>
       <el-form-item
@@ -308,6 +317,7 @@
           clearable
           maxlength="15"
           show-word-limit
+          :validate-event="false"
         />
       </el-form-item>
       <el-form-item
@@ -322,6 +332,7 @@
               placeholder="请选择货币"
               :disabled="isDisabled"
               clearable
+              :validate-event="false"
               @clear="clearCurrency('selling')"
               @change="changeCurrency('selling')"
             >
@@ -340,6 +351,7 @@
               placeholder="请输入金额"
               :disabled="isDisabled"
               clearable
+              :validate-event="false"
               @change="getRmb('selling')"
               @clear="clearMoney('selling')"
             />
@@ -369,6 +381,7 @@
               placeholder="请选择货币"
               :disabled="isDisabled"
               clearable
+              :validate-event="false"
               @clear="clearCurrency('purchase')"
               @change="changeCurrency('purchase')"
             >
@@ -387,6 +400,7 @@
               placeholder="请输入金额"
               :disabled="isDisabled"
               clearable
+              :validate-event="false"
               @change="getRmb('purchase')"
               @clear="clearMoney('purchase')"
             />
@@ -417,6 +431,7 @@
         clearable
         maxlength="200"
         show-word-limit
+        :validate-event="false"
       />
     </el-form-item>
     <el-form-item
@@ -429,6 +444,7 @@
         placeholder="请选择需求洞察来源"
         :disabled="isDisabled"
         clearable
+        :validate-event="false"
       >
         <el-option
           v-for="item in resource"
@@ -451,6 +467,7 @@
         type="textarea"
         maxlength="200"
         show-word-limit
+        :validate-event="false"
       />
     </el-form-item>
     <el-form-item
@@ -466,6 +483,7 @@
         clearable
         maxlength="200"
         show-word-limit
+        :validate-event="false"
       />
     </el-form-item>
     <el-form-item
@@ -481,6 +499,7 @@
         clearable
         maxlength="200"
         show-word-limit
+        :validate-event="false"
       />
     </el-form-item>
     <el-form-item v-if="type === 'create' || type === 'edit'">
@@ -736,6 +755,19 @@ export default {
           this.smallCategoryList = item.children;
         }
       });
+    },
+    demandForm: {
+      handler() {
+        if (this.type === 'review') {
+          if (this.$store.state.demand.formWatchCount !== 1) {
+            this.$store.commit('demand/setUpdateState', true);
+          } else {
+            this.$store.commit('demand/setUpdateState', false);
+          }
+          this.$store.commit('demand/setFormWatchCount');
+        }
+      },
+      deep: true
     }
   },
   mounted() {
@@ -746,6 +778,7 @@ export default {
     } else {
       this.getCategoryList();
     }
+    this.$store.commit('demand/setFormWatchCount', 1);
   },
   methods: {
     async getDetail() {
@@ -918,6 +951,7 @@ export default {
     },
     async updateReviewDemand(body) {
       await this.$store.dispatch('demand/updateDemandForm', body);
+      this.$store.commit('demand/setUpdateState', false);
     },
     updateDemandForm() {
       this.getProductImages();

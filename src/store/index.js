@@ -36,7 +36,8 @@ const store = createStore({
       entry: '',
       regionList: [],
       cityList: [],
-      menuData: {}
+      menuData: {},
+      activeSubTab: ''
     };
   },
   mutations: {
@@ -66,6 +67,9 @@ const store = createStore({
     },
     setActiveTab(state, payload) {
       state.activeTab = payload;
+    },
+    setActiveSubTab(state, payload) {
+      state.activeSubTab = payload;
     },
     setEntry(state, payload) {
       state.entry = payload;

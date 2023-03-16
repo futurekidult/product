@@ -10,7 +10,6 @@
         name="design"
       >
         <mould-design
-          :change-color="changeColor"
           :progress="designProgress"
           :get-list="getProductDesign"
         />
@@ -20,7 +19,6 @@
         name="prototype"
       >
         <sample-mould
-          :change-color="changeColor"
           :progress="prototypeProgress"
           :get-list="getPrototype"
           :attachment="attachment"
@@ -28,10 +26,9 @@
       </el-tab-pane>
       <el-tab-pane
         label="开模"
-        name="mouldopen"
+        name="mould-open"
       >
         <mould-open
-          :change-color="changeColor"
           :progress="makingMould"
           :get-list="getMakingMould"
           :button-state="buttonState"
@@ -40,10 +37,9 @@
       </el-tab-pane>
       <el-tab-pane
         label="试模"
-        name="mouldtest"
+        name="mould-test"
       >
         <mould-test
-          :change-color="changeColor"
           :progress="testingMould"
           :get-list="getTestingMould"
         />
@@ -57,7 +53,7 @@ import MouldDesign from './model-design.vue';
 import SampleMould from './sample.vue';
 import MouldOpen from './mould-open.vue';
 import MouldTest from './mould-test.vue';
-import { changeTimestamp } from '../../../../utils/index';
+import { changeTimestamp, setEntry } from '../../../../utils/index';
 
 export default {
   components: {
@@ -66,7 +62,6 @@ export default {
     MouldOpen,
     MouldTest
   },
-  props: ['changeColor'],
   data() {
     return {
       designProgress: {},
@@ -79,9 +74,7 @@ export default {
     };
   },
   mounted() {
-    if (this.$store.state.entry !== 'workbench') {
-      this.$store.commit('setActiveTab', 'design');
-    }
+    setEntry('setActiveTab', 'design');
     this.getRequest(this.$store.state.activeTab);
   },
   methods: {
@@ -157,10 +150,10 @@ export default {
         case 'prototype':
           this.getPrototype();
           break;
-        case 'mouldopen':
+        case 'mould-open':
           this.getMakingMould();
           break;
-        case 'mouldtest':
+        case 'mould-test':
           this.getTestingMould();
           break;
         default:

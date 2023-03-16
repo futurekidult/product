@@ -152,6 +152,7 @@
         </el-menu>
       </el-aside>
       <el-main style="padding: 5px">
+        <base-breadcrumb />
         <router-view />
       </el-main>
     </el-container>
@@ -278,7 +279,6 @@ export default {
 .toggle-btn {
   margin-right: 10px;
   margin-left: 10px;
-  cursor: pointer;
   color: #fff;
   margin-right: 8px;
 }

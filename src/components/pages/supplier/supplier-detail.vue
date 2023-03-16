@@ -81,9 +81,10 @@ export default {
         this.supplierDetail.create_time = formatterTime(
           this.supplierDetail.create_time
         );
-        if (this.supplierDetail.state === 10) {
+        let { state } = this.supplierDetail;
+        if (state === 10 || state === 5) {
           this.mode = 'warning';
-        } else if (this.supplierDetail.state === 20) {
+        } else if (state === 20) {
           this.mode = 'danger';
         } else {
           this.mode = 'success';

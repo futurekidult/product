@@ -1,38 +1,26 @@
 <template>
   <div>
-    <base-breadcrumb />
     <div class="border">
       <div class="system-item">
         <div class="nav-title">
           <span class="line">|</span> 角色列表
         </div>
       </div>
-
-      <div v-loading="$store.state.system.productRoleLoading">
-        <el-table
-          stripe
-          border
-          :data="roleList"
-          empty-text="无数据"
-          :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
-        >
-          <el-table-column
-            label="角色名称"
-            prop="name"
-          />
-          <el-table-column label="操作">
-            <template #default="scope">
-              <el-button
-                type="primary"
-                @click="showEditDialog(scope.row.id)"
-              >
-                编辑角色
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-
+      <base-table
+        v-loading="$store.state.system.productRoleLoading"
+        :table-data="roleList"
+        :pagination-visible="false"
+        :table-column="[{ label: '角色名称', prop: 'name' }]"
+      >
+        <template #default="slotProps">
+          <el-button
+            type="primary"
+            @click="showEditDialog(slotProps.row.id)"
+          >
+            编辑角色
+          </el-button>
+        </template>
+      </base-table>
       <role-form
         v-if="editVisible"
         :id="roleId"

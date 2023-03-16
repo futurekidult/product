@@ -7,15 +7,14 @@
   >
     <div class="select-title">
       <span class="line">|</span>
-      {{ getTitle(type) }}
+      基础信息
     </div>
-
     <el-form
-      ref="supplierForm"
+      ref="baseForm"
       label-width="150px"
       :model="supplierForm"
       style="width: 70%"
-      :rules="type === 'create' || type === 'update' ? supplierRules : []"
+      :rules="type === 'review' ? {} : baseRules"
     >
       <div class="form-item">
         <el-form-item
@@ -27,6 +26,7 @@
             placeholder="请选择供应商类型"
             clearable
             :disabled="isDisabled"
+            :validate-event="false"
           >
             <el-option
               v-for="item in supplierType"
@@ -44,9 +44,10 @@
             v-model="supplierForm.name"
             placeholder="请输入供应商名称"
             clearable
-            :disabled="isDisabled"
+            :disabled="isIdentifierDisabled"
             maxlength="100"
             show-word-limit
+            :validate-event="false"
           />
         </el-form-item>
       </div>
@@ -58,11 +59,7 @@
         <el-form-item
           :label="'联系人姓名' + (index + 1)"
           :prop="`contacts.${index}.contact`"
-          :rules="
-            type === 'create' || type === 'update'
-              ? [{ required: true, message: '请输入联系人姓名' }]
-              : []
-          "
+          :rules="type === 'review' ? [] : baseRules.contact"
         >
           <el-input
             v-model="item.contact"
@@ -71,24 +68,22 @@
             :disabled="isDisabled"
             maxlength="15"
             show-word-limit
+            :validate-event="false"
           />
         </el-form-item>
         <el-form-item
           :label="'手机号码' + (index + 1)"
           :prop="`contacts.${index}.tel`"
-          :rules="
-            type === 'create' || type === 'update'
-              ? [{ required: true, message: '请输入手机号' }]
-              : []
-          "
+          :rules="type === 'review' ? [] : baseRules.tel"
         >
           <el-input
             v-model="item.tel"
             placeholder="请输入手机号"
             clearable
             :disabled="isDisabled"
-            maxlength="15"
+            maxlength="20"
             show-word-limit
+            :validate-event="false"
           />
         </el-form-item>
         <el-form-item :label="'座机号码' + (index + 1)">
@@ -107,7 +102,7 @@
             placeholder="请输入微信"
             clearable
             :disabled="isDisabled"
-            maxlength="15"
+            maxlength="20"
             show-word-limit
           />
         </el-form-item>
@@ -127,7 +122,7 @@
             placeholder="请输入电子邮件"
             clearable
             :disabled="isDisabled"
-            maxlength="30"
+            maxlength="50"
             show-word-limit
             @change="checkEmail('email', item.email, index + 1)"
           />
@@ -154,11 +149,7 @@
         <el-form-item
           :label="'公司地址' + (index + 1)"
           :prop="`addresses.${index}.company`"
-          :rules="
-            type === 'create' || type === 'update'
-              ? [{ required: true, message: '请选择公司地址' }]
-              : []
-          "
+          :rules="type === 'review' ? [] : baseRules.company"
         >
           <el-cascader
             v-model="item.company"
@@ -169,35 +160,29 @@
             filterable
             :disabled="isDisabled"
             style="width: 100%"
+            :validate-event="false"
             @change="clearAddress(index)"
           />
         </el-form-item>
         <el-form-item
           :label="'详细地址' + (index + 1)"
           :prop="`addresses.${index}.detail`"
-          :rules="
-            type === 'create' || type === 'update'
-              ? [{ required: true, message: '请输入详细地址' }]
-              : []
-          "
+          :rules="type === 'review' ? [] : baseRules.detail"
         >
           <el-input
             v-model="item.detail"
             placeholder="请输入详细地址"
             clearable
             :disabled="isDisabled"
-            maxlength="30"
+            maxlength="50"
             show-word-limit
+            :validate-event="false"
           />
         </el-form-item>
         <el-form-item
           :label="'出货地址' + (index + 1)"
           :prop="`addresses.${index}.shipment`"
-          :rules="
-            type === 'create' || type === 'update'
-              ? [{ required: true, message: '请输入出货地址' }]
-              : []
-          "
+          :rules="type === 'review' ? [] : baseRules.shipment"
         >
           <el-cascader
             v-model="item.shipment"
@@ -208,6 +193,7 @@
             filterable
             :disabled="isDisabled"
             style="width: 100%"
+            :validate-event="false"
           />
         </el-form-item>
         <el-form-item />
@@ -227,6 +213,35 @@
       </el-form-item>
       <div class="form-item">
         <el-form-item
+          label="采购员"
+          prop="purchase_specialist_id"
+        >
+          <el-tree-select
+            v-model="supplierForm.purchase_specialist_id"
+            :data="memberList"
+            clearable
+            filterable
+            :props="defaultProps"
+            :disabled="isDisabled"
+            :validate-event="false"
+          />
+        </el-form-item>
+        <el-form-item />
+      </div>
+    </el-form>
+    <div class="select-title">
+      <span class="line">|</span>
+      资质信息
+    </div>
+    <el-form
+      ref="qualificationForm"
+      label-width="150px"
+      :model="supplierForm"
+      style="width: 70%"
+      :rules="type === 'review' || type === 'create' ? {} : qualificationRules"
+    >
+      <div class="form-item">
+        <el-form-item
           label="公司主页链接"
           prop="site_link"
         >
@@ -237,6 +252,7 @@
             :disabled="isDisabled"
             maxlength="30"
             show-word-limit
+            :validate-event="false"
           />
         </el-form-item>
         <el-form-item
@@ -248,6 +264,7 @@
             placeholder="请选择合作等级"
             clearable
             :disabled="isDisabled"
+            :validate-event="false"
           >
             <el-option
               v-for="item in cooperationLevel"
@@ -268,6 +285,7 @@
             :disabled="isDisabled"
             maxlength="7"
             show-word-limit
+            :validate-event="false"
           />
         </el-form-item>
         <el-form-item
@@ -278,9 +296,10 @@
             v-model="supplierForm.tax_id"
             placeholder="请输入供应商税号"
             clearable
-            :disabled="type !== 'create'"
+            :disabled="isIdentifierDisabled"
             maxlength="20"
             show-word-limit
+            :validate-event="false"
           />
         </el-form-item>
         <el-form-item
@@ -294,6 +313,7 @@
             :disabled="isDisabled"
             maxlength="15"
             show-word-limit
+            :validate-event="false"
           />
         </el-form-item>
         <el-form-item
@@ -305,6 +325,7 @@
             placeholder="请选择税务资格"
             clearable
             :disabled="isDisabled"
+            :validate-event="false"
           >
             <el-option
               v-for="item in taxEligibility"
@@ -323,6 +344,7 @@
             placeholder="请选择付款方式"
             clearable
             :disabled="isDisabled"
+            :validate-event="false"
           >
             <el-option
               v-for="item in paymentMethod"
@@ -351,6 +373,7 @@
             placeholder="请选择付款条件"
             clearable
             :disabled="isDisabled"
+            :validate-event="false"
           >
             <el-option
               v-for="item in paymentTerms"
@@ -369,6 +392,7 @@
             placeholder="请选择主要货币"
             clearable
             :disabled="isDisabled"
+            :validate-event="false"
           >
             <el-option
               v-for="item in currency"
@@ -399,6 +423,7 @@
             :disabled="isDisabled"
             maxlength="100"
             show-word-limit
+            :validate-event="false"
           />
         </el-form-item>
         <el-form-item
@@ -412,6 +437,7 @@
             :disabled="isDisabled"
             maxlength="100"
             show-word-limit
+            :validate-event="false"
           />
         </el-form-item>
         <el-form-item
@@ -425,6 +451,7 @@
             :disabled="isDisabled"
             maxlength="25"
             show-word-limit
+            :validate-event="false"
           />
         </el-form-item>
         <el-form-item label="开户银行所在地">
@@ -456,6 +483,7 @@
             placeholder="请选择跨行标识"
             clearable
             :disabled="isDisabled"
+            :validate-event="false"
           >
             <el-option
               v-for="item in interBank"
@@ -474,6 +502,7 @@
             placeholder="请选择地域标识"
             clearable
             :disabled="isDisabled"
+            :validate-event="false"
           >
             <el-option
               v-for="item in territory"
@@ -494,19 +523,7 @@
             :disabled="isDisabled"
             maxlength="15"
             show-word-limit
-          />
-        </el-form-item>
-        <el-form-item
-          label="采购员"
-          prop="purchase_specialist_id"
-        >
-          <el-tree-select
-            v-model="supplierForm.purchase_specialist_id"
-            :data="memberList"
-            clearable
-            filterable
-            :props="defaultProps"
-            :disabled="isDisabled"
+            :validate-event="false"
           />
         </el-form-item>
       </div>
@@ -597,10 +614,22 @@
           show-word-limit
         />
       </el-form-item>
-      <el-form-item v-if="!isDisabled">
+      <el-form-item>
         <el-button
+          v-if="type === 'qualificationUpdate'"
+          class="draft-btn"
+          @click="submitQualificationForm(0)"
+        >
+          保存
+        </el-button>
+        <el-button
+          v-if="!isDisabled"
           type="primary"
-          @click="submitForm"
+          @click="
+            type === 'qualificationUpdate'
+              ? submitQualificationForm(1)
+              : submitForm()
+          "
         >
           提交
         </el-button>
@@ -647,7 +676,7 @@ export default {
         children: 'children'
       },
       cityOption: [],
-      supplierRules: {
+      baseRules: {
         type: [
           {
             required: true,
@@ -660,6 +689,19 @@ export default {
             message: '请输入供应商名称'
           }
         ],
+        contact: [{ required: true, message: '请输入联系人姓名' }],
+        tel: [{ required: true, message: '请输入手机号' }],
+        company: [{ required: true, message: '请选择公司地址' }],
+        detail: [{ required: true, message: '请输入详细地址' }],
+        shipment: [{ required: true, message: '请输入出货地址' }],
+        purchase_specialist_id: [
+          {
+            required: true,
+            message: '请选择采购员'
+          }
+        ]
+      },
+      qualificationRules: {
         site_link: [
           {
             required: true,
@@ -750,12 +792,6 @@ export default {
             message: '请输入主营产品'
           }
         ],
-        purchase_specialist_id: [
-          {
-            required: true,
-            message: '请选择采购员'
-          }
-        ],
         vat_invoice_file: [
           {
             required: true,
@@ -791,7 +827,29 @@ export default {
   },
   computed: {
     isDisabled() {
-      return this.type === 'create' || this.type === 'update' ? false : true;
+      return !this.isIdentifierDisabled || this.type === 'update'
+        ? false
+        : true;
+    },
+    isIdentifierDisabled() {
+      return this.type === 'create' || this.type === 'qualificationUpdate'
+        ? false
+        : true;
+    }
+  },
+  watch: {
+    supplierForm: {
+      handler() {
+        if (this.type === 'qualificationUpdate') {
+          if (this.$store.state.supplier.formWatchCount !== 1) {
+            this.$store.commit('supplier/setUpdateState', true);
+          } else {
+            this.$store.commit('supplier/setUpdateState', false);
+          }
+          this.$store.commit('supplier/setFormWatchCount');
+        }
+      },
+      deep: true
     }
   },
   mounted() {
@@ -803,16 +861,9 @@ export default {
     if (this.type !== 'create') {
       this.getSupplierDetail();
     }
+    this.$store.commit('supplier/setFormWatchCount', 1);
   },
   methods: {
-    getTitle(val) {
-      let title = {
-        create: '创建供应商',
-        update: '编辑供应商',
-        review: '详细信息'
-      };
-      return title[val];
-    },
     async getParams() {
       if (localStorage.getItem('params')) {
         let { supplier } = JSON.parse(localStorage.getItem('params'));
@@ -867,6 +918,18 @@ export default {
       body.id = +this.$route.params.id;
       try {
         await this.$store.dispatch('supplier/updateSupplier', body);
+        this.$store.commit('supplier/setUpdateState', false);
+        this.$router.push('/supplier-list');
+      } catch (err) {
+        return;
+      }
+    },
+    async updateQualification(val, state) {
+      let body = JSON.parse(JSON.stringify(val));
+      body.id = +this.$route.params.id;
+      body.is_submit = state;
+      try {
+        await this.$store.dispatch('supplier/updateQualification', body);
         this.$router.push('/supplier-list');
       } catch (err) {
         return;
@@ -883,6 +946,24 @@ export default {
     addRow(val) {
       this.supplierForm[val].push({});
     },
+    handleFormFile(form) {
+      const imgProp = [
+        'vat_invoice_file',
+        'account_opening_license_file',
+        'business_license_file'
+      ];
+      imgProp.forEach((item) => {
+        if (form[item].length !== 0) {
+          form[item] = this.handleImgArr(item);
+        }
+      });
+      const fileProp = ['quality_evaluation_file', 'purchase_evaluation_file'];
+      fileProp.forEach((item) => {
+        if (form[item]) {
+          form[item] = this.supplierForm[item].id;
+        }
+      });
+    },
     handleImgArr(key) {
       let imgArr = [];
       this.supplierForm[key].forEach((item) => {
@@ -892,25 +973,54 @@ export default {
       return imgArr;
     },
     submitForm() {
-      this.$refs.supplierForm.validate((valid) => {
+      let form = JSON.parse(JSON.stringify(this.supplierForm));
+      this.$refs.baseForm.validate((valid) => {
         if (valid) {
-          let form = JSON.parse(JSON.stringify(this.supplierForm));
-          form['vat_invoice_file'] = this.handleImgArr('vat_invoice_file');
-          form['account_opening_license_file'] = this.handleImgArr(
-            'account_opening_license_file'
-          );
-          form['business_license_file'] = this.handleImgArr(
-            'business_license_file'
-          );
-          form['quality_evaluation_file'] =
-            this.supplierForm['quality_evaluation_file'].id;
-          form['purchase_evaluation_file'] =
-            this.supplierForm['purchase_evaluation_file'].id;
+          this.handleFormFile(form);
           if (this.type === 'create') {
             this.createSupplier(form);
           } else {
-            this.updateSupplier(form);
+            this.$refs.qualificationForm.validate((valid) => {
+              if (valid) {
+                this.updateSupplier(form);
+              }
+            });
           }
+        }
+      });
+    },
+    submitQualificationForm(state) {
+      let form = JSON.parse(JSON.stringify(this.supplierForm));
+      this.handleFormFile(form);
+      const deleteProp = [
+        'id',
+        'create_time',
+        'creator',
+        'creator_id',
+        'state',
+        'state_desc',
+        'is_black'
+      ];
+      deleteProp.forEach((item) => {
+        delete form[item];
+      });
+      this.$refs.baseForm.validate((valid) => {
+        if (valid) {
+          if (state === 1) {
+            this.$refs.qualificationForm.validate((valid) => {
+              if (valid) {
+                this.updateQualification(form, state);
+              }
+            });
+          } else {
+            if (this.$store.state.supplier.updateState) {
+              this.updateQualification(form, state);
+            } else {
+              this.$message.warning('保存失败，保存内容未修改');
+            }
+          }
+        } else {
+          this.$message.warning('保存失败，请填写基本信息必填项');
         }
       });
     },
@@ -932,7 +1042,7 @@ export default {
       }
     },
     getUploadFile(e, str) {
-      if (JSON.stringify(e) === '{}') {
+      if (JSON.stringify(e) === '{}' || e.length === 0) {
         this.supplierForm[str] = '';
       } else {
         this.supplierForm[str] = e;
