@@ -1,0 +1,36 @@
+@startuml
+start
+if(是否需要产品研发)then(yes)
+repeat
+:提交研发需求;
+repeat while ((运营主管)审批) is (no) not (yes)
+:填写意见评论任务;
+if(需求评审)then(通过)
+:(研发负责人)填写计划时间;
+else(不通过)
+:流程终止;
+stop
+endif
+repeat
+if(是否需要时间审批)then(yes)
+else(no)
+break
+endif
+repeat while ((运营审批))is(不通过) not (通过)
+repeat
+:上传外观设计初稿;
+if(是否需要用研验证)then(yes)
+fork
+repeat
+:上传调研方案;
+repeat while (审批)is(不通过) not(通过)
+repeat
+:上传调研报告;
+repeat while (审批)is(不通过) not(通过)
+end fork
+else(no)
+endif
+repeat while (外观设计评审)is(不通过) not(通过)
+else(no)  
+stop
+@enduml
